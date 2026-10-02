@@ -37,17 +37,48 @@ export function verify(
         : [],
     ),
   );
+  const languageFamily = (path: string) =>
+    /\.py$/i.test(path)
+      ? "python"
+      : /\.[cm]?[jt]sx?$/i.test(path)
+        ? "javascript"
+        : "unknown";
+  const incomplete = (paths: string[], searchAllFiles = false): boolean =>
+    current.diagnostics.some((diagnostic) => {
+      const affected = normalizeRepoPath(diagnostic.filePath);
+      if (
+        paths.some(
+          (path) => path === affected || path.startsWith(`${affected}/`),
+        )
+      )
+        return true;
+      // Relocation/absence searches inspect a whole language's symbol space;
+      // a broken file in that space can hide another candidate. Exact bindings
+      // and planned target paths only depend on their own file/subtree.
+      return (
+        searchAllFiles &&
+        paths.some(
+          (path) =>
+            languageFamily(affected) === "unknown" ||
+            languageFamily(path) === "unknown" ||
+            languageFamily(affected) === languageFamily(path),
+        )
+      );
+    });
   const bind = (id: string, enforceMove = true): Binding => {
     const added = additions.get(id);
     let nodes: CodeNode[];
+    let paths: string[];
+    let searchAllFiles = false;
     if (added) {
+      const path = enforceMove
+        ? (moves.get(id) ?? normalizeRepoPath(added.filePath))
+        : normalizeRepoPath(added.filePath);
+      paths = [path];
       nodes = current.nodes.filter(
         (n) =>
           n.kind === "function" &&
-          n.filePath ===
-            (enforceMove
-              ? (moves.get(id) ?? normalizeRepoPath(added.filePath))
-              : normalizeRepoPath(added.filePath)) &&
+          n.filePath === path &&
           (n.name === added.name || n.qualifiedName === added.name) &&
           (!added.language || added.language === n.language) &&
           (!added.signature || added.signature === n.signature),
@@ -61,18 +92,24 @@ export function verify(
           (original.qualifiedName ?? original.name) &&
         n.language === original.language;
       const movedTo = enforceMove ? moves.get(id) : undefined;
+      paths = [movedTo ?? original.filePath].filter(
+        (path): path is string => !!path,
+      );
       if (movedTo)
         nodes = current.nodes.filter(
           (n) => sameSymbol(n) && n.filePath === movedTo,
         );
       else {
         nodes = current.nodes.filter((n) => n.id === id);
-        if (!nodes.length) nodes = current.nodes.filter(sameSymbol);
+        if (!nodes.length) {
+          nodes = current.nodes.filter(sameSymbol);
+          searchAllFiles = true;
+        }
       }
     }
     return {
       nodes,
-      uncertain: nodes.length > 1 || current.diagnostics.length > 0,
+      uncertain: nodes.length > 1 || incomplete(paths, searchAllFiles),
     };
   };
   const relationCheck = (
@@ -142,24 +179,35 @@ export function verify(
       }
       case "move_function": {
         const target = bind(operation.nodeId),
-          original = baseline.nodes.find((n) => n.id === operation.nodeId);
-        // A copy at the destination does not establish a move if the original remains.
+          original = baseline.nodes.find((n) => n.id === operation.nodeId),
+          added = additions.get(operation.nodeId);
+        const originalPath = added
+          ? normalizeRepoPath(added.filePath)
+          : original?.filePath;
+        const changedPath =
+          originalPath !== normalizeRepoPath(operation.filePath);
+        // A temporary function's source identity comes from its add operation,
+        // since it has no baseline node. Both kinds of move must remove the source.
         const oldStillExists =
-          original &&
-          original.filePath !== normalizeRepoPath(operation.filePath) &&
-          current.nodes.some((n) => n.id === original.id);
-        item = target.uncertain
-          ? result(
-              "unknown",
-              "Moved function binding or analysis is ambiguous.",
-            )
-          : result(
-              target.nodes.length && !oldStillExists ? "satisfied" : "unmet",
-              target.nodes.length && !oldStillExists
-                ? "Function is located at the planned destination."
-                : "The required move was not established.",
-              target.nodes.map(location),
-            );
+          changedPath &&
+          (added
+            ? bind(operation.nodeId, false).nodes.length > 0
+            : current.nodes.some((n) => n.id === original?.id));
+        const sourceIncomplete =
+          changedPath && !!originalPath && incomplete([originalPath]);
+        item =
+          target.uncertain || sourceIncomplete
+            ? result(
+                "unknown",
+                "Moved function binding or analysis is ambiguous.",
+              )
+            : result(
+                target.nodes.length && !oldStillExists ? "satisfied" : "unmet",
+                target.nodes.length && !oldStillExists
+                  ? "Function is located at the planned destination."
+                  : "The required move was not established.",
+                target.nodes.map(location),
+              );
         break;
       }
       case "remove_function": {

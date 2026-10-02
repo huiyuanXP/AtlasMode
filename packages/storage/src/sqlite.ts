@@ -1,11 +1,13 @@
 import type { RecordKind, StoragePort } from "@codemap/core";
 import Database from "better-sqlite3";
+import { AsyncLocalStorage } from "node:async_hooks";
 import { mkdirSync, readFileSync } from "node:fs";
 import { types } from "node:util";
 import { dirname } from "node:path";
 
 export class SqliteStorage implements StoragePort {
   private readonly db: Database.Database;
+  private readonly transactions = new AsyncLocalStorage<{ active: boolean }>();
 
   constructor(databasePath: string) {
     if (databasePath !== ":memory:")
@@ -51,6 +53,7 @@ export class SqliteStorage implements StoragePort {
     ).map((row) => JSON.parse(row.value) as T);
   }
   put<T>(kind: RecordKind, id: string, value: T): void {
+    this.checkTransactionScope();
     this.db
       .prepare(
         "INSERT INTO records (kind, id, value) VALUES (?, ?, ?) ON CONFLICT(kind, id) DO UPDATE SET value = excluded.value",
@@ -58,26 +61,47 @@ export class SqliteStorage implements StoragePort {
       .run(kind, id, JSON.stringify(value));
   }
   delete(kind: RecordKind, id: string): void {
+    this.checkTransactionScope();
     this.db
       .prepare("DELETE FROM records WHERE kind = ? AND id = ?")
       .run(kind, id);
   }
   transaction<T>(fn: () => T): T {
+    this.checkTransactionScope();
     if (types.isAsyncFunction(fn))
       throw new TypeError("SQLite transactions must be synchronous.");
-    return this.db.transaction(() => {
-      const value = fn();
-      if (
-        value !== null &&
-        (typeof value === "object" || typeof value === "function") &&
-        "then" in value
-      ) {
-        throw new TypeError("SQLite transactions must be synchronous.");
+    const context = { active: true };
+    return this.transactions.run(context, () => {
+      try {
+        return this.db.transaction(() => {
+          const value = fn();
+          if (
+            value !== null &&
+            (typeof value === "object" || typeof value === "function") &&
+            "then" in value
+          ) {
+            // The synchronous API cannot return this promise to its caller.
+            // Observe its rejection; its continuations retain the closed scope.
+            void Promise.resolve(value).catch(() => {});
+            throw new TypeError("SQLite transactions must be synchronous.");
+          }
+          return value;
+        })();
+      } finally {
+        // Async resources inherit this object, not the caller's restored scope.
+        // Closing it blocks continuations after either commit or rollback.
+        context.active = false;
       }
-      return value;
-    })();
+    });
+  }
+  private checkTransactionScope(): void {
+    if (this.transactions.getStore()?.active === false)
+      throw new TypeError(
+        "SQLite transaction scope has ended; writes must be synchronous.",
+      );
   }
   close(): void {
+    this.checkTransactionScope();
     if (this.db.open) this.db.close();
   }
 }

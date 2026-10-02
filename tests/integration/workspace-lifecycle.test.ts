@@ -590,3 +590,97 @@ test("runtime null semantic edits and Windows rooted directory policies are reje
     }),
   ).toThrow();
 });
+
+test("unrelated diagnostics do not suppress positive structural evidence or complete call absence", async () => {
+  const plan = draft([
+    { kind: "add_function", tempId: "new", name: "newFn", filePath: "good.ts" },
+    {
+      kind: "add_relation",
+      id: "new-call",
+      sourceId: "new",
+      targetId: node("B").id,
+      type: "calls",
+    },
+    {
+      kind: "add_relation",
+      id: "absent-call",
+      sourceId: "new",
+      targetId: node("A").id,
+      type: "calls",
+    },
+  ]);
+  await service.approvePlan(plan.plan.id, 2);
+  await writeFile(
+    join(projectPath, "good.ts"),
+    'import { B } from "./main";\nexport function newFn() { return B(); }\n',
+  );
+  await writeFile(join(projectPath, "broken.ts"), "export function broken( {");
+  const report = await service.verifyPlan(plan.plan.id);
+  expect(
+    service
+      .getSnapshot(project.id)
+      .diagnostics.some((d) => d.filePath === "broken.ts"),
+  ).toBe(true);
+  expect(report.items.map((i) => i.status)).toEqual([
+    "satisfied",
+    "satisfied",
+    "unmet",
+  ]);
+  expect(report.items[0]?.evidence).toContain("good.ts:2");
+  expect(report.items[1]?.evidence.some((e) => e.startsWith("good.ts:2"))).toBe(
+    true,
+  );
+  await writeFile(join(projectPath, "good.ts"), "export function newFn( {");
+  expect(
+    (await service.verifyPlan(plan.plan.id)).items.map((i) => i.status),
+  ).toEqual(["unknown", "unknown", "unknown"]);
+});
+
+test("temporary function moves reject copies and accept a true move", async () => {
+  const plan = draft([
+    {
+      kind: "add_function",
+      tempId: "new",
+      name: "newFn",
+      filePath: "original.ts",
+    },
+    { kind: "move_function", nodeId: "new", filePath: "moved.ts" },
+  ]);
+  await service.approvePlan(plan.plan.id, 2);
+  await writeFile(
+    join(projectPath, "original.ts"),
+    "export function newFn() {}\n",
+  );
+  await writeFile(
+    join(projectPath, "moved.ts"),
+    "export function newFn() {}\n",
+  );
+  expect(
+    (await service.verifyPlan(plan.plan.id)).items.map((i) => i.status),
+  ).toEqual(["satisfied", "unmet"]);
+  await rm(join(projectPath, "original.ts"));
+  expect(
+    (await service.verifyPlan(plan.plan.id)).items.map((i) => i.status),
+  ).toEqual(["satisfied", "satisfied"]);
+  await writeFile(join(projectPath, "original.ts"), "export function newFn( {");
+  expect(
+    (await service.verifyPlan(plan.plan.id)).items.map((i) => i.status),
+  ).toEqual(["satisfied", "unknown"]);
+});
+
+test("removal absence depends on incomplete files in the symbol's language search scope", async () => {
+  const plan = draft([{ kind: "remove_function", nodeId: node("B").id }]);
+  await service.approvePlan(plan.plan.id, 2);
+  await writeFile(
+    join(projectPath, "main.ts"),
+    source.replace("export function B() { return 2; }\n", ""),
+  );
+  await writeFile(join(projectPath, "broken.py"), "def broken(:\n");
+  expect((await service.verifyPlan(plan.plan.id)).items[0]?.status).toBe(
+    "satisfied",
+  );
+  await writeFile(join(projectPath, "broken.ts"), "export function broken( {");
+  expect((await service.verifyPlan(plan.plan.id)).items[0]?.status).toBe(
+    "unknown",
+  );
+});

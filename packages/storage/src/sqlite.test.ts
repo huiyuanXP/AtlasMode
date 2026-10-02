@@ -74,3 +74,50 @@ test("async callbacks are rejected before their continuation can mutate SQLite",
   await Promise.resolve();
   expect(db.get("settings", "late")).toBeUndefined();
 });
+
+test("Promise-returning callbacks cannot write after rejection while outside and nested writers still work", async () => {
+  const { db } = fixture();
+  let continuation!: Promise<void>;
+  expect(() =>
+    db.transaction(() => {
+      db.put("settings", "rolled-back", true);
+      continuation = Promise.resolve().then(() =>
+        db.put("settings", "late", "persisted after rejection"),
+      );
+      return continuation;
+    }),
+  ).toThrow(/synchronous/i);
+  await continuation.catch(() => {});
+  expect(db.get("settings", "late")).toBeUndefined();
+  expect(db.get("settings", "rolled-back")).toBeUndefined();
+  db.put("settings", "outside", 1);
+  db.transaction(() => db.transaction(() => db.put("settings", "nested", 2)));
+  expect(db.get("settings", "outside")).toBe(1);
+  expect(db.get("settings", "nested")).toBe(2);
+});
+
+test("rejected nested asynchronous contexts cannot delete records or start later transactions", async () => {
+  const { db } = fixture();
+  db.put("settings", "retained", true);
+  const continuations: Promise<void>[] = [];
+  db.transaction(() => {
+    expect(() =>
+      db.transaction(() => {
+        continuations.push(
+          Promise.resolve().then(() => db.delete("settings", "retained")),
+        );
+        continuations.push(
+          Promise.resolve().then(() =>
+            db.transaction(() => db.put("settings", "escaped", true)),
+          ),
+        );
+        return Promise.allSettled(continuations);
+      }),
+    ).toThrow(/synchronous/i);
+    db.put("settings", "outer", "committed");
+  });
+  await Promise.allSettled(continuations);
+  expect(db.get("settings", "retained")).toBe(true);
+  expect(db.get("settings", "escaped")).toBeUndefined();
+  expect(db.get("settings", "outer")).toBe("committed");
+});
