@@ -18,7 +18,7 @@
     "apps/mcp"
   ],
   "scripts": {
-    "dev": "node scripts/workspaces.mjs dev",
+    "dev": "node scripts/dev.mjs",
     "build": "node scripts/workspaces.mjs build",
     "start": "node apps/server/dist/index.js",
     "typecheck": "node scripts/workspaces.mjs typecheck",
