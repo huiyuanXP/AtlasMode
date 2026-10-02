@@ -29,7 +29,8 @@ push 授权。使用当前 cloud checkout，分阶段本地 commit。
 SDD ledger：.superpowers/sdd/2026-10-03-local-planning-mvp/progress.md（忽略Git）
 当前：T01 已完成且复审通过（1b33c7f、415a054）；T02 真实源码索引及修复
 已复审通过（56ccccf、2c016ec）。T03 SQLite 与规划/核对服务及三个审查问题的
-修复已复审通过（f2d1b11、5608f10）。当前实施 T04 HTTP 与本地启动入口。
+修复已复审通过（f2d1b11、5608f10）。T04 HTTP、本地 CLI 和启动器退出修复
+已复审通过（ebfa409、6daac82）。当前实施 T05 真实代码画布与规划界面。
 T01–T08顺序执行，不并行派遣实现者；精确任务/修复轮次以 ledger 为准。
 用户时区 Asia/Singapore；本轮开始 UTC 2026-10-02 19:55（本地2026-10-03 03:55）。
 
@@ -43,7 +44,8 @@ TS/Python 捕获字节索引、安全源码读取、打包后 Python helper 与�
 已修复 Python 影子绑定/局部未初始化错误连边和匿名回调空行身份变化；独立复审通过。
 本地 SQLite 原生模块、TS AST、Fastify/static、MCP SDK 导入已做依赖烟雾验证。
 T03 原实现全套112项通过；修复后 storage/service/实际生命周期相关34项通过，
-相关构建/类型/lint通过。服务端产品进程、UI、MCP 闭环仍未完成。
+相关构建/类型/lint通过。T04 全套141项通过，退出修复范围5项通过；已实际运行
+编译后的 API 进程、读取源码、重启持久化和退出。UI/MCP 闭环与全产品构建仍未完成。
 
 ## 环境注意
 默认npm缓存路径曾不可写；当前命令用 /tmp/atlasmode-npm-cache，不把该路径写入
