@@ -1,6 +1,13 @@
+import {
+  readMembers,
+  type MemberBinding,
+} from "../features/groups/memberBindings.js";
+import { dictionaries } from "../i18n/index.js";
 import { createStore } from "zustand/vanilla";
 import type {
   BrowseRoute,
+  FunctionGroup,
+  DirectoryPolicy,
   CodeNode,
   FunctionContextResult,
   FunctionSearchResult,
@@ -16,7 +23,19 @@ import { ApiError, HttpApi } from "../api/client.js";
 import { ProjectScope } from "../api/scope.js";
 import type { LayerFilter } from "../features/graph/projection.js";
 import type { FocusRequest } from "../features/graph/Canvas.js";
+import {
+  observeHistory,
+  commitHistory,
+  historyTarget,
+  historyKey,
+  type PlanHistory,
+  type HistoryAction,
+} from "../features/planning/history.js";
 export type WorkspaceState = {
+  history?: PlanHistory;
+  groups: FunctionGroup[];
+  policies: DirectoryPolicy[];
+  memberPage?: { groupId: string; offset: number; bindings: MemberBinding[] };
   projects: Project[];
   project?: Project;
   summary?: ProjectSummary;
@@ -37,9 +56,13 @@ export type WorkspaceState = {
   filter: LayerFilter;
   busy: Record<string, boolean>;
   error: string;
-  notice: string;
+  notice: "" | "refreshNotice" | "validateNotice";
 };
 const blank = (): Omit<WorkspaceState, "projects"> => ({
+  history: undefined,
+  groups: [],
+  policies: [],
+  memberPage: undefined,
   project: undefined,
   summary: undefined,
   graph: undefined,
@@ -71,12 +94,13 @@ export function createWorkspace(
   }));
   const scope = new ProjectScope();
   let focusGeneration = 0;
+  const histories = new Map<string, PlanHistory>();
   const set = store.setState,
     get = store.getState;
   const fail = (key: string, error: unknown) =>
     set((s) => ({
       busy: { ...s.busy, [key]: false },
-      error: `${error instanceof ApiError ? `${error.code}: ` : ""}${error instanceof Error ? error.message : String(error)}${error instanceof ApiError && error.status === 409 ? " 请刷新项目后重新选择规划，检查最新 revision。" : " 请检查本地服务和项目路径后重试。"}`,
+      error: `${error instanceof ApiError ? `${error.code}: ` : ""}${error instanceof Error ? error.message : String(error)}${error instanceof ApiError && error.status === 409 ? ` ${dictionaries[s.view.locale].conflictHelp}` : ` ${dictionaries[s.view.locale].retryHelp}`}`,
     }));
   const run = <T>(
     key: string,
@@ -106,6 +130,16 @@ export function createWorkspace(
       const selectedTemporary = s.plan?.plan.operations.some(
         (o) => o.kind === "add_function" && o.tempId === s.selectedNode?.id,
       );
+      const replacement = plan.plan.operations.find(
+        (o) => o.kind === "add_function" && o.tempId === s.selectedNode?.id,
+      );
+      const history = observeHistory(
+        histories.get(historyKey(plan.plan)),
+        plan.plan,
+      );
+      histories.delete(history.key);
+      histories.set(history.key, history);
+      if (histories.size > 20) histories.delete(histories.keys().next().value!);
       const deleted =
         selectedTemporary &&
         !plan.plan.operations.some(
@@ -113,6 +147,19 @@ export function createWorkspace(
         );
       return {
         plan,
+        history,
+        ...(selectedTemporary && replacement?.kind === "add_function"
+          ? {
+              selectedNode: {
+                id: replacement.tempId,
+                kind: "function" as const,
+                name: replacement.name,
+                filePath: replacement.filePath,
+                signature: replacement.signature,
+                language: replacement.language,
+              },
+            }
+          : {}),
         plans: [plan, ...s.plans.filter((p) => p.plan.id !== plan.plan.id)],
         report: undefined,
         ...(deleted
@@ -121,17 +168,19 @@ export function createWorkspace(
       };
     });
   const load = async (project: Project) => {
-    const [summary, view, plans, routes] = await Promise.all([
+    const [summary, view, plans, routes, groups, policies] = await Promise.all([
       api.summary(project.id),
       api.view(project.id),
       api.plans(project.id),
       api.routes(project.id),
+      api.groups(project.id),
+      api.policies(project.id),
     ]);
     const seeds = summary.entrypoints.slice(0, 8).map((n) => n.id);
     const graph = seeds.length
       ? await api.graph(project.id, seeds, 0)
       : undefined;
-    return { summary, view, plans, routes, graph };
+    return { summary, view, plans, routes, groups, policies, graph };
   };
   const selectProject = async (project: Project) => {
     scope.select(project.id);
@@ -236,12 +285,11 @@ export function createWorkspace(
         await api.refresh(project.id);
         return load(project);
       },
-      (data) =>
-        set({
-          ...data,
-          plan: data.plans.find((p) => p.plan.id === selectedPlan),
-          notice: "已重新索引；规划和路线按新快照检查。",
-        }),
+      (data) => {
+        set({ ...data, notice: "refreshNotice" });
+        const current = data.plans.find((p) => p.plan.id === selectedPlan);
+        if (current) acceptPlan(current);
+      },
     );
   };
   const saveView = (view: ViewState) => {
@@ -269,9 +317,16 @@ export function createWorkspace(
     operations: Operation[],
     title?: string,
     description?: string,
+    action: HistoryAction = "edit",
   ) => {
     const detail = get().plan;
-    if (!detail || get().busy.plan) return;
+    if (
+      !detail ||
+      get().busy.plan ||
+      get().busy.knowledge ||
+      get().busy.project
+    )
+      return;
     await run(
       "plan",
       () =>
@@ -282,8 +337,31 @@ export function createWorkspace(
           title ?? detail.plan.title,
           description ?? detail.plan.description,
         ),
-      acceptPlan,
+      (accepted) => {
+        histories.set(
+          historyKey(accepted.plan),
+          commitHistory(
+            histories.get(historyKey(detail.plan)),
+            detail.plan,
+            accepted.plan,
+            action,
+          ),
+        );
+        acceptPlan(accepted);
+      },
     );
+  };
+  const travel = async (direction: "undo" | "redo") => {
+    const { plan, history } = get();
+    if (!plan) return;
+    const target = historyTarget(history, plan.plan, direction);
+    if (target)
+      await savePlan(
+        target.operations,
+        target.title,
+        target.description,
+        direction,
+      );
   };
   const choosePlan = async (id: string) => {
     scope.invalidate("plan");
@@ -291,6 +369,7 @@ export function createWorkspace(
     const focusAtStart = focusGeneration;
     set((s) => ({
       plan: undefined,
+      history: undefined,
       report: undefined,
       busy: { ...s.busy, plan: false, graph: false },
       ...(s.plan?.plan.operations.some(
@@ -314,11 +393,23 @@ export function createWorkspace(
           );
           const ids = [
             ...new Set(
-              detail.plan.operations.flatMap((o) => [
-                ...("nodeId" in o ? [o.nodeId] : []),
-                ...("sourceId" in o ? [o.sourceId] : []),
-                ...("targetId" in o ? [o.targetId] : []),
-              ]),
+              detail.plan.operations
+                .filter(
+                  (o, index) =>
+                    !(
+                      o.kind === "annotate" &&
+                      detail.issues.some(
+                        (issue) =>
+                          issue.operationIndex === index &&
+                          issue.code === "INVALID_TARGET",
+                      )
+                    ),
+                )
+                .flatMap((o) => [
+                  ...("nodeId" in o ? [o.nodeId] : []),
+                  ...("sourceId" in o ? [o.sourceId] : []),
+                  ...("targetId" in o ? [o.targetId] : []),
+                ]),
             ),
           ].filter((id) => !temporary.has(id));
           if (project && ids.length && focusAtStart === focusGeneration) {
@@ -352,7 +443,7 @@ export function createWorkspace(
       },
       (p) => {
         acceptPlan(p);
-        set({ notice: "校验完成，结果来自本地服务。" });
+        set({ notice: "validateNotice" });
       },
     );
   };
@@ -377,15 +468,18 @@ export function createWorkspace(
         const plans = await api.plans(project.id);
         return { report, summary, plans };
       },
-      (data) =>
+      (data) => {
+        const current = data.plans.find((p) => p.plan.id === detail.plan.id);
+        if (current) acceptPlan(current);
         set({
           ...data,
-          plan: data.plans.find((p) => p.plan.id === detail.plan.id),
+          plan: current,
           graph: undefined,
           context: undefined,
           source: undefined,
           selectedNode: undefined,
-        }),
+        });
+      },
     );
   };
   const exportPlan = async (
@@ -440,6 +534,71 @@ export function createWorkspace(
       },
     );
   };
+  const loadMembers = async (groupId: string, offset = 0) => {
+    const { project, summary, groups } = get(),
+      group = groups.find((g) => g.id === groupId);
+    if (!project || !summary || !group) return;
+    set({ memberPage: { groupId, offset, bindings: [] } });
+    await run(
+      "members",
+      async () => {
+        const bindings = await readMembers(
+          group.memberIds,
+          offset,
+          summary.snapshotId,
+          (id) => api.context(project.id, id, 0, 1),
+        );
+        // A 404 carries no snapshot ID. Confirm the batch still observes this snapshot.
+        if ((await api.summary(project.id)).snapshotId !== summary.snapshotId)
+          throw new ApiError(
+            "SNAPSHOT_CHANGED",
+            "Snapshot changed; refresh the project and retry.",
+            409,
+          );
+        return bindings;
+      },
+      (bindings) => {
+        if (get().summary?.snapshotId === summary.snapshotId)
+          set({ memberPage: { groupId, offset, bindings } });
+      },
+    );
+  };
+  const saveKnowledge = async (
+    kind: "group" | "policy",
+    input:
+      | Omit<FunctionGroup, "id" | "projectId">
+      | (Omit<DirectoryPolicy, "projectId" | "id"> & { id?: string }),
+  ) => {
+    const { project, busy } = get();
+    if (!project || busy.knowledge || busy.plan || busy.project) return;
+    await run(
+      "knowledge",
+      async () => {
+        if (kind === "group")
+          await api.saveGroup(
+            project.id,
+            input as Omit<FunctionGroup, "id" | "projectId">,
+          );
+        else
+          await api.savePolicy(
+            project.id,
+            input as Omit<DirectoryPolicy, "projectId" | "id">,
+          );
+        const [groups, policies, plans] = await Promise.all([
+          api.groups(project.id),
+          api.policies(project.id),
+          api.plans(project.id),
+        ]);
+        return { groups, policies, plans };
+      },
+      (data) => {
+        const selected = get().plan?.plan.id;
+        set(data);
+        const current = data.plans.find((p) => p.plan.id === selected);
+        if (current) acceptPlan(current);
+      },
+    );
+  };
   const init = async () => {
     await run(
       "projects",
@@ -459,6 +618,12 @@ export function createWorkspace(
   };
   return {
     store,
+    loadMembers,
+    saveGroup: (input: Omit<FunctionGroup, "id" | "projectId">) =>
+      saveKnowledge("group", input),
+    savePolicy: (
+      input: Omit<DirectoryPolicy, "projectId" | "id"> & { id?: string },
+    ) => saveKnowledge("policy", input),
     init,
     openProject,
     selectProject,
@@ -469,6 +634,8 @@ export function createWorkspace(
     refresh,
     saveView,
     savePlan,
+    undo: () => travel("undo"),
+    redo: () => travel("redo"),
     choosePlan,
     createPlan,
     validate,

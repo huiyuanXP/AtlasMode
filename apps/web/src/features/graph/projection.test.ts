@@ -67,7 +67,7 @@ describe("fact-preserving graph projection", () => {
     expect(result.edges.find((e) => e.id === "plan:temp:edge")).toMatchObject({
       source: "plan:temp:new",
       target: "fact:a",
-      label: "规划 · must_reuse",
+      label: "规划 · 必须复用",
     });
     expect(result.nodes.find((n) => n.id === "fact:a")?.data.changes).toContain(
       "→ src/moved.ts",

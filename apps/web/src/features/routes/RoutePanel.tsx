@@ -1,5 +1,5 @@
 import type { BrowseRoute } from "@codemap/core";
-import { zh } from "../../app/strings.js";
+import { useStrings } from "../../i18n/index.js";
 export function RoutePanel({
   routes,
   routeId,
@@ -15,6 +15,7 @@ export function RoutePanel({
   onStep: (id: string, index: number) => void;
   busy: boolean;
 }) {
+  const zh = useStrings();
   const route = routes.find((r) => r.id === routeId),
     stale = route && route.snapshotId !== snapshotId,
     step = route?.steps[index];
@@ -39,7 +40,8 @@ export function RoutePanel({
         <>
           <p>{route.description}</p>
           <small>
-            {zh.routeSource}: {route.source} · {route.kind} · r{route.revision}
+            {zh.routeSource}: {zh[route.source]} · {zh[route.kind]} · r
+            {route.revision}
           </small>
           {stale && <p className="warning">{zh.routeStale}</p>}
           <ol>

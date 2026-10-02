@@ -1,5 +1,7 @@
+import { GroupsPanel } from "../features/groups/GroupsPanel.js";
+import { PoliciesPanel } from "../features/structure/PoliciesPanel.js";
 import { useStore } from "zustand";
-import { zh } from "./strings.js";
+import { useStrings } from "../i18n/index.js";
 import type { Workspace } from "./workspace.js";
 import { RoutePanel } from "../features/routes/RoutePanel.js";
 export function Navigation({
@@ -9,6 +11,7 @@ export function Navigation({
   app: Workspace;
   onFocus: () => void;
 }) {
+  const zh = useStrings();
   const state = useStore(app.store),
     { project, summary } = state;
   if (!project) return null;
@@ -32,9 +35,9 @@ export function Navigation({
             </span>
           </div>
           <p className="muted">
-            calls: {summary.counts.calls.resolved} resolved ·{" "}
-            {summary.counts.calls.unresolved} unresolved ·{" "}
-            {summary.counts.calls.external} external
+            {zh.calls}: {summary.counts.calls.resolved} {zh.resolved} ·{" "}
+            {summary.counts.calls.unresolved} {zh.unresolved} ·{" "}
+            {summary.counts.calls.external} {zh.external}
           </p>
         </>
       )}
@@ -143,6 +146,8 @@ export function Navigation({
         onStep={(id, i) => void app.routeStep(id, i)}
         busy={!!state.busy.route || !!state.busy.project}
       />
+      <GroupsPanel app={app} />
+      <PoliciesPanel app={app} />
       {summary && (
         <details>
           <summary>

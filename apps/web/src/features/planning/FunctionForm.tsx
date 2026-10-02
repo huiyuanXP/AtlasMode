@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { CodeNode } from "@codemap/core";
 import type { FunctionEdit } from "./operations.js";
-import { zh } from "../../app/strings.js";
+import { useStrings } from "../../i18n/index.js";
 export function FunctionForm({
   node,
   description = "",
@@ -13,6 +13,7 @@ export function FunctionForm({
   onSave: (edit: FunctionEdit) => void;
   add?: boolean;
 }) {
+  const zh = useStrings();
   const [edit, setEdit] = useState<FunctionEdit>({
     name: node?.name ?? "",
     filePath: node?.filePath ?? "",
@@ -55,6 +56,7 @@ export function FunctionForm({
       <label>
         {zh.functionDescription}
         <textarea
+          aria-label={zh.functionDescription}
           value={edit.description}
           onChange={(e) => change("description", e.target.value)}
         />

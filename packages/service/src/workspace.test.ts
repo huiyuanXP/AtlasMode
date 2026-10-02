@@ -167,3 +167,155 @@ test("unavailable source port gives an actionable domain error", async () => {
     { code: "SOURCE_UNAVAILABLE" },
   );
 });
+
+test("policy responsibility and constraints require renewed approval, preserve historical verification and reject old revisions", async () => {
+  const storage = new MemoryStorage();
+  const service = new WorkspaceService({
+    storage,
+    indexer: {
+      async index(_root, id) {
+        return snapshot(id);
+      },
+    },
+  });
+  const a = await service.openProject("/a");
+  const b = await service.openProject("/b");
+  const policy = service.savePolicy({
+    projectId: a.id,
+    pathPrefix: "src/",
+    purpose: "Old responsibility",
+    forbiddenDependencies: ["vendor/", "lib"],
+  });
+  const plan = service.createPlan({ projectId: a.id, title: "A" }).plan;
+  const other = service.createPlan({ projectId: b.id, title: "B" }).plan;
+  const approval = (await service.approvePlan(plan.id, 1)).approval!;
+  service.savePolicy({ ...policy, purpose: "New responsibility" });
+  expect(service.getPlan(plan.id)).toMatchObject({
+    valid: false,
+    plan: { revision: 2, status: "draft" },
+    approval,
+  });
+  expect(service.getPlan(other.id).plan.revision).toBe(1);
+  expect(() =>
+    service.updatePlan(plan.id, { expectedRevision: 1, operations: [] }),
+  ).toThrow("revision");
+  await expect(service.approvePlan(plan.id, 1)).rejects.toMatchObject({
+    code: "REVISION_CONFLICT",
+  });
+  expect((await service.verifyPlan(plan.id)).revision).toBe(1);
+  expect(
+    JSON.parse(service.exportPlan(plan.id, "json")).approvedPlan.revision,
+  ).toBe(1);
+  const approved = await service.approvePlan(plan.id, 2);
+  service.savePolicy({
+    ...policy,
+    purpose: "New responsibility",
+    pathPrefix: "src",
+    forbiddenDependencies: ["lib", "vendor", "lib"],
+  });
+  expect(service.getPlan(plan.id)).toEqual(approved);
+  service.savePolicy({
+    ...policy,
+    purpose: "New responsibility",
+    forbiddenDependencies: ["other"],
+  });
+  expect(service.getPlan(plan.id)).toMatchObject({
+    valid: false,
+    plan: { revision: 3 },
+  });
+});
+
+test("shared group members do not move facts; group design changes invalidate only its project's plans", async () => {
+  const storage = new MemoryStorage();
+  const service = new WorkspaceService({
+    storage,
+    indexer: {
+      async index(_root, id) {
+        return {
+          ...snapshot(id),
+          nodes: [
+            { id: "f", kind: "function", name: "fn", filePath: "src/a.ts" },
+            { id: "g", kind: "function", name: "gn", filePath: "src/b.ts" },
+          ],
+        };
+      },
+    },
+  });
+  const project = await service.openProject("/a");
+  const before = service.getSnapshot(project.id);
+  const group = service.saveGroup({
+    projectId: project.id,
+    title: "First",
+    description: "Design",
+    source: "user",
+    memberIds: ["f", "g"],
+  });
+  service.saveGroup({
+    ...group,
+    id: undefined,
+    title: "Second",
+    memberIds: ["f"],
+  });
+  expect(service.listGroups(project.id).map((g) => g.memberIds)).toEqual([
+    ["f", "g"],
+    ["f"],
+  ]);
+  expect(service.getSnapshot(project.id)).toEqual(before);
+  const plan = service.createPlan({
+    projectId: project.id,
+    title: "Plan",
+  }).plan;
+  await service.approvePlan(plan.id, 1);
+  service.saveGroup({ ...group, memberIds: ["g", "f", "f"], source: "agent" });
+  expect(service.getPlan(plan.id).valid).toBe(true);
+  service.saveGroup({ ...group, description: "Changed design" });
+  expect(service.getPlan(plan.id)).toMatchObject({
+    valid: false,
+    plan: { revision: 2 },
+  });
+  await service.approvePlan(plan.id, 2);
+  service.saveGroup({
+    ...group,
+    description: "Changed design",
+    memberIds: ["f"],
+  });
+  expect(service.getPlan(plan.id)).toMatchObject({
+    valid: false,
+    plan: { revision: 3 },
+  });
+});
+
+test("knowledge write and every affected plan roll back together on storage failure", async () => {
+  class FailingStorage extends MemoryStorage {
+    failId = "";
+    override put<T>(kind: RecordKind, id: string, value: T) {
+      if (kind === "plans" && id === this.failId)
+        throw new Error("disk failed");
+      super.put(kind, id, value);
+    }
+  }
+  const storage = new FailingStorage();
+  const service = new WorkspaceService({
+    storage,
+    indexer: {
+      async index(_root, id) {
+        return snapshot(id);
+      },
+    },
+  });
+  const project = await service.openProject("/a");
+  const a = service.createPlan({ projectId: project.id, title: "A" }).plan;
+  const b = service.createPlan({ projectId: project.id, title: "B" }).plan;
+  storage.failId = b.id;
+  expect(() =>
+    service.savePolicy({
+      projectId: project.id,
+      pathPrefix: "src",
+      purpose: "Responsibility",
+      forbiddenDependencies: [],
+    }),
+  ).toThrow("disk failed");
+  expect(service.listPolicies(project.id)).toEqual([]);
+  expect(service.getPlan(a.id).plan.revision).toBe(1);
+  expect(service.getPlan(b.id).plan.revision).toBe(1);
+});

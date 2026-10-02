@@ -20,6 +20,7 @@ it("deleting a temporary node removes only its dependent planning operations", (
     { kind: "annotate", targetId: "real", text: "keep" },
   ];
   expect(deleteTemporary(ops, "temp:a")).toEqual([
+    { kind: "annotate", targetId: "temp:a", text: "note" },
     { kind: "annotate", targetId: "real", text: "keep" },
   ]);
   expect(ops).toHaveLength(5);
@@ -92,5 +93,19 @@ it("existing function edits become explicit move and descriptive operations", ()
       targetId: "real",
       text: "name: new\nsignature: (x)\nintent",
     },
+  ]);
+});
+
+it("retains authored annotations when their temporary target is removed", () => {
+  expect(
+    deleteTemporary(
+      [
+        { kind: "add_function", tempId: "temp:f", name: "f", filePath: "f.ts" },
+        { kind: "annotate", targetId: "temp:f", text: "Keep design rationale" },
+      ],
+      "temp:f",
+    ),
+  ).toEqual([
+    { kind: "annotate", targetId: "temp:f", text: "Keep design rationale" },
   ]);
 });

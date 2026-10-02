@@ -469,3 +469,261 @@ it("newer manual expansion keeps its graph and selection when an older route fin
   expect(app.store.getState().selectedNode?.id).toBe("manual-target");
   expect(app.store.getState().busy.route).toBe(false);
 });
+
+it("accepted temporary edits and undo redo refresh inspector metadata using committed revisions", async () => {
+  const original = {
+    kind: "add_function" as const,
+    tempId: "temp:f",
+    name: "before",
+    filePath: "before.ts",
+    signature: "before()",
+  };
+  let current = planDetail([original]);
+  const revisions: number[] = [];
+  const api = new HttpApi((async (
+    input: RequestInfo | URL,
+    init?: RequestInit,
+  ) => {
+    if (String(input) === "/api/plans/p") {
+      if (init?.method === "PUT") {
+        const data = JSON.parse(String(init.body));
+        revisions.push(data.expectedRevision);
+        current = {
+          ...current,
+          plan: {
+            ...current.plan,
+            ...data,
+            revision: current.plan.revision + 1,
+          },
+        };
+      }
+      return reply(current);
+    }
+    return reply(fixture(String(input)));
+  }) as typeof fetch);
+  const app = createWorkspace(api);
+  await app.selectProject({ id: "a", name: "a", path: "/a" });
+  await app.choosePlan("p");
+  await app.selectNode({
+    id: "temp:f",
+    kind: "function",
+    name: "before",
+    filePath: "before.ts",
+    signature: "before()",
+  });
+  await app.savePlan(
+    [
+      {
+        ...original,
+        name: "after",
+        filePath: "after.ts",
+        signature: "after(x)",
+      },
+    ],
+    "New title",
+    "New design",
+  );
+  expect(app.store.getState().selectedNode).toMatchObject({
+    name: "after",
+    filePath: "after.ts",
+    signature: "after(x)",
+  });
+  await app.undo();
+  expect(app.store.getState().selectedNode).toMatchObject({
+    name: "before",
+    filePath: "before.ts",
+    signature: "before()",
+  });
+  expect(app.store.getState().plan?.plan).toMatchObject({
+    revision: 6,
+    title: "plan",
+    description: "",
+  });
+  await app.redo();
+  expect(app.store.getState().selectedNode).toMatchObject({
+    name: "after",
+    filePath: "after.ts",
+    signature: "after(x)",
+  });
+  expect(revisions).toEqual([4, 5, 6]);
+});
+
+it("failed undo keeps history and layout changes do not enter semantic history", async () => {
+  let conflict = false,
+    current = planDetail();
+  const api = new HttpApi((async (
+    input: RequestInfo | URL,
+    init?: RequestInit,
+  ) => {
+    if (String(input) === "/api/plans/p") {
+      if (init?.method === "PUT") {
+        if (conflict)
+          return new Response(
+            JSON.stringify({
+              code: "REVISION_CONFLICT",
+              message: "Changed externally",
+            }),
+            { status: 409 },
+          );
+        current = {
+          ...current,
+          plan: {
+            ...current.plan,
+            ...JSON.parse(String(init.body)),
+            revision: current.plan.revision + 1,
+          },
+        };
+      }
+      return reply(current);
+    }
+    return reply(fixture(String(input)));
+  }) as typeof fetch);
+  const app = createWorkspace(api);
+  await app.selectProject({ id: "a", name: "a", path: "/a" });
+  await app.choosePlan("p");
+  await app.savePlan([], "Changed");
+  const history = app.store.getState().history;
+  app.saveView({
+    positions: { f: { x: 30, y: 40 } },
+    theme: "dark",
+    locale: "en",
+  });
+  expect(app.store.getState().history).toEqual(history);
+  conflict = true;
+  await app.undo();
+  expect(app.store.getState().history).toEqual(history);
+  expect(app.store.getState().plan?.plan.title).toBe("Changed");
+  expect(app.store.getState().error).toContain("REVISION_CONFLICT");
+  await app.selectProject({ id: "b", name: "b", path: "/b" });
+  expect(app.store.getState().history).toBeUndefined();
+});
+
+it("knowledge saves refresh authoritative plan validity and late member reads cannot cross project scope", async () => {
+  let changed = false,
+    release!: (value: Response) => void;
+  const api = new HttpApi((async (
+    input: RequestInfo | URL,
+    init?: RequestInit,
+  ) => {
+    const path = String(input);
+    if (path.includes("/groups")) {
+      if (init?.method === "POST") changed = true;
+      return reply([
+        {
+          id: "g",
+          projectId: "a",
+          title: "Shared",
+          description: "",
+          source: "user",
+          memberIds: ["f"],
+        },
+      ]);
+    }
+    if (path.endsWith("/plans"))
+      return reply([
+        {
+          ...planDetail(),
+          plan: { ...planDetail().plan, revision: changed ? 5 : 4 },
+          valid: !changed,
+        },
+      ]);
+    if (path === "/api/plans/p") return reply({ ...planDetail(), valid: true });
+    if (path.includes("/projects/a/functions/f"))
+      return new Promise<Response>((r) => {
+        release = r;
+      });
+    return reply(fixture(path));
+  }) as typeof fetch);
+  const app = createWorkspace(api);
+  await app.selectProject({ id: "a", name: "a", path: "/a" });
+  await app.choosePlan("p");
+  await app.saveGroup({
+    title: "Shared",
+    description: "",
+    source: "user",
+    memberIds: ["f"],
+  });
+  expect(app.store.getState().plan).toMatchObject({
+    valid: false,
+    plan: { revision: 5 },
+  });
+  const pending = app.loadMembers("g");
+  await app.selectProject({ id: "b", name: "b", path: "/b" });
+  release(new Response(JSON.stringify(fixture("/api/projects/a/functions/f"))));
+  await pending;
+  expect(app.store.getState().memberPage).toBeUndefined();
+});
+it("missing annotation binding stays readable without requesting an invalid graph anchor", async () => {
+  const detail = planDetail([
+    { kind: "annotate", targetId: "gone", text: "Retained knowledge" },
+  ]);
+  const api = new HttpApi((async (
+    input: RequestInfo | URL,
+    init?: RequestInit,
+  ) => {
+    if (String(input) === "/api/plans/p")
+      return reply({
+        ...detail,
+        issues: [
+          {
+            severity: "error",
+            code: "INVALID_TARGET",
+            operationIndex: 0,
+            message: "Annotation target gone does not exist.",
+          },
+        ],
+      });
+    if (
+      String(input).endsWith("/subgraph") &&
+      String(init?.body).includes("gone")
+    )
+      return new Response(
+        JSON.stringify({ code: "NOT_FOUND", message: "Missing graph anchor" }),
+        { status: 404 },
+      );
+    return reply(fixture(String(input)));
+  }) as typeof fetch);
+  const app = createWorkspace(api);
+  await app.selectProject({ id: "a", name: "a", path: "/a" });
+  await app.choosePlan("p");
+  expect(app.store.getState().plan?.plan.operations).toEqual([
+    { kind: "annotate", targetId: "gone", text: "Retained knowledge" },
+  ]);
+  expect(app.store.getState().error).toBe("");
+});
+
+it("refresh preserves same-revision session history but resets it after an external revision", async () => {
+  let current = planDetail();
+  const api = new HttpApi((async (
+    input: RequestInfo | URL,
+    init?: RequestInit,
+  ) => {
+    const path = String(input);
+    if (path === "/api/plans/p") {
+      if (init?.method === "PUT")
+        current = {
+          ...current,
+          plan: {
+            ...current.plan,
+            ...JSON.parse(String(init.body)),
+            revision: current.plan.revision + 1,
+          },
+        };
+      return reply(current);
+    }
+    if (path.endsWith("/plans")) return reply([current]);
+    return reply(fixture(path));
+  }) as typeof fetch);
+  const app = createWorkspace(api);
+  await app.selectProject({ id: "a", name: "a", path: "/a" });
+  await app.choosePlan("p");
+  await app.savePlan([], "Edit");
+  await app.refresh();
+  expect(app.store.getState().history?.past).toHaveLength(1);
+  current = {
+    ...current,
+    plan: { ...current.plan, revision: 6, title: "Remote edit" },
+  };
+  await app.refresh();
+  expect(app.store.getState().history?.past).toEqual([]);
+});

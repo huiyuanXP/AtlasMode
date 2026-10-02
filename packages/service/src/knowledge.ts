@@ -8,6 +8,7 @@ import {
   type DirectoryPolicy,
   type FunctionGroup,
   type StoragePort,
+  type Plan,
   type ViewState,
 } from "@codemap/core";
 import { inputKeys } from "./planning.js";
@@ -130,7 +131,14 @@ export class Knowledge {
     const id = input.id ?? randomUUID();
     this.checkOwner("groups", id, input.projectId);
     const group = { ...input, id, memberIds: [...new Set(input.memberIds)] };
-    this.storage.put("groups", id, group);
+    this.saveDesign("groups", group, (value) => {
+      const g = value as FunctionGroup;
+      return JSON.stringify([
+        g.title,
+        g.description,
+        [...new Set(g.memberIds)].sort(),
+      ]);
+    });
     return group;
   }
   policies(projectId: string): DirectoryPolicy[] {
@@ -160,8 +168,40 @@ export class Knowledge {
       pathPrefix: prefix(input.pathPrefix, true),
       forbiddenDependencies: input.forbiddenDependencies.map((p) => prefix(p)),
     };
-    this.storage.put("policies", id, policy);
+    this.saveDesign("policies", policy, (value) => {
+      const p = value as DirectoryPolicy;
+      return JSON.stringify([
+        prefix(p.pathPrefix, true),
+        p.purpose,
+        [
+          ...new Set(p.forbiddenDependencies.map((path) => prefix(path))),
+        ].sort(),
+      ]);
+    });
     return policy;
+  }
+  // Knowledge is part of the review context. Advance current plan revisions in
+  // the same transaction; immutable approval snapshots remain verifiable.
+  private saveDesign<T extends FunctionGroup | DirectoryPolicy>(
+    kind: "groups" | "policies",
+    value: T,
+    content: (value: T) => string,
+  ): void {
+    this.storage.transaction(() => {
+      const previous = this.storage.get<T>(kind, value.id);
+      const changed = !previous || content(previous) !== content(value);
+      this.storage.put(kind, value.id, value);
+      if (!changed) return;
+      for (const plan of this.storage.list<Plan>("plans")) {
+        if (plan.projectId !== value.projectId) continue;
+        this.storage.put("plans", plan.id, {
+          ...plan,
+          revision: plan.revision + 1,
+          status: "draft",
+          updatedAt: new Date().toISOString(),
+        });
+      }
+    });
   }
   private checkOwner(
     kind: "groups" | "policies",

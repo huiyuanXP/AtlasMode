@@ -1,11 +1,12 @@
 import { useState } from "react";
 import type { PlanDetail, Operation } from "@codemap/core";
-import { zh } from "../../app/strings.js";
+import { useStrings } from "../../i18n/index.js";
 import { deleteTemporary, editFunction, temporaryId } from "./operations.js";
 import type { PlanningPanelProps } from "./PlanningPanel.js";
 import { FunctionForm } from "./FunctionForm.js";
 import { RelationEditor } from "./RelationEditor.js";
 export function PlanEditor(props: PlanningPanelProps & { detail: PlanDetail }) {
+  const zh = useStrings();
   const { detail, node, edge } = props,
     plan = detail.plan,
     operations = plan.operations;
@@ -32,7 +33,7 @@ export function PlanEditor(props: PlanningPanelProps & { detail: PlanDetail }) {
     <fieldset disabled={props.busy} className="plan-editor">
       <div className="plan-status">
         <strong>
-          {zh.revision} r{plan.revision} · {plan.status}
+          {zh.revision} r{plan.revision} · {zh[plan.status]}
         </strong>
         <p className={detail.valid ? "success" : "muted"}>
           {detail.valid ? zh.valid : zh.invalid}
@@ -65,6 +66,7 @@ export function PlanEditor(props: PlanningPanelProps & { detail: PlanDetail }) {
         <label>
           {zh.description}
           <textarea
+            aria-label={zh.description}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
@@ -101,7 +103,7 @@ export function PlanEditor(props: PlanningPanelProps & { detail: PlanDetail }) {
               className={issue.severity === "error" ? "error" : "warning"}
               key={i}
             >
-              {issue.severity} · {issue.code}: {issue.message}
+              {zh[issue.severity]} · {issue.code}: {issue.message}
             </p>
           ))
         ) : (
@@ -176,6 +178,7 @@ export function PlanEditor(props: PlanningPanelProps & { detail: PlanDetail }) {
             <label>
               {zh.annotationText}
               <textarea
+                aria-label={zh.annotationText}
                 required
                 value={annotation}
                 onChange={(e) => setAnnotation(e.target.value)}
@@ -193,8 +196,18 @@ export function PlanEditor(props: PlanningPanelProps & { detail: PlanDetail }) {
         {operations.map((op, index) => (
           <article className="operation" key={index}>
             <strong>
-              #{index + 1} {op.kind}
+              #{index + 1} {zh[op.kind]}
             </strong>
+            {op.kind === "annotate" &&
+              detail.issues.some(
+                (issue) =>
+                  issue.operationIndex === index &&
+                  issue.code === "INVALID_TARGET",
+              ) && (
+                <p className="warning">
+                  {zh.unbound}: {zh.lostAnnotation}
+                </p>
+              )}
             <pre>{JSON.stringify(op, null, 2)}</pre>
             <button
               aria-label={`${zh.removeOperation} ${index + 1}`}

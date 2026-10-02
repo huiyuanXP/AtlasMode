@@ -30,7 +30,7 @@ export function deleteTemporary(
       case "add_relation":
         return o.sourceId !== id && o.targetId !== id;
       case "annotate":
-        return o.targetId !== id;
+        return true; // Authored knowledge survives a lost binding.
       case "move_function":
       case "remove_function":
         return o.nodeId !== id;

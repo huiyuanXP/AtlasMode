@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { CodeNode, Operation } from "@codemap/core";
-import { zh } from "../../app/strings.js";
+import { useStrings } from "../../i18n/index.js";
 import {
   reconnectRelation,
   temporaryId,
@@ -22,6 +22,7 @@ export function RelationEditor({
   onSave: (operations: Operation[]) => void;
   onClearEdge: () => void;
 }) {
+  const zh = useStrings();
   const planned = operations.filter(
     (o): o is Extract<Operation, { kind: "add_function" }> =>
       o.kind === "add_function",
@@ -93,6 +94,7 @@ export function RelationEditor({
         <label>
           {zh.from}
           <select
+            aria-label={zh.from}
             required
             value={from}
             onChange={(e) => setFrom(e.target.value)}
@@ -107,7 +109,12 @@ export function RelationEditor({
         </label>
         <label>
           {zh.to}
-          <select required value={to} onChange={(e) => setTo(e.target.value)}>
+          <select
+            aria-label={zh.to}
+            required
+            value={to}
+            onChange={(e) => setTo(e.target.value)}
+          >
             <option value="">{zh.emptySelect}</option>
             {candidates.map((n) => (
               <option key={n.id} value={n.id}>
@@ -119,13 +126,16 @@ export function RelationEditor({
         <label>
           {zh.relationType}
           <select
+            aria-label={zh.relationType}
             value={relationType}
             onChange={(e) =>
               setRelationType(e.target.value as PlannedRelation["type"])
             }
           >
-            {["calls", "must_call", "must_reuse"].map((t) => (
-              <option key={t}>{t}</option>
+            {(["calls", "must_call", "must_reuse"] as const).map((t) => (
+              <option key={t} value={t}>
+                {zh[t]}
+              </option>
             ))}
           </select>
         </label>

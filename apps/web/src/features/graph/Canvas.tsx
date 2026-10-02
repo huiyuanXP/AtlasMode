@@ -19,7 +19,7 @@ import type {
   SubgraphResult,
   ViewState,
 } from "@codemap/core";
-import { zh } from "../../app/strings.js";
+import { useStrings } from "../../i18n/index.js";
 import {
   projectGraph,
   type GraphNode,
@@ -29,6 +29,7 @@ import {
 import type { EdgeReference, PlannedRelation } from "../planning/operations.js";
 import "@xyflow/react/dist/style.css";
 function CodeCard({ data }: NodeProps<GraphNode>) {
+  const zh = useStrings();
   const n = data.node,
     callable = n.kind === "function";
   return (
@@ -118,6 +119,7 @@ export function Canvas(props: {
     edge?: EdgeReference,
   ) => void;
 }) {
+  const zh = useStrings();
   const projection = useMemo(
     () =>
       projectGraph(
@@ -125,8 +127,15 @@ export function Canvas(props: {
         props.operations,
         props.filter,
         props.view.positions,
+        props.view.locale,
       ),
-    [props.graph, props.operations, props.filter, props.view.positions],
+    [
+      props.graph,
+      props.operations,
+      props.filter,
+      props.view.positions,
+      props.view.locale,
+    ],
   );
   const [nodes, setNodes] = useState(projection.nodes);
   useEffect(() => setNodes(projection.nodes), [projection.nodes]);
@@ -140,6 +149,13 @@ export function Canvas(props: {
   return (
     <div className="canvas-shell" aria-label={zh.graph}>
       <ReactFlow<GraphNode, GraphEdge>
+        ariaLabelConfig={{
+          "controls.zoomIn.ariaLabel": zh.zoomIn,
+          "controls.zoomOut.ariaLabel": zh.zoomOut,
+          "controls.fitView.ariaLabel": zh.fitView,
+          "controls.interactive.ariaLabel": zh.toggleInteraction,
+          "minimap.ariaLabel": zh.minimap,
+        }}
         nodes={nodes}
         edges={edges}
         nodeTypes={nodeTypes}

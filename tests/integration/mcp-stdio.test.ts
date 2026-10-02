@@ -576,7 +576,11 @@ test("a newly connected SDK client reads retained approval/routes/groups after a
       ...args,
       planId: plan.plan.id,
     }),
-  ).toEqual(approval);
+  ).toMatchObject({
+    valid: false,
+    plan: { revision: 2, status: "draft" },
+    approval: approval.approval,
+  });
   expect(await success(next.client, "get_groups", args)).toMatchObject({
     items: [group],
   });

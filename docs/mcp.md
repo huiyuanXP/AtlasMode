@@ -177,3 +177,18 @@ Windows/macOS native runs and real Codex App/Claude Code connections are unrun.
 On Windows, Node `child.kill("SIGTERM")` force-terminates a child; it does not
 demonstrate Unix-style graceful signal handling. Stdin EOF and malformed transport
 input are exercised independently of signal behavior.
+
+### Knowledge changes and confirmation
+
+Create groups and directory policies before confirming a plan. A meaningful group
+(title, design description or membership) or directory policy (scope,
+responsibility or forbidden dependencies) save creates a new revision for every
+current plan in that project and requires renewed user confirmation. This also
+applies to `propose_group`; Agents must re-read current plan validity after a
+knowledge change. Normalized no-op saves, provenance-only changes, browse routes,
+layout, theme and language do not invalidate approval.
+
+Historical approval records and approved plan content remain available for
+verification. The MVP does not reconstruct historical group/policy context;
+revision invalidation protects current approval without changing the public
+Plan/Approval schema or semantic hash format.

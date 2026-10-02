@@ -801,3 +801,38 @@ summary {
     padding-top: 12px;
   }
 }
+.knowledge-panel fieldset {
+  border: 0;
+  padding: 0;
+  min-width: 0;
+}
+.knowledge-panel article {
+  border-top: 1px solid var(--border);
+  margin-top: 12px;
+  padding-top: 8px;
+}
+.check-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 8px 0;
+}
+.check-row input {
+  width: auto;
+}
+.check-row small,
+.group-members code {
+  display: block;
+  overflow-wrap: anywhere;
+}
+.member-choices {
+  max-height: 220px;
+  overflow: auto;
+}
+.group-members {
+  padding-left: 18px;
+}
+.group-members li {
+  margin: 8px 0;
+  overflow-wrap: anywhere;
+}

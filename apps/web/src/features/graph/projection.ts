@@ -1,3 +1,4 @@
+import { dictionaries, type Locale } from "../../i18n/index.js";
 import type {
   CodeNode,
   Operation,
@@ -19,7 +20,9 @@ export function projectGraph(
   operations: Operation[],
   filter: LayerFilter,
   positions: ViewState["positions"],
+  locale: Locale = "zh",
 ) {
+  const text = dictionaries[locale];
   const nodes: GraphNode[] = [],
     edges: GraphEdge[] = [],
     notices: string[] = [];
@@ -42,9 +45,9 @@ export function projectGraph(
       if (op.kind === "move_function" && op.nodeId === id)
         return [`→ ${op.filePath}`];
       if (op.kind === "remove_function" && op.nodeId === id)
-        return ["− 规划删除"];
+        return [`− ${text.plannedRemoval}`];
       if (op.kind === "annotate" && op.targetId === id)
-        return [`说明 · ${op.text}`];
+        return [`${text.annotation} · ${op.text}`];
       return [];
     });
   const addNode = (node: CodeNode, layer: CardData["layer"]) => {
@@ -87,7 +90,7 @@ export function projectGraph(
     for (const r of graph?.relations ?? []) {
       if (r.resolution !== "resolved")
         notices.push(
-          `${r.resolution} · ${r.evidence.filePath}:${r.evidence.line} · ${r.reason ?? r.evidence.text ?? r.id}`,
+          `${text[r.resolution]} · ${r.evidence.filePath}:${r.evidence.line} · ${r.reason ?? r.evidence.text ?? r.id}`,
         );
       if (
         !r.targetId ||
@@ -102,7 +105,7 @@ export function projectGraph(
         id: `fact:${r.id}`,
         source: factsByDomain.get(r.sourceId)!,
         target: factsByDomain.get(r.targetId)!,
-        label: `事实 · ${r.type}${removed ? " · 规划删除" : ""}`,
+        label: `${text.fact} · ${text[r.type]}${removed ? ` · ${text.plannedRemoval}` : ""}`,
         data: { layer: "fact", domainId: r.id },
         deletable: false,
         reconnectable: r.type === "calls",
@@ -116,7 +119,7 @@ export function projectGraph(
     if (op.kind === "add_relation") {
       if (!byDomain.has(op.sourceId) || !byDomain.has(op.targetId)) {
         notices.push(
-          `规划端点未在当前子图：${!byDomain.has(op.sourceId) ? op.sourceId : op.targetId}`,
+          `${text.endpointOutside}: ${!byDomain.has(op.sourceId) ? op.sourceId : op.targetId}`,
         );
         continue;
       }
@@ -124,7 +127,7 @@ export function projectGraph(
         id: `plan:${op.id}`,
         source: byDomain.get(op.sourceId)!,
         target: byDomain.get(op.targetId)!,
-        label: `规划 · ${op.type}`,
+        label: `${text.plan} · ${text[op.type]}`,
         data: { layer: "plan", domainId: op.id },
         deletable: false,
         reconnectable: true,

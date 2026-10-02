@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { CodeNode, Operation, PlanDetail } from "@codemap/core";
-import { zh } from "../../app/strings.js";
+import { useStrings } from "../../i18n/index.js";
 import type { EdgeReference } from "./operations.js";
 import { PlanEditor } from "./PlanEditor.js";
 export type PlanningPanelProps = {
@@ -23,6 +23,7 @@ export type PlanningPanelProps = {
   onClearEdge: () => void;
 };
 export function PlanningPanel(props: PlanningPanelProps) {
+  const zh = useStrings();
   const [title, setTitle] = useState("");
   return (
     <section>
@@ -48,6 +49,7 @@ export function PlanningPanel(props: PlanningPanelProps) {
       <label>
         {zh.choosePlan}
         <select
+          aria-label={zh.choosePlan}
           value={props.detail?.plan.id ?? ""}
           disabled={props.busy}
           onChange={(e) => props.onChoose(e.target.value)}
@@ -55,7 +57,7 @@ export function PlanningPanel(props: PlanningPanelProps) {
           <option value="">{zh.noPlan}</option>
           {props.plans.map((p) => (
             <option key={p.plan.id} value={p.plan.id}>
-              {p.plan.title} · r{p.plan.revision} · {p.plan.status}
+              {p.plan.title} · r{p.plan.revision} · {zh[p.plan.status]}
             </option>
           ))}
         </select>

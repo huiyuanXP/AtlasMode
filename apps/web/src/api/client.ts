@@ -1,5 +1,7 @@
 import type {
   BrowseRoute,
+  FunctionGroup,
+  DirectoryPolicy,
   CodeSnapshot,
   FunctionContextResult,
   FunctionSearchResult,
@@ -68,6 +70,29 @@ export class HttpApi {
     this.request<PlanDetail[]>(`/projects/${encodeURIComponent(id)}/plans`);
   routes = (id: string) =>
     this.request<BrowseRoute[]>(`/projects/${encodeURIComponent(id)}/routes`);
+  groups = (id: string) =>
+    this.request<FunctionGroup[]>(`/projects/${encodeURIComponent(id)}/groups`);
+  policies = (id: string) =>
+    this.request<DirectoryPolicy[]>(
+      `/projects/${encodeURIComponent(id)}/policies`,
+    );
+  saveGroup = (id: string, input: Omit<FunctionGroup, "id" | "projectId">) =>
+    this.request<FunctionGroup>(
+      `/projects/${encodeURIComponent(id)}/groups`,
+      "POST",
+      input,
+    );
+  savePolicy = (
+    id: string,
+    input:
+      | Omit<DirectoryPolicy, "projectId">
+      | Omit<DirectoryPolicy, "id" | "projectId">,
+  ) =>
+    this.request<DirectoryPolicy>(
+      `/projects/${encodeURIComponent(id)}/policies`,
+      "POST",
+      input,
+    );
   graph = (id: string, nodeIds: string[], depth = 1, budget = 80) =>
     this.request<SubgraphResult>(
       `/projects/${encodeURIComponent(id)}/subgraph`,
@@ -78,9 +103,9 @@ export class HttpApi {
     this.request<FunctionSearchResult>(
       `/projects/${encodeURIComponent(id)}/functions?${new URLSearchParams({ q, offset: String(offset), limit: "50" })}`,
     );
-  context = (id: string, nodeId: string, offset = 0) =>
+  context = (id: string, nodeId: string, offset = 0, limit = 50) =>
     this.request<FunctionContextResult>(
-      `/projects/${encodeURIComponent(id)}/functions/${encodeURIComponent(nodeId)}?offset=${offset}&limit=50`,
+      `/projects/${encodeURIComponent(id)}/functions/${encodeURIComponent(nodeId)}?offset=${offset}&limit=${limit}`,
     );
   source = (id: string, filePath: string) =>
     this.request<{ filePath: string; content: string }>(

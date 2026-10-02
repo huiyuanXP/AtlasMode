@@ -1,5 +1,5 @@
 import type { VerificationReport } from "@codemap/core";
-import { zh } from "../../app/strings.js";
+import { useStrings } from "../../i18n/index.js";
 export function VerificationPanel({
   report,
   onVerify,
@@ -9,6 +9,7 @@ export function VerificationPanel({
   onVerify: () => void;
   disabled: boolean;
 }) {
+  const zh = useStrings();
   return (
     <section>
       <h2>{zh.verifyTab}</h2>

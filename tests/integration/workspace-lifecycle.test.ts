@@ -453,12 +453,16 @@ test("reopen retains approval history, routes, groups, policy, layout and export
   db.close();
   db = new SqliteStorage(join(root, "state.db"));
   service = new WorkspaceService({ storage: db, indexer: new SourceIndexer() });
-  expect(service.getPlan(plan.plan.id).valid).toBe(true);
+  expect(service.getPlan(plan.plan.id)).toMatchObject({
+    valid: false,
+    plan: { revision: 4, status: "draft" },
+    approval: { revision: 2 },
+  });
   expect(service.listRoutes(project.id)).toHaveLength(1);
   expect(service.listGroups(project.id)).toHaveLength(1);
   expect(service.listPolicies(project.id)).toHaveLength(1);
   expect(service.getView(project.id).positions.planned).toEqual({ x: 1, y: 2 });
-  service.updatePlan(plan.plan.id, { expectedRevision: 2, operations: [] });
+  service.updatePlan(plan.plan.id, { expectedRevision: 4, operations: [] });
   const exported = JSON.parse(service.exportPlan(plan.plan.id, "json"));
   expect(exported).toMatchObject({
     valid: false,

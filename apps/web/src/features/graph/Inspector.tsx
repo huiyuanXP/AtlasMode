@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { CodeNode, FunctionContextResult } from "@codemap/core";
-import { zh } from "../../app/strings.js";
+import { useStrings } from "../../i18n/index.js";
 import { sourceWindow } from "./projection.js";
 export function Inspector({
   node,
@@ -17,7 +17,10 @@ export function Inspector({
   onPage: (offset: number) => void;
   onExpand: (budget: number) => void;
 }) {
-  const [copyStatus, setCopyStatus] = useState("");
+  const zh = useStrings();
+  const [copyStatus, setCopyStatus] = useState<"copied" | "copyFailed" | "">(
+    "",
+  );
   if (!node) return <p className="empty-panel">{zh.noNode}</p>;
   const window =
     source && sourceWindow(source.content, node.startLine, node.endLine);
@@ -44,14 +47,14 @@ export function Inspector({
         disabled={!node.filePath}
         onClick={() => {
           void navigator.clipboard.writeText(location).then(
-            () => setCopyStatus(zh.copied),
-            () => setCopyStatus(zh.copyFailed),
+            () => setCopyStatus("copied"),
+            () => setCopyStatus("copyFailed"),
           );
         }}
       >
         {zh.copy}
       </button>
-      {copyStatus && <p role="status">{copyStatus}</p>}
+      {copyStatus && <p role="status">{zh[copyStatus]}</p>}
       <h3>{zh.source}</h3>
       {busy && <p>{zh.loading}</p>}
       {window ? (
@@ -80,7 +83,7 @@ export function Inspector({
           ].map(({ r, direction }, i) => (
             <article className="evidence" key={`${r.id}-${i}`}>
               <strong>
-                {direction} · {r.resolution}
+                {direction} · {zh[r.resolution]}
               </strong>
               <code>
                 {r.evidence.filePath}:{r.evidence.line}

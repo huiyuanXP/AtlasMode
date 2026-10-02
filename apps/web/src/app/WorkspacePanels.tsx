@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useStore } from "zustand";
-import { zh } from "./strings.js";
+import { useStrings } from "../i18n/index.js";
 import { type Workspace } from "./workspace.js";
 import { Canvas } from "../features/graph/Canvas.js";
 import { Inspector } from "../features/graph/Inspector.js";
@@ -15,6 +15,7 @@ import { VerificationPanel } from "../features/verification/VerificationPanel.js
 import type { LayerFilter } from "../features/graph/projection.js";
 import { Navigation } from "./Navigation.js";
 export function WorkspacePanels({ app }: { app: Workspace }) {
+  const zh = useStrings();
   const state = useStore(app.store),
     [tab, setTab] = useState<"source" | "plan" | "verify">("source"),
     [edge, setEdge] = useState<EdgeReference>(),
@@ -22,7 +23,8 @@ export function WorkspacePanels({ app }: { app: Workspace }) {
       useState<PlannedRelation["type"]>("calls");
   const { project, summary, plan, graph } = state;
   const busy = Object.values(state.busy).some(Boolean),
-    planBusy = !!state.busy.plan || !!state.busy.project;
+    planBusy =
+      !!state.busy.plan || !!state.busy.project || !!state.busy.knowledge;
   const connect = (
     source: string,
     target: string,
@@ -100,8 +102,10 @@ export function WorkspacePanels({ app }: { app: Workspace }) {
                 setRelationType(e.target.value as PlannedRelation["type"])
               }
             >
-              {["calls", "must_call", "must_reuse"].map((t) => (
-                <option key={t}>{t}</option>
+              {(["calls", "must_call", "must_reuse"] as const).map((t) => (
+                <option key={t} value={t}>
+                  {zh[t]}
+                </option>
               ))}
             </select>
           </label>
@@ -173,26 +177,43 @@ export function WorkspacePanels({ app }: { app: Workspace }) {
             />
           )}
           {tab === "plan" && (
-            <PlanningPanel
-              plans={state.plans}
-              detail={plan}
-              node={state.selectedNode}
-              nodes={graph?.nodes ?? []}
-              edge={edge}
-              busy={planBusy || !summary}
-              onChoose={(id) => {
-                setEdge(undefined);
-                void app.choosePlan(id);
-              }}
-              onCreate={(title) => void app.createPlan(title)}
-              onSave={(ops, title, description) =>
-                void app.savePlan(ops, title, description)
-              }
-              onValidate={() => void app.validate()}
-              onApprove={() => void app.approve()}
-              onExport={(format) => void app.exportPlan(format, download)}
-              onClearEdge={() => setEdge(undefined)}
-            />
+            <>
+              <div className="button-row">
+                <button
+                  disabled={planBusy || !state.history?.past.length}
+                  onClick={() => void app.undo()}
+                >
+                  {zh.undo}
+                </button>
+                <button
+                  disabled={planBusy || !state.history?.future.length}
+                  onClick={() => void app.redo()}
+                >
+                  {zh.redo}
+                </button>
+              </div>
+              <p className="muted">{zh.historyHelp}</p>
+              <PlanningPanel
+                plans={state.plans}
+                detail={plan}
+                node={state.selectedNode}
+                nodes={graph?.nodes ?? []}
+                edge={edge}
+                busy={planBusy || !summary}
+                onChoose={(id) => {
+                  setEdge(undefined);
+                  void app.choosePlan(id);
+                }}
+                onCreate={(title) => void app.createPlan(title)}
+                onSave={(ops, title, description) =>
+                  void app.savePlan(ops, title, description)
+                }
+                onValidate={() => void app.validate()}
+                onApprove={() => void app.approve()}
+                onExport={(format) => void app.exportPlan(format, download)}
+                onClearEdge={() => setEdge(undefined)}
+              />
+            </>
           )}
           {tab === "verify" && (
             <VerificationPanel
