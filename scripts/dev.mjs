@@ -1,4 +1,5 @@
 import { spawn } from "node:child_process";
+import { readFile } from "node:fs/promises";
 import { createRequire } from "node:module";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -36,17 +37,26 @@ function launch(args, cwd = root) {
 process.once("SIGINT", () => stop(0));
 process.once("SIGTERM", () => stop(0));
 try {
-  const npm = process.env.npm_execpath;
-  if (!npm) throw new Error("Run the development supervisor with npm run dev.");
+  const require = createRequire(join(root, "package.json"));
+  const compiler = require.resolve("typescript/bin/tsc");
   for (const name of ["core", "indexer", "storage", "service", "server"]) {
     if (stopping) break;
-    const { completion } = launch([
-      npm,
-      "run",
-      "build",
-      "-w",
-      `@codemap/${name}`,
-    ]);
+    const cwd = join(root, name === "server" ? "apps" : "packages", name);
+    const { scripts } = JSON.parse(
+      await readFile(join(cwd, "package.json"), "utf8"),
+    );
+    // These prerequisites currently need only tsc. Keep each compiler directly
+    // owned by the supervisor so npm/shell lifecycle descendants cannot escape.
+    if (
+      scripts?.build !== "tsc -p tsconfig.json" ||
+      scripts.prebuild !== undefined ||
+      scripts.postbuild !== undefined
+    )
+      throw new Error(
+        `Unsupported prerequisite build for ${name}; update the development supervisor to handle its build/lifecycle steps.`,
+      );
+    if (stopping) break;
+    const { completion } = launch([compiler, "-p", "tsconfig.json"], cwd);
     const code = await completion;
     if (code !== 0) {
       stop(code);

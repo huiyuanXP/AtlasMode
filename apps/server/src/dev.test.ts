@@ -28,9 +28,45 @@ async function fixture(extra: Record<string, string> = {}) {
   await put("package.json", '{"type":"module"}');
   await put("scripts/dev.mjs", "");
   await copyFile("scripts/dev.mjs", join(root, "scripts/dev.mjs"));
+  for (const name of ["core", "indexer", "storage", "service", "server"])
+    await put(
+      `${name === "server" ? "apps" : "packages"}/${name}/package.json`,
+      JSON.stringify({
+        type: "module",
+        scripts: {
+          build: "tsc -p tsconfig.json",
+          ...(extra.CUSTOM_BUILD && name === "core"
+            ? { [extra.CUSTOM_BUILD]: "node custom-build.mjs" }
+            : {}),
+        },
+      }),
+    );
+  await put(
+    "node_modules/typescript/package.json",
+    '{"name":"typescript","type":"module"}',
+  );
+  // The compiler is a live executable. The old npm lifecycle wrapper creates
+  // it as a grandchild; the repaired supervisor must own this process directly.
+  await put(
+    "node_modules/typescript/bin/tsc",
+    `import {appendFileSync,writeFileSync} from 'node:fs';
+import {basename} from 'node:path';
+const root=process.env.DEV_FIXTURE_ROOT;
+appendFileSync(root+'/builds.txt',basename(process.cwd())+'\\n');
+if(process.env.FAIL_BUILD)process.exit(9);
+if(process.env.ACTIVE_BUILD){
+  writeFileSync(root+'/compiler.pid',String(process.pid));
+  process.on('SIGTERM',()=>process.exit(0));
+  setInterval(()=>{},100);
+}`,
+  );
   await put(
     "npm-cli.mjs",
-    `import {appendFileSync} from 'node:fs';appendFileSync('builds.txt',process.argv.slice(2).join(' ')+'\\n');if(process.env.FAIL_BUILD)process.exit(9);`,
+    `import {spawn} from 'node:child_process';
+import {join} from 'node:path';
+const root=process.env.DEV_FIXTURE_ROOT,name=process.argv.at(-1).slice('@codemap/'.length);
+const compiler=spawn(process.execPath,[join(root,'node_modules/typescript/bin/tsc'),'-p','tsconfig.json'],{cwd:join(root,name==='server'?'apps':'packages',name),stdio:'inherit'});
+compiler.on('exit',code=>process.exit(code??1));`,
   );
   const childCode = (name: string) =>
     `import {writeFileSync} from 'node:fs';writeFileSync(process.env.DEV_FIXTURE_ROOT+'/${name}.pid',String(process.pid));writeFileSync(process.env.DEV_FIXTURE_ROOT+'/${name}.cwd',process.cwd());process.on('SIGTERM',()=>process.exit(0));process.on('SIGINT',()=>process.exit(0));setInterval(()=>{},100);${name === "server" ? "if(process.env.FAIL_SERVER)setTimeout(()=>process.exit(7),150);" : ""}`;
@@ -66,7 +102,7 @@ async function fixture(extra: Record<string, string> = {}) {
       child.kill("SIGKILL");
       await exited;
     }
-    for (const name of ["server", "web"])
+    for (const name of ["server", "web", "compiler"])
       try {
         process.kill(
           Number(await readFile(join(root, `${name}.pid`), "utf8")),
@@ -92,7 +128,7 @@ async function fixture(extra: Record<string, string> = {}) {
   }
   const pid = async (name: string) =>
     Number(await readFile(join(root, `${name}.pid`), "utf8"));
-  return { root, child, exited, ready, pid };
+  return { root, child, exited, ready, pid, output: () => output };
 }
 // Shell-driven launch, launch before builds, swallowed failure, or orphaned children breaks observable supervision.
 test("dev builds dependency packages before directly spawning server and web and reaps both on signal", async () => {
@@ -100,13 +136,7 @@ test("dev builds dependency packages before directly spawning server and web and
   await run.ready();
   expect(
     (await readFile(join(run.root, "builds.txt"), "utf8")).trim().split("\n"),
-  ).toEqual([
-    "run build -w @codemap/core",
-    "run build -w @codemap/indexer",
-    "run build -w @codemap/storage",
-    "run build -w @codemap/service",
-    "run build -w @codemap/server",
-  ]);
+  ).toEqual(["core", "indexer", "storage", "service", "server"]);
   expect(await readFile(join(run.root, "web.cwd"), "utf8")).toBe(
     join(run.root, "apps/web"),
   );
@@ -130,4 +160,42 @@ test("a failed prerequisite build aborts before launching runtime children", asy
   await expect(readFile(join(run.root, "server.pid"))).rejects.toMatchObject({
     code: "ENOENT",
   });
+}, 15000);
+
+test("shutdown during an active prerequisite build stops its live compiler before supervisor exit", async () => {
+  const run = await fixture({ ACTIVE_BUILD: "1" });
+  const deadline = Date.now() + 10000;
+  let compiler: number | undefined;
+  while (Date.now() < deadline && run.child.exitCode === null) {
+    try {
+      compiler = await run.pid("compiler");
+      break;
+    } catch {}
+    await new Promise((resolve) => setTimeout(resolve, 20));
+  }
+  expect(compiler).toBeDefined();
+  expect(() => process.kill(compiler!, 0)).not.toThrow();
+  run.child.kill("SIGTERM");
+  expect(await run.exited).toEqual([0, null]);
+  expect(() => process.kill(compiler!, 0)).toThrow();
+  await expect(readFile(join(run.root, "server.pid"))).rejects.toMatchObject({
+    code: "ENOENT",
+  });
+}, 15000);
+
+test("custom prerequisite build or lifecycle steps fail clearly instead of being bypassed", async () => {
+  for (const custom of ["build", "prebuild", "postbuild"]) {
+    const run = await fixture({ CUSTOM_BUILD: custom });
+    const result = await Promise.race([
+      run.exited,
+      new Promise((resolve) =>
+        setTimeout(() => resolve("still running"), 1000),
+      ),
+    ]);
+    expect(result).toEqual([1, null]);
+    expect(run.output()).toContain("Unsupported prerequisite build for core");
+    await expect(readFile(join(run.root, "builds.txt"))).rejects.toMatchObject({
+      code: "ENOENT",
+    });
+  }
 }, 15000);
