@@ -50,7 +50,13 @@ export function normalizeRepoPath(path: string): string {
       "INVALID_PATH",
       "Expected a file path, not the repository root.",
     );
-  return parts.join("/");
+  const filePath = parts.join("/");
+  if (/^[A-Za-z]:/.test(filePath))
+    throw new DomainError(
+      "INVALID_PATH",
+      "Expected a repository-relative file path, not a Windows drive path.",
+    );
+  return filePath;
 }
 
 const id = z.string().min(1);

@@ -126,9 +126,36 @@ describe("repository file paths", () => {
   ])("rejects unsafe or directory-only %j", (input) => {
     expect(() => normalizeRepoPath(input)).toThrow(DomainError);
   });
+  it.each([
+    "./C:/outside.ts",
+    "src/../C:outside.ts",
+    ".\\C:\\outside.ts",
+    "src\\..\\C:outside.ts",
+  ])("rejects a drive prefix revealed by collapsing %j", (input) => {
+    expect(() => normalizeRepoPath(input)).toThrow(DomainError);
+  });
 });
 
 describe("strict boundary schemas", () => {
+  it.each([
+    "./C:/outside.ts",
+    "src/../C:outside.ts",
+    ".\\C:\\outside.ts",
+    "src\\..\\C:outside.ts",
+  ])("rejects disguised Windows file paths in operations: %j", (filePath) => {
+    expect(
+      operationSchema.safeParse({
+        kind: "add_function",
+        tempId: "new",
+        name: "new",
+        filePath,
+      }).success,
+    ).toBe(false);
+    expect(
+      operationSchema.safeParse({ kind: "move_function", nodeId: "a", filePath })
+        .success,
+    ).toBe(false);
+  });
   it("parses the complete public entities", () => {
     expect(planSchema.parse(plan())).toEqual(plan());
     expect(snapshotSchema.parse(snapshot)).toEqual(snapshot);
