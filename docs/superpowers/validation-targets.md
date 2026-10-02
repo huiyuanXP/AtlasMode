@@ -1,7 +1,28 @@
 # 外部仓库与 UI 验证准备
 
-此文件记录验收目标，尚不代表 AtlasMode 已通过这些验证。实际结果由 T08 写入
-环境/验收报告；目标仓库保留在 checkout 外，不提交其源码或数据库。
+此文件记录固定目标及阶段证据，索引通过尚不代表完整程序验收通过。最终结果由
+T08 写入环境/验收报告；目标仓库保留在 checkout 外，不提交其源码或数据库。
+
+## 已执行的索引阶段验证
+
+已调用真实编译后的公共 `SourceIndexer`，分析整个固定 checkout 的受支持源码，
+并通过 core snapshot schema；尚未验证这些目标的 HTTP/UI/MCP 浏览体验。
+本次运行包含 T03 正在实施、等待独立审查的快照身份修复，具体模块摘要保存在证据文件。
+
+| 目标 | 纳入文件 | function-kind 节点 | 关系 | 调用 resolved / external / unresolved | 用时 | 峰值 RSS |
+| --- | ---: | ---: | ---: | --- | ---: | ---: |
+| Flask3.1.3 | 83 Python | 1574 | 6281 | 714 / 1026 / 2176 | 1.665s | 175MiB |
+| Vite8.3.2 | 1583 TS/JS系列 | 8117 | 44263 | 5373 / 10443 / 14435 | 4.465s | 537MiB |
+
+function-kind 包含函数、方法和作为构造目标的类容器，不等同于全部运行时函数。
+未知关系保留原因，当前范围不模拟动态派发、完整依赖类型环境或 tsconfig 路径别名。
+Flask 无诊断；Vite 的7条诊断是5个被排除的 symlink 和2个故意语法错误的测试 fixture。
+上文准备阶段的1550 JS/TS预数未包含全部支持的 mjs/cjs/mts/cts 等扩展及最终排除差异，
+以本次实际 coverage 清单为准。
+
+5条抽样调用全部核对到真实源码证据（下方列出的检查点），没有执行目标代码或
+Vite/Flask 自身测试。运行证据在 ignored `artifacts/validation/{python,typescript}-indexer-evidence.json`，
+包括 Git revision、实际模块 SHA-256、文件清单、统计、调用证据和未知样本。
 
 | 目标 | 固定版本 / commit | 本次准备路径 | 源码检查点 |
 | --- | --- | --- | --- |
