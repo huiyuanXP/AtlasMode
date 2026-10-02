@@ -1,0 +1,472 @@
+import { afterEach, describe, expect, it } from "vitest";
+import {
+  cp,
+  mkdtemp,
+  mkdir,
+  readFile,
+  rm,
+  symlink,
+  writeFile,
+} from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+import { execFileSync } from "node:child_process";
+import { snapshotSchema, type CodeSnapshot } from "@codemap/core";
+import { SourceIndexer } from "./index.js";
+
+const temps: string[] = [];
+const fixtureRoot = fileURLToPath(
+  new URL("../../../fixtures/", import.meta.url),
+);
+async function temp() {
+  const p = await mkdtemp(join(tmpdir(), "codemap-indexer-"));
+  temps.push(p);
+  return p;
+}
+async function fixture(language: string) {
+  const p = await temp();
+  await cp(join(fixtureRoot, language), p, { recursive: true });
+  return p;
+}
+function fn(s: CodeSnapshot, path: string, name: string) {
+  const n = s.nodes.find(
+    (n) =>
+      n.kind === "function" && n.filePath === path && n.qualifiedName === name,
+  );
+  expect(n, `${path}:${name}`).toBeDefined();
+  return n!;
+}
+function call(
+  s: CodeSnapshot,
+  fromPath: string,
+  from: string,
+  toPath: string,
+  to: string,
+) {
+  const a = fn(s, fromPath, from),
+    b = fn(s, toPath, to);
+  expect(
+    s.relations.some(
+      (r) =>
+        r.type === "calls" &&
+        r.sourceId === a.id &&
+        r.targetId === b.id &&
+        r.resolution === "resolved",
+    ),
+  ).toBe(true);
+}
+afterEach(async () => {
+  await Promise.all(
+    temps.splice(0).map((p) => rm(p, { recursive: true, force: true })),
+  );
+});
+
+describe("SourceIndexer", () => {
+  it("resolves TS aliases, reexports, named arrows and class methods by declaration identity", async () => {
+    const s = await new SourceIndexer().index(
+      await fixture("typescript"),
+      "ts",
+    );
+    snapshotSchema.parse(s);
+    call(s, "main.ts", "fetchNotes", "lib.ts", "requestWithRetry");
+    call(s, "main.ts", "fetchNotes", "lib.ts", "arrow");
+    call(s, "main.ts", "fetchNotes", "lib.ts", "Client.run");
+    call(s, "lib.ts", "Client.run", "lib.ts", "Client.send");
+    for (const name of ["dynamic", "shadow"])
+      expect(
+        s.relations.filter(
+          (r) => r.type === "calls" && r.sourceId === fn(s, "main.ts", name).id,
+        ),
+      ).toEqual([
+        expect.objectContaining({
+          resolution: "unresolved",
+          targetId: null,
+          reason: expect.any(String),
+        }),
+      ]);
+    expect(
+      s.nodes.some(
+        (n) => n.kind === "external" && n.name.includes("node:fs/promises"),
+      ),
+    ).toBe(true);
+    expect(
+      s.relations.some(
+        (r) => r.type === "imports" && r.resolution === "external",
+      ),
+    ).toBe(true);
+    expect(
+      s.relations.some(
+        (r) => r.type === "calls" && r.resolution === "external",
+      ),
+    ).toBe(true);
+  });
+  it("indexes JS, JSX and TSX calls and records source evidence/containment", async () => {
+    const s = await new SourceIndexer().index(
+      await fixture("typescript"),
+      "ts",
+    );
+    call(s, "plain.js", "usePlain", "plain.js", "plain");
+    call(s, "view.jsx", "JsView", "plain.js", "plain");
+    call(s, "view.tsx", "View", "lib.ts", "arrow");
+    expect(fn(s, "view.jsx", "JsView").language).toBe("javascript");
+    const n = fn(s, "lib.ts", "Client.send");
+    expect(s.nodes.some((p) => p.id === n.parentId)).toBe(true);
+    expect(
+      s.relations.some((r) => r.type === "contains" && r.targetId === n.id),
+    ).toBe(true);
+    expect(
+      s.relations
+        .filter((r) => r.type === "calls")
+        .every((r) => r.evidence.line > 0 && r.evidence.text),
+    ).toBe(true);
+  });
+  it("uses stable qualified IDs after blank lines while raw source changes alter the fingerprint", async () => {
+    const p = await fixture("typescript"),
+      indexer = new SourceIndexer();
+    const a = await indexer.index(p, "stable"),
+      b = await indexer.index(p, "stable");
+    expect(a.id).toBe(b.id);
+    expect(a.contentHash).toBe(b.contentHash);
+    await writeFile(
+      join(p, "lib.ts"),
+      "\n\n" + (await readFile(join(p, "lib.ts"), "utf8")),
+    );
+    const c = await indexer.index(p, "stable");
+    expect(fn(a, "lib.ts", "Client.send").id).toBe(
+      fn(c, "lib.ts", "Client.send").id,
+    );
+    expect(c.contentHash).not.toBe(a.contentHash);
+    expect(c.id).not.toBe(a.id);
+  });
+  it("honors nested gitignore and explicit exclusions and rejects outside symlinks", async () => {
+    const p = await temp(),
+      outside = await temp();
+    await writeFile(join(p, "keep.ts"), "export function keep() {}");
+    await writeFile(join(p, ".gitignore"), "ignored.ts\n");
+    await writeFile(join(p, "ignored.ts"), "function hidden() {}");
+    await mkdir(join(p, "sub"));
+    await writeFile(join(p, "sub", ".gitignore"), "hidden.py\n");
+    await writeFile(join(p, "sub", "hidden.py"), "def hidden(): pass");
+    await mkdir(join(p, "node_modules"));
+    await writeFile(join(p, "node_modules", "dep.ts"), "function dep() {}");
+    await writeFile(join(outside, "outside.ts"), "function outside() {}");
+    await symlink(join(outside, "outside.ts"), join(p, "escape.ts"));
+    await symlink(outside, join(p, "escape-dir"));
+    const s = await new SourceIndexer().index(p, "safe");
+    expect(s.coverage.files).toEqual(["keep.ts"]);
+    expect(s.coverage.excludedPatterns).toContain("**/node_modules/**");
+    expect(s.diagnostics.some((d) => /symlink|outside/i.test(d.message))).toBe(
+      true,
+    );
+  });
+  it("indexes Python relative package aliases, nested functions and self calls without executing targets", async () => {
+    const p = await fixture("python");
+    await writeFile(
+      join(p, "side_effect.py"),
+      "from pathlib import Path\nPath(__file__).with_name('SENTINEL').write_text('executed')\ndef safe():\n    return 1\n",
+    );
+    const s = await new SourceIndexer().index(p, "py");
+    snapshotSchema.parse(s);
+    call(
+      s,
+      "pkg/main.py",
+      "fetch_notes",
+      "pkg/helpers.py",
+      "request_with_retry",
+    );
+    expect(
+      s.relations.filter(
+        (r) =>
+          r.type === "calls" &&
+          r.sourceId === fn(s, "pkg/main.py", "fetch_notes").id &&
+          r.targetId === fn(s, "pkg/helpers.py", "request_with_retry").id,
+      ),
+    ).toHaveLength(2);
+    call(s, "pkg/helpers.py", "Client.run", "pkg/helpers.py", "Client.send");
+    call(s, "pkg/main.py", "outer", "pkg/main.py", "outer.inner");
+    for (const name of ["dynamic", "shadow"])
+      expect(
+        s.relations.find(
+          (r) =>
+            r.type === "calls" && r.sourceId === fn(s, "pkg/main.py", name).id,
+        )?.resolution,
+      ).toBe("unresolved");
+    expect(
+      s.relations.some(
+        (r) => r.type === "calls" && r.resolution === "external",
+      ),
+    ).toBe(true);
+    await expect(readFile(join(p, "SENTINEL"))).rejects.toMatchObject({
+      code: "ENOENT",
+    });
+  });
+  it("uses Python encoding declarations and hashes raw bytes", async () => {
+    const p = await temp();
+    await writeFile(
+      join(p, "latin.py"),
+      Buffer.from(
+        "# coding: latin-1\n# caf\xe9\ndef encoded():\n    return 1\n",
+        "latin1",
+      ),
+    );
+    const s = await new SourceIndexer().index(p, "encoding");
+    expect(fn(s, "latin.py", "encoded").name).toBe("encoded");
+    expect(s.diagnostics).toEqual([]);
+    expect(
+      (await new SourceIndexer().readSource(p, "latin.py")).content,
+    ).toContain("café");
+  });
+  it("reports parse failures and missing Python with an actionable diagnostic, retaining TS", async () => {
+    const p = await temp();
+    await writeFile(join(p, "bad.py"), "def broken(:");
+    await writeFile(join(p, "ok.ts"), "export function ok() {}");
+    let s = await new SourceIndexer().index(p, "bad");
+    expect(
+      s.diagnostics.some(
+        (d) => d.filePath === "bad.py" && /syntax/i.test(d.message),
+      ),
+    ).toBe(true);
+    const old = process.env.CODEMAP_PYTHON;
+    process.env.CODEMAP_PYTHON = join(p, "missing-python");
+    try {
+      s = await new SourceIndexer().index(p, "missing");
+      expect(fn(s, "ok.ts", "ok")).toBeDefined();
+      expect(
+        s.diagnostics.some((d) => /CODEMAP_PYTHON|Python 3/i.test(d.message)),
+      ).toBe(true);
+    } finally {
+      if (old === undefined) delete process.env.CODEMAP_PYTHON;
+      else process.env.CODEMAP_PYTHON = old;
+    }
+  });
+  it("isolates concurrent projects and languages", async () => {
+    const a = await temp(),
+      b = await temp();
+    await writeFile(
+      join(a, "a.ts"),
+      "export function target() {} export function caller() { target(); }",
+    );
+    await writeFile(
+      join(b, "b.ts"),
+      "export function caller(callback: () => void) { callback(); }",
+    );
+    await writeFile(join(b, "target.py"), "def callback(): pass");
+    const indexer = new SourceIndexer(),
+      [x, y] = await Promise.all([
+        indexer.index(a, "a"),
+        indexer.index(b, "b"),
+      ]);
+    call(x, "a.ts", "caller", "a.ts", "target");
+    expect(y.relations.filter((r) => r.type === "calls")).toEqual([
+      expect.objectContaining({ resolution: "unresolved", targetId: null }),
+    ]);
+    expect(x.nodes.every((n) => !y.nodes.some((m) => m.id === n.id))).toBe(
+      true,
+    );
+  });
+  it("detects Git revision read-only and rejects invalid roots", async () => {
+    const p = await temp();
+    execFileSync("git", ["init", "-q", p]);
+    await writeFile(join(p, "a.ts"), "function a() {}");
+    execFileSync("git", ["-C", p, "add", "a.ts"]);
+    execFileSync("git", [
+      "-C",
+      p,
+      "-c",
+      "user.email=test@example.com",
+      "-c",
+      "user.name=Test",
+      "commit",
+      "-qm",
+      "fixture",
+    ]);
+    const s = await new SourceIndexer().index(p, "git");
+    expect(s.gitRevision).toBe(
+      execFileSync("git", ["-C", p, "rev-parse", "HEAD"], {
+        encoding: "utf8",
+      }).trim(),
+    );
+    await expect(
+      new SourceIndexer().index(resolve(p, "missing"), "bad"),
+    ).rejects.toThrow();
+  });
+  it("reads only contained source paths and rejects traversal and outside symlinks", async () => {
+    const p = await temp(),
+      outside = await temp();
+    await mkdir(join(p, "sub"));
+    await writeFile(join(p, "sub", "a.ts"), "export function a() {}\n");
+    await writeFile(join(outside, "secret.ts"), "secret");
+    await symlink(join(outside, "secret.ts"), join(p, "escape.ts"));
+    await symlink(outside, join(p, "escape-dir"));
+    const indexer = new SourceIndexer();
+    expect(await indexer.readSource(p, "sub\\a.ts")).toEqual({
+      filePath: "sub/a.ts",
+      content: "export function a() {}\n",
+    });
+    for (const path of [
+      "../secret.ts",
+      "/etc/passwd",
+      "sub/../../secret.ts",
+      "escape.ts",
+      "escape-dir/secret.ts",
+    ])
+      await expect(indexer.readSource(p, path)).rejects.toThrow();
+  });
+  it("does not treat a callback type signature as its runtime implementation", async () => {
+    const p = await temp();
+    await writeFile(
+      join(p, "a.ts"),
+      "export function target() {} export function caller(callback: typeof target) { callback(); }",
+    );
+    const s = await new SourceIndexer().index(p, "signature");
+    expect(
+      s.relations.find(
+        (r) => r.type === "calls" && r.sourceId === fn(s, "a.ts", "caller").id,
+      ),
+    ).toMatchObject({ targetId: null, resolution: "unresolved" });
+  });
+  it("records missing relative Python call targets as unknown rather than external", async () => {
+    const p = await temp();
+    await mkdir(join(p, "pkg"));
+    await writeFile(join(p, "pkg", "__init__.py"), "");
+    await writeFile(
+      join(p, "pkg", "a.py"),
+      "from .missing import target\ndef caller():\n    target()\n",
+    );
+    const s = await new SourceIndexer().index(p, "missing-relative");
+    expect(
+      s.relations.find(
+        (r) =>
+          r.type === "calls" && r.sourceId === fn(s, "pkg/a.py", "caller").id,
+      ),
+    ).toMatchObject({ targetId: null, resolution: "unresolved" });
+  });
+  it("retains anonymous callback identities and scopes duplicated names independently", async () => {
+    const p = await temp();
+    await writeFile(
+      join(p, "a.ts"),
+      "export function a() { function same() {} same(); [1].map(() => same()); } export function b() { function same() {} same(); }",
+    );
+    const s = await new SourceIndexer().index(p, "nested");
+    call(s, "a.ts", "a", "a.ts", "a.same");
+    call(s, "a.ts", "b", "a.ts", "b.same");
+    expect(
+      s.nodes.some(
+        (n) =>
+          n.kind === "function" && n.qualifiedName?.startsWith("a.<callback:"),
+      ),
+    ).toBe(true);
+  });
+  it("applies nested ignore negation without reopening an ignored directory", async () => {
+    const p = await temp();
+    await mkdir(join(p, "sub"));
+    await mkdir(join(p, "closed"));
+    await writeFile(join(p, ".gitignore"), "*.ts\nclosed/\n");
+    await writeFile(join(p, "sub", ".gitignore"), "!keep.ts\n");
+    await writeFile(join(p, "sub", "keep.ts"), "export function keep() {}");
+    await writeFile(join(p, "sub", "hidden.ts"), "export function hidden() {}");
+    await writeFile(join(p, "closed", ".gitignore"), "!keep.ts\n");
+    await writeFile(join(p, "closed", "keep.ts"), "export function leak() {}");
+    expect(
+      (await new SourceIndexer().index(p, "negation")).coverage.files,
+    ).toEqual(["sub/keep.ts"]);
+  });
+  it("keeps getter and setter declarations distinct and stable after whitespace", async () => {
+    const p = await temp(),
+      content =
+        "export class C { get value() { return 1; } set value(v: number) {} }";
+    await writeFile(join(p, "a.ts"), content);
+    const a = await new SourceIndexer().index(p, "accessors");
+    const accessors = a.nodes.filter(
+      (n) =>
+        n.kind === "function" &&
+        n.filePath === "a.ts" &&
+        n.qualifiedName !== "C",
+    );
+    expect(accessors).toHaveLength(2);
+    expect(new Set(accessors.map((n) => n.id)).size).toBe(2);
+    await writeFile(join(p, "a.ts"), "\n" + content);
+    const b = await new SourceIndexer().index(p, "accessors");
+    expect(b.nodes.map((n) => n.id)).toEqual(a.nodes.map((n) => n.id));
+  });
+  it("does not bind a staticmethod parameter named self to a class method", async () => {
+    const p = await temp();
+    await writeFile(
+      join(p, "a.py"),
+      "class C:\n    def target(self): pass\n    @staticmethod\n    def caller(self):\n        self.target()\n",
+    );
+    const s = await new SourceIndexer().index(p, "static");
+    expect(
+      s.relations.find(
+        (r) =>
+          r.type === "calls" && r.sourceId === fn(s, "a.py", "C.caller").id,
+      ),
+    ).toMatchObject({ resolution: "unresolved", targetId: null });
+  });
+  it("reports TS syntax errors while retaining coverage and unknown call evidence", async () => {
+    const p = await temp();
+    await writeFile(join(p, "bad.ts"), "export function bad( { mystery();");
+    const s = await new SourceIndexer().index(p, "syntax");
+    expect(s.coverage.files).toEqual(["bad.ts"]);
+    expect(s.diagnostics.some((d) => d.filePath === "bad.ts" && d.line)).toBe(
+      true,
+    );
+    expect(s.coverage.unresolvedCount).toBe(
+      s.relations.filter((r) => r.resolution === "unresolved").length,
+    );
+  });
+  it("resolves default and namespace imports without cross-scope name guessing", async () => {
+    const p = await temp();
+    await writeFile(
+      join(p, "lib.ts"),
+      "export default function named() {} export function target() {}",
+    );
+    await writeFile(
+      join(p, "main.ts"),
+      "import renamed from './lib.js'; import * as ns from './lib.js'; export function caller() { renamed(); ns.target(); }",
+    );
+    const s = await new SourceIndexer().index(p, "default");
+    call(s, "main.ts", "caller", "lib.ts", "named");
+    call(s, "main.ts", "caller", "lib.ts", "target");
+  });
+  it("returns deterministic facts for repeated and relocated equal-content projects", async () => {
+    const p = await fixture("python"),
+      q = await temp();
+    await cp(p, q, { recursive: true });
+    const [a, b] = await Promise.all([
+      new SourceIndexer().index(p, "same"),
+      new SourceIndexer().index(q, "same"),
+    ]);
+    expect(a.contentHash).toBe(b.contentHash);
+    expect(a.id).toBe(b.id);
+    expect(a.nodes).toEqual(b.nodes);
+    expect(a.relations).toEqual(b.relations);
+  });
+  it("returns domain errors for missing sources and invalid roots", async () => {
+    const p = await temp(),
+      indexer = new SourceIndexer();
+    await expect(indexer.readSource(p, "missing.ts")).rejects.toMatchObject({
+      code: "NOT_FOUND",
+    });
+    await expect(
+      indexer.index(join(p, "missing"), "bad"),
+    ).rejects.toMatchObject({ code: "INVALID_PATH" });
+  });
+  it("does not attribute a returned callable to its getter or a computed dynamic property", async () => {
+    const p = await temp();
+    await writeFile(
+      join(p, "a.ts"),
+      "export function target() {} class C { get fn() { return target; } } export function caller(c: C, key: string) { c.fn(); c[key](); }",
+    );
+    const s = await new SourceIndexer().index(p, "returned");
+    expect(
+      s.relations.filter(
+        (r) => r.type === "calls" && r.sourceId === fn(s, "a.ts", "caller").id,
+      ),
+    ).toEqual([
+      expect.objectContaining({ resolution: "unresolved", targetId: null }),
+      expect.objectContaining({ resolution: "unresolved", targetId: null }),
+    ]);
+  });
+});

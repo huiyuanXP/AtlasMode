@@ -154,6 +154,10 @@ export type RecordKind =
   | "settings";
 export interface IndexerPort {
   index(rootPath: string, projectId: string): Promise<CodeSnapshot>;
+  readSource?(
+    rootPath: string,
+    filePath: string,
+  ): Promise<{ filePath: string; content: string }>;
 }
 export interface StoragePort {
   get<T>(kind: RecordKind, id: string): T | undefined;
