@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ReactFlow,
   Background,
@@ -9,7 +9,9 @@ import {
   applyNodeChanges,
   MarkerType,
   type NodeProps,
-  type ReactFlowInstance,
+  useNodes,
+  useNodesInitialized,
+  useReactFlow,
 } from "@xyflow/react";
 import type {
   CodeNode,
@@ -54,13 +56,55 @@ function CodeCard({ data }: NodeProps<GraphNode>) {
     </div>
   );
 }
+export type FocusRequest = { nodeId: string; sequence: number };
+/** Consume explicit navigation only once, after the current projection has been
+ * adopted and measured by React Flow. Layout/selection updates are not focus. */
+function FocusViewport({
+  request,
+  target,
+}: {
+  request?: FocusRequest;
+  target?: GraphNode;
+}) {
+  const { fitView, viewportInitialized } = useReactFlow<GraphNode, GraphEdge>();
+  const initialized = useNodesInitialized();
+  const rendered = useNodes<GraphNode>().find((n) => n.id === target?.id);
+  const consumed = useRef<number | undefined>(undefined);
+  useEffect(() => {
+    if (
+      !request ||
+      !target ||
+      !rendered ||
+      !initialized ||
+      !viewportInitialized ||
+      consumed.current === request.sequence
+    )
+      return;
+    // The old graph can contain the same ID. Wait until the newly supplied
+    // projection reaches the canvas store, not just until any old node exists.
+    if (
+      rendered.data !== target.data ||
+      !rendered.measured?.width ||
+      !rendered.measured.height
+    )
+      return;
+    consumed.current = request.sequence;
+    void fitView({
+      nodes: [rendered],
+      duration: 250,
+      maxZoom: 1.1,
+      padding: 0.5,
+    });
+  }, [request, target, rendered, initialized, viewportInitialized, fitView]);
+  return null;
+}
 const nodeTypes = { code: CodeCard };
 export function Canvas(props: {
   graph?: SubgraphResult;
   operations: Operation[];
   view: ViewState;
   filter: LayerFilter;
-  selectedId?: string;
+  focusRequest?: FocusRequest;
   canEdit: boolean;
   relationType: PlannedRelation["type"];
   onSelect: (node: CodeNode) => void;
@@ -85,23 +129,7 @@ export function Canvas(props: {
     [props.graph, props.operations, props.filter, props.view.positions],
   );
   const [nodes, setNodes] = useState(projection.nodes);
-  const [instance, setInstance] =
-    useState<ReactFlowInstance<GraphNode, GraphEdge>>();
   useEffect(() => setNodes(projection.nodes), [projection.nodes]);
-  useEffect(() => {
-    if (instance && props.selectedId) {
-      const node = instance
-        .getNodes()
-        .find((n) => n.data.node.id === props.selectedId);
-      if (node)
-        void instance.fitView({
-          nodes: [node],
-          duration: 250,
-          maxZoom: 1.1,
-          padding: 0.5,
-        });
-    }
-  }, [instance, props.selectedId]);
   const domain = (id: string) =>
     projection.nodes.find((n) => n.id === id)?.data.node.id;
   const edges = projection.edges.map((e) => ({
@@ -115,7 +143,6 @@ export function Canvas(props: {
         nodes={nodes}
         edges={edges}
         nodeTypes={nodeTypes}
-        onInit={setInstance}
         onNodesChange={(changes) =>
           setNodes((current) => applyNodeChanges(changes, current))
         }
@@ -152,6 +179,12 @@ export function Canvas(props: {
         maxZoom={2}
         colorMode={props.view.theme}
       >
+        <FocusViewport
+          request={props.focusRequest}
+          target={projection.nodes.find(
+            (n) => n.data.node.id === props.focusRequest?.nodeId,
+          )}
+        />
         <Background gap={22} size={1} />
         <Controls position="bottom-left" orientation="horizontal" />
         <MiniMap

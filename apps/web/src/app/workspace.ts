@@ -15,12 +15,14 @@ import type {
 import { ApiError, HttpApi } from "../api/client.js";
 import { ProjectScope } from "../api/scope.js";
 import type { LayerFilter } from "../features/graph/projection.js";
+import type { FocusRequest } from "../features/graph/Canvas.js";
 export type WorkspaceState = {
   projects: Project[];
   project?: Project;
   summary?: ProjectSummary;
   graph?: SubgraphResult;
   selectedNode?: CodeNode;
+  focusRequest?: FocusRequest;
   context?: FunctionContextResult;
   source?: { filePath: string; content: string };
   search?: FunctionSearchResult;
@@ -42,6 +44,7 @@ const blank = (): Omit<WorkspaceState, "projects"> => ({
   summary: undefined,
   graph: undefined,
   selectedNode: undefined,
+  focusRequest: undefined,
   context: undefined,
   source: undefined,
   search: undefined,
@@ -162,6 +165,7 @@ export function createWorkspace(
     scope.invalidate("route");
     set((s) => ({
       selectedNode: node,
+      focusRequest: undefined,
       context: undefined,
       source: undefined,
       busy: { ...s.busy, graph: false, route: false },
@@ -192,11 +196,19 @@ export function createWorkspace(
   const expand = async (nodeId: string, depth = 1, budget = 80) => {
     const project = get().project;
     if (!project) return;
+    // A manual expansion supersedes route navigation, including a response still
+    // in flight under the separate route request key.
+    const sequence = ++focusGeneration;
+    scope.invalidate("route");
+    set((s) => ({
+      focusRequest: undefined,
+      busy: { ...s.busy, route: false },
+    }));
     // Each expansion is bounded independently; never accumulate an unbounded graph.
     await run(
       "graph",
       () => api.graph(project.id, [nodeId], depth, budget),
-      (graph) => set({ graph }),
+      (graph) => set({ graph, focusRequest: { nodeId, sequence } }),
     );
   };
   const focus = async (node: CodeNode) => {
@@ -396,9 +408,11 @@ export function createWorkspace(
     const state = get(),
       route = state.routes.find((r) => r.id === routeId),
       step = route?.steps[index];
+    focusGeneration++;
     scope.invalidate("route");
     scope.invalidate("graph");
     set((s) => ({
+      focusRequest: undefined,
       routeId,
       routeStep: index,
       busy: { ...s.busy, route: false, graph: false },
@@ -419,7 +433,10 @@ export function createWorkspace(
       (graph) => {
         set({ graph });
         const node = graph.nodes.find((n) => n.id === step.nodeId);
-        if (node) void selectNode(node);
+        if (node) {
+          void selectNode(node);
+          set({ focusRequest: { nodeId: node.id, sequence: focusGeneration } });
+        }
       },
     );
   };

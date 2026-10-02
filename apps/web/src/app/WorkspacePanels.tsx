@@ -121,7 +121,7 @@ export function WorkspacePanels({ app }: { app: Workspace }) {
           operations={plan?.plan.operations ?? []}
           view={state.view}
           filter={state.filter}
-          selectedId={state.selectedNode?.id}
+          focusRequest={state.focusRequest}
           canEdit={!!plan && !planBusy}
           relationType={relationType}
           onSelect={(n) => {

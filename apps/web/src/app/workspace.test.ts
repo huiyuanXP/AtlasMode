@@ -395,3 +395,77 @@ it("deselecting a route cancels its delayed focus request", async () => {
   expect(app.store.getState().selectedNode).toBeUndefined();
   expect(app.store.getState().graph?.nodes[0]?.name).toBe("fn");
 });
+it("newer manual expansion keeps its graph and selection when an older route finishes last", async () => {
+  let releaseRoute!: (value: Response) => void;
+  const api = new HttpApi((async (
+    input: RequestInfo | URL,
+    init?: RequestInit,
+  ) => {
+    const path = String(input);
+    if (path.endsWith("/subgraph")) {
+      const id = JSON.parse(String(init?.body)).nodeIds[0];
+      if (id === "route-target")
+        return new Promise<Response>((r) => {
+          releaseRoute = r;
+        });
+      if (id === "manual-target")
+        return reply({
+          nodes: [{ id, name: id, kind: "function", filePath: "a.ts" }],
+          relations: [],
+          snapshotId: "s-a",
+          dataSource: "code",
+          truncated: false,
+        });
+    }
+    return reply(fixture(path));
+  }) as typeof fetch);
+  const app = createWorkspace(api);
+  await app.selectProject({ id: "a", name: "a", path: "/a" });
+  app.store.setState({
+    selectedNode: {
+      id: "manual-target",
+      name: "manual-target",
+      kind: "function",
+      filePath: "a.ts",
+    },
+    routes: [
+      {
+        id: "route",
+        projectId: "a",
+        snapshotId: "s-a",
+        revision: 1,
+        title: "route",
+        description: "",
+        source: "agent",
+        kind: "walkthrough",
+        steps: [{ nodeId: "route-target", note: "old step" }],
+        createdAt: "2026-10-02T00:00:00Z",
+      },
+    ],
+  });
+  const pending = app.routeStep("route", 0);
+  await app.expand("manual-target");
+  expect(app.store.getState().graph?.nodes[0]?.id).toBe("manual-target");
+  releaseRoute(
+    new Response(
+      JSON.stringify({
+        nodes: [
+          {
+            id: "route-target",
+            name: "route-target",
+            kind: "function",
+            filePath: "a.ts",
+          },
+        ],
+        relations: [],
+        snapshotId: "s-a",
+        dataSource: "code",
+        truncated: false,
+      }),
+    ),
+  );
+  await pending;
+  expect(app.store.getState().graph?.nodes[0]?.id).toBe("manual-target");
+  expect(app.store.getState().selectedNode?.id).toBe("manual-target");
+  expect(app.store.getState().busy.route).toBe(false);
+});
