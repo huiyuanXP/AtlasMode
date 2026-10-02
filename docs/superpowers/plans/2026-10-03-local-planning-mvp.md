@@ -62,6 +62,8 @@
 
 **Files:** `packages/storage/src/{index,sqlite}.ts`, `packages/storage/migrations/001-records.sql`;
 `packages/service/src/{index,workspace,planning,verification,knowledge}.ts`; colocated tests.
+Real-adapter lifecycle tests may live in `tests/integration/workspace-lifecycle.test.ts`,
+so service production imports stay limited to core while integration tests assemble indexer/storage.
 **Interfaces:** Implement SqliteStorage and WorkspaceService ALL methods in contracts.md. SQLite records by kind/id, migrations tracked, sync transactions. Service must only import @codemap/core.
 
 - [ ] Failing tests with actual temporary SQLite/indexer: open two projects, isolate records; plan revision conflict; approve/revise/layout; refresh changed content invalidates approval; historic approval remains available for verification.
