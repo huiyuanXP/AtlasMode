@@ -88,7 +88,7 @@ openProject(path: string): Promise<Project>;
 getProject(id: string): Project;
 getSnapshot(projectId: string): CodeSnapshot;
 refreshIndex(projectId: string): Promise<CodeSnapshot>;
-createPlan(input: {projectId:string;title:string;description?:string}): PlanDetail;
+createPlan(input: {projectId:string;title:string;description?:string;baselineSnapshotId?:string}): PlanDetail;
 listPlans(projectId: string): PlanDetail[];
 getPlan(id: string): PlanDetail;
 updatePlan(id: string, input: {expectedRevision:number;operations:Operation[];title?:string;description?:string}): PlanDetail;
@@ -107,9 +107,13 @@ readSource(projectId:string,filePath:string):Promise<{filePath:string;content:st
 ```
 
 getPlan.valid 仅在确有匹配 revision/hash 的批准、当前内容基线未变且校验无错误时为 true。
+createPlan 若传入 baselineSnapshotId，必须匹配当前快照，否则 409；MCP propose_plan
+要求调用者显式给出该字段，防止 Agent 把基于旧查询的规划绑定到另一个新快照。
 approvePlan 不改变语义 revision；批准表保留历史。verifyPlan 使用最近一个确有批准的历史
 revision（更新后的未批准 draft 不能冒充已批准内容），新快照允许与批准基线不同。
 createRoute 拒绝无效端点；读取路线的过期状态由其 snapshotId 对比当前快照。
+call_chain 从第二步起，每一步 relationId 指向上一节点到当前节点的 resolved calls
+关系并携带源码证据。walkthrough 不需要调用边；若提供 relationId，必须与该步骤节点相关。
 
 ## HTTP（统一 JSON；默认成功返回实体，无额外包裹）
 
