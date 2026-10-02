@@ -77,6 +77,10 @@ type VerificationReport = {
 - `DomainError(code: string, message: string)`：服务错误；HTTP 状态由 server 映射。
 - T04 的查询类型/纯函数由 core 公共入口导出。搜索、函数上下文和子图算法不放在
   server；server 只读取 service 快照、验证请求并调用纯函数。
+  公共函数名：`searchFunctions(snapshot,{q?,offset?,limit?})`、
+  `getFunctionContext(snapshot,nodeId,{offset?,limit?})`、
+  `getSubgraph(snapshot,{nodeIds,depth?,budget?,relationTypes?})`、
+  `getProjectSummary(project,snapshot)`。
 
 ## 实现入口
 
