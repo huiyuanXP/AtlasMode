@@ -50,3 +50,20 @@ packages/vite/package.json 的 exports 指向 ./dist/node/index.js、module-runn
 
 开始实施前确定配置选择规则、支持的 exports 条件和输入摘要契约，记录限制，
 写独立 spec/plan，并沿用 TDD、独立审查及实际运行。不要在 T06–T08 中夹带实现。
+
+## 后续拆分建议
+
+先把受限配置输入和 tsconfig paths/baseUrl 解析作为单独 Ticket，
+然后处理 workspace package exports 与可证明的 tsc 输出映射，
+静态 CommonJS 另立验收场景。三个阶段各自有 RED/GREEN、独立审查、
+真实 HTTP/MCP 查询，避免一次替换整个索引器。
+
+配置选择必须明确：根目录不一定有配置，最近的 tsconfig.json 也可能
+只是 references 解决方案；同目录 tsconfig.app.json 等不能无依据混用。
+扫描范围仍由捕获规则负责，配置解析不能读取 scan 之外的源文件。
+捕获配置/清单需要有单文件和总量预算，遇到循环、越界、非法或不支持
+的配置要有诊断，不悄悄落入另一套别名导致错误事实。
+
+核心 contentHash 当前只包含捕获源码 bytes；配置成为事实推断输入后，
+必须先明确输入摘要/快照新鲜度契约，并验证只改配置也会使旧批准失效。
+TS metadata 不应混成 CodeNode 文件或宣称源码覆盖；来源和范围需可查看。
