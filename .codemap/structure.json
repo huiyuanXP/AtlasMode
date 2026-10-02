@@ -1,0 +1,127 @@
+{
+  "schemaVersion": 1,
+  "folders": [
+    {
+      "path": "packages/core/src",
+      "purpose": "Pure domain models, boundary schemas, validation and ports",
+      "allowed": ["Pure TypeScript", "zod", "ports"],
+      "forbidden": ["I/O", "React", "HTTP", "SQLite"]
+    },
+    {
+      "path": "packages/indexer/src",
+      "purpose": "Source scanning and static TS/JS/Python extraction",
+      "allowed": ["Source reads", "parsers", "core"],
+      "forbidden": ["UI", "database", "service"]
+    },
+    {
+      "path": "packages/storage/src",
+      "purpose": "SQLite persistence and transactions",
+      "allowed": ["SQLite", "core"],
+      "forbidden": ["UI", "indexing", "service"]
+    },
+    {
+      "path": "packages/service/src",
+      "purpose": "Workspace use cases composed through ports",
+      "allowed": ["core ports"],
+      "forbidden": ["Concrete storage/indexer", "UI", "HTTP"]
+    },
+    {
+      "path": "apps/server/src",
+      "purpose": "HTTP routes and dependency assembly",
+      "allowed": ["core", "service", "indexer", "storage"],
+      "forbidden": ["Domain duplication", "AST traversal", "SQL"]
+    },
+    {
+      "path": "apps/web/src",
+      "purpose": "Graph browsing and planning interface",
+      "allowed": ["React", "React Flow", "HTTP", "core"],
+      "forbidden": ["SQLite", "indexer", "server imports"]
+    },
+    {
+      "path": "apps/mcp/src",
+      "purpose": "stdio MCP bridge using HTTP",
+      "allowed": ["SDK", "HTTP", "core"],
+      "forbidden": ["SQLite", "indexer", "service imports"]
+    }
+  ],
+  "dependencyRules": [
+    {
+      "from": "packages/core/**",
+      "mustNotImport": [
+        "@codemap/core",
+        "@codemap/indexer",
+        "@codemap/storage",
+        "@codemap/service",
+        "@codemap/server",
+        "@codemap/web",
+        "@codemap/mcp"
+      ],
+      "reason": "Keep domain and adapter boundaries explicit"
+    },
+    {
+      "from": "packages/indexer/**",
+      "mustNotImport": [
+        "@codemap/indexer",
+        "@codemap/storage",
+        "@codemap/service",
+        "@codemap/server",
+        "@codemap/web",
+        "@codemap/mcp"
+      ],
+      "reason": "Keep domain and adapter boundaries explicit"
+    },
+    {
+      "from": "packages/storage/**",
+      "mustNotImport": [
+        "@codemap/indexer",
+        "@codemap/storage",
+        "@codemap/service",
+        "@codemap/server",
+        "@codemap/web",
+        "@codemap/mcp"
+      ],
+      "reason": "Keep domain and adapter boundaries explicit"
+    },
+    {
+      "from": "packages/service/**",
+      "mustNotImport": [
+        "@codemap/indexer",
+        "@codemap/storage",
+        "@codemap/service",
+        "@codemap/server",
+        "@codemap/web",
+        "@codemap/mcp"
+      ],
+      "reason": "Keep domain and adapter boundaries explicit"
+    },
+    {
+      "from": "apps/server/**",
+      "mustNotImport": ["@codemap/server", "@codemap/web", "@codemap/mcp"],
+      "reason": "Keep domain and adapter boundaries explicit"
+    },
+    {
+      "from": "apps/web/**",
+      "mustNotImport": [
+        "@codemap/indexer",
+        "@codemap/storage",
+        "@codemap/service",
+        "@codemap/server",
+        "@codemap/web",
+        "@codemap/mcp"
+      ],
+      "reason": "Keep domain and adapter boundaries explicit"
+    },
+    {
+      "from": "apps/mcp/**",
+      "mustNotImport": [
+        "@codemap/indexer",
+        "@codemap/storage",
+        "@codemap/service",
+        "@codemap/server",
+        "@codemap/web",
+        "@codemap/mcp"
+      ],
+      "reason": "Keep domain and adapter boundaries explicit"
+    }
+  ]
+}

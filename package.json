@@ -1,0 +1,41 @@
+{
+  "name": "atlasmode",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": "24.19.0",
+    "npm": "11.9.0"
+  },
+  "packageManager": "npm@11.9.0",
+  "workspaces": [
+    "packages/core",
+    "packages/indexer",
+    "packages/storage",
+    "packages/service",
+    "apps/server",
+    "apps/web",
+    "apps/mcp"
+  ],
+  "scripts": {
+    "dev": "node scripts/workspaces.mjs dev",
+    "build": "node scripts/workspaces.mjs build",
+    "start": "node apps/server/dist/index.js",
+    "typecheck": "node scripts/workspaces.mjs typecheck",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "mcp": "node apps/mcp/dist/index.js"
+  },
+  "devDependencies": {
+    "typescript": "5.9.3",
+    "tsx": "4.23.15",
+    "@types/node": "24.19.1",
+    "concurrently": "10.0.5",
+    "vitest": "4.1.11",
+    "eslint": "10.11.0",
+    "typescript-eslint": "8.71.0",
+    "prettier": "3.9.9",
+    "@playwright/test": "1.63.0"
+  }
+}

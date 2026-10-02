@@ -1,0 +1,15 @@
+node_modules/
+dist/
+coverage/
+artifacts/
+playwright-report/
+test-results/
+.codemap/cache/
+*.sqlite
+*.sqlite-*
+*.db
+*.db-*
+.env
+.env.*
+!.env.example
+*.tsbuildinfo
