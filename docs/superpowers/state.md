@@ -32,7 +32,8 @@ SDD ledger：.superpowers/sdd/2026-10-03-local-planning-mvp/progress.md（忽略
 修复已复审通过（f2d1b11、5608f10）。T04 HTTP、本地 CLI 和启动器退出修复
 已复审通过（ebfa409、6daac82）。T05 真实代码画布与规划界面已实现
 （2dc95d7），导航结果竞争和节点聚焦的修复（a9d27a0）已独立复审通过。
-T06 实际 stdio MCP 已实现（7f7bd95），正在独立审查；T07、T08 尚未完成。
+T06 实际 stdio MCP 已实现并独立审查通过（7f7bd95）。当前进入 T07 英文、
+分组、目录约束和撤销重做；T08 完整验收尚未执行。
 T01–T08顺序执行，不并行派遣实现者；精确任务/修复轮次以 ledger 为准。
 本轮开始 UTC 2026-10-02 19:55；文档沿用最初 Asia/Singapore 的2026-10-03日期。
 当前环境报告时区 Etc/UTC，后续时间证据以 UTC 为准。
