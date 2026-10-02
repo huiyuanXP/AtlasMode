@@ -7,7 +7,7 @@ T08 写入环境/验收报告；目标仓库保留在 checkout 外，不提交�
 
 已调用真实编译后的公共 `SourceIndexer`，分析整个固定 checkout 的受支持源码，
 并通过 core snapshot schema；尚未验证这些目标的 HTTP/UI/MCP 浏览体验。
-本次运行包含 T03 正在实施、等待独立审查的快照身份修复，具体模块摘要保存在证据文件。
+本次运行包含已通过 T03 独立审查的快照身份修复，具体执行时的模块摘要保存在证据文件。
 
 | 目标 | 纳入文件 | function-kind 节点 | 关系 | 调用 resolved / external / unresolved | 用时 | 峰值 RSS |
 | --- | ---: | ---: | ---: | --- | ---: | ---: |
@@ -49,6 +49,7 @@ UI 参考已经实际运行：从官方源码创建独立临时 Vite demo，在�
 AtlasMode 使用这些交互线索，并加左右面板；状态同时用文字/图标表达。
 
 当前浏览器执行路径为 `/usr/bin/chromium`（Debian Chromium151），可给 Playwright
-设置 `PLAYWRIGHT_CHROMIUM_EXECUTABLE`。官方浏览器CDN以及在线示例页面被当前代理403
+设置 `PLAYWRIGHT_CHROMIUM_EXECUTABLE`；已确认 Noto Sans CJK SC 等中文字体存在。
+官方浏览器CDN以及在线示例页面被当前代理403
 阻断；没有关闭 TLS、跳过签名校验或削弱浏览器断言。三OS CI和普通本机安装仍应使用
 官方 Playwright 安装步骤；此处系统路径只是当前环境的可选覆盖。
