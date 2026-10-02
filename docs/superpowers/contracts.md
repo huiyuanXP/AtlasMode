@@ -75,6 +75,8 @@ type VerificationReport = {
 - `semanticPlanContent(plan: Plan): string`：确定性语义序列化，不含布局、时间或状态。
 - schema 公共导出：`operationSchema`、`snapshotSchema`、`planSchema`、`routeSchema`。
 - `DomainError(code: string, message: string)`：服务错误；HTTP 状态由 server 映射。
+- T04 的查询类型/纯函数由 core 公共入口导出。搜索、函数上下文和子图算法不放在
+  server；server 只读取 service 快照、验证请求并调用纯函数。
 
 ## 实现入口
 
@@ -132,10 +134,10 @@ call_chain 从第二步起，每一步 relationId 指向上一节点到当前节
 | POST /api/projects | `{path}` → 已索引 Project |
 | GET /api/projects/:id/snapshot | CodeSnapshot |
 | POST /api/projects/:id/refresh | CodeSnapshot |
-| GET /api/projects/:id/summary | `{project,snapshotId,contentHash,counts,entrypoints,diagnostics,coverage}` |
-| GET /api/projects/:id/functions?q=&offset=&limit= | `{items:CodeNode[],total,offset,limit}` |
-| GET /api/projects/:id/functions/:nodeId | `{node,incoming:Relation[],outgoing:Relation[]}` |
-| POST /api/projects/:id/subgraph | `{nodeIds,depth?,budget?}` → `{nodes,relations,truncated,snapshotId}` |
+| GET /api/projects/:id/summary | `{project,snapshotId,contentHash,counts,entrypoints,entrypointTotal,entrypointsTruncated,diagnostics,coverage,dataSource:'code'}` |
+| GET /api/projects/:id/functions?q=&offset=&limit= | `{items:CodeNode[],total,offset,limit,snapshotId,dataSource:'code'}` |
+| GET /api/projects/:id/functions/:nodeId?offset=&limit= | `{node,incoming:Relation[],outgoing:Relation[],totalIncoming,totalOutgoing,truncated,offset,limit,snapshotId,dataSource:'code'}` |
+| POST /api/projects/:id/subgraph | `{nodeIds,depth?,budget?,relationTypes?}` → `{nodes,relations,truncated,snapshotId,dataSource:'code'}` |
 | GET /api/projects/:id/source?filePath= | `{filePath,content}` |
 | GET /api/projects/:id/plans | PlanDetail[] |
 | POST /api/plans | createPlan input → PlanDetail |
@@ -151,5 +153,13 @@ call_chain 从第二步起，每一步 relationId 指向上一节点到当前节
 | GET/POST /api/projects/:id/policies | DirectoryPolicy[] / savePolicy input |
 
 默认 function limit=50，最大 200；subgraph 默认 depth=1、budget=80，最大 depth=5、budget=300。
+函数上下文只分页 calls 关系，incoming/outgoing 分别按同一 offset/limit 截取并给出
+各自总数；outgoing 保留 unresolved/external 关系及 reason，不能丢失不确定调用。
+summary counts 固定为 `{files,folders,functions,relations,calls:{resolved,unresolved,external}}`；
+entrypoints 为带 exported 事实的函数候选 CodeNode[]，最多50项，提供总数/截断提示，
+不把无入边函数说成确认入口。functions 数含当前模型中的 class 容器。
+subgraph relationTypes 默认 `['calls']`，允许 calls/imports/contains，按确定性顺序展开。
+budget 限制返回节点数（包括可容纳的文件/目录上下文），返回关系数上限为 budget*3；
+任一预算导致结果裁剪均设 truncated=true。未知/异项目节点拒绝，不能静默忽略。
 无效输入 400，找不到 404，revision/基线冲突 409，Python 缺失给出可操作错误/诊断。
 对每次预算裁剪明确 truncated；规划、路线不能引用另一个 project 的节点。

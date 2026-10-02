@@ -28,7 +28,8 @@ push 授权。使用当前 cloud checkout，分阶段本地 commit。
 接口：contracts.md
 SDD ledger：.superpowers/sdd/2026-10-03-local-planning-mvp/progress.md（忽略Git）
 当前：T01 已完成且复审通过（1b33c7f、415a054）；T02 真实源码索引及修复
-已复审通过（56ccccf、2c016ec）。即将实施 T03 SQLite 与规划/核对服务。
+已复审通过（56ccccf、2c016ec）。T03 SQLite 与规划/核对服务已实现（f2d1b11），
+针对独立审查三个问题的修复已提交（5608f10），等待限定范围复审；随后实施 T04 HTTP。
 T01–T08顺序执行，不并行派遣实现者；精确任务/修复轮次以 ledger 为准。
 用户时区 Asia/Singapore；本轮开始 UTC 2026-10-02 19:55（本地2026-10-03 03:55）。
 
@@ -41,7 +42,8 @@ T02 原实现全套72项通过；复审修复后 indexer 31项回归通过，相
 TS/Python 捕获字节索引、安全源码读取、打包后 Python helper 与目标代码不执行已验证。
 已修复 Python 影子绑定/局部未初始化错误连边和匿名回调空行身份变化；独立复审通过。
 本地 SQLite 原生模块、TS AST、Fastify/static、MCP SDK 导入已做依赖烟雾验证。
-产品服务、UI、MCP 闭环仍未完成，不能把依赖导入当成功能验收。
+T03 原实现全套112项通过；修复后 storage/service/实际生命周期相关34项通过，
+相关构建/类型/lint通过。服务端产品进程、UI、MCP 闭环仍未完成。
 
 ## 环境注意
 默认npm缓存路径曾不可写；当前命令用 /tmp/atlasmode-npm-cache，不把该路径写入
@@ -55,6 +57,8 @@ Superpowers15技能74文件已固定v6.4.2；start_skill草稿已保存，尚未
   浏览器测试通过可选 `PLAYWRIGHT_CHROMIUM_EXECUTABLE` 使用系统浏览器，CI/本机仍走官方安装。
 - 外部只读目标：`/tmp/atlasmode-validation-vite`（Vite8.3.2）及
   `/tmp/atlasmode-validation-flask`（Flask3.1.3）；版本与 commit 在
-  `/tmp/atlasmode-validation-targets.json`。尚未用本产品索引，不能宣称规模验证通过。
+  `/tmp/atlasmode-validation-targets.json`。已通过公开 SourceIndexer 实际索引：
+  Vite1583文件/11218节点，Flask83文件/1989节点，并抽查源码调用证据。
+  阶段统计见 validation-targets.md；尚未通过产品 HTTP/UI/MCP 验证这些规模场景。
 - API 新鲜度约定：批准/核对先真实索引；MCP 读取批准也先刷新。service 源码读取委托
   indexer 的可选 readSource port。契约与 ledger 已同步；T02 实现者已收到接口补充。

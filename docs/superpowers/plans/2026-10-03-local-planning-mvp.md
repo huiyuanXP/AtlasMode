@@ -77,11 +77,13 @@ Necessary shared dependency fix: `packages/indexer/src/index.ts` and `index.test
 
 ## Task 4: HTTP and runnable local server (T04)
 
-**Files:** `apps/server/src/{index,server,routes,queries}.ts`, colocated integration tests; `scripts/dev.mjs`.
-**Interfaces:** createServer service factory and every HTTP endpoint in contracts.md; root start production entry. Entry overview and graph response independent from UI.
+**Files:** `apps/server/src/{index,server,routes,queries}.ts`, colocated integration tests;
+`packages/core/src/queries.ts` and colocated pure query tests/public exports; `scripts/dev.mjs`.
+Necessary startup hooks/manifests: root package.json, server package.json, root package-lock.json.
+**Interfaces:** createServer service factory and every HTTP endpoint in contracts.md; root start production entry. Entry overview and graph response independent from UI. Pure search/context/subgraph algorithms and response types belong in core; server queries are transport/service glue only.
 
 - [ ] Failing Fastify inject tests with real service: project open/switch, search pagination, budget capped subgraph, bad input, path traversal, source, conflicts, plan lifecycle and unknown API 404.
-- [ ] Implement Zod validation, error mapping, loopback-only default, project context and query helpers, static build assets plus SPA fallback without swallowing /api errors.
+- [ ] Implement Zod validation, error mapping, loopback-only default, project context and pure core query helpers, static build assets plus SPA fallback without swallowing /api errors. Paginate context edges and bound both subgraph nodes and relations; expose clipping explicitly.
 - [ ] Handle absolute project path in UI/API with per-project roots. Overview prioritizes evidenced exported function candidates; don't call arbitrary zero-indegree functions confirmed public entrypoints.
 - [ ] Real process smoke: GET health, open/index fixture, fetch snapshot/function/source. Graceful stop SQLite/child processes. Cross-platform dev launcher supervises web/server and exits on failures.
 - [ ] Run server suite, dependency-ordered build; commit T04.
