@@ -161,7 +161,10 @@ call_chain 从第二步起，每一步 relationId 指向上一节点到当前节
 各自总数；outgoing 保留 unresolved/external 关系及 reason，不能丢失不确定调用。
 summary counts 固定为 `{files,folders,functions,relations,calls:{resolved,unresolved,external}}`；
 entrypoints 为带 exported 事实的函数候选 CodeNode[]，最多50项，提供总数/截断提示，
-不把无入边函数说成确认入口。functions 数含当前模型中的 class 容器。
+不把无入边函数说成确认入口。TS/JS 依据源码 export；Python 当前 exported 字段
+依据公开命名约定，summary 只取 parent 为 file 的顶层函数/class，不把公开命名的
+局部嵌套定义当成模块 API，客户端应明确这是候选而非运行时确认。
+functions 数含当前模型中的 class 容器。
 subgraph relationTypes 默认 `['calls']`，允许 calls/imports/contains，按确定性顺序展开。
 budget 限制返回节点数（包括可容纳的文件/目录上下文），返回关系数上限为 budget*3；
 任一预算导致结果裁剪均设 truncated=true。未知/异项目节点拒绝，不能静默忽略。
