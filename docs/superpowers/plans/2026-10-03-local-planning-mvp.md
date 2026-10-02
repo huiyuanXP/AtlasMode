@@ -120,6 +120,8 @@ Necessary startup hooks/manifests: root package.json, server package.json, root 
 - [ ] Write tests for undo/redo committed revision handling, project-isolated history, two groups with shared members (no source movement), directory forbidden dependency validation, Chinese/English translation coverage.
 - [ ] Implement locale switch (zh/en), theme persistence, functional groups multi-selection/create/list, directory responsibility and forbidden-dependency UI.
 - [ ] Undo/redo updates semantic revision via expectedRevision, disallows editing a protected fact in place; layout remains separate. Persist annotations without deleting on lost binding.
+- [ ] Accepted edits and undo/redo refresh selected temporary-node name/path/signature in the inspector and copied location (T05 deferred M1); retain missing-target annotations with a visible lost-binding state.
+- [ ] Changing directory responsibility or constraints requires renewed confirmation, even if no forbidden edge currently exists. Preserve historical approval for verification; discuss any narrow shared-contract extension with controller before implementation.
 - [ ] Run affected UI/core/service tests and build; commit T07.
 
 ## Task 8: Browser, visual, CI and real repository validation (T08)
