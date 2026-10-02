@@ -27,16 +27,30 @@ push 授权。使用当前 cloud checkout，分阶段本地 commit。
 计划：plans/2026-10-03-local-planning-mvp.md
 接口：contracts.md
 SDD ledger：.superpowers/sdd/2026-10-03-local-planning-mvp/progress.md（忽略Git）
-当前：T01 工具链与纯模型即将实施。T01–T08顺序执行，不并行派遣实现者。
+当前：T01 已完成且复审通过（1b33c7f、415a054），T02 真实源码索引正在实施。
+T01–T08顺序执行，不并行派遣实现者；精确任务/修复轮次以 ledger 为准。
 用户时区 Asia/Singapore；本轮开始 UTC 2026-10-02 19:55（本地2026-10-03 03:55）。
 
 ## 验证要求
 真实启动/请求、build/typecheck/lint/tests、stdio MCP、Playwright 操作、截图实际查看、
 固定公开中大型TS项目与Python项目索引。三OS CI矩阵，未实际跑的native runner
 明确未执行。失败按 setup/应用缺陷/能力阻碍区分，禁止关闭TLS/校验或弱化测试。
-当前只有工作流安装通过（基础提交3b3fe33）；没有产品功能通过的宣称。
+已验证工作流安装校验、锁定依赖安装、core 51 项测试及其构建/类型检查/lint。
+本地 SQLite 原生模块、TS AST、Fastify/static、MCP SDK 导入已做依赖烟雾验证。
+产品服务、UI、MCP 闭环仍未完成，不能把依赖导入当成功能验收。
 
 ## 环境注意
 默认npm缓存路径曾不可写；当前命令用 /tmp/atlasmode-npm-cache，不把该路径写入
 跨平台产品配置。不提交数据库、缓存、artifacts或外部验证仓库。
 Superpowers15技能74文件已固定v6.4.2；start_skill草稿已保存，尚未发布。
+
+## 后续验证准备
+- 已在当前 Chromium 中运行官方 React Flow Overview demo 并实际查看截图。
+  可复用参考证据：`/tmp/atlasmode-reference-demo/evidence.json`、`overview.png`。
+- 系统 Chromium 可用：`/usr/bin/chromium`；Playwright 官方浏览器 CDN 被代理拒绝403。
+  浏览器测试通过可选 `PLAYWRIGHT_CHROMIUM_EXECUTABLE` 使用系统浏览器，CI/本机仍走官方安装。
+- 外部只读目标：`/tmp/atlasmode-validation-vite`（Vite8.3.2）及
+  `/tmp/atlasmode-validation-flask`（Flask3.1.3）；版本与 commit 在
+  `/tmp/atlasmode-validation-targets.json`。尚未用本产品索引，不能宣称规模验证通过。
+- API 新鲜度约定：批准/核对先真实索引；MCP 读取批准也先刷新。service 源码读取委托
+  indexer 的可选 readSource port。契约与 ledger 已同步；T02 实现者已收到接口补充。

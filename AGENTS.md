@@ -54,9 +54,11 @@ unless the environment provides a supported private preview mechanism.
 
 ## Product constraints
 
-The README is the product specification and package-boundary guide. The project
-currently has no application manifests or runnable product. Do not run `npm ci`
-or claim application tests pass until actual manifests and tests exist.
+The README is the product specification and package-boundary guide. Workspace
+manifests, the frozen lockfile and core tests now exist. Use `npm ci` for clean
+installation; run checks for implemented packages and do not describe unfinished
+workspaces as runnable or tested. The current implementation status lives in
+`docs/superpowers/state.md`.
 Use Node.js 24 LTS and npm workspaces with one root package-lock.json when the
 approved implementation reaches initialization. Preserve core/indexer/storage/
 service/UI boundaries. Label demo data as demo; report unresolved static calls.

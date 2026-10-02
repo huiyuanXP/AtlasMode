@@ -60,6 +60,8 @@ type VerificationReport = {
 ## Ports 与纯函数
 
 - `IndexerPort.index(rootPath: string, projectId: string): Promise<CodeSnapshot>`。
+- `IndexerPort.readSource?(rootPath:string,filePath:string):Promise<{filePath:string;content:string}>`：
+  由 indexer 执行实际文件读取与 realpath 范围检查；service 委托此 port，不自行实现代码 I/O。
 - `StoragePort.get<T>(kind: RecordKind, id: string): T | undefined`、`list<T>(kind): T[]`、
   `put<T>(kind,id,value): void`、`delete(kind,id): void`、`transaction<T>(fn:()=>T):T`、`close():void`。
 - `RecordKind = 'projects'|'snapshots'|'plans'|'approvals'|'routes'|'views'|'groups'|'policies'|'settings'`。
@@ -92,8 +94,8 @@ createPlan(input: {projectId:string;title:string;description?:string;baselineSna
 listPlans(projectId: string): PlanDetail[];
 getPlan(id: string): PlanDetail;
 updatePlan(id: string, input: {expectedRevision:number;operations:Operation[];title?:string;description?:string}): PlanDetail;
-approvePlan(id: string, expectedRevision:number): PlanDetail;
-verifyPlan(id: string): VerificationReport;
+approvePlan(id: string, expectedRevision:number): Promise<PlanDetail>;
+verifyPlan(id: string): Promise<VerificationReport>;
 exportPlan(id: string, format:'json'|'markdown'): string;
 listRoutes(projectId: string): BrowseRoute[];
 createRoute(input: Omit<BrowseRoute,'id'|'revision'|'createdAt'>): BrowseRoute;
@@ -106,10 +108,13 @@ savePolicy(input:Omit<DirectoryPolicy,'id'> & {id?:string}):DirectoryPolicy;
 readSource(projectId:string,filePath:string):Promise<{filePath:string;content:string}>;
 ```
 
-getPlan.valid 仅在确有匹配 revision/hash 的批准、当前内容基线未变且校验无错误时为 true。
+getPlan.valid 基于最近索引状态：仅在确有匹配 revision/hash 的批准、当前快照内容基线
+未变且校验无错误时为 true。手动刷新更新 UI 状态；MCP get_approved_plan 在读取前
+必须刷新真实索引，不能向即将实施的 Agent 声称尚未扫描的工作树仍有效。
 createPlan 若传入 baselineSnapshotId，必须匹配当前快照，否则 409；MCP propose_plan
 要求调用者显式给出该字段，防止 Agent 把基于旧查询的规划绑定到另一个新快照。
-approvePlan 不改变语义 revision；批准表保留历史。verifyPlan 使用最近一个确有批准的历史
+approvePlan/verifyPlan 在执行前刷新真实索引，approvePlan 不改变语义 revision；批准表保留历史。
+verifyPlan 使用最近一个确有批准的历史
 revision（更新后的未批准 draft 不能冒充已批准内容），新快照允许与批准基线不同。
 createRoute 拒绝无效端点；读取路线的过期状态由其 snapshotId 对比当前快照。
 call_chain 从第二步起，每一步 relationId 指向上一节点到当前节点的 resolved calls
