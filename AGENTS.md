@@ -6,7 +6,8 @@ The user selected the complete Superpowers workflow for this project. Before
 responding or doing development work, read:
 
 1. `.agents/skills/using-superpowers/SKILL.md`
-2. `.agents/skills/using-superpowers/references/codex-tools.md`
+2. `.agents/skills/using-superpowers/references/codex-tools.md` for Codex,
+   or `references/claude-code-tools.md` under the same skill for Claude Code
 3. `docs/superpowers/state.md` and the root `README.md`
 
 Skills are installed in this repository under `.agents/skills/<name>/SKILL.md`,

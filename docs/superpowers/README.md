@@ -8,6 +8,7 @@
 
 - `.agents/skills/`：上游全部 15 个技能，以及配套脚本、参考资料、审查提示。
 - 根 `AGENTS.md`：后续 Codex 会话的入口，要求先读取 `using-superpowers`。
+- 根 `CLAUDE.md`：Claude Code 项目入口，读取同一份约束与对应客户端工具映射。
 - `upstream.json`：固定版本与来源；`vendor.sha256`：全部技能文件的 SHA-256。
 - `LICENSE.superpowers`：保留上游 MIT 版权和许可；不替换 AtlasMode 的许可证。
 
@@ -15,6 +16,7 @@
 marketplace 插件，也没有改动个人 Codex 配置。Codex 的仓库技能目录使用
 `.agents/skills/`；已打开会话的技能清单可能尚未重新加载，此时按照 AGENTS.md
 直接读取技能文件，即可执行同一工作流。新的会话应以本仓库作为工作目录。
+Claude Code 可从根 CLAUDE.md 进入同一流程；其原生插件/自动技能注册尚未验证。
 其他助手必须支持 AGENTS.md 或等价的项目指令，才能沿用此入口。
 
 例如需要规划功能时，读取 `.agents/skills/brainstorming/SKILL.md`；已确认设计
@@ -30,8 +32,8 @@ marketplace 插件，也没有改动个人 Codex 配置。Codex 的仓库技能�
 5. 失败时先系统诊断；完成前运行验证，最后按 finishing 流程交付。
 
 不要把 ticket 清单或口头范围选择当作已批准的书面设计与实施计划。
-当前项目仍是 README 中的设计阶段；本次安装没有实现 P0/P1 应用功能。
-当前决策与下一步见 `state.md`。
+工作流安装后已根据用户问卷开始 T01–T08 实施。T01 工具链与核心模型已通过独立
+复审，T02 索引器实施中；完整产品尚未验收。当前决策、授权与下一步见 `state.md`。
 
 ## 验证与升级
 
@@ -63,4 +65,5 @@ sha256sum --check docs/superpowers/vendor.sha256
   SQLite 路径解决该项后，仍遇到云端进程初始化的只读文件系统限制。
   因此没有宣称新会话的自动技能清单或 marketplace 注册已验证。
   AGENTS.md 明确保留直接读取技能的入口，后续会话可照此使用。
-- 没有应用代码，因此未执行应用构建、类型检查、测试或运行验证。
+- 安装提交本身没有应用代码；后续 T01 已完成 core 51 项测试、构建、类型检查与 lint。
+  产品运行与跨层验收另记在 state.md 和后续环境报告，不与技能文件校验混为一谈。
