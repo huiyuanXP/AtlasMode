@@ -9,7 +9,7 @@
 | README / 问卷要求 | 首轮 Ticket | 当前证据或待验证项 |
 | --- | --- | --- |
 | 完整 Superpowers 工作流可被 Codex / Claude Code 重新发现 | 基础 commit、AGENTS.md、CLAUDE.md | 15 个技能原样固定；校验文件已提交；原生技能目录自动发现尚未验证 |
-| 单根 npm 锁、Node LTS、包边界 | T01 | core 检查已通过；全产品构建须等待应用入口实现 |
+| 单根 npm 锁、Node LTS、包边界 | T01、T06 | 全部七个 workspace 构建/类型/lint 通过；177项测试通过；独立审查通过 |
 | 真实 TS/JS/TSX/JSX 与 Python 索引、稳定 ID、未知调用 | T02、T03 | 索引和相关回归已独立复审；Python 仅 AST parse；能力变化不覆盖历史快照 |
 | 跨文件相对 import、别名和 re-export | T02 | 小型 fixtures 已验证；tsconfig 路径别名和 monorepo 包解析尚缺 |
 | 固定成熟公开仓库可浏览 | T08 | 已实际索引 Vite8.3.2 与 Flask3.1.3、抽查源码证据；产品 HTTP/UI/MCP 场景待执行 |
@@ -19,7 +19,7 @@
 | 路径输入与项目切换、中文、左右详情和局部画布 | T05 | 已独立复审；真实浏览器已打开项目并读取源码，迟到请求与节点聚焦回归通过；完整 T08 验收待执行 |
 | 事实/规划叠加、改接关系、目标文件、删除临时节点、说明 | T05 | UI 已实现并复审；实际新增函数/指定文件/关系/批准流程通过，事实保持独立；完整改接与删除闭环待 T08 |
 | 浏览路线与未来 skill 接口 | T03、T05、T06 | 持久化、带证据路线及 UI 已实现；实际路线重复聚焦通过；MCP 实施中 |
-| Agent 提交规划/功能集、UI 批准、MCP 同 revision/hash | T06、T08 | 尚未实现或验收；不提供 MCP 批准工具；list_projects 供新客户端发现项目 |
+| Agent 提交规划/功能集、UI 批准、MCP 同 revision/hash | T06、T08 | 16个工具、实际 SDK/HTTP 批准哈希及重启一致性已审查通过；UI/MCP 联合 T08 验收待执行；不提供 MCP 批准工具 |
 | 英文、主题、功能集、目录职责/禁止依赖、撤销重做 | T07 | 尚未实现或验收；组成员多对多、布局与语义 revision 分离 |
 | 离线核心、Win/mac/Linux 启动、CI、浏览器与实际视觉检查 | T04–T08 | 当前 Linux 依赖可用；系统 Chromium 可用；原生 Win/mac runner 尚未执行 |
 | Markdown / JSON 规划导出 | T03、T05、T06 | service 实际导出、UI JSON 下载已验证；完整两格式及 MCP 联合闭环待 T08 |

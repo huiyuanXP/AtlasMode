@@ -2,7 +2,19 @@
 
 用可编辑的代码关系图替代传统文字 Plan Mode。Agent 在实际修改代码之前，把规划叠加到现有项目图上；用户理解、调整并确认后，Agent 才实施。人通过图形理解项目，Agent 通过 MCP 查询同一份结构化模型。
 
-> 当前仓库阶段：设计与启动说明。此 README 不代表功能已经实现，也不包含已经可运行的应用。可以先只提交这一个文件到 GitHub，再让 Codex Cloud 按本文初始化环境并分阶段构建。
+> 当前仓库已有可运行的本地 UI、真实 TS/JS/Python 索引、SQLite 和 stdio MCP。T01–T06 已独立审查通过，完整构建、类型检查、lint 和177项测试已通过；英文、分组/目录约束界面与撤销重做正在实施，完整验收和原生 Windows/macOS 检查尚未完成。以下产品规格中的后续目标不代表均已实现；最新状态见 [持续构建记录](docs/superpowers/state.md) 和 [要求覆盖表](docs/superpowers/readme-coverage.md)。
+
+本机使用 Node24.19.0/npm11.9.0；分析 Python 项目需 Python3.10+。从仓库根目录运行：
+
+```bash
+npm ci
+npm run build
+npm start
+```
+
+在本机浏览器打开 `http://127.0.0.1:4310`，输入要分析的本地目录。开发模式使用
+`npm run dev`，网页端口5173。Codex App/CLI 与 Claude Code 的 MCP 连接说明见
+[docs/mcp.md](docs/mcp.md)；外部客户端配置使用 Node 直接启动编译入口。
 
 ## 1. 产品目标
 
@@ -23,8 +35,8 @@
 
 ### 必须实现
 
-1. 单用户、单服务进程、一个工作区内管理一个目标 Git 仓库。
-2. 首先支持 TypeScript / JavaScript 项目，包含 TSX / JSX。
+1. 单用户、单服务进程，网页输入目录管理多个本机项目，各项目数据隔离。
+2. 首先支持 TypeScript / JavaScript 项目，包含 TSX / JSX，以及 Python 项目。
 3. 函数和方法是主要原子节点；不做逐行代码节点。
 4. 从真实代码提取函数、文件、目录、导入和可解析的调用关系。
 5. React Flow 展示函数图、文件/目录框、功能集和注释。
@@ -35,7 +47,7 @@
 
 ### 后续再做
 
-- 多语言解析、运行时追踪、跨仓库关系、多人协作。
+- TS/JS/Python 之外的语言解析、运行时追踪、跨仓库关系、多人协作。
 - 自由手绘、复杂富文本、完整 IDE、行级代码编辑器。
 - 内置多模型聊天、账号管理、云端托管和自动部署平台。
 - 全自动重复实现识别。首版只能报告结构证据和候选，不能把相似函数直接判定为重复。
@@ -383,7 +395,8 @@ MCP 不提供“冒充用户确认”的工具，不接受客户端伪造的 `ap
 
 ## 14. 环境安装与运行约定
 
-只有 README 时不能执行 `npm ci` 或 `npm run dev`；必须先由首次构建任务生成 workspace manifests 和脚本。
+workspace manifests、根锁文件和运行脚本已经生成。日常安装使用 `npm ci`；
+以下首次初始化步骤保留作为架构依据，不需要重复生成项目。
 
 首次初始化：
 
@@ -417,7 +430,7 @@ npm run test:e2e
 
 若缺少系统依赖，按当前环境权限使用 Playwright 官方安装方式；不能安装时明确报告 E2E 未执行，不把它算作通过。
 
-建议配置项：`CODEMAP_WORKSPACE_ROOT`、`CODEMAP_DATA_DIR`、`CODEMAP_PORT`、`CODEMAP_API_URL`。目标仓库根目录由环境配置固定；所有文件操作校验路径归属，拒绝路径穿越和越界符号链接。
+可选配置项：`CODEMAP_WORKSPACE_ROOT`、`CODEMAP_DATA_DIR`、`CODEMAP_PORT`、`CODEMAP_API_URL`、`CODEMAP_PYTHON`。默认目标可由环境配置指定，也可在网页输入路径切换；所有源码操作按所选项目根目录校验归属，拒绝路径穿越和越界符号链接。
 
 本地服务默认绑定 loopback。云端预览若需要不同监听地址，使用环境明确提供的私有预览机制；不要为演示无意公开拥有仓库访问能力的 API。MCP server 的日志写 stderr，stdout 只输出协议消息。
 
