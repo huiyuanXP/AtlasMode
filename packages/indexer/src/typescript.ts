@@ -40,6 +40,18 @@ export function indexTypeScript(files: SourceFile[], graph: Graph) {
   const lineOf = (node: ts.Node) =>
     node.getSourceFile().getLineAndCharacterOfPosition(node.getStart()).line +
     1;
+  function expressionIdentity(expression: ts.Expression): string {
+    const tokens: [number, string][] = [];
+    function visit(node: ts.Node) {
+      if (node.kind <= ts.SyntaxKind.LastToken) {
+        // Leaf tokens retain string/template/regex contents. AST children omit
+        // whitespace and comments, unlike source text or whitespace stripping.
+        tokens.push([node.kind, node.getText()]);
+      } else for (const child of node.getChildren()) visit(child);
+    }
+    visit(expression);
+    return JSON.stringify(tokens);
+  }
   function declarationName(node: ts.Node): string | undefined {
     if (ts.isGetAccessorDeclaration(node)) return `get ${node.name.getText()}`;
     if (ts.isSetAccessorDeclaration(node)) return `set ${node.name.getText()}`;
@@ -59,7 +71,7 @@ export function indexTypeScript(files: SourceFile[], graph: Graph) {
         return node.parent.name.getText();
       if (ts.isFunctionExpression(node) && node.name) return node.name.text;
       if (ts.isCallExpression(node.parent))
-        return `<callback:${node.parent.expression.getText()}:${node.parent.arguments.indexOf(node as ts.Expression)}>`;
+        return `<callback:${expressionIdentity(node.parent.expression)}:${node.parent.arguments.indexOf(node as ts.Expression)}>`;
       return "<anonymous>";
     }
     return undefined;

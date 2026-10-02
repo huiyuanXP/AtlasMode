@@ -469,4 +469,95 @@ describe("SourceIndexer", () => {
       expect.objectContaining({ resolution: "unresolved", targetId: null }),
     ]);
   });
+  it.each([
+    [
+      "exception binding",
+      "def caller():\n    try:\n        raise Exception()\n    except Exception as target:\n        target()\n",
+    ],
+    [
+      "match capture",
+      "def caller(value):\n    match value:\n        case target:\n            target()\n",
+    ],
+    [
+      "match starred capture",
+      "def caller(value):\n    match value:\n        case [*target]:\n            target()\n",
+    ],
+    [
+      "match mapping rest",
+      "def caller(value):\n    match value:\n        case {**target}:\n            target()\n",
+    ],
+    ["lambda vararg", "def caller():\n    return lambda *target: target()\n"],
+    ["lambda kwarg", "def caller():\n    return lambda **target: target()\n"],
+    [
+      "late local declaration",
+      "def caller():\n    target()\n    def target():\n        pass\n",
+    ],
+    [
+      "local rebinding",
+      "def caller(value):\n    target = value\n    target()\n    def target():\n        pass\n",
+    ],
+  ])("keeps Python %s calls unknown", async (_case, body) => {
+    const p = await temp();
+    await writeFile(join(p, "a.py"), "def target():\n    pass\n\n" + body);
+    const s = await new SourceIndexer().index(p, "binding-regression");
+    expect(s.diagnostics).toEqual([]);
+    expect(
+      s.relations.find(
+        (r) => r.type === "calls" && r.evidence.text === "target()",
+      ),
+    ).toMatchObject({ resolution: "unresolved", targetId: null });
+  });
+  it("preserves definite Python direct calls and deferred global declarations", async () => {
+    const p = await temp();
+    await writeFile(
+      join(p, "a.py"),
+      "def caller():\n    target()\n\ndef local_caller():\n    def local_target():\n        pass\n    local_target()\n\ndef target():\n    pass\n",
+    );
+    const s = await new SourceIndexer().index(p, "binding-control");
+    call(s, "a.py", "caller", "a.py", "target");
+    call(s, "a.py", "local_caller", "a.py", "local_caller.local_target");
+  });
+  it("preserves anonymous callback IDs across callee trivia while retaining literal contents", async () => {
+    const p = await temp();
+    const content =
+      "export function target() {} export function caller(items: any) { items\n.map(() => target()); items['a b'].map(() => target()); items['ab'].map(() => target()); }";
+    await writeFile(join(p, "a.ts"), content);
+    const a = await new SourceIndexer().index(p, "callback-trivia");
+    const callbacks = (s: CodeSnapshot) =>
+      s.nodes.filter(
+        (n) =>
+          n.kind === "function" &&
+          n.qualifiedName?.startsWith("caller.<callback:"),
+      );
+    expect(callbacks(a)).toHaveLength(3);
+    await writeFile(
+      join(p, "a.ts"),
+      content.replace("items\n.map", "items\n\n/* comment */ .map"),
+    );
+    const b = await new SourceIndexer().index(p, "callback-trivia");
+    expect(callbacks(b).map((n) => [n.qualifiedName, n.id])).toEqual(
+      callbacks(a).map((n) => [n.qualifiedName, n.id]),
+    );
+    expect(
+      a.relations
+        .filter(
+          (r) =>
+            r.type === "calls" && r.targetId === fn(a, "a.ts", "target").id,
+        )
+        .map((r) => r.sourceId),
+    ).toEqual(
+      b.relations
+        .filter(
+          (r) =>
+            r.type === "calls" && r.targetId === fn(b, "a.ts", "target").id,
+        )
+        .map((r) => r.sourceId),
+    );
+    const literalCallbacks = callbacks(a).slice(1);
+    expect(literalCallbacks[0]!.qualifiedName).toContain("a b");
+    expect(literalCallbacks[1]!.qualifiedName).toContain("'ab'");
+    expect(literalCallbacks[0]!.qualifiedName).not.toBe(
+      literalCallbacks[1]!.qualifiedName,
+    );
+  });
 });
