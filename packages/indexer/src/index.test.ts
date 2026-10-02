@@ -561,3 +561,27 @@ describe("SourceIndexer", () => {
     );
   });
 });
+
+it("changes snapshot identity when Python capability changes for identical source bytes", async () => {
+  const p = await temp();
+  await writeFile(join(p, "main.py"), "def hello():\n    pass\n");
+  const old = process.env.CODEMAP_PYTHON;
+  let unavailable: CodeSnapshot;
+  try {
+    process.env.CODEMAP_PYTHON = join(p, "missing-python");
+    unavailable = await new SourceIndexer().index(p, "capability");
+  } finally {
+    if (old === undefined) delete process.env.CODEMAP_PYTHON;
+    else process.env.CODEMAP_PYTHON = old;
+  }
+  const original = structuredClone(unavailable);
+  const available = await new SourceIndexer().index(p, "capability");
+  expect(unavailable.diagnostics.length).toBeGreaterThan(0);
+  expect(available.nodes.some((n) => n.name === "hello")).toBe(true);
+  expect(available.contentHash).toBe(unavailable.contentHash);
+  expect(available.id).not.toBe(unavailable.id);
+  expect(unavailable).toEqual(original);
+  expect((await new SourceIndexer().index(p, "capability")).id).toBe(
+    available.id,
+  );
+});

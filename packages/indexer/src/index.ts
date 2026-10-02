@@ -1,4 +1,5 @@
 import { makeId, type CodeSnapshot, type IndexerPort } from "@codemap/core";
+import { createHash } from "node:crypto";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { readSourceBytes, scan } from "./scan.js";
@@ -42,12 +43,7 @@ export class SourceIndexer implements IndexerPort {
     } catch {
       /* A project need not be a Git checkout. */
     }
-    return {
-      id: makeId("snapshot", projectId, capture.contentHash),
-      projectId,
-      createdAt: new Date().toISOString(),
-      gitRevision,
-      contentHash: capture.contentHash,
+    const facts = {
       nodes: [...graph.nodes.values()],
       relations: graph.relations,
       diagnostics: graph.diagnostics,
@@ -58,6 +54,27 @@ export class SourceIndexer implements IndexerPort {
           (r) => r.resolution === "unresolved",
         ).length,
       },
+    };
+    // Capabilities and diagnostics are part of immutable facts, while contentHash
+    // continues to identify captured source bytes only.
+    const fingerprint = createHash("sha256")
+      .update(
+        JSON.stringify({
+          ...facts,
+          diagnostics: facts.diagnostics.map((d) => ({
+            ...d,
+            message: d.message.replaceAll(capture.root, "<root>"),
+          })),
+        }),
+      )
+      .digest("hex");
+    return {
+      id: makeId("snapshot", projectId, capture.contentHash, fingerprint),
+      projectId,
+      createdAt: new Date().toISOString(),
+      gitRevision,
+      contentHash: capture.contentHash,
+      ...facts,
     };
   }
 }
