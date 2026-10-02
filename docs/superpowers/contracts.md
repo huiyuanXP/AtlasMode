@@ -122,6 +122,13 @@ readSource(projectId:string,filePath:string):Promise<{filePath:string;content:st
 getPlan.valid 基于最近索引状态：仅在确有匹配 revision/hash 的批准、当前快照内容基线
 未变且校验无错误时为 true。手动刷新更新 UI 状态；MCP get_approved_plan 在读取前
 必须刷新真实索引，不能向即将实施的 Agent 声称尚未扫描的工作树仍有效。
+T07 起，功能分组或目录约束的实质变化与该项目全部当前规划的 revision+1、
+status=draft 在同一同步事务保存；包括职责文本和组成员变化。历史批准及对应的
+approvedPlan 保持原样，核对继续使用历史批准 revision。此规则保守地要求整个
+项目重新确认，无需增加公共 Plan/Approval 字段；语义 hash 仍摘要 Plan 内容，
+revision 区分外部知识变化。历史目录/分组上下文完整重建另属后续知识版本任务。
+规范化后的成员/禁止依赖集合、路径及文本没有变化时不增加 revision；仅修改来源
+标记也不增加。新增记录算实质变化。其他项目、浏览路线和 ViewState 不受影响。
 createPlan 若传入 baselineSnapshotId，必须匹配当前快照，否则 409；MCP propose_plan
 要求调用者显式给出该字段，防止 Agent 把基于旧查询的规划绑定到另一个新快照。
 approvePlan/verifyPlan 在执行前刷新真实索引，approvePlan 不改变语义 revision；批准表保留历史。
