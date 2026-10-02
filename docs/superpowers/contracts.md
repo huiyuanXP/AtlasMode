@@ -60,6 +60,9 @@ type VerificationReport = {
 ## Ports 与纯函数
 
 - `IndexerPort.index(rootPath: string, projectId: string): Promise<CodeSnapshot>`。
+  `contentHash` 仅摘要捕获源码 bytes；snapshot ID 同时纳入确定性分析结果
+  （nodes/relations/diagnostics/coverage），排除观察时间、Git revision 和实际 root。
+  同源码/同分析结果保持 ID；解析能力变化不得让不同事实共用 ID 或覆盖历史。
 - `IndexerPort.readSource?(rootPath:string,filePath:string):Promise<{filePath:string;content:string}>`：
   由 indexer 执行实际文件读取与 realpath 范围检查；service 委托此 port，不自行实现代码 I/O。
 - `StoragePort.get<T>(kind: RecordKind, id: string): T | undefined`、`list<T>(kind): T[]`、

@@ -64,10 +64,12 @@
 `packages/service/src/{index,workspace,planning,verification,knowledge}.ts`; colocated tests.
 Real-adapter lifecycle tests may live in `tests/integration/workspace-lifecycle.test.ts`,
 so service production imports stay limited to core while integration tests assemble indexer/storage.
+Necessary shared dependency fix: `packages/indexer/src/index.ts` and `index.test.ts` snapshot identity.
 **Interfaces:** Implement SqliteStorage and WorkspaceService ALL methods in contracts.md. SQLite records by kind/id, migrations tracked, sync transactions. Service must only import @codemap/core.
 
 - [ ] Failing tests with actual temporary SQLite/indexer: open two projects, isolate records; plan revision conflict; approve/revise/layout; refresh changed content invalidates approval; historic approval remains available for verification.
 - [ ] Include no approval forgery, repeatable migration, reopen DB retains routes/plans/views, target source read traversal and symlink refusal; group members/project IDs and directory policy checks.
+- [ ] Prove unchanged bytes with changed Python capability cannot share a snapshot ID or overwrite immutable baseline facts; source contentHash stays byte-only, snapshot ID includes deterministic analysis output, normal identical refresh remains stable.
 - [ ] Implement transactional approval semantic SHA-256 and approved revision history; use immutable snapshot baseline, no approval write through draft input.
 - [ ] Implement route validation, views, groups and policies; verify exact add/move/remove/call/annotation operations, unresolved and ambiguous evidence as unknown. Do not mark annotation semantics satisfied merely for existing target.
 - [ ] Test actual fixture update from A call to B call: expected B satisfied, deliberate bypass unmet; file source readonly. Test exports JSON/Markdown include approved revision/hash and clear current validity.
