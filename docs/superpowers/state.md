@@ -1,23 +1,42 @@
-# 当前工作状态
+# AtlasMode 持续构建状态
 
-## 已明确的方向
+## Goal
+本机可运行的真实代码浏览与图上规划工具：TS/JS/Node/Python，Windows/macOS/Linux，
+本地浏览器 UI、SQLite、MCP，中文及英文。按用户问卷和 README 逐阶段推进。
 
-- 产品：AtlasMode，让人通过可编辑代码关系图理解并确认 Agent 的规划。
-- 产品范围、包边界和验收场景：以根 README.md 为依据。
-- 用户已要求安装并提交 Superpowers，并按其完整工作流开发。
-- 工作流已固定为 v6.4.2；基础提交仅包含技能和接续指令。
+## 最新授权
+用户已回答全部大方向，并明确“睡觉了，开始执行”，允许对其余细节选择稳定方案。
+用户要求分阶段 Ticket、设置 Goal，完成问卷后继续对照 README 推进，直到通知收尾。
+不再等待逐阶段人工设计/计划审批，改为自检、独立审查和实际验证。无发布/共享分支
+push 授权。使用当前 cloud checkout，分阶段本地 commit。
 
-## 当前阶段
+## 确认决策
+- 客户端：Codex App/CLI、Claude Code；真实 stdio MCP 接同一个本地 HTTP 服务。
+- 语言：TS/JS/TSX/JSX、Node、Python；Python AST parse 不执行目标代码。
+- 网页输入本地目录切换项目；各项目快照/知识/规划/布局隔离。
+- 默认从代码暴露的入口逐步展开，保留目录/文件上下文；Agent 可提交多条路线。
+- 清晰紧凑开发工具 UI：左导航、中图、右详情；参考公开实际 demos，浅/深色切换。
+- 事实/规划叠加并可筛选；新增函数、目标文件、改接关系、删除多余规划节点、说明。
+- 功能分组、目录约束、undo/redo 和英文适配在核心通过后继续完成。
+- 源码片段只读、可复制位置；手动刷新，明确规划/路线过期。
+- Markdown/JSON 导出；安装后核心离线，外部模型联网归客户端。
+- Node 24 LTS；当前环境24.19.0/npm11.9.0；Python最少3.10。
 
-产品开发处于 `brainstorming` 的 architectural 路径。仓库尚无可运行应用。
-尚未形成或批准首阶段书面 spec、实施计划；尚未开始产品代码初始化。
-后续先选择第一个设计与实施闭环，再讨论方案、设计、书面 spec 和任务清单。
+## 实施记录
+设计：specs/2026-10-03-local-planning-mvp-design.md
+计划：plans/2026-10-03-local-planning-mvp.md
+接口：contracts.md
+SDD ledger：.superpowers/sdd/2026-10-03-local-planning-mvp/progress.md（忽略Git）
+当前：T01 工具链与纯模型即将实施。T01–T08顺序执行，不并行派遣实现者。
+用户时区 Asia/Singapore；本轮开始 UTC 2026-10-02 19:55（本地2026-10-03 03:55）。
 
-## 下一步
+## 验证要求
+真实启动/请求、build/typecheck/lint/tests、stdio MCP、Playwright 操作、截图实际查看、
+固定公开中大型TS项目与Python项目索引。三OS CI矩阵，未实际跑的native runner
+明确未执行。失败按 setup/应用缺陷/能力阻碍区分，禁止关闭TLS/校验或弱化测试。
+当前只有工作流安装通过（基础提交3b3fe33）；没有产品功能通过的宣称。
 
-已从 README 识别顺序：P0 可运行 demo → P1 真实索引与 SQLite → P2 图上规划与确认
-→ P3 MCP 闭环 → P4 功能集与目录约束。首个范围问题：第一轮希望验收 P0 demo，
-还是 P0 加最小 P1 真实仓库浏览？推荐先单独验收 P0，再进入 P1 的独立闭环。
-
-收到用户回答后更新本文件，保留已确认与待确认内容的区别。不要把本状态文件
-当作设计 spec 或实施计划，不要推断用户已批准尚未呈现的设计。
+## 环境注意
+默认npm缓存路径曾不可写；当前命令用 /tmp/atlasmode-npm-cache，不把该路径写入
+跨平台产品配置。不提交数据库、缓存、artifacts或外部验证仓库。
+Superpowers15技能74文件已固定v6.4.2；start_skill草稿已保存，尚未发布。

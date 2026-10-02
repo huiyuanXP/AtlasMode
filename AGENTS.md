@@ -19,6 +19,12 @@ upstream prose resolve to `.agents/skills/brainstorming/SKILL.md` here.
 
 ## Development workflow
 
+For the current unattended build, the user explicitly authorized autonomous
+execution on 2026-10-03 after answering the questionnaire. Do not wait for
+per-stage human approvals during this run: record decisions, self-review the
+design/plan, and obtain independent code reviews. This exception lasts until
+the user asks to wrap up; it does not authorize publishing or shared-branch pushes.
+
 - New projects, features and architectural changes start with `brainstorming`.
   Ask one focused question at a time. For architectural work: discuss approaches,
   present design sections, save and review the written spec, then use
