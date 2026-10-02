@@ -27,7 +27,8 @@ push 授权。使用当前 cloud checkout，分阶段本地 commit。
 计划：plans/2026-10-03-local-planning-mvp.md
 接口：contracts.md
 SDD ledger：.superpowers/sdd/2026-10-03-local-planning-mvp/progress.md（忽略Git）
-当前：T01 已完成且复审通过（1b33c7f、415a054），T02 真实源码索引正在实施。
+当前：T01 已完成且复审通过（1b33c7f、415a054）；T02 真实源码索引及修复
+已复审通过（56ccccf、2c016ec）。即将实施 T03 SQLite 与规划/核对服务。
 T01–T08顺序执行，不并行派遣实现者；精确任务/修复轮次以 ledger 为准。
 用户时区 Asia/Singapore；本轮开始 UTC 2026-10-02 19:55（本地2026-10-03 03:55）。
 
@@ -36,6 +37,9 @@ T01–T08顺序执行，不并行派遣实现者；精确任务/修复轮次以 
 固定公开中大型TS项目与Python项目索引。三OS CI矩阵，未实际跑的native runner
 明确未执行。失败按 setup/应用缺陷/能力阻碍区分，禁止关闭TLS/校验或弱化测试。
 已验证工作流安装校验、锁定依赖安装、core 51 项测试及其构建/类型检查/lint。
+T02 原实现全套72项通过；复审修复后 indexer 31项回归通过，相关构建/类型/lint通过。
+TS/Python 捕获字节索引、安全源码读取、打包后 Python helper 与目标代码不执行已验证。
+已修复 Python 影子绑定/局部未初始化错误连边和匿名回调空行身份变化；独立复审通过。
 本地 SQLite 原生模块、TS AST、Fastify/static、MCP SDK 导入已做依赖烟雾验证。
 产品服务、UI、MCP 闭环仍未完成，不能把依赖导入当成功能验收。
 
