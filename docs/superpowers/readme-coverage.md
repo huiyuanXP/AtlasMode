@@ -19,7 +19,7 @@
 | 路径输入与项目切换、中文、左右详情和局部画布 | T05 | 尚未实现或验收 |
 | 事实/规划叠加、改接关系、目标文件、删除临时节点、说明 | T05 | 尚未实现或验收；不能修改事实层冒充真实代码 |
 | 浏览路线与未来 skill 接口 | T03、T05、T06 | 持久化及带证据路线验证已实现；UI 和 MCP 待完成 |
-| Agent 提交规划、UI 批准、MCP 同 revision/hash | T06、T08 | 尚未实现或验收；不提供 MCP 批准工具 |
+| Agent 提交规划/功能集、UI 批准、MCP 同 revision/hash | T06、T08 | 尚未实现或验收；不提供 MCP 批准工具；list_projects 供新客户端发现项目 |
 | 英文、主题、功能集、目录职责/禁止依赖、撤销重做 | T07 | 尚未实现或验收；组成员多对多、布局与语义 revision 分离 |
 | 离线核心、Win/mac/Linux 启动、CI、浏览器与实际视觉检查 | T04–T08 | 当前 Linux 依赖可用；系统 Chromium 可用；原生 Win/mac runner 尚未执行 |
 | Markdown / JSON 规划导出 | T03、T05、T06 | service 实际导出已验证；UI/MCP 客户端闭环待完成 |
@@ -32,8 +32,8 @@
 1. **目标项目的真实模块解析**：读取受限的 tsconfig 配置，处理 paths/baseUrl、
    monorepo workspace package exports 与可证明的静态 CommonJS。用本仓库及固定
    Vite 源码抽查跨包调用；无法确定的条件导出/动态加载保留 unknown。
-2. **Agent 功能集提交**：补齐 README 的 propose_group 工具，固定 agent 来源，
-   遵守已有 project/member 验证；以真实 stdio 和 HTTP 一致性验收。
+2. **功能集的 Agent 闭环复核**：propose_group 已纳入 T06，固定 agent 来源并
+   遵守 project/member 验证；首轮实际 stdio 与 HTTP 一致性验收后再检查高级组合缺口。
 3. **独立持久化知识与失联绑定**：注释不只依附某个规划，保留作者来源与约束语义，
    刷新后明确显示待重新关联；不自动把相似函数认作同一身份。
 4. **知识迁移及数据保全**：带 schemaVersion 的知识导出/导入、冲突预览与明确应用，

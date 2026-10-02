@@ -103,10 +103,11 @@ Necessary startup hooks/manifests: root package.json, server package.json, root 
 ## Task 6: Actual stdio MCP bridge (T06)
 
 **Files:** `apps/mcp/src/{index,server,client}.ts`; real SDK client integration tests; `docs/mcp.md`.
-**Interfaces:** createMcpServer(apiUrl), only HTTP + core. Tools: get_project_summary, search_functions, get_function_context, get_subgraph, propose_route/get_routes, propose_plan/update_plan/validate_plan/get_approved_plan, refresh_index, verify_implementation, get_groups/get_folder_policies.
+**Interfaces:** createMcpServer(apiUrl), only HTTP + core. Tools: list_projects, get_project_summary, search_functions, get_function_context, get_subgraph, propose_route/get_routes, propose_plan/update_plan/validate_plan/get_approved_plan, refresh_index, verify_implementation, propose_group/get_groups/get_folder_policies.
 
 - [ ] Read stable official SDK API/examples from installed package; pin one major. Write failing real stdio client test against spawned local HTTP server, not a mocked MCP facade.
 - [ ] Implement schema-validated tools with pagination/budgets and honest errors; return snapshot/revision/validity. No approve tool, logs stderr only; async transport failures terminate cleanly.
+- [ ] Let a newly connected client discover opened projects with paged list_projects instead of guessing the browser's active project. Explicit projectId binds subsequent queries. propose_group creates a validated new group with server-bound source:'agent', reusing existing HTTP group service; no new database path.
 - [ ] Test UI/API approval yields same revision/hash via MCP; updates invalid approval; submitted routes visible via HTTP; reconnect after service restart reads retained data.
 - [ ] Document absolute Node entry and CODEMAP_API_URL examples for Codex CLI/App and Claude Code; use no npm banner in stdout; no API key needed.
 - [ ] Run actual SDK integration and build; commit T06.
