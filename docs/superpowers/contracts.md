@@ -177,3 +177,23 @@ budget 限制返回节点数（包括可容纳的文件/目录上下文），返
 任一预算导致结果裁剪均设 truncated=true。未知/异项目节点拒绝，不能静默忽略。
 无效输入 400，找不到 404，revision/基线冲突 409，Python 缺失给出可操作错误/诊断。
 对每次预算裁剪明确 truncated；规划、路线不能引用另一个 project 的节点。
+
+## T06 MCP 适配约定
+
+实际工具和客户端示例见 `docs/mcp.md`。MCP 使用同一 HTTP 服务，不创建数据库；
+工具成功结果是 text content 中的 JSON，领域失败为 `isError:true`，保留
+`code/message/status` 和可用的 `issues`。单请求超时30秒，关闭 transport 会取消
+尚未完成的 HTTP 请求。stdout 仅协议，诊断写 stderr。
+
+- `list_projects` 发现已由网页/API 打开的项目。后续项目工具显式传 `projectId`；
+  规划工具还传 `planId` 并检查归属，不从浏览器当前选择或 cwd 猜测。
+- 项目/路线/分组/目录约束列表在适配层分页：`items/total/offset/limit/truncated`，
+  默认50、最大200。现有 HTTP 内部仍返回数组，不能宣称后端游标或内存已分页。
+- `propose_plan` 显式要求 `baselineSnapshotId` 和 `operations`。空操作保留创建的
+  revision1，非空通常经第二个 HTTP 更新成为 revision2；两步不原子。
+  更新失败返回实际错误和 `createdPlanId/createdRevision`，保留可找回的草稿。
+- `get_approved_plan` 先检查归属，再真实刷新、读取当前 PlanDetail；历史批准不能
+  代替当前 draft 的确认。`verify_implementation` 核对真实已批准的历史 revision。
+- 新路线/分组固定 `source:'agent'`，分组提议不接受已有 id。读取路线增加 `stale`
+  标识但不改写记录。`refresh_index` 返回摘要，不向 Agent 输出全仓图。
+- 不提供批准工具，不写目标源码；原生客户端与平台验证结果必须单独记录。
