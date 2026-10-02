@@ -28,8 +28,8 @@ push 授权。使用当前 cloud checkout，分阶段本地 commit。
 接口：contracts.md
 SDD ledger：.superpowers/sdd/2026-10-03-local-planning-mvp/progress.md（忽略Git）
 当前：T01 已完成且复审通过（1b33c7f、415a054）；T02 真实源码索引及修复
-已复审通过（56ccccf、2c016ec）。T03 SQLite 与规划/核对服务已实现（f2d1b11），
-针对独立审查三个问题的修复已提交（5608f10），等待限定范围复审；随后实施 T04 HTTP。
+已复审通过（56ccccf、2c016ec）。T03 SQLite 与规划/核对服务及三个审查问题的
+修复已复审通过（f2d1b11、5608f10）。当前实施 T04 HTTP 与本地启动入口。
 T01–T08顺序执行，不并行派遣实现者；精确任务/修复轮次以 ledger 为准。
 用户时区 Asia/Singapore；本轮开始 UTC 2026-10-02 19:55（本地2026-10-03 03:55）。
 
