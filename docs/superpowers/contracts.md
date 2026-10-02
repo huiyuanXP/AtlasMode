@@ -81,6 +81,8 @@ type VerificationReport = {
   `getFunctionContext(snapshot,nodeId,{offset?,limit?})`、
   `getSubgraph(snapshot,{nodeIds,depth?,budget?,relationTypes?})`、
   `getProjectSummary(project,snapshot)`。
+  结果类型名：`FunctionSearchResult`、`FunctionContextResult`、`SubgraphResult`、
+  `ProjectSummary`；输入类型名：`Pagination`、`FunctionSearchInput`、`SubgraphInput`。
 
 ## 实现入口
 
@@ -130,6 +132,11 @@ call_chain 从第二步起，每一步 relationId 指向上一节点到当前节
 关系并携带源码证据。walkthrough 不需要调用边；若提供 relationId，必须与该步骤节点相关。
 
 ## HTTP（统一 JSON；默认成功返回实体，无额外包裹）
+
+错误响应固定为 `{code:string,message:string}`；请求 schema 校验失败额外带
+`issues:[{path:(string|number)[],message:string}]`。非预期服务错误返回脱敏的
+`{code:'INTERNAL_ERROR',message:'Internal server error.'}`，客户端显示具体可操作的
+领域错误，但不能把内部异常堆栈作为产品错误说明。
 
 | 方法与路径 | 参数/响应 |
 | --- | --- |
