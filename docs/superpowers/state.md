@@ -155,7 +155,7 @@ controller补充规则：已枚举但不可用配置以`CONFIGURATION_UNAVAILABL
 成功不能取消另一extends链的深度/循环/预算拒绝，需逐个归属配置验证。
 Task1 f913eae已独立审查通过（0 Critical/Important/Minor），原始报告见新plan ledger。
 Task2 952bffa已实现按来源文件的配置checker解析并独立审查通过（0C/I/M）：160项相关测试、core/indexer build/typecheck和root lint通过。
-最近配置归属、拒绝scope、不跨项目cache、配置alias不可用unknown及捕获-only host均有回归。Task3实际HTTP/MCP/UI历史兼容和最终root suite待验收。
+最近配置归属、拒绝scope、不跨项目cache、配置alias不可用unknown及捕获-only host均有回归。Task3实际HTTP/MCP/UI历史兼容和最终root suite已通过，详细证据见下节；整轮审查待完成。
 
 后续调研已实际复现CommonJS两类旧误判（导出覆盖、require遮蔽）及暴露入口缺口；下一独立Ticket先处理这些安全/语义边界，再处理workspace源码映射。当前不宣称完整CommonJS支持或运行时值证明。
 
@@ -181,6 +181,6 @@ Task1/2已满足后端生命周期，因此后端是新增GREEN基线，不制�
 外部浏览器请求拒绝，实际external/console/page errors/SDK stderr均空；sentinel
 未执行，owned进程及临时SQLite/目录已清理。详细命令/时间/指纹与报告在当前
 `.superpowers/sdd/2026-10-03-captured-tsconfig/scratch/task-3/`。
-Task3实现者自检完成，等待controller独立任务及全计划审查；不宣称已过gate。
+Task3 ab9f8c1独立任务审查通过（0C/0I/1M），环境颜色变量的Playwright warning记入Minor，由整轮审查裁决；全计划审查仍待完成。
 CommonJS旧缺陷仍归下一独立Ticket；workspace package/exports/references未实施。
 原生Win/mac、远端CI、实际客户端注册、fresh-task恢复/发布仍未执行。
