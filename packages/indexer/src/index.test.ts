@@ -816,6 +816,99 @@ describe("captured configuration integration", () => {
 });
 
 describe("CommonJS public safety", () => {
+  it("exposes a two-hop forwarding entry at the actual leaf and preserves physical imports", async () => {
+    const root = await temp();
+    const files = {
+      "entry.cjs":
+        "const mod = require('./barrel.cjs');\nfunction entry() { mod.help(); }\n",
+      "barrel.cjs": "module.exports = require('./middle.cjs');\n",
+      "middle.cjs": "module.exports = require('./leaf.cjs');\n",
+      "leaf.cjs": "function help() {}\nexports.help = help;\n",
+    };
+    for (const [path, text] of Object.entries(files))
+      await writeFile(join(root, path), text);
+    const snapshot = await new SourceIndexer().index(
+      root,
+      "forwarding-samebytes",
+    );
+    expect(fn(snapshot, "leaf.cjs", "help")).toMatchObject({
+      exported: true,
+      startLine: 1,
+    });
+    call(snapshot, "entry.cjs", "entry", "leaf.cjs", "help");
+    expect(
+      snapshot.nodes.filter((n) => n.kind === "function" && n.name === "help"),
+    ).toHaveLength(1);
+    for (const [source, target] of [
+      ["entry.cjs", "barrel.cjs"],
+      ["barrel.cjs", "middle.cjs"],
+      ["middle.cjs", "leaf.cjs"],
+    ]) {
+      expect(
+        snapshot.relations.find(
+          (r) => r.type === "imports" && r.evidence.filePath === source,
+        ),
+      ).toMatchObject({
+        targetId: snapshot.nodes.find(
+          (n) => n.kind === "file" && n.filePath === target,
+        )!.id,
+        resolution: "resolved",
+        evidence: { line: 1, text: `require('./${target}')` },
+      });
+    }
+    expect(
+      (await new SourceIndexer().index(root, "forwarding-samebytes")).id,
+    ).toBe(snapshot.id);
+  });
+
+  it.each(["valid", "opaque", "excluded", "esm", "invalid"])(
+    "respects %s captured package/leaf boundaries for forwarding",
+    async (kind) => {
+      const root = await temp();
+      await mkdir(join(root, "sub"));
+      await writeFile(join(root, "package.json"), '{"type":"commonjs"}');
+      await writeFile(
+        join(root, "entry.js"),
+        "const mod = require('./barrel.js'); function entry() { mod.help(); }",
+      );
+      await writeFile(
+        join(root, "barrel.js"),
+        "module.exports = require('./sub/leaf.js');",
+      );
+      await writeFile(
+        join(root, "sub/leaf.js"),
+        "function help() {} exports.help = help;",
+      );
+      if (kind === "opaque") {
+        await writeFile(join(root, ".gitignore"), "sub/package.json\n");
+        await writeFile(join(root, "sub/package.json"), "PRIVATE_SENTINEL");
+      } else if (kind === "excluded")
+        await writeFile(join(root, ".gitignore"), "sub/leaf.js\n");
+      else if (kind === "esm")
+        await writeFile(join(root, "sub/package.json"), '{"type":"module"}');
+      else if (kind === "invalid")
+        await writeFile(join(root, "sub/package.json"), "{broken");
+      const snapshot = await new SourceIndexer().index(
+        root,
+        "forwarding-boundaries",
+      );
+      const edge = snapshot.relations.find(
+        (r) => r.evidence.text === "mod.help()",
+      )!;
+      if (kind === "valid") {
+        call(snapshot, "entry.js", "entry", "sub/leaf.js", "help");
+        expect(fn(snapshot, "sub/leaf.js", "help")).toMatchObject({
+          exported: true,
+        });
+      } else
+        expect(edge).toMatchObject({
+          resolution: "unresolved",
+          targetId: null,
+          reason: expect.any(String),
+        });
+      expect(JSON.stringify(snapshot)).not.toContain("PRIVATE_SENTINEL");
+    },
+  );
   it.each(["overwritten exports", "shadowed require"])(
     "rejects checker-only identity for %s",
     async (kind) => {

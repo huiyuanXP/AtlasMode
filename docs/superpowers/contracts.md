@@ -330,10 +330,29 @@ budget 限制返回节点数（包括可容纳的文件/目录上下文），返
   escapes invalidate shared export facts before any consumer is classified,
   independent of file traversal order. Visible callable rewrites/redeclarations
   cannot establish the original implementation.
+- Single top-level `module.exports = require('./captured-relative-target')`
+  forwarding (also static `module['exports']`) is supported only with unshadowed,
+  unrewritten Node globals, valid captured CJS source/target modes and no other
+  exports/root writes in the forwarding source. Directed chains are bounded to
+  16 forwarding edges; 17 edges, cycles/self-cycles and any forwarding require
+  edge in a captured require SCC stay unresolved. Validation uses only captured
+  checker module declarations, never loader execution or name matching.
+- Validated forwarders and their actual leaf form a private identity group.
+  Before exposing entries or resolving calls, the registry unions all known
+  property rejections and whole-namespace invalidations from the leaf, aliases
+  and captured CJS/ESM consumers. Other stable properties survive known-property
+  writes, including the empty-string property; callable module identity remains
+  distinct from a property named `default`. Invalid/unsupported forwarding gets
+  no namespace-escape exemption; unsupported imported roots cannot gain stable
+  local overlay exports. Conservative rejection can hide otherwise safe runtime
+  aliases, including a shorter chain used by a rejected over-budget forwarder.
+  Calls retain actual leaf declaration IDs/names/locations; import evidence and
+  private cycle flags retain their physical source/target identities.
 - Mutable importer bindings, ambient/type-only/dynamic values, recursive aliases,
-  module forwarding (`module.exports = require(...)`), package exports and
-  unverified ESM re-export chains remain unresolved. Direct ESM imports of CJS
-  exports use the same guards; rejected values cannot fall through to checker-only
+  conditional/repeated/chained/property/nonrelative forwarding, namespace-variable
+  forwarding, package exports and unverified ESM re-export chains remain unresolved.
+  Direct ESM imports of CJS exports use the same guards; rejected values cannot
+  fall through to checker-only
   resolution. A real user function named `require` retains its ordinary direct
   callee identity but its return value supplies no Node namespace.
 - Captured, lexically unshadowed literal require dependencies are checked for
@@ -346,9 +365,13 @@ budget 限制返回节点数（包括可容纳的文件/目录上下文），返
   It conservatively includes nested or conditional require calls and does not
   prove safe initialization order, even when an export precedes a cyclic require.
   Acyclic edges into/out of a component and ordinary local function recursion
-  keep their existing guards; no loader execution or forwarding is introduced.
+  keep their existing guards; no loader execution or initialization-order proof
+  is introduced.
 - This is a conservative static subset, not runtime load/build compatibility or
-  complete value-flow analysis. Historical snapshots and approvals are unchanged.
+  complete value-flow analysis. The v3 captured-input content hash and public
+  data shapes are unchanged. For identical captured bytes/project identity, new
+  verified facts change the existing facts fingerprint and snapshot ID while
+  declaration IDs remain stable. Historical snapshots and approvals are unchanged.
 
 
 ## Captured package scopes (Task2)

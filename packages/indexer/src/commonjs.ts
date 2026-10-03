@@ -122,7 +122,7 @@ function writeTargets(node: ts.Node): ts.Expression[] {
   return leaves(target);
 }
 
-/** A captured-AST registry, deliberately limited to one-hop CommonJS bindings.
+/** A captured-AST registry with bounded, validated CommonJS forwarding.
  * Build all rejection facts before exposing any entry or classifying any call.
  */
 export function createCommonJsAnalyzer(
@@ -143,6 +143,8 @@ export function createCommonJsAnalyzer(
   const bindings = new Map<ts.Symbol, Binding>();
   const requires = new Map<ts.CallExpression, Binding>();
   const moduleImports: CommonJsModuleImport[] = [];
+  const forwarding = new Map<Module, ts.CallExpression>();
+  const rootValues = new Map<Module, ts.Expression>();
   const symbol = (node: ts.Node) => checker.getSymbolAtLocation(node);
   const mode = (source: ts.SourceFile) => {
     const path = pathOf(source);
@@ -418,6 +420,18 @@ export function createCommonJsAnalyzer(
       )
     )
       mod.invalid = true;
+    if (rootAssignment) rootValues.set(mod, rootAssignment.right);
+    // A forwarding source has exactly one root write and no property writes.
+    // Require identity, target mode, cycles and the complete chain are checked
+    // later, once validated require records and SCCs are available.
+    if (rootAssignment && !canonical && propertyAssignments.length === 0) {
+      const value = unwrap(rootAssignment.right);
+      if (
+        ts.isCallExpression(value) &&
+        isName(unwrap(value.expression), "require")
+      )
+        forwarding.set(mod, value);
+    }
     // Using the namespace as a value can mutate it through an untracked alias.
     walk(mod.source, (node) => {
       if (!ts.isExpression(node)) return;
@@ -695,6 +709,54 @@ export function createCommonJsAnalyzer(
       };
     return undefined;
   }
+  // An unsupported imported root can alias a mutable namespace or callable.
+  // Its local property assignments must not become affirmative overlay exports.
+  // Use only the already captured direct/const bindings, without new value flow.
+  for (const [mod, value] of rootValues)
+    if (!forwarding.has(mod) && reference(value)) mod.invalid = true;
+
+  // Keep physical modules in bindings/import evidence. Canonical modules are
+  // only for guarded export lookup; no function nodes or declaration IDs move.
+  const canonicalModule = new Map<Module, Module>();
+  const forwardingCalls = new Set<ts.CallExpression>();
+  for (const start of forwarding.keys()) {
+    let current = start;
+    let depth = 0;
+    const seen = new Set<Module>();
+    while (forwarding.has(current)) {
+      const call = forwarding.get(current)!;
+      const binding = requires.get(call);
+      const literal = call.arguments[0];
+      if (
+        current.invalid ||
+        seen.has(current) ||
+        depth === 16 ||
+        !binding?.module ||
+        binding.reason ||
+        binding.cyclicInitialization ||
+        !literal ||
+        !ts.isStringLiteralLike(literal) ||
+        !/^\.\.?\//.test(literal.text) ||
+        mode(binding.module.source) !== "commonjs"
+      )
+        break;
+      seen.add(current);
+      depth++;
+      current = binding.module;
+    }
+    if (!forwarding.has(current) && !current.invalid) {
+      canonicalModule.set(start, current);
+      forwardingCalls.add(forwarding.get(start)!);
+    } else {
+      // No escape exemption for an unproved chain (including an SCC edge).
+      // The original consumer pass will invalidate its captured target too.
+      // Delay this rejection until all chains are checked to avoid order bias.
+      canonicalModule.set(start, start);
+    }
+  }
+  for (const [mod, leaf] of canonicalModule)
+    if (mod === leaf) mod.invalid = true;
+
   // A captured consumer can mutate the shared namespace. This pass must finish
   // for every file before entries/calls are accepted in any other consumer.
   for (const source of sources)
@@ -702,7 +764,7 @@ export function createCommonJsAnalyzer(
       for (const target of writeTargets(node)) {
         const ref = reference(target);
         if (ref?.module && !exportReference(target)) {
-          if (ref.property && !ref.reason)
+          if (ref.property !== undefined && !ref.reason)
             ref.module.rejected.add(ref.property);
           else if (member(target)) ref.module.invalid = true;
         }
@@ -712,6 +774,7 @@ export function createCommonJsAnalyzer(
       if (!ref?.module || ref.property !== undefined || exportReference(node))
         return;
       const parent = node.parent;
+      if (forwardingCalls.has(unwrap(node) as ts.CallExpression)) return;
       if (member(parent as ts.Expression)?.base === node) return;
       if (ts.isCallExpression(parent) && parent.expression === node) return;
       if (
@@ -735,6 +798,24 @@ export function createCommonJsAnalyzer(
         return;
       ref.module.invalid = true;
     });
+  // All aliases of a proven leaf share rejection facts, including mutations
+  // from other CJS/ESM consumers and the leaf's own export writes. Compute the
+  // union before exposing entries or classifying calls, regardless of order.
+  const groups = new Map<Module, Module[]>();
+  for (const mod of modules.values()) {
+    const leaf = canonicalModule.get(mod) ?? mod;
+    const group = groups.get(leaf) ?? [];
+    group.push(mod);
+    groups.set(leaf, group);
+  }
+  for (const group of groups.values()) {
+    const invalid = group.some((mod) => mod.invalid);
+    const rejected = new Set(group.flatMap((mod) => [...mod.rejected]));
+    for (const mod of group) {
+      mod.invalid = invalid;
+      mod.rejected = rejected;
+    }
+  }
   const exportedDeclarationIds = new Set<string>();
   for (const mod of modules.values())
     if (!mod.invalid)
@@ -760,7 +841,7 @@ export function createCommonJsAnalyzer(
         reason:
           "CommonJS module mode, namespace identity, or export stability is not established",
       };
-    const id = mod.exports.get(key);
+    const id = (canonicalModule.get(mod) ?? mod).exports.get(key);
     return id && !mod.rejected.has(key)
       ? { targetId: id }
       : {

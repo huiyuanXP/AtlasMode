@@ -508,7 +508,6 @@ describe("captured CommonJS", () => {
     "declare function help(): void; exports.help = help;",
     "const help = () => {}; help = replacement; exports.help = help;",
     "import type { help } from './types'; exports.help = help;",
-    "module.exports = require('./forward.cjs');",
   ])("does not infer an implementation from %s", (library) => {
     unresolved(
       index({
@@ -517,6 +516,19 @@ describe("captured CommonJS", () => {
         "forward.cjs": stable,
         "types.ts": "export declare function help(): void;",
       }),
+    );
+  });
+  // The former unsupported-forwarding case is now the exact supported subset.
+  it("resolves single-hop forwarding to the original captured declaration", () => {
+    resolved(
+      index({
+        "lib.cjs": "module.exports = require('./forward.cjs');",
+        "entry.cjs": consumer,
+        "forward.cjs": stable,
+      }),
+      "mod.help()",
+      "help",
+      "forward.cjs",
     );
   });
   it("guards ESM imports of rejected CJS properties", () => {
@@ -770,5 +782,481 @@ describe("package commonjs source syntax eligibility", () => {
     expect(relation(graph, "mod.help()", "entry.js").resolution).toBe(
       "resolved",
     );
+  });
+});
+
+describe("captured forwarding identities", () => {
+  const forward = "module.exports = require('./middle.cjs');";
+  const middle = "module['exports'] = require('./lib.cjs');";
+  const entry =
+    "const mod = require('./barrel.cjs'); function entry() { mod.help(); }";
+  const objectLeaf =
+    "function help() {} function safe() {} module.exports = { help, safe };";
+  const chain = (leaf = stable, consumer = entry) => ({
+    "entry.cjs": consumer,
+    "barrel.cjs": forward,
+    "middle.cjs": middle,
+    "lib.cjs": leaf,
+  });
+
+  it.each([false, true])(
+    "resolves two-hop forwarding without duplicate leaf nodes (reverse=%s)",
+    (reverse) => {
+      const files = chain();
+      const graph = index(
+        reverse ? Object.fromEntries(Object.entries(files).reverse()) : files,
+      );
+      resolved(graph, "mod.help()", "help");
+      expect(
+        [...graph.nodes.values()].filter(
+          (n) => n.kind === "function" && n.name === "help",
+        ),
+      ).toHaveLength(1);
+      const imported = graph.relations.find(
+        (r) => r.type === "imports" && r.evidence.filePath === "entry.cjs",
+      )!;
+      expect(graph.nodes.get(imported.targetId!)).toMatchObject({
+        filePath: "barrel.cjs",
+      });
+    },
+  );
+
+  it.each([
+    [
+      "function declaration",
+      "function help() {} module.exports = help;",
+      "mod()",
+      "help",
+      "FunctionDeclaration",
+    ],
+    [
+      "anonymous function",
+      "module.exports = function () {};",
+      "mod()",
+      "<anonymous>",
+      "FunctionExpression",
+    ],
+    [
+      "arrow",
+      "module.exports = () => {};",
+      "mod()",
+      "<anonymous>",
+      "ArrowFunction",
+    ],
+    [
+      "object",
+      "function help() {} module.exports = { help };",
+      "mod.help()",
+      "help",
+      "FunctionDeclaration",
+    ],
+    [
+      "named default",
+      "function help() {} exports.default = help;",
+      "mod.default()",
+      "help",
+      "FunctionDeclaration",
+    ],
+  ])(
+    "forwards %s with its actual identity",
+    (_label, leaf, call, name, kind) => {
+      const graph = index(
+        chain(
+          leaf,
+          `const mod = require('./barrel.cjs'); function entry() { ${call}; }`,
+        ),
+      );
+      resolved(graph, call!, name!, "lib.cjs", kind);
+    },
+  );
+
+  it("keeps callable default separate from named default", () => {
+    const graph = index(
+      chain(
+        "function help() {} function named() {} module.exports = help; module.exports.default = named;",
+        "const mod = require('./barrel.cjs'); function entry() { mod(); mod.default(); }",
+      ),
+    );
+    resolved(graph, "mod()", "help");
+    resolved(graph, "mod.default()", "named");
+    unresolved(
+      index(
+        chain(
+          "function help() {} exports.default = help;",
+          "const mod = require('./barrel.cjs'); function entry() { mod(); }",
+        ),
+      ),
+      "mod()",
+    );
+  });
+
+  it.each([16, 17])("bounds a forwarding chain of %i edges", (depth) => {
+    const files: Record<string, string> = {
+      "entry.cjs":
+        "const mod = require('./f0.cjs'); function entry() { mod.help(); }",
+      "lib.cjs": stable,
+    };
+    for (let i = 0; i < depth; i++)
+      files[`f${i}.cjs`] =
+        `module.exports = require('./${i === depth - 1 ? "lib" : `f${i + 1}`}.cjs');`;
+    const graph = index(files);
+    if (depth === 16) resolved(graph, "mod.help()", "help");
+    else unresolved(graph);
+  });
+
+  it.each([
+    ["self", "module.exports = require('./barrel.cjs');", middle, stable],
+    [
+      "forward cycle",
+      forward,
+      "module.exports = require('./barrel.cjs');",
+      stable,
+    ],
+    [
+      "ordinary require back edge",
+      forward,
+      middle,
+      "require('./barrel.cjs'); " + stable,
+    ],
+  ])(
+    "rejects %s and preserves an unrelated component",
+    (_label, barrel, mid, leaf) => {
+      const graph = index({
+        ...chain(leaf),
+        "barrel.cjs": barrel!,
+        "middle.cjs": mid!,
+        "safe.cjs": "function okay() {} exports.okay = okay;",
+        "other.cjs":
+          "const { okay } = require('./safe.cjs'); function other() { okay(); }",
+      });
+      unresolved(graph);
+      expect(relation(graph, "okay()", "other.cjs")).toMatchObject({
+        resolution: "resolved",
+      });
+    },
+  );
+
+  it.each([
+    ["barrel", "const mod = require('./barrel.cjs'); mod.help = replacement;"],
+    ["middle", "const mod = require('./middle.cjs'); mod.help = replacement;"],
+    ["leaf", "const mod = require('./lib.cjs'); delete mod.help;"],
+    ["ESM default", "import mod from './barrel.cjs'; mod.help = replacement;"],
+    [
+      "ESM namespace default",
+      "import * as mod from './barrel.cjs'; mod.default.help = replacement;",
+    ],
+  ])(
+    "propagates a known-property write through %s to every alias",
+    (_label, mutation) => {
+      const graph = index({
+        ...chain(
+          objectLeaf,
+          entry.replace("mod.help();", "mod.help(); mod.safe();"),
+        ),
+        "mutator.cjs": mutation!,
+        "leaf-user.cjs":
+          "const mod = require('./lib.cjs'); function user() { mod.help(); mod.safe(); }",
+      });
+      unresolved(graph);
+      unresolved(graph, "mod.help()", "leaf-user.cjs");
+      resolved(graph, "mod.safe()", "safe");
+      expect(relation(graph, "mod.safe()", "leaf-user.cjs")).toMatchObject({
+        resolution: "resolved",
+      });
+      expect(
+        graph.nodes.get(
+          makeId("function", "cjs", "lib.cjs", "help", "FunctionDeclaration"),
+        ),
+      ).toMatchObject({ exported: false });
+    },
+  );
+
+  it.each([
+    "const mod = require('./barrel.cjs'); mod[key] = replacement;",
+    "const mod = require('./middle.cjs'); expose(mod);",
+    "const mod = require('./lib.cjs'); const alias = mod;",
+    "import mod from './barrel.cjs'; expose(mod);",
+  ])("propagates whole-namespace invalidation: %s", (mutation) => {
+    const graph = index({
+      ...chain(objectLeaf),
+      "mutator.cjs": mutation,
+      "leaf-user.mjs":
+        "import { help } from './lib.cjs'; function user() { help(); }",
+    });
+    unresolved(graph);
+    unresolved(graph, "help()", "leaf-user.mjs");
+  });
+
+  it.each([
+    "module.exports = require('./middle.cjs'); module.exports = require('./middle.cjs');",
+    "if (flag) module.exports = require('./middle.cjs');",
+    "exports = module.exports = require('./middle.cjs');",
+    "const mod = require('./middle.cjs'); module.exports = mod;",
+    "let mod = require('./middle.cjs'); module.exports = mod;",
+    "var mod = require('./middle.cjs'); module.exports = mod;",
+    "module.exports = require('./middle.cjs').help;",
+    "module.exports = require(name);",
+    "module.exports = require('external');",
+    "module.exports = require('./middle.cjs'); module.exports.help = replacement;",
+    "const module = {}; module.exports = require('./middle.cjs');",
+    "const require = () => ({}); module.exports = require('./middle.cjs');",
+    "module = {}; module.exports = require('./middle.cjs');",
+    "require = other; module.exports = require('./middle.cjs');",
+  ])("does not infer unsupported forwarding: %s", (barrel) =>
+    unresolved(index({ ...chain(), "barrel.cjs": barrel })),
+  );
+
+  it.each(["unknown", "esm"] as const)(
+    "rejects a %s leaf module mode",
+    (mode) => {
+      const graph = index(
+        {
+          "entry.cjs": entry,
+          "barrel.cjs": "module.exports = require('./lib.js');",
+          "lib.js": stable,
+        },
+        () => mode,
+      );
+      unresolved(graph);
+    },
+  );
+
+  it("rejects missing captured leaves", () =>
+    unresolved(
+      index({
+        "entry.cjs": entry,
+        "barrel.cjs": forward,
+        "middle.cjs": middle,
+      }),
+    ));
+
+  it.each([false, true])(
+    "unions sibling alias and leaf writes before exposure (reverse=%s)",
+    (reverse) => {
+      const files = {
+        ...chain(
+          objectLeaf,
+          entry.replace("mod.help();", "mod.help(); mod.safe();"),
+        ),
+        "sibling.cjs": "module.exports = require('./lib.cjs');",
+        "mutator.cjs":
+          "const mod = require('./sibling.cjs'); mod.help = replacement;",
+        "leaf-user.mjs":
+          "import { help, safe } from './lib.cjs'; function user() { help(); safe(); }",
+      };
+      const graph = index(
+        reverse ? Object.fromEntries(Object.entries(files).reverse()) : files,
+      );
+      unresolved(graph);
+      unresolved(graph, "help()", "leaf-user.mjs");
+      resolved(graph, "mod.safe()", "safe");
+      expect(relation(graph, "safe()", "leaf-user.mjs")).toMatchObject({
+        resolution: "resolved",
+      });
+    },
+  );
+
+  it("preserves stable properties after the leaf rewrites a different export", () => {
+    const graph = index(
+      chain(
+        objectLeaf + " module.exports.help = replacement;",
+        entry.replace("mod.help();", "mod.help(); mod.safe();"),
+      ),
+    );
+    unresolved(graph);
+    resolved(graph, "mod.safe()", "safe");
+  });
+
+  it.each([
+    "module.exports = require('./middle.cjs'); module.exports.extra = other;",
+    "exports = module.exports = require('./middle.cjs');",
+    "if (flag) module.exports = require('./middle.cjs');",
+    "module.exports = require('./middle.cjs'); module.exports = other;",
+  ])(
+    "withholds the escape exemption from an invalid forwarder: %s",
+    (barrel) => {
+      const graph = index({
+        ...chain(),
+        "barrel.cjs": barrel,
+        "leaf-user.cjs": consumer,
+      });
+      unresolved(graph);
+      unresolved(graph, "mod.help()", "leaf-user.cjs");
+      expect(
+        graph.nodes.get(
+          makeId("function", "cjs", "lib.cjs", "help", "FunctionDeclaration"),
+        ),
+      ).toMatchObject({ exported: false });
+    },
+  );
+
+  it("retains local recursion in a valid forwarded leaf", () => {
+    const graph = index(
+      chain("function help() { help(); } exports.help = help;"),
+    );
+    resolved(graph, "mod.help()", "help");
+    expect(relation(graph, "help()", "lib.cjs")).toMatchObject({
+      targetId: makeId(
+        "function",
+        "cjs",
+        "lib.cjs",
+        "help",
+        "FunctionDeclaration",
+      ),
+      resolution: "resolved",
+    });
+  });
+
+  it.each([false, true])(
+    "rejects a forwarding edge in an ordinary require SCC (reverse=%s)",
+    (reverse) => {
+      const files = chain("require('./barrel.cjs'); " + stable);
+      const graph = index(
+        reverse ? Object.fromEntries(Object.entries(files).reverse()) : files,
+      );
+      unresolved(graph);
+      expect(relation(graph, "mod.help()").reason).toMatch(/CommonJS/);
+    },
+  );
+
+  it("retains the incoming cycle flag even when the physical target has a canonical leaf", () => {
+    const graph = index({
+      ...chain(),
+      "barrel.cjs": "require('./entry.cjs'); " + forward,
+      "entry.cjs":
+        "const mod = require('./barrel.cjs'); function entry() { mod.help(); }",
+    });
+    unresolved(graph);
+    expect(relation(graph, "mod.help()").reason).toMatch(/cycl/i);
+    expect(
+      graph.nodes.get(
+        makeId("function", "cjs", "lib.cjs", "help", "FunctionDeclaration"),
+      ),
+    ).toMatchObject({ exported: true });
+  });
+
+  it.each([
+    ["ESM", "export {}; module.exports = require('./middle.cjs');"],
+    [
+      "require function",
+      "function require() {} module.exports = require('./middle.cjs');",
+    ],
+    [
+      "module destructuring",
+      "const { module } = source; module.exports = require('./middle.cjs');",
+    ],
+    [
+      "compound write",
+      "module.exports = require('./middle.cjs'); module.exports += other;",
+    ],
+    ["ESM syntax in leaf", "module.exports = require('./leaf.mjs');"],
+  ])("rejects additional source identity uncertainty: %s", (_label, barrel) => {
+    const graph = index({
+      ...chain(),
+      "barrel.cjs": barrel!,
+      "leaf.mjs": "export function help() {}",
+    });
+    unresolved(graph);
+  });
+
+  it("rejects only the known empty-string property across forwarding aliases", () => {
+    const graph = index({
+      ...chain(
+        "function help() {} function safe() {} module.exports = { '': help, safe };",
+        "const mod = require('./barrel.cjs'); function entry() { mod[''](); mod.safe(); }",
+      ),
+      "mutator.cjs":
+        "const mod = require('./middle.cjs'); mod[''] = replacement;",
+    });
+    unresolved(graph, "mod['']()");
+    resolved(graph, "mod.safe()", "safe");
+  });
+
+  it("keeps callable identity after a named-default property mutation", () => {
+    const graph = index({
+      ...chain(
+        "function help() {} function named() {} module.exports = help; module.exports.default = named;",
+        "const mod = require('./barrel.cjs'); function entry() { mod(); mod.default(); }",
+      ),
+      "mutator.cjs":
+        "const mod = require('./middle.cjs'); mod.default = replacement;",
+    });
+    resolved(graph, "mod()", "help");
+    unresolved(graph, "mod.default()");
+  });
+
+  it("does not grant forwarding identity to a configured nonrelative require", () => {
+    const graph = index(
+      { ...chain(), "barrel.cjs": "module.exports = require('@middle');" },
+      undefined,
+      {
+        "jsconfig.json": JSON.stringify({
+          compilerOptions: {
+            baseUrl: ".",
+            paths: { "@middle": ["./middle.cjs"] },
+          },
+        }),
+      },
+    );
+    unresolved(graph);
+  });
+
+  it.each([
+    "module.exports = require('./middle.cjs');",
+    "const mod = require('./middle.cjs'); module.exports = mod;",
+    "let mod = require('./middle.cjs'); module.exports = mod;",
+    "var mod = require('./middle.cjs'); module.exports = mod;",
+    "module.exports = require('./middle.cjs').help;",
+  ])(
+    "rejects stale local export overlays on unsupported forwarding: %s",
+    (root) => {
+      const graph = index({
+        ...chain(
+          stable,
+          "const mod = require('./barrel.cjs'); function entry() { mod.added(); }",
+        ),
+        "barrel.cjs": `${root} function added() {} module.exports.added = added;`,
+        "mutator.cjs":
+          "const mod = require('./lib.cjs'); mod.added = replacement;",
+      });
+      unresolved(graph, "mod.added()");
+      expect(
+        graph.nodes.get(
+          makeId(
+            "function",
+            "cjs",
+            "barrel.cjs",
+            "added",
+            "FunctionDeclaration",
+          ),
+        ),
+      ).toMatchObject({ exported: false });
+    },
+  );
+
+  it("guards ESM imports through the same forwarding identity", () => {
+    const graph = index({
+      ...chain(objectLeaf),
+      "entry.cjs": "",
+      "user.mjs":
+        "import mod, { help } from './barrel.cjs'; import * as ns from './middle.cjs'; function use() { mod.help(); help(); ns.help(); ns.default.help(); ns(); }",
+    });
+    for (const call of [
+      "mod.help()",
+      "help()",
+      "ns.help()",
+      "ns.default.help()",
+    ])
+      expect(relation(graph, call, "user.mjs")).toMatchObject({
+        resolution: "resolved",
+        targetId: makeId(
+          "function",
+          "cjs",
+          "lib.cjs",
+          "help",
+          "FunctionDeclaration",
+        ),
+      });
+    unresolved(graph, "ns()", "user.mjs");
   });
 });
