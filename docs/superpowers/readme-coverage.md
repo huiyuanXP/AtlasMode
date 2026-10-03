@@ -129,7 +129,7 @@ SDK stderr为空，目标sentinel未执行，临时进程/SQLite已清理。
 Task3与整票独立review由controller继续；当前这些是实现者执行的验证证据。
 
 
-## Static CommonJS Task3（独立审查待controller）
+## 历史 Static CommonJS Task3 初始验证（888386e）
 
 最终root build/typecheck/lint与436项/29文件通过；真实HTTP/SDK/SQLite的type-only
 生命周期与历史缺packageFiles读取通过。UI3项真实RED→GREEN，包含双语captured/
@@ -138,7 +138,7 @@ legacy及recorded zero；6张截图已看。规划E2E首轮关闭超时失败，
 未达到原验收；原因、准确行36及scope在validation-targets.md。12张当前图片已查看。
 原始warning保留，无目标执行/上游测试/依赖变更；Win/mac/真实客户端/CI/云恢复未跑。
 
-### Static CommonJS Task3 当前限定验收状态
+### 历史 Static CommonJS Task3 第四轮修复及五轮上限状态
 
 140a3aa 修复实际复现的未完成 HTTP 连接关闭问题；完整请求延迟6.1秒且同连接
 存在未完成流水请求时，HTTP200及真实SQLite写入均保留。最终七包构建/类型、
@@ -146,3 +146,14 @@ lint与440项/30文件通过，之后顺序运行规划E2E1项通过；这些更
 不覆盖历史结果。原首次关闭失败仍缺因果记录，五轮限定复审后以真实 Important
 parked进入整体审查，未声称定因；Task3完成不等于整票关闭。Express原入口FAIL及
 泛用浏览PASS分开保留，静态转发安全下一票；平台/客户端/远端CI/云恢复仍未运行。
+
+
+### 当前 Static CommonJS 整体修复候选（限定复审待controller）
+
+捕获 require 环的初始化不确定绑定现保持 unknown；导入证据、稳定声明ID与本地函数
+递归保留，属性写入/逃逸guard不能绕过。新增18项控制，真实RED11失败后110项registry、
+327项/8文件affected通过；2026-10-03 06:54:30 UTC最终根套件 **458项/30文件** 通过
+（30.24s），七包build/typecheck及lint通过。当前计数取代上述历史440/30，不覆盖原记录。
+本波次无浏览器/成熟目标重跑；原始关闭原因仍未知，WR-I2为真实Important上限保留，
+WR-M1为未解决的非阻塞宿主颜色warning。WR-I1/WR-M2修复等待唯一限定复审，
+不预先声称独立批准、整票关闭或发布；平台/客户端/CI/云恢复仍未运行。

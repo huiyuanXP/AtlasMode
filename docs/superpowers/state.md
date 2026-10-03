@@ -249,3 +249,18 @@ Task3独立审查0C/2I/1M；aad35db修复重复浏览器拦截，经限定复审
 不宣称已定因或独立干净批准。Task3 以1项 parked Important 完成，I2已解决，
 宿主颜色警告仍为 Minor；原始失败及双方观点进入整体审查。
 当前修复类别及最终440/30和顺序规划验证均保留有效，整票尚未关闭。
+
+
+### Static CommonJS 整体唯一修复波次候选（限定复审待完成）
+
+整体审查5badf24为With fixes：WR-I1新阻塞require环初始化错误肯定、WR-M2环境页
+过时状态；WR-I2原关闭故障因果缺口为真实Important、五轮上限后独立接受非阻塞保留，
+WR-M1宿主颜色warning为未解决的非阻塞Minor。当前修复仅commonjs.ts/test和相关文档：
+对有效捕获require依赖做迭代强连通分量检查，环内绑定未知，导入证据/稳定导出ID和
+普通本地递归保留，mutation/escape guard不放松。嵌套/条件require保守拒绝，未实现转发。
+真实RED11失败/7控制通过；110项registry及327项/8文件affected通过。最终源码上一次
+顺序根build/typecheck/lint/test全部退出0：七包、**458项/30文件**，06:54:30 UTC启动、
+30.24s。此计数取代历史440/30作为当前源码验证；历史436/29、440/30、UI3/规划/目标
+证据仍按原阶段保留。本波次无UI/成熟目标/安装重跑。WR-I2仍NOT ADDRESSED，
+原SIGKILL、五轮verdict及类别修复/保留证据不变；WR-M1仍NOT ADDRESSED。
+唯一限定复审由controller派遣，尚未独立批准或整票关闭，无push/publish。

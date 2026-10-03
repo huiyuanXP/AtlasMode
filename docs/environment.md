@@ -1,18 +1,51 @@
 # 环境、运行与验收
 
-2026-10-03 UTC：当前 Linux 的 static-commonjs 最终集成检查：七个 workspace
-build/typecheck、lint、436 项测试（29 文件）全部通过。新增包配置浏览3项通过；
-既有规划 E2E 首次重启前关闭超时，独立重试1项通过，间歇关闭风险保留。
-固定 Express 实际 HTTP/UI/SDK 浏览完成，但全仓 canonical 入口标记验收未满足：
-转发触发保守 escape guard，`createApplication` 为 exported=false。精确证据见下节。
+2026-10-03 UTC：Static CommonJS 整体审查后的唯一修复波次已加入捕获 require 环的
+初始化不确定性检查；环内绑定保持 unknown，真实导入证据与独立稳定导出 ID 保留。
+当前源码的 Linux 七包 build/typecheck、lint 和 **458项/30文件** 全通过（06:54:30 UTC，
+30.24s）；整体审查要求的唯一限定复审仍待 controller，
+本页不代表独立批准或发布。原首次关闭故障原因仍未知（真实 Important，五轮上限
+后保留，WR-I2 未解决）；宿主颜色 warning 仍是非阻塞 Minor（WR-M1 未解决）。
+固定 Express 泛用 HTTP/UI/SDK 浏览 PASS 与原自动 canonical 入口标记 FAIL 分开保留。
 原生 Windows/macOS、实际客户端、远端 CI 与 fresh-cloud restore 仍未执行。
 
-## Static CommonJS Task3 实际验证
+## 当前 Static CommonJS 整体修复检查（2026-10-03 UTC）
 
-基线 `96db7084a1ab8439d5c585b559303bba01a00b5e` 加包配置界面和真实回归。
+- `npx vitest run packages/indexer/src/commonjs.test.ts`：**110项** 通过。新增18项
+  包含双模块/自身/三模块环、源顺序、直接/属性/default/解构形式和原有guard保留；
+  改实现前11项真实失败，7项控制已通过，不执行fixture模块。
+- `npx vitest run packages/indexer/src packages/core/src`：**327项/8文件** 通过（3.17s）。
+- 最终一致源码上依次执行 `npm run build`、`npm run typecheck`、`npm run lint`、
+  `npm test`：全部退出0，七个workspace，**458项/30文件** 全通过，无失败/跳过；
+  root suite于06:54:30 UTC启动，30.24s。覆盖实际编译HTTP/SDK/SQLite及关闭保留回归。
+- 本波次未改UI，未重跑浏览器、Express/Vite/Flask、生产smoke或安装；下面UI3项、
+  规划及目标记录属于其明确历史阶段。458取代440作为当前根套件计数，不重标旧产物。
+- 日志、最终源码指纹和历史产物保留收据在
+  `.superpowers/sdd/2026-10-03-static-commonjs/scratch/whole-fix/`；当前为待限定复审候选。
+
+循环检查只拒绝捕获的 require 环边上的不确定绑定，保留普通本地函数递归。嵌套或
+条件 require 也保守计入依赖，不推断实际执行时机或提前赋值能否打破初始化风险；
+不实现加载器、转发或一般值流。完整边界见 [contracts.md](superpowers/contracts.md)。
+
+## 历史 Task3 第四轮关闭类别修复（2026-10-03 UTC）
+
+`140a3aa` 修改了服务退出实现：实际 raw/partial-header/partial-body 连接先各自
+达到10秒关闭界限并 SIGKILL；修复只关闭没有完整已接收待响应工作的连接。
+完整请求延迟6.1秒、同连接含部分流水请求时，HTTP200及重开SQLite快照均保留。
+该阶段七包 build/typecheck、lint 和 **440项/30文件** 通过（06:04:27 UTC，30.24s），
+随后顺序规划 E2E **1项** 通过（06:05:17.367Z启动，测试11.1s/总12.0s）。
+这是已复现类别的因果修复证据；不是原首次未观测故障的定因，也不是后续环检查源码
+的覆盖结果。五次限定复审均保留原因果证据缺口；上限裁决接受保留真实 Important，
+不称 Task3 独立干净批准。新复发应另开有观测、范围受限的调查。
+原始日志及保留收据见当前 SDD `scratch/task-3/fix-round-4/`。
+根测试内部重建共享 dist，根检查与浏览器运行必须顺序执行。
+
+## 历史 Task3 初始集成与未改源码重试（2026-10-03 UTC）
+
+初始提交 `888386e`，基线 `96db7084a1ab8439d5c585b559303bba01a00b5e` 加包配置界面和真实回归。
 实现者记录不代表 Task3 独立审查或整体 gate 已通过。
 
-- 最终源码后 root `npm run build`、`npm run typecheck`、`npm run lint`、`npm test`
+- 该初始阶段源码后 root `npm run build`、`npm run typecheck`、`npm run lint`、`npm test`
   各一次退出0；436/29全部通过，无失败/跳过，30.32s。后端新增生命周期本来已满足，
   记录 GREEN 基线；首次 harness 错把公开 null targetId 期待为 undefined，修正后通过。
 - `tests/integration/commonjs-resolution.test.ts` 实际编译 HTTP、SDK stdio 与 SQLite：
@@ -22,7 +55,7 @@ build/typecheck、lint、436 项测试（29 文件）全部通过。新增包配
 - 浏览器3项先因缺少“包配置”区域真实 RED，再 GREEN；覆盖 captured/legacy 双语
   和 recorded zero、入口→helper源码行、覆盖/遮蔽理由。6张图片实际查看，源中文未翻译。
 - 因 Navigation 改变，运行既有 planning E2E；首次在重启前 stop 的10秒时限后被
-  SIGKILL（未通过），单独重试在11.0s/总12.0s通过。未改超时、preload或服务退出实现。
+  SIGKILL（未通过），该阶段单独重试在11.0s/总12.0s通过。重试当时未改超时、preload或服务退出实现。
   原因尚未确定，不能把重试通过说成已修复。重试r16/hash为
   `4a6df8fd15745029b6bb138efe44233a872297382a238214224d1066c82d0674`，
   批准时间04:49:04.299Z；5张源码/规划/主题/窄屏图片实际查看。
@@ -41,7 +74,7 @@ Playwright1.63 worker强制颜色与NO_COLOR冲突的原始warning保留，未�
 修改依赖或过滤输出；Linux浏览器仍用PLAYWRIGHT_CHROMIUM_EXECUTABLE=/usr/bin/chromium。
 干净安装/生产smoke/Vite/Flask未重复运行，沿用明确标记的历史记录。
 
-## 整体审查修复波次（2026-10-03 UTC）
+## 历史 Local Planning MVP 整体审查修复波次（2026-10-03 UTC）
 
 四项 Important 与两项 Minor 已实施并独立复审通过（56e7f6f）。本轮七包 build/typecheck、
 lint 退出0；一次全套执行220项/22文件，218项首次通过、2项新增请求测试失败。

@@ -57,6 +57,226 @@ const consumer =
   "const mod = require('./lib.cjs');\nfunction entry() { mod.help(); }";
 
 describe("captured CommonJS", () => {
+  describe("require initialization cycles", () => {
+    it.each([false, true])(
+      "rejects both destructured cycle bindings regardless of source order (reverse=%s)",
+      (reverse) => {
+        const files = {
+          "a.cjs":
+            "const { b } = require('./b.cjs');\nfunction a() { return b(); }\nexports.a = a;",
+          "b.cjs":
+            "const { a } = require('./a.cjs');\nfunction b() { return a(); }\nexports.b = b;",
+        };
+        const graph = index(
+          reverse ? Object.fromEntries(Object.entries(files).reverse()) : files,
+        );
+        for (const [path, call, name] of [
+          ["a.cjs", "b()", "a"],
+          ["b.cjs", "a()", "b"],
+        ]) {
+          unresolved(graph, call, path);
+          expect(relation(graph, call!, path).reason).toMatch(/cycl/i);
+          expect(
+            graph.nodes.get(
+              makeId("function", "cjs", path!, name!, "FunctionDeclaration"),
+            ),
+          ).toMatchObject({
+            name,
+            filePath: path,
+            startLine: 2,
+            exported: true,
+          });
+        }
+        const imports = graph.relations.filter((r) => r.type === "imports");
+        expect(imports).toHaveLength(2);
+        for (const [source, target] of [
+          ["a.cjs", "b.cjs"],
+          ["b.cjs", "a.cjs"],
+        ]) {
+          const edge = imports.find((r) => r.evidence.filePath === source)!;
+          expect(edge).toMatchObject({
+            resolution: "resolved",
+            evidence: { line: 1, text: `require('./${target}')` },
+          });
+          expect(graph.nodes.get(edge.targetId!)).toMatchObject({
+            kind: "file",
+            filePath: target,
+          });
+        }
+      },
+    );
+
+    it("rejects a self-cycle without losing the actual exported declaration", () => {
+      const graph = index({
+        "entry.cjs":
+          "const { entry: again } = require('./entry.cjs'); function entry() { again(); } exports.entry = entry;",
+      });
+      unresolved(graph, "again()");
+      expect(relation(graph, "again()").reason).toMatch(/cycl/i);
+      expect(
+        graph.nodes.get(
+          makeId(
+            "function",
+            "cjs",
+            "entry.cjs",
+            "entry",
+            "FunctionDeclaration",
+          ),
+        ),
+      ).toMatchObject({ exported: true });
+    });
+
+    it.each([
+      ["namespace", "const mod = require('./lib.cjs');", "mod.help()", false],
+      [
+        "literal namespace",
+        "const mod = require('./lib.cjs');",
+        "mod['help']()",
+        false,
+      ],
+      [
+        "destructured",
+        "const { help: selected } = require('./lib.cjs');",
+        "selected()",
+        false,
+      ],
+      [
+        "property binding",
+        "const selected = require('./lib.cjs').help;",
+        "selected()",
+        false,
+      ],
+      ["direct property", "", "require('./lib.cjs').help()", false],
+      [
+        "callable binding",
+        "const selected = require('./lib.cjs');",
+        "selected()",
+        true,
+      ],
+      ["direct callable", "", "require('./lib.cjs')()", true],
+    ] as const)(
+      "guards %s in a cycle and preserves its acyclic implementation ID",
+      (_label, binding, call, callable) => {
+        const files = {
+          "entry.cjs": `${binding} function entry() { ${call}; }`,
+          "lib.cjs": `function help() {} ${callable ? "module.exports = help;" : "exports.help = help;"}`,
+        };
+        const cyclic = index({
+          ...files,
+          "lib.cjs": `require('./entry.cjs'); ${files["lib.cjs"]}`,
+        });
+        unresolved(cyclic, call);
+        expect(relation(cyclic, call).reason).toMatch(/cycl/i);
+        expect(
+          cyclic.nodes.get(
+            makeId("function", "cjs", "lib.cjs", "help", "FunctionDeclaration"),
+          ),
+        ).toMatchObject({ exported: true });
+        resolved(index(files), call, "help");
+      },
+    );
+
+    it("detects a longer cycle through side-effect requires while preserving outgoing and incoming acyclic bindings", () => {
+      const graph = index({
+        "entry.cjs":
+          "const { help } = require('./a.cjs'); function entry() { help(); }",
+        "a.cjs": "require('./b.cjs'); function help() {} exports.help = help;",
+        "b.cjs":
+          "require('./entry.cjs'); const leaf = require('./leaf.cjs'); function b() { leaf.work(); }",
+        "leaf.cjs": "function work() {} exports.work = work;",
+        "outside.cjs":
+          "const mod = require('./a.cjs'); function outside() { mod.help(); }",
+      });
+      unresolved(graph, "help()");
+      expect(relation(graph, "leaf.work()", "b.cjs")).toMatchObject({
+        resolution: "resolved",
+        targetId: makeId(
+          "function",
+          "cjs",
+          "leaf.cjs",
+          "work",
+          "FunctionDeclaration",
+        ),
+      });
+      expect(relation(graph, "mod.help()", "outside.cjs")).toMatchObject({
+        resolution: "resolved",
+        targetId: makeId(
+          "function",
+          "cjs",
+          "a.cjs",
+          "help",
+          "FunctionDeclaration",
+        ),
+      });
+    });
+
+    it.each([
+      ["shadowed", "function local(require) { require('./entry.cjs'); }"],
+      ["dynamic", "require('./' + 'entry.cjs');"],
+    ] as const)(
+      "does not invent a cycle from a %s require",
+      (_label, backEdge) => {
+        const graph = index({
+          "entry.cjs":
+            "const mod = require('./lib.cjs'); function entry() { mod.help(); }",
+          "lib.cjs": `${backEdge} ${stable}`,
+        });
+        resolved(graph, "mod.help()", "help");
+      },
+    );
+
+    it("does not invent a cycle through an unproved Node-global mode", () => {
+      const graph = index({
+        "entry.cjs": consumer,
+        "lib.cjs": `require('./bridge.js'); ${stable}`,
+        "bridge.js": "require('./entry.cjs');",
+      });
+      resolved(graph, "mod.help()", "help");
+    });
+
+    it("preserves ordinary local function recursion even inside a cyclic module graph", () => {
+      const graph = index({
+        "entry.cjs":
+          "require('./other.cjs'); function first() { first(); second(); } function second() { first(); } exports.first = first;",
+        "other.cjs": "require('./entry.cjs');",
+      });
+      for (const name of ["first", "second"])
+        expect(relation(graph, `${name}()`)).toMatchObject({
+          resolution: "resolved",
+          targetId: makeId(
+            "function",
+            "cjs",
+            "entry.cjs",
+            name,
+            "FunctionDeclaration",
+          ),
+        });
+    });
+
+    it.each([
+      ["property mutation", "mod.help = () => {};", true],
+      ["unknown mutation", "mod[key] = () => {};", false],
+      ["namespace escape", "mutate(mod);", false],
+    ] as const)(
+      "retains cross-consumer guards for a cyclic importer with %s",
+      (_label, mutation, safeSurvives) => {
+        const graph = index({
+          "cycle.cjs": `const mod = require('./lib.cjs'); ${mutation} function cycle() { mod.help(); }`,
+          "lib.cjs":
+            "require('./cycle.cjs'); function help() {} function safe() {} exports.help = help; exports.safe = safe;",
+          "entry.cjs":
+            "const mod = require('./lib.cjs'); function entry() { mod.help(); mod.safe(); }",
+          "consumer.mjs":
+            "import { help } from './lib.cjs'; export function use() { help(); }",
+        });
+        unresolved(graph, "mod.help()", "cycle.cjs");
+        unresolved(graph, "mod.help()");
+        unresolved(graph, "help()", "consumer.mjs");
+        if (safeSurvives) resolved(graph, "mod.safe()", "safe");
+        else unresolved(graph, "mod.safe()");
+      },
+    );
+  });
   it.each([
     ["declaration", stable, "help", "FunctionDeclaration"],
     ["arrow", "exports.help = () => {};", "<anonymous>", "ArrowFunction"],

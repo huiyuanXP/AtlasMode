@@ -30,7 +30,8 @@ npm start
 
 已支持受保护的静态 CommonJS 子集：`.cjs`，以及最近捕获的有效 `package.json`
 允许 CommonJS 且无 ESM 语法的 `.js`。稳定的顶层导出可作为入口，未遮蔽的字面量
-`require` 与 `const` 绑定可连接真实实现；覆盖、遮蔽、可变绑定和命名空间逃逸保持
+`require` 与 `const` 绑定可连接真实实现；捕获的 require 环中初始化不确定的绑定、
+覆盖、遮蔽、可变绑定和命名空间逃逸保持
 未知。`module.exports = require(...)` 转发不支持，并可能使被转发模块的入口标记
 保守失效；固定 Express 全仓的 `createApplication` 可搜索/读源码，但当前不作为
 已证明入口。动态 mixin、workspace exports 和运行时加载兼容性不作保证。

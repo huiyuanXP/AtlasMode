@@ -336,6 +336,17 @@ budget 限制返回节点数（包括可容纳的文件/目录上下文），返
   exports use the same guards; rejected values cannot fall through to checker-only
   resolution. A real user function named `require` retains its ordinary direct
   callee identity but its return value supplies no Node namespace.
+- Captured, lexically unshadowed literal require dependencies are checked for
+  initialization cycles before accepting imported callable identities. Bindings
+  on cycle edges (including self-requires, destructuring, callable defaults and
+  direct/property selections) stay unresolved; import path/line evidence and
+  independently stable export declaration IDs remain available. The iterative
+  component check is bounded by captured modules and require edges, independent
+  of source order, and preserves shared property-write/namespace-escape guards.
+  It conservatively includes nested or conditional require calls and does not
+  prove safe initialization order, even when an export precedes a cyclic require.
+  Acyclic edges into/out of a component and ordinary local function recursion
+  keep their existing guards; no loader execution or forwarding is introduced.
 - This is a conservative static subset, not runtime load/build compatibility or
   complete value-flow analysis. Historical snapshots and approvals are unchanged.
 

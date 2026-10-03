@@ -27,6 +27,7 @@ type Module = {
 };
 type Binding = {
   esmNamespace?: boolean;
+  cyclicInitialization?: boolean;
   module?: Module;
   property?: string;
   reason?: string;
@@ -514,6 +515,66 @@ export function createCommonJsAnalyzer(
         ...(binding.reason ? { reason: binding.reason } : {}),
       });
     });
+  // Only validated, captured require calls supply dependency edges. Include
+  // nested calls conservatively: we do not prove when a function is invoked.
+  // Two iterative graph passes find strongly connected components in O(V+E),
+  // bounded by captured modules/calls without recursing through module chains.
+  const dependencies = new Map<Module, Set<Module>>();
+  const importers = new Map<Module, Set<Module>>();
+  for (const mod of modules.values()) {
+    dependencies.set(mod, new Set());
+    importers.set(mod, new Set());
+  }
+  for (const [call, binding] of requires) {
+    if (!binding.module) continue;
+    const importer = modules.get(call.getSourceFile())!;
+    dependencies.get(importer)!.add(binding.module);
+    importers.get(binding.module)!.add(importer);
+  }
+  const visited = new Set<Module>();
+  const finished: Module[] = [];
+  for (const mod of modules.values()) {
+    if (visited.has(mod)) continue;
+    visited.add(mod);
+    const stack = [{ mod, next: dependencies.get(mod)!.values() }];
+    while (stack.length) {
+      const frame = stack[stack.length - 1]!;
+      const next = frame.next.next();
+      if (next.done) {
+        finished.push(frame.mod);
+        stack.pop();
+      } else if (!visited.has(next.value)) {
+        visited.add(next.value);
+        stack.push({
+          mod: next.value,
+          next: dependencies.get(next.value)!.values(),
+        });
+      }
+    }
+  }
+  const component = new Map<Module, Module>();
+  for (const mod of finished.reverse()) {
+    if (component.has(mod)) continue;
+    component.set(mod, mod);
+    const pending = [mod];
+    while (pending.length) {
+      for (const importer of importers.get(pending.pop()!)!) {
+        if (component.has(importer)) continue;
+        component.set(importer, mod);
+        pending.push(importer);
+      }
+    }
+  }
+  for (const [call, binding] of requires) {
+    if (
+      binding.module &&
+      component.get(modules.get(call.getSourceFile())!) ===
+        component.get(binding.module)
+    )
+      // Keep module/property identity for shared mutation/escape guards. Only
+      // the imported value is unproved, not the module edge or its export IDs.
+      binding.cyclicInitialization = true;
+  }
   function select(binding: Binding, key: string | undefined): Binding {
     if (key === undefined || binding.property !== undefined)
       return {
@@ -681,6 +742,11 @@ export function createCommonJsAnalyzer(
         if (id && !mod.rejected.has(key)) exportedDeclarationIds.add(id);
   function classify(binding: Binding): CommonJsCallClassification {
     if (binding.reason) return { reason: binding.reason };
+    if (binding.cyclicInitialization)
+      return {
+        reason:
+          "CommonJS require initialization is uncertain in a captured dependency cycle",
+      };
     if (binding.esmNamespace)
       return { reason: "ESM namespace objects are not callable" };
     if (binding.externalName)
