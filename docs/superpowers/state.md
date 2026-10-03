@@ -210,3 +210,10 @@ Task2：捕获 package.json scope、.js模式、输入新鲜度；Task3：真实
 core/indexer build/typecheck/rootlint全部通过；83 registry用例及3公开回归。
 Task2包捕获/.js正向模式、Task3公共产品/Express仍待实施；本阶段没有新的全根目录/浏览器验收。
 默认.cjs正向范围，其他模式保守；不执行目标代码、不做值流/转发/workspace映射。
+
+### CommonJS Task2 已验收
+
+d217e1d 已独立批准，0C/0I/0M；309/8相关测试、core/indexer构建/类型及rootlint通过。
+包配置受限捕获、strictJSON/最近opaque scope、.js模式、v3输入hash与可选packageFiles已实现。
+原83身份用例保留，新9语法用例含import.meta/顶层await/计算名称；15源指纹已核对。
+Task3真实HTTP/MCP/SQLite/UI/Express及最终全根目录验收仍待执行，未据单元测试推断通过。
