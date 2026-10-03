@@ -158,3 +158,29 @@ Task2 952bffa已实现按来源文件的配置checker解析并独立审查通过
 最近配置归属、拒绝scope、不跨项目cache、配置alias不可用unknown及捕获-only host均有回归。Task3实际HTTP/MCP/UI历史兼容和最终root suite待验收。
 
 后续调研已实际复现CommonJS两类旧误判（导出覆盖、require遮蔽）及暴露入口缺口；下一独立Ticket先处理这些安全/语义边界，再处理workspace源码映射。当前不宣称完整CommonJS支持或运行时值证明。
+
+
+## Captured tsconfig Task3 实现与验证（2026-10-03 UTC）
+
+已实现导航“配置输入 / Configuration inputs”及独立配置数/相对路径；旧SQLite
+缺字段明确显示未记录，保留源码/作者文本。真实编译HTTP+SDK验证配置A→B时
+源码不变、目标/行号更新、函数ID保留、规划及路线stale、原快照/批准不变；
+旧数据经新进程读取与刷新后历史保留。新增共享fixture复用已有生产harness/sentinel。
+浏览器2项真实RED（配置区域缺失）→GREEN，4张双语/legacy截图已实际查看。
+Task1/2已满足后端生命周期，因此后端是新增GREEN基线，不制造产品RED。
+最初两次后端失败是测试缺少call_chain relationId和错误依赖节点遍历顺序，
+更正harness后通过；没有为此修改产品后端。
+
+最终源码后一次root build/typecheck/lint均退出0，293项/25文件全通过（30.25s），
+无失败/跳过。现有规划UI/SDK E2E1项通过（12.3s/总13.3s），r16/hash同源；
+5张截图已查看。一次固定Vite gate通过（03:02:18.513Z）：1583源文件/55配置，
+8117 function-kind节点、44263关系，调用6223 resolved/8302 external/15726 unresolved，
+18诊断、5.796s；完整SHA和clean Git前后相同。新标签vite-captured-tsconfig图片
+已查看，不覆盖历史Vite/Flask证据；本票据未重跑Flask。
+
+外部浏览器请求拒绝，实际external/console/page errors/SDK stderr均空；sentinel
+未执行，owned进程及临时SQLite/目录已清理。详细命令/时间/指纹与报告在当前
+`.superpowers/sdd/2026-10-03-captured-tsconfig/scratch/task-3/`。
+Task3实现者自检完成，等待controller独立任务及全计划审查；不宣称已过gate。
+CommonJS旧缺陷仍归下一独立Ticket；workspace package/exports/references未实施。
+原生Win/mac、远端CI、实际客户端注册、fresh-task恢复/发布仍未执行。

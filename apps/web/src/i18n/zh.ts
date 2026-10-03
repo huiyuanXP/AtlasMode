@@ -139,6 +139,8 @@ export const zh = {
   graphStale: "⚠ 子图或函数上下文与当前快照不同，请刷新代码。",
   approvalHash: "批准摘要",
   included: "已索引文件",
+  configurationInputs: "配置输入",
+  configurationUnrecorded: "此快照未记录配置输入",
   excluded: "排除规则",
   routeSource: "路线来源",
   note: "步骤说明",

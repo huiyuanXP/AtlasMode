@@ -161,6 +161,24 @@ export function Navigation({
           <p>
             {zh.included}: {summary.coverage.files.length}
           </p>
+          <section aria-label={zh.configurationInputs}>
+            <h3>
+              {zh.configurationInputs}
+              {summary.coverage.configurationFiles !== undefined &&
+                `: ${summary.coverage.configurationFiles.length}`}
+            </h3>
+            {summary.coverage.configurationFiles === undefined ? (
+              <p className="muted">{zh.configurationUnrecorded}</p>
+            ) : (
+              <ul>
+                {summary.coverage.configurationFiles.map((path) => (
+                  <li key={path}>
+                    <code className="path">{path}</code>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
           <p>
             {zh.excluded}: {summary.coverage.excludedPatterns.join(", ")}
           </p>

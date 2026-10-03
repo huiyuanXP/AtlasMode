@@ -15,7 +15,7 @@
 | Vite8.3.2  | 1583 TS/JS系列 |               8117 | 44263 | 5373 / 10443 / 14435                  | 4.465s |   537MiB |
 
 function-kind 包含函数、方法和作为构造目标的类容器，不等同于全部运行时函数。
-未知关系保留原因，当前范围不模拟动态派发、完整依赖类型环境或 tsconfig 路径别名。
+此早期阶段未知关系保留原因，当时不模拟动态派发、完整依赖类型环境或 tsconfig 路径别名。
 Flask 无诊断；Vite 的7条诊断是5个被排除的 symlink 和2个故意语法错误的测试 fixture。
 上文准备阶段的1550 JS/TS预数未包含全部支持的 mjs/cjs/mts/cts 等扩展及最终排除差异，
 以本次实际 coverage 清单为准。
@@ -86,3 +86,33 @@ npm run validate:repository -- --path /tmp/atlasmode-validation-flask --commit 2
 commit、时间、完整coverage、未知诊断、样本源码、预算和错误数组。旧捕获另存
 `artifacts/validation/prior-captures/`；当前图不是旧截图的缩放或编辑结果。
 Linux实例通过不代表原生Windows/macOS、全部公开项目或上游功能测试通过。
+
+
+## Captured tsconfig 固定 Vite 产品验收
+
+2026-10-03T03:02:18.513Z，使用基线`10eea272940a5c60f5136418ec46c9fabab1efb5`
+加Task3界面变更的实际编译产物；源码SHA-256清单记录在本任务scratch的
+`product-source-provenance.json`。此次只运行一次Vite gate；Flask保留上面的T08
+证据，前述旧计数/截图不代表这次解析器结果。
+
+```bash
+PLAYWRIGHT_CHROMIUM_EXECUTABLE=/usr/bin/chromium npm run validate:repository -- --path /tmp/atlasmode-validation-vite --commit 10033218d239c927cdc375970b5741cce408e81b --symbol createServer --file packages/vite/src/node/server/index.ts --label vite-captured-tsconfig
+```
+
+固定Vite8.3.2的完整HEAD、staged/working tree/全部未跟踪状态在03:02:07.459Z和
+03:02:18.513Z分别检查，均clean。真实生产HTTP/网页/SQLite/SDK stdio通过打开、
+搜索、只读源码、调用上下文、预算截断和展开；createServer位于server/index.ts:507，
+搜索143项；入口762/首批50，budget1截断，depth1展开80节点/240关系且截断。
+实际查看`artifacts/validation/vite-captured-tsconfig-product.png`：选中卡片可读，
+右侧真实源码和调用证据可读，footer无busy。详情JSON保存同名路径。
+
+| 源文件 | 配置输入 | function-kind节点 | 关系 | calls resolved / external / unresolved | 打开/索引用时 |
+| ---: | ---: | ---: | ---: | --- | ---: |
+| 1583 | 55 | 8117 | 44263 | 6223 / 8302 / 15726 | 5.796s |
+
+18条诊断：5个排除symlink、2个故意源码语法错误、2个不支持的package extends、
+7个未展开references提示，以及同一无效JSONC分别在capture/resolution阶段的2条
+诊断。55个配置独立于源文件计数；无法支持的配置没有伪装成完整项目解析。
+调用分类变化反映本轮配置解析及前轮可变绑定修复，不等于运行时调用覆盖率。
+非loopback请求全拒绝，actual external与console/page errors均空，SDK stderr为空；
+只运行AtlasMode，未安装目标依赖、执行目标代码或上游测试。临时服务/数据库已清理。

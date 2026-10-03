@@ -2,7 +2,7 @@
 
 用可编辑的代码关系图替代传统文字 Plan Mode。Agent 在实际修改代码之前，把规划叠加到现有项目图上；用户理解、调整并确认后，Agent 才实施。人通过图形理解项目，Agent 通过 MCP 查询同一份结构化模型。
 
-> 当前仓库已有本地 UI、真实 TS/JS/Python 索引、SQLite、stdio MCP、中文/英文、主题、功能集、目录约束及撤销重做。首轮 T01–T08 与整体审查通过，四项 Important 与两项 Minor 修复均独立复审通过；本轮精确检查结果见 [环境与验证](docs/environment.md)。固定 Vite/Flask 的成功浏览及统计仍属于此前 T08 修订，不是本轮重跑结果。三OS CI 已配置，原生 Windows/macOS 和实际 Codex/Claude 客户端连接尚未验证。以下规格保留后续目标，完整组编辑/折叠、知识迁移/备份和真实 tsconfig/workspace 解析等仍有缺口，详见 [要求覆盖表](docs/superpowers/readme-coverage.md)。
+> 当前仓库已有本地 UI、真实 TS/JS/Python 索引、SQLite、stdio MCP、中文/英文、主题、功能集、目录约束及撤销重做。首轮 T01–T08 与整体审查通过，四项 Important 与两项 Minor 修复均独立复审通过；本轮精确检查结果见 [环境与验证](docs/environment.md)。固定目标的阶段、修订和统计见 [外部验证记录](docs/superpowers/validation-targets.md)，不将旧运行计数当作当前结果。三OS CI 已配置，原生 Windows/macOS 和实际 Codex/Claude 客户端连接尚未验证。以下规格保留后续目标，完整组编辑/折叠、知识迁移/备份、workspace package/exports、CommonJS 和 references 图等仍有缺口，详见 [要求覆盖表](docs/superpowers/readme-coverage.md)。
 
 本机使用 Node24.19.0/npm11.9.0；分析 Python 项目需 Python3.10+。从仓库根目录运行：
 
@@ -16,6 +16,17 @@ npm start
 首次浏览与规划操作见 [第一份规划](docs/first-plan.md)。开发模式使用
 `npm run dev`，网页端口5173。API 校验实际本地 Host 及同源 Origin；开发启动器显式允许本地5173代理，MCP 无 Origin 的本地请求仍可使用。Codex App/CLI 与 Claude Code 的 MCP 连接说明见
 [docs/mcp.md](docs/mcp.md)；外部客户端配置使用 Node 直接启动编译入口。
+
+已支持从捕获的 JSONC 配置应用 `paths`/`baseUrl`，包括受限的相对 `.json`
+`extends`。每个源码由最近的 `tsconfig.json` 及其 `files`/`include`/`exclude`/
+`allowJs` 范围决定归属；无效或排除的最近配置不会回退到祖先配置，也不猜测
+`tsconfig.app.json` 或展开 references。只连接 checker 证明的已捕获源码声明；
+配置别名目标不可用时保持 unresolved。仍是静态证据，不保证运行时绑定。
+
+导航诊断区的“配置输入 / Configuration inputs”显示成功捕获的配置数量与仓库
+相对路径，独立于源码文件数。历史快照未记录此字段时显示“未记录”，不报告为零。
+`contentHash` 现为带版本的源码与配置输入摘要；仅配置内容改变也会使规划/路线
+基线过期。升级后首次刷新可使旧基线过期，历史快照和批准保留，无需清理 SQLite。
 
 ## 1. 产品目标
 

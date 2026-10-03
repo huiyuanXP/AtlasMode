@@ -1,8 +1,9 @@
 # 环境、运行与验收
 
-2026-10-03 UTC：当前 Linux 实例已完成干净锁文件安装、七个 workspace 构建和
-类型检查、lint、200 项测试（20 个文件，0 失败、0 跳过）、真实生产 smoke。
-实际 Chromium UI 与 SDK stdio MCP 联合流程通过，固定 Vite/Flask 产品浏览通过。
+2026-10-03 UTC：当前 Linux 的 captured-tsconfig 最终集成检查通过：七个 workspace
+build/typecheck、lint、293 项测试（25 个文件，0 失败、0 跳过）。新增配置浏览
+2 项及现有 UI/SDK 联合流程1项通过，固定 Vite 产品验收已刷新。干净安装、生产
+smoke 与 Flask 浏览沿用前轮记录，未在本票据重复运行。
 Windows/macOS 的 CI 已配置，尚未在原生 runner 执行；这不代表三系统均已验证。
 
 ## 整体审查修复波次（2026-10-03 UTC）
@@ -17,7 +18,7 @@ lint 退出0；一次全套执行220项/22文件，218项首次通过、2项新�
 `PLAYWRIGHT_CHROMIUM_EXECUTABLE=/usr/bin/chromium npm run test:e2e` 本轮1项通过
 （测试10.2s，总计11.2s），UI/SDK同revision16/hash，兼容性warning可见且可批准；
 external[]、console/page errors[]，截图warning/light/dark/narrow/source均实际查看。
-当前 `artifacts/e2e/joint-flow-evidence.json` 的批准时间是2026-10-03T01:46:13.750Z，
+该轮 `joint-flow-evidence.json` 的批准时间是2026-10-03T01:46:13.750Z，
 semanticHash为 `dd3888680bb47dd48bcfd83153beaca0ad52c7d8e922fd642a48c5096670e1dc`；
 JSON/Markdown下载分别3828/4016bytes。所有本轮日志位于
 `.superpowers/sdd/2026-10-03-local-planning-mvp/scratch/whole-fix/`。
@@ -32,6 +33,45 @@ working tree/全部未跟踪文件，并在 evidence.provenance 保存两个检�
 临时 Git 回归通过；此检查不是文件系统锁，不能发现两次检查之间修改后又还原的内容。
 Vite/Flask 本轮未重新索引或浏览；旧指标和截图只属于原 T08 修订/时间戳，尤其
 本轮可变 callable 修复可能改变调用确定性计数，不能将旧指标重标为当前代码结果。
+
+## Captured tsconfig 最终集成（2026-10-03 UTC）
+
+在基线 `10eea272940a5c60f5136418ec46c9fabab1efb5` 加 Task3 界面/回归变更后执行。
+Task1/2 已独立审查，Task3 与整体票据审查待 controller gate；这里记录实际检查，
+不将实现者自检称为独立审查。
+
+- 最终产品源码完成后 root `npm run build`、`npm run typecheck`、`npm run lint`、
+  `npm test` 各执行一次且退出0；293/25全部通过，无失败/跳过，suite30.25s。
+- `npx vitest run tests/integration/tsconfig-resolution.test.ts`：真实编译HTTP和SDK
+  stdio，继承配置仅由A改B，源码不变，调用目标变为targetB.ts:3；原规划/路线
+  过期，历史批准/快照保留，函数ID不变；6个源文件与2个配置分列。实际SQLite
+  持久化缺字段历史快照，经新HTTP/MCP进程读取及刷新后仍保留原数据。
+- `PLAYWRIGHT_CHROMIUM_EXECUTABLE=/usr/bin/chromium npx playwright test tests/e2e/tsconfig.spec.ts`：
+  2项真实浏览器回归先因缺配置区域RED，再GREEN（7.1s）。通过真实入口→调用→
+  只读源码、搜索、诊断展开与双语路径/计数，legacy明确未记录而非零；4张截图
+  `artifacts/e2e/tsconfig/{captured,legacy}-{zh,en}.png`已实际查看。
+- 相同浏览器覆盖运行 `npx playwright test tests/e2e/planning.spec.mjs`：1项通过，
+  测试12.3s/总13.3s，批准r16的UI/SDK hash一致，实际服务重启/导出/核对通过。
+  当前hash为`bb414b7f3377ae36550ba996a2c118b9b7e631ab3915607d1e544b3f40c41a26`，
+  批准时间03:02:18.569Z，5张规划/源码/窄屏截图已查看。前轮图片另存本任务
+  `prior-planning-artifacts/`，没有将旧hash重标为当前结果。
+- SDK调用通过且无协议错误/stderr；浏览器拒绝所有非loopback请求，实际external、
+  console/page errors均空；sentinel未执行。测试只清理自己的临时目录/SQLite，
+  server正常退出0、SDK关闭后PID清空，没有清理用户知识库。
+- 一次固定Vite真实产品gate通过，55个配置/1583源文件，完整HEAD与工作树前后
+  保持干净。18条诊断及范围见[validation-targets.md](superpowers/validation-targets.md)。
+  新产物使用`vite-captured-tsconfig`标签；未重跑Flask或上游测试。
+
+配置JSONC/相对extends及最近tsconfig.json归属均限于已捕获输入，workspace
+package/exports、references图和CommonJS完整语义未实现。contentHash升级为带版本
+的源码+配置摘要，首次升级刷新可能使基线过期；旧快照/批准保留，不需DB迁移。
+缺省configurationFiles表示历史未记录。路径和源码原文不翻译，不执行目标代码。
+
+全部命令日志、RED/GREEN与根检查结果在
+`.superpowers/sdd/2026-10-03-captured-tsconfig/scratch/task-3/`；
+`product-source-provenance.json`记录基线与实际产品源文件SHA-256。
+Playwright runner有宿主NO_COLOR/FORCE_COLOR提示；产品console、SDK stderr为空。
+原生Win/mac、远端CI、真实客户端注册、fresh-task恢复和发布仍未执行。
 
 ## 已验证版本
 

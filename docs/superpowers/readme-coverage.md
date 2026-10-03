@@ -16,7 +16,8 @@ UNIMPLEMENTED表示仍为后续需求。测试通过不等于原README所有目�
 | TS/JS/TSX/JSX、Python真实静态索引（§5/P1）                     | PASS          | indexer与跨包集成；固定Vite1583文件及Flask83文件；Python仅AST、恶意顶层代码未执行                                                                                  |
 | 函数/方法、目录/文件、导入/调用、未知和源码（§5）              | PASS          | 源码与range、动态/external/unresolved样本；UI实际源代码与Chromium原生clipboard.readText                                                                            |
 | 跨文件相对import、局部别名、re-export（§5）                    | PASS          | TS/Python fixtures、实际索引调用证据；限定为当前适配器支持的可证明解析                                                                                             |
-| 真实tsconfig paths/baseUrl、workspace exports、CommonJS        | UNIMPLEMENTED | 固定大项目中未解析关系保留unknown；后续独立票据，不用解析数量假定完整语义覆盖                                                                                      |
+| 受限tsconfig paths/baseUrl与配置可见性                     | PASS          | 捕获JSONC/相对extends、最近配置归属、checker声明解析；配置only生命周期HTTP/SDK与真实SQLite历史读取、双语UI回归通过                                                                                      |
+| workspace package/exports、CommonJS完整语义、references图 | UNIMPLEMENTED | 不展开references或猜测package源码；已发现的CommonJS导出覆盖/require遮蔽旧缺陷另立票据，不宣称完整运行时绑定 |
 | 稳定ID、快照摘要、忽略规则和源码安全（§5）                     | PASS          | 插空行身份不变、文件内容hash/捕获字节、安全源码路径、symlink排除等回归；快照记录Git revision                                                                       |
 | 重命名/移动迁移映射和候选（§5）                                | UNIMPLEMENTED | 没有以相似函数自动替换绑定；需要后续显式接受映射流程                                                                                                               |
 | 成熟公开仓库实际浏览                                           | PASS          | 固定Vite/Flask真实HTTP/UI/SDK通过，截图已查看；范围/SHAs/未知/截断见validation-targets.md，上游测试未运行                                                          |
@@ -63,7 +64,7 @@ UNIMPLEMENTED表示仍为后续需求。测试通过不等于原README所有目�
   build/typecheck/lint与生产smoke通过；生产UI/SDK联合1项通过（10.2s/总11.2s），
   warning可见且批准r16有效，warning/light/dark/narrow/source截图实际查看。
   本轮hash为dd3888680bb47dd48bcfd83153beaca0ad52c7d8e922fd642a48c5096670e1dc；
-  当前artifacts/e2e是本轮结果。准确命令与修订范围见
+  该轮artifacts/e2e已作为历史证据保留。准确命令与修订范围见
   [环境记录](../environment.md)及忽略目录 whole-fix-report.md。
 
 ## 可复核证据
@@ -85,9 +86,9 @@ UNIMPLEMENTED表示仍为后续需求。测试通过不等于原README所有目�
 按可用性和数据保全排序；执行前写独立 spec/plan 与验收项，顺序实施并审查。
 不把 README 的未来路线图当成已实现功能。
 
-1. **目标项目的真实模块解析**：读取受限的 tsconfig 配置，处理 paths/baseUrl、
-   monorepo workspace package exports 与可证明的静态 CommonJS。用本仓库及固定
-   Vite 源码抽查跨包调用；无法确定的条件导出/动态加载保留 unknown。
+1. **目标项目模块解析的剩余边界**：受限 tsconfig paths/baseUrl 已实现。下一独立
+   票据优先处理已复现的 CommonJS 导出覆盖、require 遮蔽与暴露入口，再处理
+   workspace package/exports 和 references 图；条件导出/动态加载不作运行时保证。
 2. **功能集的 Agent 闭环复核**：propose_group 已纳入 T06，固定 agent 来源并
    遵守 project/member 验证；首轮实际 stdio 与 HTTP 一致性验收后再检查高级组合缺口。
 3. **独立持久化知识与失联绑定**：注释不只依附某个规划，保留作者来源与约束语义，
@@ -102,10 +103,26 @@ UNIMPLEMENTED表示仍为后续需求。测试通过不等于原README所有目�
    报告调用方减少、引用消失和抽象绕过，避免把没有入边当成死代码。
 
 后续再评估组合流程/实际 wrapper 高级操作、增量索引、自动布局、额外语言和运行时
-证据。当前公开 Vite 完整索引约4.5秒，尚无必须引入复杂增量系统的证据。
+证据。固定 Vite 的分阶段产品耗时见 validation-targets.md；不将历史耗时冒充当前结果。
 
 ## 验收记录约束
 
 T08 已按实际通过/部分/未完成更新，截图已实际查看。后续票据继续维护状态，
 不能只断言文件存在或以旧版本的测试冒充新行为证据。云环境配置草稿保存不等于发布；本地 commit 不代表远端可复现。
 当前公开目标验证范围和准确统计在 validation-targets.md。
+
+
+## Captured tsconfig 更新（2026-10-03 UTC）
+
+最终源码一次root build/typecheck/lint通过，293项/25文件全部通过（无失败/跳过）；
+此前200/220计数保持为相应历史阶段。新增真实HTTP/SDK集成1项、真实浏览器2项
+（先RED后GREEN）证明配置only映射变化使基线过期，旧快照/批准及函数ID保留；
+从真实SQLite读出的缺字段历史summary在中英文UI显示未记录。配置数量与相对
+路径不计入源码覆盖，截图已实际查看。contentHash升级后首次刷新可使历史基线
+过期，无DB迁移或删除历史数据。
+
+现有生产规划E2E再次1项通过，UI实际确认r16与SDK一致；5张截图已查看。
+新的固定Vite gate记录55配置/1583源文件、18诊断，调用分类及具体时间见
+validation-targets.md，旧Flask不重跑。外部请求与console/page errors为空，
+SDK stderr为空，目标sentinel未执行，临时进程/SQLite已清理。
+Task3与整票独立review由controller继续；当前这些是实现者执行的验证证据。
