@@ -55,7 +55,7 @@
 
 **Files:**
 - Create: packages/indexer/src/metadataRead.ts, packages/indexer/src/packageCapture.ts, packages/indexer/src/packageMode.ts, packages/indexer/src/packageCapture.test.ts, packages/indexer/src/packageMode.test.ts
-- Modify: packages/indexer/src/configCapture.ts, packages/indexer/src/scan.ts, packages/indexer/src/index.ts, packages/core/src/model.ts, packages/core/src/validation.ts, packages/core/src/validation.test.ts, packages/indexer/src/index.test.ts, docs/superpowers/contracts.md
+- Modify: packages/indexer/src/commonjs.ts, packages/indexer/src/commonjs.test.ts (only source ESM-syntax guard for the new .js positive mode), packages/indexer/src/configCapture.ts, packages/indexer/src/scan.ts, packages/indexer/src/index.ts, packages/core/src/model.ts, packages/core/src/validation.ts, packages/core/src/validation.test.ts, packages/indexer/src/index.test.ts, docs/superpowers/contracts.md
 
 **Interfaces:**
 - Consumes: Task1 ModuleModeProvider and fifth indexTypeScript argument; existing SourceFile={path:string;bytes:Buffer}, scanner eligible/opaque paths and config capture safety/budget rules.
