@@ -146,6 +146,7 @@ export const snapshotSchema = z.strictObject({
   coverage: z.strictObject({
     files: z.array(path),
     configurationFiles: z.array(path).optional(),
+    packageFiles: z.array(path).optional(),
     excludedPatterns: z.array(z.string()),
     unresolvedCount: z.number().int().nonnegative(),
     availability: z

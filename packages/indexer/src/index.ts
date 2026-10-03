@@ -5,6 +5,7 @@ import { promisify } from "node:util";
 import { readSourceBytes, scan } from "./scan.js";
 import { Graph } from "./graph.js";
 import { indexTypeScript } from "./typescript.js";
+import { createPackageModeProvider } from "./packageMode.js";
 import { indexPython } from "./python.js";
 import { decodeSource } from "./source.js";
 const exec = promisify(execFile);
@@ -29,6 +30,7 @@ export class SourceIndexer implements IndexerPort {
       graph,
       capture.configurations,
       capture.diagnostics,
+      createPackageModeProvider(capture.manifests, capture.diagnostics),
     );
     await indexPython(
       capture.files.filter((f) => f.path.endsWith(".py")),
@@ -52,6 +54,7 @@ export class SourceIndexer implements IndexerPort {
       coverage: {
         files: capture.files.map((f) => f.path),
         configurationFiles: capture.configurations.map((f) => f.path),
+        packageFiles: capture.manifests.map((f) => f.path),
         excludedPatterns: capture.excludedPatterns,
         availability: capture.availability,
         unresolvedCount: graph.relations.filter(
@@ -60,7 +63,7 @@ export class SourceIndexer implements IndexerPort {
       },
     };
     // Capabilities and diagnostics are part of immutable facts, while contentHash
-    // identifies versioned captured source and configuration inputs.
+    // identifies versioned captured source, configuration and package inputs.
     const fingerprint = createHash("sha256")
       .update(
         JSON.stringify({

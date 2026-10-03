@@ -159,6 +159,31 @@ export function createCommonJsAnalyzer(
       )
     )
       return "esm";
+    // Ordinary .js additionally needs source evidence compatible with Node's
+    // package mode. import.meta anywhere and await outside a function are ESM
+    // syntax; awaiting inside an async function or method is ordinary CJS.
+    if (path.endsWith(".js")) {
+      let esmSyntax = false;
+      const visit = (node: ts.Node, functionDepth: number) => {
+        if (
+          (ts.isMetaProperty(node) &&
+            node.keywordToken === ts.SyntaxKind.ImportKeyword) ||
+          (functionDepth === 0 &&
+            (ts.isAwaitExpression(node) ||
+              (ts.isForOfStatement(node) && node.awaitModifier)))
+        )
+          esmSyntax = true;
+        const nextDepth = functionDepth + (ts.isFunctionLike(node) ? 1 : 0);
+        ts.forEachChild(node, (child) =>
+          visit(
+            child,
+            ts.isComputedPropertyName(child) ? functionDepth : nextDepth,
+          ),
+        );
+      };
+      visit(source, 0);
+      if (esmSyntax) return "esm";
+    }
     return path.endsWith(".cjs") ? "commonjs" : modeForPath(path);
   };
   // Compiler-created CommonJS symbols can have assignment declarations. Only

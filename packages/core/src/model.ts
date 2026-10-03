@@ -33,6 +33,7 @@ export type CodeSnapshot = {
   coverage: {
     files: string[];
     configurationFiles?: string[];
+    packageFiles?: string[];
     excludedPatterns: string[];
     unresolvedCount: number;
     availability?: {

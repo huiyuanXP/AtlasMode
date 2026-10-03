@@ -9,6 +9,8 @@ import {
   type CodeSnapshot,
 } from "@codemap/core";
 import { captureConfigurations } from "./configCapture.js";
+import { capturePackages } from "./packageCapture.js";
+import { createMetadataReader } from "./metadataRead.js";
 
 export type SourceFile = { path: string; bytes: Buffer };
 const excludedNames = [
@@ -87,6 +89,7 @@ export async function scan(rootPath: string): Promise<{
   root: string;
   files: SourceFile[];
   configurations: SourceFile[];
+  manifests: SourceFile[];
   contentHash: string;
   diagnostics: CodeSnapshot["diagnostics"];
   excludedPatterns: string[];
@@ -104,6 +107,13 @@ export async function scan(rootPath: string): Promise<{
       filePath,
       message: `CONFIGURATION_UNAVAILABLE: ${reason}`,
     });
+  };
+  const rejectedPackages = new Map<string, string>();
+  const metadataSeed = (path: string) =>
+    configurationSeed(path) || basename(path) === "package.json";
+  const metadataUnavailable = (path: string, reason: string) => {
+    if (basename(path) === "package.json") rejectedPackages.set(path, reason);
+    else configurationUnavailable(path, reason);
   };
   let complete = true;
   // Enumerate eligible directories without following links or descending into
@@ -136,7 +146,7 @@ export async function scan(rootPath: string): Promise<{
   await walk("");
   entries.sort();
   const captures = new Map<string, Buffer>();
-  const configurationCandidates: string[] = [];
+  const metadataCandidates: string[] = [];
   // All reads use the same captured bytes for parsing and hashing. Never let a
   // compiler or the Python helper read additional target files behind the scan.
   for (const entry of entries) {
@@ -145,11 +155,8 @@ export async function scan(rootPath: string): Promise<{
     try {
       const info = await lstat(absolute);
       if (info.isSymbolicLink()) {
-        if (configurationSeed(path)) {
-          configurationUnavailable(
-            path,
-            "Configuration symlinks are not followed",
-          );
+        if (metadataSeed(path)) {
+          metadataUnavailable(path, "Metadata symlinks are not followed");
           continue;
         }
         unavailable.add(path);
@@ -160,11 +167,8 @@ export async function scan(rootPath: string): Promise<{
         });
         continue;
       }
-      if (configurationSeed(path) && !info.isFile()) {
-        configurationUnavailable(
-          path,
-          "Configuration path is not a regular file",
-        );
+      if (metadataSeed(path) && !info.isFile()) {
+        metadataUnavailable(path, "Metadata path is not a regular file");
         continue;
       }
       if (
@@ -176,11 +180,8 @@ export async function scan(rootPath: string): Promise<{
         continue;
       const canonical = await realpath(absolute);
       if (!contained(root, canonical)) {
-        if (configurationSeed(path)) {
-          configurationUnavailable(
-            path,
-            "Configuration path is outside project root",
-          );
+        if (metadataSeed(path)) {
+          metadataUnavailable(path, "Metadata path is outside project root");
           continue;
         }
         unavailable.add(path);
@@ -190,10 +191,10 @@ export async function scan(rootPath: string): Promise<{
         });
         continue;
       }
-      // Only eligibility is collected here; configuration bytes are captured
+      // Only eligibility is collected here; metadata bytes are captured
       // after ignore rules are known, through the bounded metadata reader.
       if (path.endsWith(".json")) {
-        configurationCandidates.push(path);
+        metadataCandidates.push(path);
         continue;
       }
       const handle = await open(
@@ -206,10 +207,10 @@ export async function scan(rootPath: string): Promise<{
         await handle.close();
       }
     } catch (error) {
-      if (configurationSeed(path)) {
-        configurationUnavailable(
+      if (metadataSeed(path)) {
+        metadataUnavailable(
           path,
-          "Configuration input is missing or could not be inspected safely",
+          "Metadata input is missing or could not be inspected safely",
         );
         continue;
       }
@@ -255,26 +256,37 @@ export async function scan(rootPath: string): Promise<{
     }
     files.push({ path, bytes });
   }
+  const allowedMetadata = metadataCandidates.filter((path) => {
+    if (!ignored(path)) return true;
+    if (metadataSeed(path))
+      metadataUnavailable(
+        path,
+        "Metadata input is excluded by Git ignore rules",
+      );
+    return false;
+  });
+  const metadataReader = await createMetadataReader(root, allowedMetadata);
   const configurationCapture = await captureConfigurations(
     root,
-    configurationCandidates.filter((path) => {
-      if (!ignored(path)) return true;
-      if (configurationSeed(path))
-        configurationUnavailable(
-          path,
-          "Configuration input is excluded by Git ignore rules",
-        );
-      return false;
-    }),
+    allowedMetadata,
+    metadataReader,
   );
   diagnostics.push(...configurationCapture.diagnostics);
   const configurations = configurationCapture.files;
+  const packageCapture = await capturePackages(
+    allowedMetadata.filter((path) => basename(path) === "package.json"),
+    rejectedPackages,
+    metadataReader,
+  );
+  diagnostics.push(...packageCapture.diagnostics);
+  const manifests = packageCapture.files;
   // Versioned, typed and length-framed inputs: no ambiguity between paths,
-  // source/configuration records, or arbitrary bytes (including invalid JSONC).
-  const hash = createHash("sha256").update("codemap-index-inputs-v2\0");
+  // source/configuration/package records, or arbitrary bytes (including invalid JSONC).
+  const hash = createHash("sha256").update("codemap-index-inputs-v3\0");
   for (const [type, inputs] of [
     ["source", files],
     ["configuration", configurations],
+    ["package", manifests],
   ] as const) {
     for (const { path, bytes } of inputs) {
       hash.update(`${type}:${Buffer.byteLength(path)}:`);
@@ -287,6 +299,7 @@ export async function scan(rootPath: string): Promise<{
     root,
     files,
     configurations,
+    manifests,
     availability: {
       complete,
       unavailablePaths: [...unavailable].sort(),

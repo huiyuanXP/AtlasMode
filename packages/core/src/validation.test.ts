@@ -114,6 +114,48 @@ describe("optional captured configuration coverage", () => {
   });
 });
 
+describe("optional captured package coverage", () => {
+  it("distinguishes recorded zero packages from legacy unrecorded coverage", () => {
+    expect(snapshotSchema.parse(snapshot).coverage).not.toHaveProperty(
+      "packageFiles",
+    );
+    expect(
+      snapshotSchema.parse({
+        ...snapshot,
+        coverage: { ...snapshot.coverage, packageFiles: [] },
+      }).coverage,
+    ).toHaveProperty("packageFiles", []);
+  });
+  it("reads legacy snapshots without packageFiles", () => {
+    expect(snapshotSchema.parse(snapshot)).toEqual(snapshot);
+  });
+  it("accepts repository-relative package metadata separately from source files", () => {
+    const value = {
+      ...snapshot,
+      coverage: {
+        ...snapshot.coverage,
+        packageFiles: ["package.json", "sub/package.json"],
+      },
+    };
+    expect(snapshotSchema.parse(value)).toEqual(value);
+  });
+  it.each([
+    "../secret.json",
+    "/etc/config.json",
+    "C:\\config.json",
+    "",
+    "sub/..",
+    "a\u0000.json",
+  ])("rejects package coverage path %s", (invalid) => {
+    expect(
+      snapshotSchema.safeParse({
+        ...snapshot,
+        coverage: { ...snapshot.coverage, packageFiles: [invalid] },
+      }).success,
+    ).toBe(false);
+  });
+});
+
 describe("deterministic identity", () => {
   it("keeps symbol identity stable across metadata changes", () => {
     const original = makeId("function", "p1", "src/a.ts", "a");

@@ -24,6 +24,7 @@ type CodeSnapshot = {
   coverage: {
     files: string[]; excludedPatterns: string[]; unresolvedCount: number;
     configurationFiles?: string[];
+    packageFiles?: string[];
     availability?: { complete: boolean; unavailablePaths: string[]; excludedPaths?: string[] };
   };
 };
@@ -64,10 +65,10 @@ type VerificationReport = {
 ## Ports 与纯函数
 
 - `IndexerPort.index(rootPath: string, projectId: string): Promise<CodeSnapshot>`。
-  `contentHash` 从 captured-tsconfig Task1 起为版本化索引输入摘要：捕获源码和配置
-  的路径/bytes 均参与 SHA-256，以 `codemap-index-inputs-v2\0` 开头，按 source、
-  configuration 类型分组，再按路径确定排序；每条含类型、UTF-8路径长度、路径、
-  byte长度和原始bytes边界。无效 JSONC 和仅空白变化也改变输入摘要。
+  `contentHash` 从 static-commonjs Task2 起使用 v3 索引输入摘要：捕获源码、配置和包
+  的路径/bytes 均参与 SHA-256，以 `codemap-index-inputs-v3\0` 开头，按 source、
+  configuration、package 类型分组，再按路径确定排序；每条含类型、UTF-8路径长度、路径、
+  byte长度和原始bytes边界。无效 JSON/JSONC 和仅空白变化也改变输入摘要。
   旧快照和历史批准不重写；升级后再次刷新会保守地产生新基线。
   snapshot ID 同时纳入确定性分析结果
   （nodes/relations/diagnostics/coverage），排除观察时间、Git revision 和实际 root。
@@ -302,8 +303,9 @@ budget 限制返回节点数（包括可容纳的文件/目录上下文），返
 
 - `indexTypeScript` has an optional internal fifth `ModuleModeProvider` argument.
   Default mode is explicit `.cjs` CommonJS, `.mjs` ESM, all other paths unknown;
-  source ESM syntax prevents Node-global inference. Package capture and `.js`
-  package evidence are future Task2. There is no public Port/service/schema change.
+  source ESM syntax prevents Node-global inference. SourceIndexer now supplies
+  captured package evidence through the Task2 provider below. The fifth argument
+  remains internal; public ports are unchanged.
 - The registry consumes only captured TypeScript ASTs, public checker symbols and
   existing implementation IDs. It never loads target code or dependencies.
   Literal `require` module symbols are consulted only after lexical/mode checks;
@@ -336,3 +338,45 @@ budget 限制返回节点数（包括可容纳的文件/目录上下文），返
   callee identity but its return value supplies no Node namespace.
 - This is a conservative static subset, not runtime load/build compatibility or
   complete value-flow analysis. Historical snapshots and approvals are unchanged.
+
+
+## Captured package scopes (Task2)
+
+- `scan.manifests: SourceFile[]` holds ordinary eligible `package.json` captures.
+  `coverage.packageFiles?: string[]` lists their normalized repository-relative
+  paths separately from source/configuration paths, nodes and source counts.
+  Legacy omission remains readable and means unrecorded; `[]` means recorded zero.
+  No database migration or historical snapshot/approval rewrite occurs.
+- `createMetadataReader(root, allowedPaths)` extracts the existing confined reader:
+  every path component is checked with lstat, realpath must match its allowed
+  location, open uses NOFOLLOW, opened-handle type/budgets and inode/dev/location
+  are checked, allocation/read is bounded to remaining budget plus one, and
+  post-read overflow is rejected. Successful path bytes are reused across
+  categories. Partial/failing reads never enter that shared cache.
+- Configuration and package categories independently accept at most 262144 bytes
+  per file, 4194304 total bytes and 512 files; reused bytes count fully toward
+  each category. A category's rejection does not poison the other category.
+  Existing configuration depth16, selected-chain rejection and
+  `CONFIGURATION_UNAVAILABLE:` evidence remain unchanged.
+- `capturePackages(allowedPaths, rejectedPaths, reader)` consumes scanner-owned
+  package seeds, returning `{files, diagnostics}` in deterministic order. Fixed
+  exclusions, Git ignores, root confinement and symlink rules apply. Enumerated
+  rejected seeds use `PACKAGE_MANIFEST_UNAVAILABLE:` plus normalized filePath;
+  their bytes are never read for diagnosis and do not become source availability.
+  Strict JSON objects with absent type, `commonjs` or `module` are recognized.
+  Invalid JSON/type bytes remain captured hash inputs with redacted diagnostics.
+- `createPackageModeProvider(manifests, captureDiagnostics=[])` uses the nearest
+  root-contained package scope. For `.js`, valid absent/commonjs type selects
+  CommonJS, module selects ESM, and invalid/opaque/no captured scope selects
+  unknown. A blocked nearest scope never falls back to an ancestor. The analyzer
+  additionally rejects import/export syntax, import.meta and top-level await
+  (including for-await); await within a function/method remains ordinary syntax.
+  `.cjs`/`.mjs` explicitly select format independent of package availability;
+  `.jsx` and TypeScript require remain unknown. Format never proves runtime load
+  success. No ancestor-root reads, workspace/exports lookup or target execution.
+- New captures use `codemap-index-inputs-v3` source/configuration/package framing.
+  Package-only edits change contentHash while declaration IDs remain stable.
+  Rejected-byte evidence enters snapshot facts/identity rather than captured-byte
+  hashing. Existing snapshots and approvals remain immutable; their older hashes
+  are not migrated. Task1 identity, stability and no-checker-fallback guards apply
+  equally to newly eligible `.js` modules.

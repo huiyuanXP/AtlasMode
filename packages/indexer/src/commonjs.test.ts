@@ -511,3 +511,44 @@ describe("captured CommonJS", () => {
     resolved(graph, "mod.help()", "help");
   });
 });
+
+describe("package commonjs source syntax eligibility", () => {
+  it.each([
+    "import.meta.url;",
+    "function meta() { return import.meta.url; }",
+    "await Promise.resolve();",
+    "class Holder { [await Promise.resolve()]() {} }",
+    "for await (const item of []) {}",
+    "if (true) { await Promise.resolve(); }",
+  ])("rejects .js module syntax %s", (syntax) => {
+    const graph = index(
+      {
+        "lib.js": `${syntax}\n${stable}`,
+        "entry.js":
+          "const mod = require('./lib.js'); function entry() { mod.help(); }",
+      },
+      () => "commonjs",
+    );
+    unresolved(graph, "mod.help()", "entry.js");
+    expect(
+      [...graph.nodes.values()].find((n) => n.name === "help")?.exported,
+    ).not.toBe(true);
+  });
+  it.each([
+    "async function helper() { await Promise.resolve(); }",
+    "const holder = { async method() { await Promise.resolve(); } };",
+    "class Holder { async method() { for await (const item of []) {} } }",
+  ])("keeps nested async syntax eligible: %s", (syntax) => {
+    const graph = index(
+      {
+        "lib.js": `${syntax}\n${stable}`,
+        "entry.js":
+          "const mod = require('./lib.js'); function entry() { mod.help(); }",
+      },
+      () => "commonjs",
+    );
+    expect(relation(graph, "mod.help()", "entry.js").resolution).toBe(
+      "resolved",
+    );
+  });
+});

@@ -876,3 +876,75 @@ describe("CommonJS public safety", () => {
     ).toBe(2);
   });
 });
+
+describe("captured package freshness", () => {
+  it("changes facts and hash on package-only edits while preserving declaration IDs and prior snapshots", async () => {
+    const root = await temp();
+    await writeFile(join(root, "package.json"), '{"type":"commonjs"}');
+    await writeFile(
+      join(root, "lib.js"),
+      "function help() {}\nexports.help = help;",
+    );
+    await writeFile(
+      join(root, "entry.js"),
+      "const mod = require('./lib.js'); function entry() { mod.help(); }",
+    );
+    const indexer = new SourceIndexer();
+    const first = await indexer.index(root, "packages");
+    const before = JSON.stringify(first);
+    expect(first.coverage).toHaveProperty("packageFiles", ["package.json"]);
+    expect(first.coverage.files).toEqual(["entry.js", "lib.js"]);
+    call(first, "entry.js", "entry", "lib.js", "help");
+    expect(fn(first, "lib.js", "help").exported).toBe(true);
+    await writeFile(join(root, "package.json"), '{"type":"module"}');
+    const second = await indexer.index(root, "packages");
+    expect(second.contentHash).not.toBe(first.contentHash);
+    expect(second.id).not.toBe(first.id);
+    expect(fn(second, "lib.js", "help").id).toBe(
+      fn(first, "lib.js", "help").id,
+    );
+    expect(fn(second, "lib.js", "help").exported).not.toBe(true);
+    expect(
+      second.relations.find((r) => r.evidence.text === "mod.help()")
+        ?.resolution,
+    ).toBe("unresolved");
+    expect(JSON.stringify(first)).toBe(before);
+    await writeFile(join(root, "package.json"), '{"invalid":');
+    const third = await indexer.index(root, "packages");
+    expect(third.contentHash).not.toBe(second.contentHash);
+    await writeFile(join(root, "package.json"), '{"invalid": ');
+    expect((await indexer.index(root, "packages")).contentHash).not.toBe(
+      third.contentHash,
+    );
+  });
+});
+
+describe("opaque package scope integration", () => {
+  it("blocks a valid ancestor with an ignored nearest manifest and changes snapshot facts without reading rejected bytes", async () => {
+    const root = await temp();
+    await mkdir(join(root, "sub"));
+    await writeFile(join(root, "package.json"), "{}");
+    await writeFile(join(root, ".gitignore"), "sub/package.json\n");
+    await writeFile(
+      join(root, "sub/lib.js"),
+      "function help() {} exports.help=help;",
+    );
+    await writeFile(
+      join(root, "sub/entry.js"),
+      "const mod=require('./lib.js'); function entry(){mod.help();}",
+    );
+    const indexer = new SourceIndexer();
+    const before = await indexer.index(root, "opaque");
+    call(before, "sub/entry.js", "entry", "sub/lib.js", "help");
+    await writeFile(join(root, "sub/package.json"), "PRIVATE_SENTINEL");
+    const after = await indexer.index(root, "opaque");
+    expect(after.contentHash).toBe(before.contentHash);
+    expect(after.id).not.toBe(before.id);
+    expect(
+      after.relations.find((r) => r.evidence.text === "mod.help()")?.resolution,
+    ).toBe("unresolved");
+    expect(fn(after, "sub/lib.js", "help").exported).not.toBe(true);
+    expect(after.coverage.availability).toEqual(before.coverage.availability);
+    expect(JSON.stringify(after)).not.toContain("PRIVATE_SENTINEL");
+  });
+});
