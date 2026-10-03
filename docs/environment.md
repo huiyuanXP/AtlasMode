@@ -1,5 +1,37 @@
 # 环境、运行与验收
 
+## 当前 Static forwarding Task2 候选（2026-10-03 UTC）
+
+基线86e6b12已推送，原生Linux/Windows/macOS检查及Linux官方Chromium job全部成功：
+[GitHub run37148507859](https://github.com/huiyuanXP/AtlasMode/actions/runs/37148507859)。
+该基线本地540项/30文件已验；Task2候选最终七包build/typecheck/lint及541项/31文件
+全根测试通过（19:49:52 UTC启动，38.04s，无失败/跳过），controller顺序执行。
+
+Task2没有修改产品代码/API/schema/v3 hash或依赖。真实compiledHTTP/SDKstdio/SQLite
+转发目标only生命周期已有GREEN基线1项通过（19:40:02 UTC，3.31s runner）：物理
+import指向forwarder，调用指向真实leaf，leaf声明ID/源码bytes及旧快照/批准/操作/路线保留，
+刷新使规划和路线stale，停止进程后重开SQLite及重新启动服务读取一致。
+最终根检查后新浏览器1项通过（19:51:34.541Z启动，5.811s）；共享离线guard迁移
+的旧CommonJS3项此前通过，未重复。中文/英文源码及
+原生clipboard实际读取为leaf-a.cjs:2，unsafe转发显示保守原因；3张新截图已实际查看。
+浏览器evidence.external含唯一有意发起的https://example.invalid/atlas-offline-probe，
+该请求实际ERR_BLOCKED_BY_CLIENT；意外外部请求0，console/page/protocol errors为空。
+
+唯一新的完整固定Express严格gate于19:43:42.119–19:43:48.132 UTC退出1：
+createApplication仍exported=false，实际34/34入口未含其真实ID，无截断。详细失败和
+原有历史PASS/FAIL分界见[验证目标](superpowers/validation-targets.md)。未重跑Express、
+Vite/Flask或执行目标。此失败早于截图，未产生新的Express PNG；后续改善了严格失败
+取证，在一次最终disposable非入口负例中取得真实sample/context/source和PNG，退出1
+证明拒绝有效。ownedPID用kill(pid,0)的ESRCH核对，nested finally保证stop/rm执行。
+
+Task2独立审查和整票whole gate待controller完成。原关闭Important因果缺口及宿主颜色
+Minor保持；真实Codex/Claude客户端、Windows交互式Ctrl+C、新云恢复/发布仍未验证。
+旧阶段关于native/远端CI未执行的条目保持历史含义，当前native/CI仅上述已推送基线已验。
+该恢复环境没有旧忽略Git的Vite/Flask/Express截图或证据tar；Git历史报告仍在，不能声称
+那些二进制已在此环境恢复或重新验过。新证据将保存至reviews/static-forwarding-task2。
+
+## 历史 Task1 推送检查点
+
 2026-10-04 Asia/Singapore：当前源码1346a8f包含受保护的精确相对CommonJS转发；
 Task1的独立初审发现局部exports身份误连，修复后限定复审确认I1已解决、无新缺陷。
 本次推送前顺序执行七包build/typecheck、lint与npm test：全部退出0，**537项/30文件**

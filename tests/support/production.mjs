@@ -8,6 +8,21 @@ import assert from "node:assert/strict";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 
+// Shared real-browser boundary for acceptance fixtures and fixed targets.
+export function denyExternalRequests(context, external) {
+  return context.route("**/*", (route) => {
+    if (
+      !["127.0.0.1", "localhost", "[::1]"].includes(
+        new URL(route.request().url()).hostname,
+      )
+    ) {
+      external.push(route.request().url());
+      return route.abort("blockedbyclient");
+    }
+    return route.continue();
+  });
+}
+
 function childEnvironment() {
   const env = { ...process.env };
   // Playwright may force color while the host declares NO_COLOR; keep child stderr diagnostic-only.

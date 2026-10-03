@@ -307,3 +307,31 @@ alias-parent回归，Linux RED3→GREEN56；独立review规格PASS/质量APPROVE
 最终根540/30测试、七包build/typecheck、lint/smoke/vendor通过。修复未改变产品安全。
 报告与无损原始RED/root日志：reviews/ci-paths/。原生runner结果待推送后检查。
 静态转发Task1保持完成；接续原计划Task2实际HTTP/MCP/SQLite/UI和完整Express入口gate。
+
+
+## Static forwarding Task2 当前候选（2026-10-03 UTC）
+
+Task1已独立复审通过1346a8f，不重做。CI prerequisite86e6b12已推送，native Linux/
+Windows/macOS与Linux官方Chromium全部成功：[run37148507859](https://github.com/huiyuanXP/AtlasMode/actions/runs/37148507859)。
+该基线本地540/30已验；Task2候选最终七包build/typecheck/lint及541/31全根通过，
+controller顺序执行，tests于19:49:52 UTC启动38.04s；此后新forwarding browser1项
+通过（19:51:34.541Z，5.811s），未重复CommonJS/Express/规划已过检查。
+
+Task2新增真实compiledHTTP/官方SDKstdio/SQLite forwarding lifecycle（已有GREEN1项），
+alias-only改向另一现有leaf，物理import不冒充leaf，leaf声明IDs/源码bytes及历史snapshot/
+approval/approved operations/route保持，plan/route stale；停进程后真实SQLite及fresh服务
+重读一致。新浏览器双语源码/copylocation和unsafe reason通过1项，3图已看；旧CommonJS
+共享offline helper回归3项通过。唯一有意非loopbackprobe实际ERR_BLOCKED_BY_CLIENT，
+意外外部请求0，console/page/protocolerrors为空；捕获ownedPID核对ESRCH，tempstore清理。
+
+唯一完整Express strict require-entry gate19:43:42.119–19:43:48.132 UTC FAIL，sample
+createApplication真实ID09847e8...、lib/express.js:36，exported=false且无于34/34entry IDs，
+总数/截断明确；完整HEAD/untracked两次干净。bounded exact-byte三文件AST诊断明确
+捕获test/exports.js:53,58,71嵌套prototype写入被整组保守拒绝；没有产品修改/guard放松/
+目标缩减/执行/第二次Express gate。FAIL在取图前发生，无新ExpressPNG；随后改进validator
+严格失败取证，最终disposable非入口负例exit1含sample/context/source与PNG且已查看。
+
+来源与rawlog见新reviews/static-forwarding-task2（实现者报告，独立task/whole gate待完成）。
+原Express genericPASS/entryFAIL、关闭Important因果缺口、宿主颜色Minor及真实客户端/
+Windows交互式Ctrl+C/新云恢复限制保留。旧忽略Git的成熟目标图片/tar在本恢复环境不可用，
+Git历史报告保留；不得据此声称已恢复。只完成候选，用户持续工作没有因阶段保存而结束。

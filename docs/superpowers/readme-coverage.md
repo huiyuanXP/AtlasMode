@@ -11,13 +11,13 @@ UNIMPLEMENTED表示仍为后续需求。测试通过不等于原README所有目�
 | README / 问卷要求                                              | 状态          | 实际证据与边界                                                                                                                                                     |
 | -------------------------------------------------------------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | Superpowers 可重新发现，Codex/Claude流程                       | PARTIAL       | 15技能/74文件vendor校验通过，AGENTS/CLAUDE引导存在；原生客户端技能目录自动发现未验证                                                                               |
-| 单根锁、Node LTS、包边界、统一脚本（§7/8/14）                  | PASS          | 干净npmci410包；7包build/typecheck、eslint边界检查退出0；当前全根537/30无失败或跳过；200/20为历史阶段，干净安装未重跑                                                                              |
+| 单根锁、Node LTS、包边界、统一脚本（§7/8/14）                  | PASS          | 干净npmci410包；7包build/typecheck、eslint边界检查退出0；Task2候选最终全根541/31无失败或跳过；此前86e6b12为540/30；200/20为历史阶段，干净安装未重跑                                                                              |
 | 单用户本地服务、多项目隔离（§2）                               | PASS          | API/UI/SQLite；E2E TS→Python→TS切换；迟到请求隔离单元回归、显式项目MCP所有权验证                                                                                   |
 | TS/JS/TSX/JSX、Python真实静态索引（§5/P1）                     | PASS          | indexer与跨包集成；固定Vite1583文件及Flask83文件；Python仅AST、恶意顶层代码未执行                                                                                  |
 | 函数/方法、目录/文件、导入/调用、未知和源码（§5）              | PASS          | 源码与range、动态/external/unresolved样本；UI实际源代码与Chromium原生clipboard.readText                                                                            |
 | 跨文件相对import、局部别名、re-export（§5）                    | PASS          | TS/Python fixtures、实际索引调用证据；限定为当前适配器支持的可证明解析                                                                                             |
 | 受限tsconfig paths/baseUrl与配置可见性                     | PASS          | 捕获JSONC/相对extends、最近配置归属、checker声明解析；配置only生命周期HTTP/SDK与真实SQLite历史读取、双语UI回归通过                                                                                      |
-| 受保护静态 CommonJS 与包配置 | PARTIAL | .cjs/有效包scope的.js、稳定const require和导出、覆盖/遮蔽guard、包only新鲜度/历史/双语已验；受保护精确转发Task1已复审通过；新公共生命周期/完整Express入口gate待Task2，旧失败保持历史，完整值流/运行兼容性未实现 |
+| 受保护静态 CommonJS 与包配置 | PARTIAL | .cjs/有效包scope的.js、稳定const require和导出、覆盖/遮蔽guard、包only新鲜度/历史/双语已验；受保护精确转发Task1已复审通过；新实际HTTP/SDK/SQLite alias-only生命周期与双语源码/clipboard已验；唯一完整Express严格入口仍FAIL（34/34无createApplication），test/exports.js嵌套写入整组拒绝；Task2独立gate待审，旧失败保持历史，完整值流/运行兼容性未实现 |
 | workspace package/exports、references图 | UNIMPLEMENTED | 不展开references或猜测package源码 |
 | 稳定ID、快照摘要、忽略规则和源码安全（§5）                     | PASS          | 插空行身份不变、文件内容hash/捕获字节、安全源码路径、symlink排除等回归；快照记录Git revision                                                                       |
 | 重命名/移动迁移映射和候选（§5）                                | UNIMPLEMENTED | 没有以相似函数自动替换绑定；需要后续显式接受映射流程                                                                                                               |
@@ -41,7 +41,7 @@ UNIMPLEMENTED表示仍为后续需求。测试通过不等于原README所有目�
 | 调用方减少/引用消失/完整索引差异（P4）                         | PARTIAL       | 已批准操作核对能报告要求缺失/绕过；全面snapshot diff、死代码判定与身份迁移尚无，不把无入边当死代码                                                                 |
 | 知识schemaVersion迁移导入/冲突预览/一致备份（§9）              | UNIMPLEMENTED | 已有规划导出不等同完整知识导出；不得删除唯一SQLite知识/审批                                                                                                        |
 | 安装后核心离线                                                 | PASS          | E2E+目标浏览拒绝非loopback请求，实际external[]、console/page errors[]；限定浏览器与本地核心，不包含模型客户端                                                      |
-| 三系统运行与CI、退出行为（问卷）                               | PARTIAL       | 当前Linux干净检查及生产启动通过；三OS job+Linux官方Chromium job已配置但远端未运行；Win/mac及Windows Ctrl+C未验证，测试专用IPC执行真实handler与Unix真实信号各自明确 |
+| 三系统运行与CI、退出行为（问卷）                               | PARTIAL       | 当前Linux干净检查及生产启动通过；基线86e6b12的三OS native job+Linux官方Chromium远端run37148507859全部成功；Task2候选尚未推送，Windows交互式Ctrl+C仍未验证，测试专用IPC执行真实handler与Unix真实信号各自明确 |
 | 视觉检查和窄窗口                                               | PASS          | 实际查看source/light/dark/narrow及Vite/Flask截图；目标选中卡片>200px，busy已结束；密图需缩放/平移，760px下编辑器在下方                                             |
 | 云配置发布、远端恢复和分发                                     | PARTIAL       | controller负责草稿/最终交付；当前实例成功不代表已发布、已push或新任务可恢复                                                                                        |
 | 增量索引、自动布局、运行时证据、多人/额外语言（P4/P5）         | UNIMPLEMENTED | 按README保留后续方向；当前手动刷新、局部展开，无动态真实性保证                                                                                                     |
@@ -88,7 +88,7 @@ UNIMPLEMENTED表示仍为后续需求。测试通过不等于原README所有目�
 不把 README 的未来路线图当成已实现功能。
 
 1. **目标项目模块解析的剩余边界**：受限 tsconfig paths/baseUrl 已实现。CommonJS 覆盖/遮蔽与稳定子集已实现，
-   完整 Express 转发使 canonical 入口保守失效；剩余 workspace package/exports、
+   精确转发已支持，但完整Express捕获的嵌套原型写入使canonical入口仍保守失效；剩余 workspace package/exports、
    references 图与更广的值流另票处理；条件导出/动态加载不作运行时保证。
 2. **功能集的 Agent 闭环复核**：propose_group 已纳入 T06，固定 agent 来源并
    遵守 project/member 验证；首轮实际 stdio 与 HTTP 一致性验收后再检查高级组合缺口。
@@ -177,3 +177,23 @@ WR-M1为未解决非阻断宿主Minor；这是带明确限制的关闭，不称�
 永久报告见reviews/static-forwarding-checkpoint，四项当前裁决见相应rulings日志；
 此前50项裁决保持各历史日志。scratch保留、整票未关闭，未声称原生客户端/平台/
 远端CI/新云恢复通过。后续README缺口在该检查点之后继续安排。
+
+
+## Static forwarding Task2 实现者候选
+
+真实HTTP/官方SDKstdio/SQLite生命周期1项GREEN基线，alias目标改向另一已存在leaf后，
+leaf函数ID/源码、原snapshot/approval/approved-plan operations/route均保留，plan/route stale。
+新浏览器1项通过并实际查看3张source/unknown图，中文/英文clipboard为leaf-a.cjs:2；共享
+离线helper的旧CommonJS3项通过。实际external唯一有意probe被ERR_BLOCKED_BY_CLIENT，
+意外外部请求0；console/page/protocol错误为空。最终源码cleanup改变后顺序根build/typecheck/lint和541/31通过（38.04s），随后
+新browser1项通过（19:51:34.541Z，5.811s）；不重复旧CommonJS通过项或规划E2E。
+
+唯一完整固定Express gate严格FAIL，actual createApplication exported=false、实际34/34
+entry IDs缺少sample，test/exports.js:53,58,71嵌套写入使共享组invalid。没有绕过guard、
+缩减验收、执行目标或第二次Expressgate；本次assert早于截图，所以没有新的ExpressPNG。
+最终disposable非入口strict负例退出1并保存真实sample/context/source/PNG，已实际查看。
+原Express FAIL和genericPASS永远保留其历史含义。Task2独立审查/整票审查及残余裁决待审，
+不称完整目标入口或运行时兼容性通过。新原始证据保存至reviews/static-forwarding-task2。
+
+原关闭Important因果缺口、宿主颜色Minor、真实客户端/交互式Windows Ctrl+C/新云恢复
+限制保留；native三OS和远端CI仅86e6b12已推送基线现已验证，旧未执行条目为历史。

@@ -1,27 +1,17 @@
-import { test, expect, type BrowserContext } from "@playwright/test";
+import { test, expect } from "@playwright/test";
 import { mkdtemp, mkdir, writeFile, rm, access } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-import { startProduction, connectMcp, http } from "../support/production.mjs";
+import {
+  startProduction,
+  connectMcp,
+  http,
+  denyExternalRequests,
+} from "../support/production.mjs";
 import {
   createCommonjsFixture,
   seedLegacyPackageSnapshot,
 } from "../support/commonjs.mjs";
-
-// Both coverage paths enforce the same real browser offline boundary.
-function denyExternalRequests(context: BrowserContext, external: string[]) {
-  return context.route("**/*", (route) => {
-    if (
-      !["127.0.0.1", "localhost", "[::1]"].includes(
-        new URL(route.request().url()).hostname,
-      )
-    ) {
-      external.push(route.request().url());
-      return route.abort("blockedbyclient");
-    }
-    return route.continue();
-  });
-}
 
 for (const legacy of [false, true]) {
   test(`production browser displays ${legacy ? "unrecorded legacy" : "captured"} package coverage truthfully in Chinese and English`, async ({

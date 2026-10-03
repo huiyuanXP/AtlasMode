@@ -1,0 +1,834 @@
+{
+  "forwardingBrowser": {
+    "snapshotId": "snapshot:a629554ce6f550378e1af1c290e6ffc2",
+    "entryContext": {
+      "node": {
+        "id": "function:e164abb685b958b3c0d31c36478479a2",
+        "kind": "function",
+        "name": "entry",
+        "qualifiedName": "entry",
+        "filePath": "entry.cjs",
+        "parentId": "file:2baa9ac136ed985377557c58a6144d38",
+        "language": "javascript",
+        "signature": "function entry()",
+        "startLine": 2,
+        "endLine": 2,
+        "exported": true
+      },
+      "incoming": [],
+      "outgoing": [
+        {
+          "id": "relation:6004b11394a02fc926f7c63f887b3b3f",
+          "type": "calls",
+          "sourceId": "function:e164abb685b958b3c0d31c36478479a2",
+          "targetId": "function:a897178344d8342d9ab3b86aa790486c",
+          "resolution": "resolved",
+          "evidence": {
+            "filePath": "entry.cjs",
+            "line": 2,
+            "text": "mod.helper()"
+          }
+        }
+      ],
+      "totalIncoming": 0,
+      "totalOutgoing": 1,
+      "truncated": false,
+      "offset": 0,
+      "limit": 50,
+      "snapshotId": "snapshot:a629554ce6f550378e1af1c290e6ffc2",
+      "dataSource": "code"
+    },
+    "leaf": {
+      "id": "function:a897178344d8342d9ab3b86aa790486c",
+      "kind": "function",
+      "name": "helper",
+      "qualifiedName": "helper",
+      "filePath": "leaf-a.cjs",
+      "parentId": "file:2b14f03b796bfd8279191cf2ff9992c8",
+      "language": "javascript",
+      "signature": "function helper()",
+      "startLine": 2,
+      "endLine": 2,
+      "exported": true
+    },
+    "unknownContext": {
+      "node": {
+        "id": "function:7b880d1c6fb7a171b685eb3ae85619e7",
+        "kind": "function",
+        "name": "unsafeCaller",
+        "qualifiedName": "unsafeCaller",
+        "filePath": "unknown.cjs",
+        "parentId": "file:6457a1cd05c1e4c575847e32df4684bc",
+        "language": "javascript",
+        "signature": "function unsafeCaller()",
+        "startLine": 2,
+        "endLine": 2,
+        "exported": true
+      },
+      "incoming": [],
+      "outgoing": [
+        {
+          "id": "relation:6f5dbe5a8f80cdd6bd8b354bf846185c",
+          "type": "calls",
+          "sourceId": "function:7b880d1c6fb7a171b685eb3ae85619e7",
+          "targetId": null,
+          "resolution": "unresolved",
+          "evidence": {
+            "filePath": "unknown.cjs",
+            "line": 2,
+            "text": "unsafe.helper()"
+          },
+          "reason": "CommonJS module mode, namespace identity, or export stability is not established"
+        }
+      ],
+      "totalIncoming": 0,
+      "totalOutgoing": 1,
+      "truncated": false,
+      "offset": 0,
+      "limit": 50,
+      "snapshotId": "snapshot:a629554ce6f550378e1af1c290e6ffc2",
+      "dataSource": "code"
+    },
+    "languages": [
+      "zh",
+      "en"
+    ],
+    "copiedLocation": "leaf-a.cjs:2",
+    "errors": [],
+    "external": [
+      "https://example.invalid/atlas-offline-probe"
+    ],
+    "protocolErrors": [],
+    "targetNotExecuted": true,
+    "offlineProbe": {
+      "url": "https://example.invalid/atlas-offline-probe",
+      "blockedReason": "net::ERR_BLOCKED_BY_CLIENT",
+      "unexpectedExternalRequests": 0
+    },
+    "observedAt": "2026-10-03T19:51:40.084Z"
+  },
+  "strictExpressFailure": {
+    "status": "failed",
+    "observedAt": "2026-10-03T19:43:47.933Z",
+    "target": {
+      "path": "/tmp/atlasmode-validation-express",
+      "gitRevision": "dbac741a49a5a64336b70c06e85c2e2706e36336",
+      "symbol": "createApplication",
+      "file": "lib/express.js"
+    },
+    "provenance": {
+      "beforeCapture": {
+        "gitRevision": "dbac741a49a5a64336b70c06e85c2e2706e36336",
+        "clean": true,
+        "status": "",
+        "checkedAt": "2026-10-03T19:43:42.707Z"
+      },
+      "afterCapture": {
+        "gitRevision": "dbac741a49a5a64336b70c06e85c2e2706e36336",
+        "clean": true,
+        "status": "",
+        "checkedAt": "2026-10-03T19:43:47.951Z"
+      }
+    },
+    "entryCriterion": {
+      "requested": true,
+      "status": "failed",
+      "sampleId": "function:09847e8be9b19d446c677876b5516a3c",
+      "sampleExported": false,
+      "returnedEntryIds": [
+        "function:315ecf7e3b78cef9792a9e375b884a38",
+        "function:53224293d75738a1dec69bafe4afa657",
+        "function:f7b141f4776b089367d9273ea07e45d5",
+        "function:6e2df4dc040566f462ba045070e59bf0",
+        "function:676d7242db0d30cfcd3fb5bb01083b59",
+        "function:bed2b89dce62bbd94ca9b308bacf808e",
+        "function:d8f690ea9f203cc56667c13b0b7b95dc",
+        "function:e1c47e8eca4ae448d136255c7bc2596f",
+        "function:9698ae81d3b9b0c3f60e2f9e225226f6",
+        "function:7b1d8956fa98f17830c6dd8fe022f466",
+        "function:85748f6646aa665f183aba523a64fa4d",
+        "function:99984cd3fd037ab0437e9d87a2965d3b",
+        "function:dd82c7f818b6c1912a4d2fe4d9a12d62",
+        "function:f61065a57ad799efa1ffdc975db02c30",
+        "function:90b0a2b3d7601a8f94fef1a1fa175174",
+        "function:3a7202ab64c2de6c5bccd67d56076cde",
+        "function:e3fd6791c3e24b808557892f56dc6dbb",
+        "function:3994d31d8d13ad2b8b065d16b9aa1f4a",
+        "function:4035a355c803fd2ab9f496f1aca7b869",
+        "function:4d414fe624f4934b484ba9ecf137c73f",
+        "function:680126bc2be566dc4164622abdcac20b",
+        "function:d0989f76b9aed610953fd584d32b44ec",
+        "function:0a56f0ed1d70fdb9b05f4964c4a02232",
+        "function:d255a14a3e176c5be2756458c75a5104",
+        "function:dd4716b9fc6e7a9fb064235020619371",
+        "function:fec78da0a268aba8169fed77d36238c7",
+        "function:e54659a783e3dc1d18a9ca4e26fe1589",
+        "function:55cad71d67bc1e48571c86b07c01c7db",
+        "function:c72905c19096ae997e8fe7d7c636126b",
+        "function:349502473c529e540904a4398386ec27",
+        "function:898865904d11b9f75b94e1b6932fa7be",
+        "function:298c0f6209947b9081b91dfdded03616",
+        "function:0309ba0194a05453801fd82be803a25b",
+        "function:5158d866a2b3d40fbd311c2ed5c1360c"
+      ],
+      "sampleInReturnedEntries": false,
+      "entrypointTotal": 34,
+      "returnedCount": 34,
+      "entrypointsTruncated": false
+    },
+    "error": "AssertionError [ERR_ASSERTION]: Required sample must be an exported entry\n\nfalse !== true\n",
+    "errors": [],
+    "external": [],
+    "protocolErrors": [],
+    "scope": "Actual compiled read-only product validation; target code and upstream tests never executed."
+  },
+  "boundedGuardDiagnostic": {
+    "scope": "Bounded read-only diagnostic using three exact original source files in an in-memory AST. Instrumented private analyzer in a data URL; no product changes, no target execution, no gate rerun or narrowed acceptance.",
+    "files": [
+      "index.js",
+      "lib/express.js",
+      "test/exports.js"
+    ],
+    "exportedDeclarations": [],
+    "events": [
+      {
+        "kind": "consumer-write",
+        "file": "/test/exports.js",
+        "line": 53,
+        "text": "express.application.foo = function(){ return 'bar'; }",
+        "module": "/index.js",
+        "reason": "CommonJS property selection is dynamic or nested"
+      },
+      {
+        "kind": "consumer-write",
+        "file": "/test/exports.js",
+        "line": 58,
+        "text": "express.request.foo = function(){ return 'bar'; }",
+        "module": "/index.js",
+        "reason": "CommonJS property selection is dynamic or nested"
+      },
+      {
+        "kind": "consumer-write",
+        "file": "/test/exports.js",
+        "line": 71,
+        "text": "express.response.foo = function(){ this.send('bar'); }",
+        "module": "/index.js",
+        "reason": "CommonJS property selection is dynamic or nested"
+      }
+    ]
+  },
+  "finalNonentryFailure": {
+    "status": "failed",
+    "observedAt": "2026-10-03T19:48:26.292Z",
+    "target": {
+      "path": "/tmp/atlas-validator-nonentry-Ft7TyC",
+      "gitRevision": "3d3568691d2ab1f6b66cdcdd599267a97180fd5e",
+      "symbol": "hidden",
+      "file": "entry.cjs"
+    },
+    "provenance": {
+      "beforeCapture": {
+        "gitRevision": "3d3568691d2ab1f6b66cdcdd599267a97180fd5e",
+        "clean": true,
+        "status": "",
+        "checkedAt": "2026-10-03T19:48:23.350Z"
+      },
+      "afterCapture": {
+        "gitRevision": "3d3568691d2ab1f6b66cdcdd599267a97180fd5e",
+        "clean": true,
+        "status": "",
+        "checkedAt": "2026-10-03T19:48:26.292Z"
+      }
+    },
+    "entryCriterion": {
+      "requested": true,
+      "status": "failed",
+      "sampleId": "function:2e203933cf2a59a0317e01f6b324386c",
+      "sampleExported": false,
+      "returnedEntryIds": [
+        "function:a7362153940f528fa223501228eb821e"
+      ],
+      "sampleInReturnedEntries": false,
+      "entrypointTotal": 1,
+      "returnedCount": 1,
+      "entrypointsTruncated": false
+    },
+    "summary": {
+      "project": {
+        "id": "project:13819ca50d9f90cbe1d01b0a0a2abf53",
+        "path": "/tmp/atlas-validator-nonentry-Ft7TyC",
+        "name": "atlas-validator-nonentry-Ft7TyC",
+        "snapshotId": "snapshot:2d1fa4b843af0a3df792379ba9cf16a1"
+      },
+      "snapshotId": "snapshot:2d1fa4b843af0a3df792379ba9cf16a1",
+      "contentHash": "591d74f5393e674334c84b518d47b5a9c5f4e4bf0ea7ff3a40fcc9819408d04a",
+      "counts": {
+        "files": 1,
+        "folders": 1,
+        "functions": 2,
+        "relations": 4,
+        "calls": {
+          "resolved": 1,
+          "unresolved": 0,
+          "external": 0
+        }
+      },
+      "entrypoints": [
+        {
+          "id": "function:a7362153940f528fa223501228eb821e",
+          "kind": "function",
+          "name": "entry",
+          "qualifiedName": "entry",
+          "filePath": "entry.cjs",
+          "parentId": "file:15339606973159c89f6e3c1d856d56c4",
+          "language": "javascript",
+          "signature": "function entry()",
+          "startLine": 2,
+          "endLine": 2,
+          "exported": true
+        }
+      ],
+      "entrypointTotal": 1,
+      "entrypointsTruncated": false,
+      "diagnostics": [],
+      "coverage": {
+        "files": [
+          "entry.cjs"
+        ],
+        "configurationFiles": [],
+        "packageFiles": [],
+        "excludedPatterns": [
+          "**/.git/**",
+          "**/node_modules/**",
+          "**/dist/**",
+          "**/build/**",
+          "**/coverage/**",
+          "**/__pycache__/**",
+          "**/.venv/**",
+          "**/venv/**",
+          "**/.agents/**",
+          "**/.superpowers/**",
+          "**/.next/**",
+          "**/.cache/**",
+          "**/vendor/**"
+        ],
+        "unresolvedCount": 0,
+        "availability": {
+          "complete": true,
+          "unavailablePaths": [],
+          "excludedPaths": [
+            ".git"
+          ]
+        }
+      },
+      "dataSource": "code"
+    },
+    "sample": {
+      "node": {
+        "id": "function:2e203933cf2a59a0317e01f6b324386c",
+        "kind": "function",
+        "name": "hidden",
+        "qualifiedName": "hidden",
+        "filePath": "entry.cjs",
+        "parentId": "file:15339606973159c89f6e3c1d856d56c4",
+        "language": "javascript",
+        "signature": "function hidden()",
+        "startLine": 1,
+        "endLine": 1,
+        "exported": false
+      },
+      "context": {
+        "node": {
+          "id": "function:2e203933cf2a59a0317e01f6b324386c",
+          "kind": "function",
+          "name": "hidden",
+          "qualifiedName": "hidden",
+          "filePath": "entry.cjs",
+          "parentId": "file:15339606973159c89f6e3c1d856d56c4",
+          "language": "javascript",
+          "signature": "function hidden()",
+          "startLine": 1,
+          "endLine": 1,
+          "exported": false
+        },
+        "incoming": [
+          {
+            "id": "relation:dc9aa147c3bd3e5e9428fddb4e352ca9",
+            "type": "calls",
+            "sourceId": "function:a7362153940f528fa223501228eb821e",
+            "targetId": "function:2e203933cf2a59a0317e01f6b324386c",
+            "resolution": "resolved",
+            "evidence": {
+              "filePath": "entry.cjs",
+              "line": 2,
+              "text": "hidden()"
+            }
+          }
+        ],
+        "outgoing": [],
+        "totalIncoming": 1,
+        "totalOutgoing": 0,
+        "truncated": false,
+        "offset": 0,
+        "limit": 5,
+        "snapshotId": "snapshot:2d1fa4b843af0a3df792379ba9cf16a1",
+        "dataSource": "code"
+      },
+      "sourceExcerpt": "function hidden() { return 1; }"
+    },
+    "bounded": {
+      "nodes": [
+        {
+          "id": "function:2e203933cf2a59a0317e01f6b324386c",
+          "kind": "function",
+          "name": "hidden",
+          "qualifiedName": "hidden",
+          "filePath": "entry.cjs",
+          "parentId": "file:15339606973159c89f6e3c1d856d56c4",
+          "language": "javascript",
+          "signature": "function hidden()",
+          "startLine": 1,
+          "endLine": 1,
+          "exported": false
+        }
+      ],
+      "relations": [],
+      "truncated": true,
+      "snapshotId": "snapshot:2d1fa4b843af0a3df792379ba9cf16a1",
+      "dataSource": "code"
+    },
+    "expansion": {
+      "nodes": 4,
+      "relations": 1,
+      "truncated": false
+    },
+    "error": "AssertionError [ERR_ASSERTION]: Required sample must be an exported entry\n\nfalse !== true\n",
+    "errors": [],
+    "external": [],
+    "protocolErrors": [],
+    "scope": "Actual compiled read-only product validation; target code and upstream tests never executed."
+  },
+  "sourceHashes": {
+    "base": "86e6b129d9ece1d9dbea9b0948e2c93b309c17e5",
+    "files": {
+      "tests/support/forwarding.mjs": "cc7d1203268ec42bb67999651ad5c86a5cb93fdd339eb1082a5a611f38c6c654",
+      "tests/support/production.mjs": "4a2228e53a47c0f1731faa89c1ffdea7f4241b6916cb525202d2a62fe084af42",
+      "tests/integration/forwarding-resolution.test.ts": "5531a960faf6100b88956a93890832a1347ffa130ece57322972e299d5bba7cb",
+      "tests/e2e/forwarding.spec.ts": "9a86624bec79267eef403a8813297cbbbac1493af21688a5753b1efea4182cf3",
+      "tests/e2e/commonjs.spec.ts": "ef20372bce603fb3ef0de4cf441085914a2506b9a265684bfa0d7c0ee2c9674f",
+      "scripts/validate-repository.mjs": "442546bd7c61062b49773ec59e47df8418793ce4dac1a30edb75f3fcbf300f46"
+    },
+    "productCodeChanged": false
+  },
+  "finalBrowserResult": {
+    "config": {
+      "argv": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "/workspace/AtlasMode/node_modules/.bin/playwright",
+        "test",
+        "tests/e2e/forwarding.spec.ts",
+        "--output",
+        "artifacts/static-forwarding-task2/browser-final-results"
+      ],
+      "configFile": "/workspace/AtlasMode/playwright.config.ts",
+      "rootDir": "/workspace/AtlasMode/tests/e2e",
+      "failOnFlakyTests": false,
+      "forbidOnly": false,
+      "fullyParallel": false,
+      "globalSetup": null,
+      "globalTeardown": null,
+      "globalTimeout": 0,
+      "grep": {},
+      "grepInvert": null,
+      "maxFailures": 0,
+      "metadata": {
+        "actualWorkers": 1
+      },
+      "preserveOutput": "always",
+      "projects": [
+        {
+          "outputDir": "/workspace/AtlasMode/artifacts/static-forwarding-task2/browser-final-results",
+          "repeatEach": 1,
+          "retries": 0,
+          "metadata": {
+            "actualWorkers": 1
+          },
+          "id": "",
+          "name": "",
+          "testDir": "/workspace/AtlasMode/tests/e2e",
+          "testIgnore": [],
+          "testMatch": [
+            "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+          ],
+          "timeout": 120000
+        }
+      ],
+      "quiet": false,
+      "reporter": [
+        [
+          "list",
+          null
+        ],
+        [
+          "json",
+          {
+            "outputFile": "artifacts/e2e/results.json"
+          }
+        ]
+      ],
+      "reportSlowTests": {
+        "max": 5,
+        "threshold": 300000
+      },
+      "shard": null,
+      "tags": [],
+      "updateSnapshots": "missing",
+      "updateSourceMethod": "patch",
+      "version": "1.63.0",
+      "workers": 1,
+      "webServer": null
+    },
+    "suites": [
+      {
+        "title": "forwarding.spec.ts",
+        "file": "forwarding.spec.ts",
+        "column": 0,
+        "line": 0,
+        "specs": [
+          {
+            "title": "production browser follows a two-hop entry to the real leaf, preserves authored source in both languages and exposes unsafe forwarding reason",
+            "ok": true,
+            "tags": [],
+            "tests": [
+              {
+                "timeout": 120000,
+                "annotations": [],
+                "expectedStatus": "passed",
+                "projectId": "",
+                "projectName": "",
+                "results": [
+                  {
+                    "workerIndex": 0,
+                    "parallelIndex": 0,
+                    "status": "passed",
+                    "duration": 4072,
+                    "errors": [],
+                    "stdout": [],
+                    "stderr": [],
+                    "retry": 0,
+                    "startTime": "2026-10-03T19:51:35.854Z",
+                    "annotations": [],
+                    "attachments": [
+                      {
+                        "name": "forwarding-evidence",
+                        "contentType": "application/json",
+                        "body": "eyJzbmFwc2hvdElkIjoic25hcHNob3Q6YTYyOTU1NGNlNmY1NTAzNzhlMWFmMWMyOTBlNmZmYzIiLCJlbnRyeUNvbnRleHQiOnsibm9kZSI6eyJpZCI6ImZ1bmN0aW9uOmUxNjRhYmI2ODViOTU4YjNjMGQzMWMzNjQ3ODQ3OWEyIiwia2luZCI6ImZ1bmN0aW9uIiwibmFtZSI6ImVudHJ5IiwicXVhbGlmaWVkTmFtZSI6ImVudHJ5IiwiZmlsZVBhdGgiOiJlbnRyeS5janMiLCJwYXJlbnRJZCI6ImZpbGU6MmJhYTlhYzEzNmVkOTg1Mzc3NTU3YzU4YTYxNDRkMzgiLCJsYW5ndWFnZSI6ImphdmFzY3JpcHQiLCJzaWduYXR1cmUiOiJmdW5jdGlvbiBlbnRyeSgpIiwic3RhcnRMaW5lIjoyLCJlbmRMaW5lIjoyLCJleHBvcnRlZCI6dHJ1ZX0sImluY29taW5nIjpbXSwib3V0Z29pbmciOlt7ImlkIjoicmVsYXRpb246NjAwNGIxMTM5NGEwMmZjOTI2ZjdjNjNmODg3YjNiM2YiLCJ0eXBlIjoiY2FsbHMiLCJzb3VyY2VJZCI6ImZ1bmN0aW9uOmUxNjRhYmI2ODViOTU4YjNjMGQzMWMzNjQ3ODQ3OWEyIiwidGFyZ2V0SWQiOiJmdW5jdGlvbjphODk3MTc4MzQ0ZDgzNDJkOWFiM2I4NmFhNzkwNDg2YyIsInJlc29sdXRpb24iOiJyZXNvbHZlZCIsImV2aWRlbmNlIjp7ImZpbGVQYXRoIjoiZW50cnkuY2pzIiwibGluZSI6MiwidGV4dCI6Im1vZC5oZWxwZXIoKSJ9fV0sInRvdGFsSW5jb21pbmciOjAsInRvdGFsT3V0Z29pbmciOjEsInRydW5jYXRlZCI6ZmFsc2UsIm9mZnNldCI6MCwibGltaXQiOjUwLCJzbmFwc2hvdElkIjoic25hcHNob3Q6YTYyOTU1NGNlNmY1NTAzNzhlMWFmMWMyOTBlNmZmYzIiLCJkYXRhU291cmNlIjoiY29kZSJ9LCJsZWFmIjp7ImlkIjoiZnVuY3Rpb246YTg5NzE3ODM0NGQ4MzQyZDlhYjNiODZhYTc5MDQ4NmMiLCJraW5kIjoiZnVuY3Rpb24iLCJuYW1lIjoiaGVscGVyIiwicXVhbGlmaWVkTmFtZSI6ImhlbHBlciIsImZpbGVQYXRoIjoibGVhZi1hLmNqcyIsInBhcmVudElkIjoiZmlsZToyYjE0ZjAzYjc5NmJmZDgyNzkxOTFjZjJmZjk5OTJjOCIsImxhbmd1YWdlIjoiamF2YXNjcmlwdCIsInNpZ25hdHVyZSI6ImZ1bmN0aW9uIGhlbHBlcigpIiwic3RhcnRMaW5lIjoyLCJlbmRMaW5lIjoyLCJleHBvcnRlZCI6dHJ1ZX0sInVua25vd25Db250ZXh0Ijp7Im5vZGUiOnsiaWQiOiJmdW5jdGlvbjo3Yjg4MGQxYzZmYjdhMTcxYjY4NWViM2FlODU2MTllNyIsImtpbmQiOiJmdW5jdGlvbiIsIm5hbWUiOiJ1bnNhZmVDYWxsZXIiLCJxdWFsaWZpZWROYW1lIjoidW5zYWZlQ2FsbGVyIiwiZmlsZVBhdGgiOiJ1bmtub3duLmNqcyIsInBhcmVudElkIjoiZmlsZTo2NDU3YTFjZDA1YzFlNGM1NzU4NDdlMzJkZjQ2ODRiYyIsImxhbmd1YWdlIjoiamF2YXNjcmlwdCIsInNpZ25hdHVyZSI6ImZ1bmN0aW9uIHVuc2FmZUNhbGxlcigpIiwic3RhcnRMaW5lIjoyLCJlbmRMaW5lIjoyLCJleHBvcnRlZCI6dHJ1ZX0sImluY29taW5nIjpbXSwib3V0Z29pbmciOlt7ImlkIjoicmVsYXRpb246NmY1ZGJlNWE4ZjgwY2RkNmJkOGIzNTRiZjg0NjE4NWMiLCJ0eXBlIjoiY2FsbHMiLCJzb3VyY2VJZCI6ImZ1bmN0aW9uOjdiODgwZDFjNmZiN2ExNzFiNjg1ZWIzYWU4NTYxOWU3IiwidGFyZ2V0SWQiOm51bGwsInJlc29sdXRpb24iOiJ1bnJlc29sdmVkIiwiZXZpZGVuY2UiOnsiZmlsZVBhdGgiOiJ1bmtub3duLmNqcyIsImxpbmUiOjIsInRleHQiOiJ1bnNhZmUuaGVscGVyKCkifSwicmVhc29uIjoiQ29tbW9uSlMgbW9kdWxlIG1vZGUsIG5hbWVzcGFjZSBpZGVudGl0eSwgb3IgZXhwb3J0IHN0YWJpbGl0eSBpcyBub3QgZXN0YWJsaXNoZWQifV0sInRvdGFsSW5jb21pbmciOjAsInRvdGFsT3V0Z29pbmciOjEsInRydW5jYXRlZCI6ZmFsc2UsIm9mZnNldCI6MCwibGltaXQiOjUwLCJzbmFwc2hvdElkIjoic25hcHNob3Q6YTYyOTU1NGNlNmY1NTAzNzhlMWFmMWMyOTBlNmZmYzIiLCJkYXRhU291cmNlIjoiY29kZSJ9LCJsYW5ndWFnZXMiOlsiemgiLCJlbiJdLCJjb3BpZWRMb2NhdGlvbiI6ImxlYWYtYS5janM6MiIsImVycm9ycyI6W10sImV4dGVybmFsIjpbImh0dHBzOi8vZXhhbXBsZS5pbnZhbGlkL2F0bGFzLW9mZmxpbmUtcHJvYmUiXSwicHJvdG9jb2xFcnJvcnMiOltdLCJ0YXJnZXROb3RFeGVjdXRlZCI6dHJ1ZSwib2ZmbGluZVByb2JlIjp7InVybCI6Imh0dHBzOi8vZXhhbXBsZS5pbnZhbGlkL2F0bGFzLW9mZmxpbmUtcHJvYmUiLCJibG9ja2VkUmVhc29uIjoibmV0OjpFUlJfQkxPQ0tFRF9CWV9DTElFTlQiLCJ1bmV4cGVjdGVkRXh0ZXJuYWxSZXF1ZXN0cyI6MH0sIm9ic2VydmVkQXQiOiIyMDI2LTEwLTAzVDE5OjUxOjQwLjA4NFoifQ=="
+                      }
+                    ]
+                  }
+                ],
+                "status": "expected"
+              }
+            ],
+            "id": "bb4b73df3f683ee9eb2d-720d76203acd3ce82500",
+            "file": "forwarding.spec.ts",
+            "line": 17,
+            "column": 1
+          }
+        ]
+      }
+    ],
+    "errors": [],
+    "stats": {
+      "startTime": "2026-10-03T19:51:34.541Z",
+      "duration": 5811.325,
+      "expected": 1,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    }
+  },
+  "firstBrowserResult": {
+    "config": {
+      "argv": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "/workspace/AtlasMode/node_modules/.bin/playwright",
+        "test",
+        "tests/e2e/forwarding.spec.ts",
+        "tests/e2e/commonjs.spec.ts"
+      ],
+      "configFile": "/workspace/AtlasMode/playwright.config.ts",
+      "rootDir": "/workspace/AtlasMode/tests/e2e",
+      "failOnFlakyTests": false,
+      "forbidOnly": false,
+      "fullyParallel": false,
+      "globalSetup": null,
+      "globalTeardown": null,
+      "globalTimeout": 0,
+      "grep": {},
+      "grepInvert": null,
+      "maxFailures": 0,
+      "metadata": {
+        "actualWorkers": 1
+      },
+      "preserveOutput": "always",
+      "projects": [
+        {
+          "outputDir": "/workspace/AtlasMode/artifacts/e2e/results",
+          "repeatEach": 1,
+          "retries": 0,
+          "metadata": {
+            "actualWorkers": 1
+          },
+          "id": "",
+          "name": "",
+          "testDir": "/workspace/AtlasMode/tests/e2e",
+          "testIgnore": [],
+          "testMatch": [
+            "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+          ],
+          "timeout": 120000
+        }
+      ],
+      "quiet": false,
+      "reporter": [
+        [
+          "list",
+          null
+        ],
+        [
+          "json",
+          {
+            "outputFile": "artifacts/e2e/results.json"
+          }
+        ]
+      ],
+      "reportSlowTests": {
+        "max": 5,
+        "threshold": 300000
+      },
+      "shard": null,
+      "tags": [],
+      "updateSnapshots": "missing",
+      "updateSourceMethod": "patch",
+      "version": "1.63.0",
+      "workers": 1,
+      "webServer": null
+    },
+    "suites": [
+      {
+        "title": "commonjs.spec.ts",
+        "file": "commonjs.spec.ts",
+        "column": 0,
+        "line": 0,
+        "specs": [
+          {
+            "title": "production browser displays captured package coverage truthfully in Chinese and English",
+            "ok": true,
+            "tags": [],
+            "tests": [
+              {
+                "timeout": 120000,
+                "annotations": [],
+                "expectedStatus": "passed",
+                "projectId": "",
+                "projectName": "",
+                "results": [
+                  {
+                    "workerIndex": 0,
+                    "parallelIndex": 0,
+                    "status": "passed",
+                    "duration": 4164,
+                    "errors": [],
+                    "stdout": [],
+                    "stderr": [],
+                    "retry": 0,
+                    "startTime": "2026-10-03T19:41:58.206Z",
+                    "annotations": [],
+                    "attachments": [
+                      {
+                        "name": "package-evidence",
+                        "contentType": "application/json",
+                        "body": "eyJsZWdhY3kiOmZhbHNlLCJzbmFwc2hvdElkIjoic25hcHNob3Q6NTA0NTk0ZWIyZWVhYjE5NzNlZjI2ZDViYjA4NGQ1NzEiLCJjb3ZlcmFnZSI6eyJmaWxlcyI6WyJlbnRyeS5qcyIsImhlbHBlci5qcyIsIm5ldmVyLWV4ZWN1dGUuY2pzIiwib3ZlcndyaXR0ZW4uanMiLCJ1bmtub3duLmpzIl0sImNvbmZpZ3VyYXRpb25GaWxlcyI6W10sInBhY2thZ2VGaWxlcyI6WyJwYWNrYWdlLmpzb24iXSwiZXhjbHVkZWRQYXR0ZXJucyI6WyIqKi8uZ2l0LyoqIiwiKiovbm9kZV9tb2R1bGVzLyoqIiwiKiovZGlzdC8qKiIsIioqL2J1aWxkLyoqIiwiKiovY292ZXJhZ2UvKioiLCIqKi9fX3B5Y2FjaGVfXy8qKiIsIioqLy52ZW52LyoqIiwiKiovdmVudi8qKiIsIioqLy5hZ2VudHMvKioiLCIqKi8uc3VwZXJwb3dlcnMvKioiLCIqKi8ubmV4dC8qKiIsIioqLy5jYWNoZS8qKiIsIioqL3ZlbmRvci8qKiJdLCJ1bnJlc29sdmVkQ291bnQiOjgsImF2YWlsYWJpbGl0eSI6eyJjb21wbGV0ZSI6dHJ1ZSwidW5hdmFpbGFibGVQYXRocyI6W10sImV4Y2x1ZGVkUGF0aHMiOltdfX0sImVycm9ycyI6W10sImV4dGVybmFsIjpbXSwicHJvdG9jb2xFcnJvcnMiOltdLCJ1bmtub3duQ29udGV4dCI6eyJub2RlIjp7ImlkIjoiZnVuY3Rpb246YTMzMGVlYTIwYTI1OTZhOTg4M2VjYjM1MGI4NTc5Y2QiLCJraW5kIjoiZnVuY3Rpb24iLCJuYW1lIjoib3ZlcndyaXR0ZW4iLCJxdWFsaWZpZWROYW1lIjoib3ZlcndyaXR0ZW4iLCJmaWxlUGF0aCI6InVua25vd24uanMiLCJwYXJlbnRJZCI6ImZpbGU6MmI4YjVhMmMzZDA4YmQ4NTRmZjY5YzZjYjNjOGYzMTciLCJsYW5ndWFnZSI6ImphdmFzY3JpcHQiLCJzaWduYXR1cmUiOiJmdW5jdGlvbiBvdmVyd3JpdHRlbigpIiwic3RhcnRMaW5lIjoyLCJlbmRMaW5lIjoyLCJleHBvcnRlZCI6dHJ1ZX0sImluY29taW5nIjpbXSwib3V0Z29pbmciOlt7ImlkIjoicmVsYXRpb246ODBmNmViYTE2Y2QzNmUxODkzYTUzZjg2ODg2ZGM0NGEiLCJ0eXBlIjoiY2FsbHMiLCJzb3VyY2VJZCI6ImZ1bmN0aW9uOmEzMzBlZWEyMGEyNTk2YTk4ODNlY2IzNTBiODU3OWNkIiwidGFyZ2V0SWQiOm51bGwsInJlc29sdXRpb24iOiJ1bnJlc29sdmVkIiwiZXZpZGVuY2UiOnsiZmlsZVBhdGgiOiJ1bmtub3duLmpzIiwibGluZSI6MiwidGV4dCI6Im1vZC5oZWxwZXIoKSJ9LCJyZWFzb24iOiJDb21tb25KUyBleHBvcnQgaGVscGVyIGhhcyBubyB1bmlxdWUgc3RhYmxlIGNhcHR1cmVkIGltcGxlbWVudGF0aW9uIn1dLCJ0b3RhbEluY29taW5nIjowLCJ0b3RhbE91dGdvaW5nIjoxLCJ0cnVuY2F0ZWQiOmZhbHNlLCJvZmZzZXQiOjAsImxpbWl0Ijo1MCwic25hcHNob3RJZCI6InNuYXBzaG90OjUwNDU5NGViMmVlYWIxOTczZWYyNmQ1YmIwODRkNTcxIiwiZGF0YVNvdXJjZSI6ImNvZGUifSwic2hhZG93Q29udGV4dCI6eyJub2RlIjp7ImlkIjoiZnVuY3Rpb246ZTE3MjExM2Q5ZWQzZjk2MjJmNTk2M2NlYzNlYmQwZjMiLCJraW5kIjoiZnVuY3Rpb24iLCJuYW1lIjoic2hhZG93ZWQiLCJxdWFsaWZpZWROYW1lIjoic2hhZG93ZWQiLCJmaWxlUGF0aCI6InVua25vd24uanMiLCJwYXJlbnRJZCI6ImZpbGU6MmI4YjVhMmMzZDA4YmQ4NTRmZjY5YzZjYjNjOGYzMTciLCJsYW5ndWFnZSI6ImphdmFzY3JpcHQiLCJzaWduYXR1cmUiOiJmdW5jdGlvbiBzaGFkb3dlZChyZXF1aXJlKSIsInN0YXJ0TGluZSI6MywiZW5kTGluZSI6MywiZXhwb3J0ZWQiOnRydWV9LCJpbmNvbWluZyI6W10sIm91dGdvaW5nIjpbeyJpZCI6InJlbGF0aW9uOjYwM2UwNWM3OTRjNWU0N2VkMWE5ODYxMzI3YjJkYTRkIiwidHlwZSI6ImNhbGxzIiwic291cmNlSWQiOiJmdW5jdGlvbjplMTcyMTEzZDllZDNmOTYyMmY1OTYzY2VjM2ViZDBmMyIsInRhcmdldElkIjpudWxsLCJyZXNvbHV0aW9uIjoidW5yZXNvbHZlZCIsImV2aWRlbmNlIjp7ImZpbGVQYXRoIjoidW5rbm93bi5qcyIsImxpbmUiOjMsInRleHQiOiJyZXF1aXJlKFwiLi9oZWxwZXJcIikifSwicmVhc29uIjoiTm8gdW5pcXVlIGluZGV4ZWQgaW1wbGVtZW50YXRpb24gZm9yIHRoaXMgY2FsbCAoZHluYW1pYywgYW1iaWVudCwgb3IgZXhjbHVkZWQgdGFyZ2V0KSJ9LHsiaWQiOiJyZWxhdGlvbjo2MDNlMGE0ODZkYzVlNDdlZDFhOTg2MTMyOTg5OTkyZSIsInR5cGUiOiJjYWxscyIsInNvdXJjZUlkIjoiZnVuY3Rpb246ZTE3MjExM2Q5ZWQzZjk2MjJmNTk2M2NlYzNlYmQwZjMiLCJ0YXJnZXRJZCI6bnVsbCwicmVzb2x1dGlvbiI6InVucmVzb2x2ZWQiLCJldmlkZW5jZSI6eyJmaWxlUGF0aCI6InVua25vd24uanMiLCJsaW5lIjozLCJ0ZXh0IjoibG9jYWwuaGVscGVyKCkifSwicmVhc29uIjoiQ29tbW9uSlMgcmVxdWlyZSBpcyBsZXhpY2FsbHkgc2hhZG93ZWQifV0sInRvdGFsSW5jb21pbmciOjAsInRvdGFsT3V0Z29pbmciOjIsInRydW5jYXRlZCI6ZmFsc2UsIm9mZnNldCI6MCwibGltaXQiOjUwLCJzbmFwc2hvdElkIjoic25hcHNob3Q6NTA0NTk0ZWIyZWVhYjE5NzNlZjI2ZDViYjA4NGQ1NzEiLCJkYXRhU291cmNlIjoiY29kZSJ9LCJvYnNlcnZlZEF0IjoiMjAyNi0xMC0wM1QxOTo0MjowMy45MDhaIiwidGFyZ2V0Tm90RXhlY3V0ZWQiOnRydWV9"
+                      }
+                    ]
+                  }
+                ],
+                "status": "expected"
+              }
+            ],
+            "id": "7aaf3dc3a2fac0835710-9183f962eb064a82c6f4",
+            "file": "commonjs.spec.ts",
+            "line": 17,
+            "column": 3
+          },
+          {
+            "title": "production browser displays unrecorded legacy package coverage truthfully in Chinese and English",
+            "ok": true,
+            "tags": [],
+            "tests": [
+              {
+                "timeout": 120000,
+                "annotations": [],
+                "expectedStatus": "passed",
+                "projectId": "",
+                "projectName": "",
+                "results": [
+                  {
+                    "workerIndex": 0,
+                    "parallelIndex": 0,
+                    "status": "passed",
+                    "duration": 5471,
+                    "errors": [],
+                    "stdout": [],
+                    "stderr": [],
+                    "retry": 0,
+                    "startTime": "2026-10-03T19:42:04.044Z",
+                    "annotations": [],
+                    "attachments": [
+                      {
+                        "name": "package-evidence",
+                        "contentType": "application/json",
+                        "body": "eyJsZWdhY3kiOnRydWUsInNuYXBzaG90SWQiOiJsZWdhY3ktcGFja2FnZS1zbmFwc2hvdDoyOTc4ZDM0MDkxYTg1NjMzNGY2OWY3MzgzNjM1YzBmZiIsImNvdmVyYWdlIjp7ImZpbGVzIjpbImVudHJ5LmpzIiwiaGVscGVyLmpzIiwibmV2ZXItZXhlY3V0ZS5janMiLCJvdmVyd3JpdHRlbi5qcyIsInVua25vd24uanMiXSwiY29uZmlndXJhdGlvbkZpbGVzIjpbXSwiZXhjbHVkZWRQYXR0ZXJucyI6WyIqKi8uZ2l0LyoqIiwiKiovbm9kZV9tb2R1bGVzLyoqIiwiKiovZGlzdC8qKiIsIioqL2J1aWxkLyoqIiwiKiovY292ZXJhZ2UvKioiLCIqKi9fX3B5Y2FjaGVfXy8qKiIsIioqLy52ZW52LyoqIiwiKiovdmVudi8qKiIsIioqLy5hZ2VudHMvKioiLCIqKi8uc3VwZXJwb3dlcnMvKioiLCIqKi8ubmV4dC8qKiIsIioqLy5jYWNoZS8qKiIsIioqL3ZlbmRvci8qKiJdLCJ1bnJlc29sdmVkQ291bnQiOjgsImF2YWlsYWJpbGl0eSI6eyJjb21wbGV0ZSI6dHJ1ZSwidW5hdmFpbGFibGVQYXRocyI6W10sImV4Y2x1ZGVkUGF0aHMiOltdfX0sImVycm9ycyI6W10sImV4dGVybmFsIjpbXSwicHJvdG9jb2xFcnJvcnMiOltdLCJ1bmtub3duQ29udGV4dCI6eyJub2RlIjp7ImlkIjoiZnVuY3Rpb246MjEwMGU0YWRhYWFlYmQ4NzExOGNiMTM5MzM1NGM5MTEiLCJraW5kIjoiZnVuY3Rpb24iLCJuYW1lIjoib3ZlcndyaXR0ZW4iLCJxdWFsaWZpZWROYW1lIjoib3ZlcndyaXR0ZW4iLCJmaWxlUGF0aCI6InVua25vd24uanMiLCJwYXJlbnRJZCI6ImZpbGU6MjI1ZWUwOGQyNmU4YzBhMTA5Y2RjYTEzZDJlMTJkNDciLCJsYW5ndWFnZSI6ImphdmFzY3JpcHQiLCJzaWduYXR1cmUiOiJmdW5jdGlvbiBvdmVyd3JpdHRlbigpIiwic3RhcnRMaW5lIjoyLCJlbmRMaW5lIjoyLCJleHBvcnRlZCI6dHJ1ZX0sImluY29taW5nIjpbXSwib3V0Z29pbmciOlt7ImlkIjoicmVsYXRpb246ZjdmYTY4MDI5YjM5NjFlZTc5NGQ5NGRkMjlmMGFmZGYiLCJ0eXBlIjoiY2FsbHMiLCJzb3VyY2VJZCI6ImZ1bmN0aW9uOjIxMDBlNGFkYWFhZWJkODcxMThjYjEzOTMzNTRjOTExIiwidGFyZ2V0SWQiOm51bGwsInJlc29sdXRpb24iOiJ1bnJlc29sdmVkIiwiZXZpZGVuY2UiOnsiZmlsZVBhdGgiOiJ1bmtub3duLmpzIiwibGluZSI6MiwidGV4dCI6Im1vZC5oZWxwZXIoKSJ9LCJyZWFzb24iOiJDb21tb25KUyBleHBvcnQgaGVscGVyIGhhcyBubyB1bmlxdWUgc3RhYmxlIGNhcHR1cmVkIGltcGxlbWVudGF0aW9uIn1dLCJ0b3RhbEluY29taW5nIjowLCJ0b3RhbE91dGdvaW5nIjoxLCJ0cnVuY2F0ZWQiOmZhbHNlLCJvZmZzZXQiOjAsImxpbWl0Ijo1MCwic25hcHNob3RJZCI6ImxlZ2FjeS1wYWNrYWdlLXNuYXBzaG90OjI5NzhkMzQwOTFhODU2MzM0ZjY5ZjczODM2MzVjMGZmIiwiZGF0YVNvdXJjZSI6ImNvZGUifSwic2hhZG93Q29udGV4dCI6eyJub2RlIjp7ImlkIjoiZnVuY3Rpb246YmY0NWUyZmRmMDBlNDlkMmY3NzNmNmYxMGRjMmVjNzciLCJraW5kIjoiZnVuY3Rpb24iLCJuYW1lIjoic2hhZG93ZWQiLCJxdWFsaWZpZWROYW1lIjoic2hhZG93ZWQiLCJmaWxlUGF0aCI6InVua25vd24uanMiLCJwYXJlbnRJZCI6ImZpbGU6MjI1ZWUwOGQyNmU4YzBhMTA5Y2RjYTEzZDJlMTJkNDciLCJsYW5ndWFnZSI6ImphdmFzY3JpcHQiLCJzaWduYXR1cmUiOiJmdW5jdGlvbiBzaGFkb3dlZChyZXF1aXJlKSIsInN0YXJ0TGluZSI6MywiZW5kTGluZSI6MywiZXhwb3J0ZWQiOnRydWV9LCJpbmNvbWluZyI6W10sIm91dGdvaW5nIjpbeyJpZCI6InJlbGF0aW9uOjlmN2EyODk4NzRhMzZiZjM0MDUzZTBlOGRmNWE2MjRmIiwidHlwZSI6ImNhbGxzIiwic291cmNlSWQiOiJmdW5jdGlvbjpiZjQ1ZTJmZGYwMGU0OWQyZjc3M2Y2ZjEwZGMyZWM3NyIsInRhcmdldElkIjpudWxsLCJyZXNvbHV0aW9uIjoidW5yZXNvbHZlZCIsImV2aWRlbmNlIjp7ImZpbGVQYXRoIjoidW5rbm93bi5qcyIsImxpbmUiOjMsInRleHQiOiJyZXF1aXJlKFwiLi9oZWxwZXJcIikifSwicmVhc29uIjoiTm8gdW5pcXVlIGluZGV4ZWQgaW1wbGVtZW50YXRpb24gZm9yIHRoaXMgY2FsbCAoZHluYW1pYywgYW1iaWVudCwgb3IgZXhjbHVkZWQgdGFyZ2V0KSJ9LHsiaWQiOiJyZWxhdGlvbjo5ZjdhMmM4ZjBkYTM2YmYzNDA1M2UwZThlMGRiY2RlOCIsInR5cGUiOiJjYWxscyIsInNvdXJjZUlkIjoiZnVuY3Rpb246YmY0NWUyZmRmMDBlNDlkMmY3NzNmNmYxMGRjMmVjNzciLCJ0YXJnZXRJZCI6bnVsbCwicmVzb2x1dGlvbiI6InVucmVzb2x2ZWQiLCJldmlkZW5jZSI6eyJmaWxlUGF0aCI6InVua25vd24uanMiLCJsaW5lIjozLCJ0ZXh0IjoibG9jYWwuaGVscGVyKCkifSwicmVhc29uIjoiQ29tbW9uSlMgcmVxdWlyZSBpcyBsZXhpY2FsbHkgc2hhZG93ZWQifV0sInRvdGFsSW5jb21pbmciOjAsInRvdGFsT3V0Z29pbmciOjIsInRydW5jYXRlZCI6ZmFsc2UsIm9mZnNldCI6MCwibGltaXQiOjUwLCJzbmFwc2hvdElkIjoibGVnYWN5LXBhY2thZ2Utc25hcHNob3Q6Mjk3OGQzNDA5MWE4NTYzMzRmNjlmNzM4MzYzNWMwZmYiLCJkYXRhU291cmNlIjoiY29kZSJ9LCJvYnNlcnZlZEF0IjoiMjAyNi0xMC0wM1QxOTo0MjowOS4zMjZaIiwidGFyZ2V0Tm90RXhlY3V0ZWQiOnRydWV9"
+                      }
+                    ]
+                  }
+                ],
+                "status": "expected"
+              }
+            ],
+            "id": "7aaf3dc3a2fac0835710-b31020273f27627e4b4d",
+            "file": "commonjs.spec.ts",
+            "line": 17,
+            "column": 3
+          },
+          {
+            "title": "recorded zero manifests is distinct from unrecorded coverage",
+            "ok": true,
+            "tags": [],
+            "tests": [
+              {
+                "timeout": 120000,
+                "annotations": [],
+                "expectedStatus": "passed",
+                "projectId": "",
+                "projectName": "",
+                "results": [
+                  {
+                    "workerIndex": 0,
+                    "parallelIndex": 0,
+                    "status": "passed",
+                    "duration": 3585,
+                    "errors": [],
+                    "stdout": [],
+                    "stderr": [],
+                    "retry": 0,
+                    "startTime": "2026-10-03T19:42:09.572Z",
+                    "annotations": [],
+                    "attachments": []
+                  }
+                ],
+                "status": "expected"
+              }
+            ],
+            "id": "7aaf3dc3a2fac0835710-d9c3bd4cd69b165486b0",
+            "file": "commonjs.spec.ts",
+            "line": 203,
+            "column": 1
+          }
+        ]
+      },
+      {
+        "title": "forwarding.spec.ts",
+        "file": "forwarding.spec.ts",
+        "column": 0,
+        "line": 0,
+        "specs": [
+          {
+            "title": "production browser follows a two-hop entry to the real leaf, preserves authored source in both languages and exposes unsafe forwarding reason",
+            "ok": false,
+            "tags": [],
+            "tests": [
+              {
+                "timeout": 120000,
+                "annotations": [],
+                "expectedStatus": "passed",
+                "projectId": "",
+                "projectName": "",
+                "results": [
+                  {
+                    "workerIndex": 0,
+                    "parallelIndex": 0,
+                    "status": "failed",
+                    "duration": 14115,
+                    "error": {
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  getByTestId('source-snippet')\nExpected: \u001b[32m\"function helper() { return \\\"中文 leaf A\\\"; }\"\u001b[39m\nReceived: \u001b[31m\"\u001b[7m2  \u001b[27mfunction helper() { return \\\"中文 leaf A\\\"; }\"\u001b[39m\nTimeout:  10000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveText\" getByTestId('source-snippet') with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for getByTestId('source-snippet')\u001b[22m\n\u001b[2m    24 × locator resolved to <pre class=\"source-code\" data-testid=\"source-snippet\">2  function helper() { return \"中文 leaf A\"; }</pre>\u001b[22m\n\u001b[2m       - unexpected value \"2  function helper() { return \"中文 leaf A\"; }\"\u001b[22m\n",
+                      "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  getByTestId('source-snippet')\nExpected: \u001b[32m\"function helper() { return \\\"中文 leaf A\\\"; }\"\u001b[39m\nReceived: \u001b[31m\"\u001b[7m2  \u001b[27mfunction helper() { return \\\"中文 leaf A\\\"; }\"\u001b[39m\nTimeout:  10000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveText\" getByTestId('source-snippet') with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for getByTestId('source-snippet')\u001b[22m\n\u001b[2m    24 × locator resolved to <pre class=\"source-code\" data-testid=\"source-snippet\">2  function helper() { return \"中文 leaf A\"; }</pre>\u001b[22m\n\u001b[2m       - unexpected value \"2  function helper() { return \"中文 leaf A\"; }\"\u001b[22m\n\n    at /workspace/AtlasMode/tests/e2e/forwarding.spec.ts:93:56",
+                      "location": {
+                        "file": "/workspace/AtlasMode/tests/e2e/forwarding.spec.ts",
+                        "column": 56,
+                        "line": 93
+                      },
+                      "snippet": "  91 |         page.getByRole(\"heading\", { name: sourceLabel, exact: true }),\n  92 |       ).toBeVisible();\n> 93 |       await expect(page.getByTestId(\"source-snippet\")).toHaveText(\n     |                                                        ^\n  94 |         'function helper() { return \"中文 leaf A\"; }',\n  95 |       );\n  96 |       await expect(page.getByTestId(\"source-snippet\")).not.toHaveAttribute("
+                    },
+                    "errors": [
+                      {
+                        "location": {
+                          "file": "/workspace/AtlasMode/tests/e2e/forwarding.spec.ts",
+                          "column": 56,
+                          "line": 93
+                        },
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  getByTestId('source-snippet')\nExpected: \u001b[32m\"function helper() { return \\\"中文 leaf A\\\"; }\"\u001b[39m\nReceived: \u001b[31m\"\u001b[7m2  \u001b[27mfunction helper() { return \\\"中文 leaf A\\\"; }\"\u001b[39m\nTimeout:  10000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveText\" getByTestId('source-snippet') with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for getByTestId('source-snippet')\u001b[22m\n\u001b[2m    24 × locator resolved to <pre class=\"source-code\" data-testid=\"source-snippet\">2  function helper() { return \"中文 leaf A\"; }</pre>\u001b[22m\n\u001b[2m       - unexpected value \"2  function helper() { return \"中文 leaf A\"; }\"\u001b[22m\n\n\n  91 |         page.getByRole(\"heading\", { name: sourceLabel, exact: true }),\n  92 |       ).toBeVisible();\n> 93 |       await expect(page.getByTestId(\"source-snippet\")).toHaveText(\n     |                                                        ^\n  94 |         'function helper() { return \"中文 leaf A\"; }',\n  95 |       );\n  96 |       await expect(page.getByTestId(\"source-snippet\")).not.toHaveAttribute(\n    at /workspace/AtlasMode/tests/e2e/forwarding.spec.ts:93:56"
+                      }
+                    ],
+                    "stdout": [],
+                    "stderr": [],
+                    "retry": 0,
+                    "startTime": "2026-10-03T19:42:13.239Z",
+                    "annotations": [],
+                    "attachments": [
+                      {
+                        "name": "screenshot",
+                        "contentType": "image/png",
+                        "path": "/workspace/AtlasMode/artifacts/e2e/results/forwarding-production-brow-26ed3-es-unsafe-forwarding-reason/test-failed-1.png"
+                      },
+                      {
+                        "name": "error-context",
+                        "contentType": "text/markdown",
+                        "path": "/workspace/AtlasMode/artifacts/e2e/results/forwarding-production-brow-26ed3-es-unsafe-forwarding-reason/error-context.md"
+                      },
+                      {
+                        "name": "trace",
+                        "contentType": "application/zip",
+                        "path": "/workspace/AtlasMode/artifacts/e2e/results/forwarding-production-brow-26ed3-es-unsafe-forwarding-reason/trace.zip"
+                      }
+                    ],
+                    "errorLocation": {
+                      "file": "/workspace/AtlasMode/tests/e2e/forwarding.spec.ts",
+                      "column": 56,
+                      "line": 93
+                    }
+                  }
+                ],
+                "status": "unexpected"
+              }
+            ],
+            "id": "bb4b73df3f683ee9eb2d-720d76203acd3ce82500",
+            "file": "forwarding.spec.ts",
+            "line": 17,
+            "column": 1
+          }
+        ]
+      }
+    ],
+    "errors": [],
+    "stats": {
+      "startTime": "2026-10-03T19:41:57.190Z",
+      "duration": 30512.463,
+      "expected": 3,
+      "skipped": 0,
+      "unexpected": 1,
+      "flaky": 0
+    }
+  }
+}

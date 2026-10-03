@@ -153,3 +153,37 @@ PLAYWRIGHT_CHROMIUM_EXECUTABLE=/usr/bin/chromium node scripts/validate-repositor
 
 Controller裁决：保留上述原canonical-entry未满足证据，接受本轮保守escape限制；
 后续独立static-forwarding安全票据在whole-plan关闭后再规划，Task3不扩大分析器范围。
+
+
+## Static forwarding：唯一完整 Express 严格入口 gate（FAIL）
+
+2026-10-03T19:43:42.119Z–19:43:48.132Z，AtlasMode基线86e6b12及Task2 harness候选。
+完整Express5.2.1仍为`dbac741a49a5a64336b70c06e85c2e2706e36336`，未排除test目录、
+未安装依赖、执行源码/scripts/upstream测试。实际捕获前19:43:42.707Z与后
+19:43:47.951Z均校验完整HEAD、staged/untracked干净。只运行这一新gate。
+
+```bash
+PLAYWRIGHT_CHROMIUM_EXECUTABLE=/usr/bin/chromium node scripts/validate-repository.mjs --path /tmp/atlasmode-validation-express --commit dbac741a49a5a64336b70c06e85c2e2706e36336 --symbol createApplication --file lib/express.js --label express-static-forwarding --require-entry
+```
+
+`--require-entry`是opt-in boolean，旧泛用命令仍可使用。它明确要求实际sample exported=true、
+实际summary返回的entry IDs含sample ID，并核对50节点上限、total与truncated一致；截断不
+豁免缺少sample。唯一gate退出1：`Required sample must be an exported entry`，实际
+`function:09847e8be9b19d446c677876b5516a3c`为exported=false，34/34实际entry IDs无它、
+truncated=false；源码实际声明在`lib/express.js:36`。`express-static-forwarding-product.json`
+逐项保存criterion=failed、两次provenance及空errors/external/protocolErrors。
+该次assert在截图前失败，**没有新Express PNG**；不复制旧图片或重跑冒充新失败截图。
+后来validator将严格断言移至取证后并保证capture错误不掩盖原错误；最终一次临时非入口
+fixture于19:48:22.729Z–19:48:26.410Z退出1，保存真实sample/context/source/PNG并已查看。
+
+bounded exact-source AST诊断使用原`index.js`、`lib/express.js`、`test/exports.js`的捕获字节，
+在内存中记录三个consumer-write：`test/exports.js:53,58,71`分别写
+`express.application.foo`、`express.request.foo`、`express.response.foo`，reason为
+`CommonJS property selection is dynamic or nested`。这些嵌套写入使index namespace invalid，
+共享转发组将拒绝传播给真实leaf。此三文件诊断用于定位，**不是缩减目标的验收**，没有
+改变产品、目标或guard；不得将静态转发fixture通过说成完整Express入口通过。
+
+原2026-10-03T04:48:13.152Z的Express泛用浏览PASS与canonical-entry FAIL保持其修订和
+时间；Vite/Flask历史运行未重跑。当前严格入口仍未满足。Git历史报告保留；本恢复环境
+没有此前忽略Git的成熟目标PNG/tar。新失败JSON/rawlog、fixture图片及诊断收据保存至
+[Task2报告](reviews/static-forwarding-task2/task-2-report.md)。不作运行时加载/构建兼容性声明。

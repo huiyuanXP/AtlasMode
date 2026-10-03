@@ -2,10 +2,10 @@
 
 用可编辑的代码关系图替代传统文字 Plan Mode。Agent 在实际修改代码之前，把规划叠加到现有项目图上；用户理解、调整并确认后，Agent 才实施。人通过图形理解项目，Agent 通过 MCP 查询同一份结构化模型。
 
-> 当前仓库已有本地 UI、真实 TS/JS/Python 索引、SQLite、stdio MCP、中文/英文、主题、功能集、目录约束及撤销重做。首轮 T01–T08 与整体审查通过，四项 Important 与两项 Minor 修复均独立复审通过；本轮精确检查结果见 [环境与验证](docs/environment.md)。固定目标的阶段、修订和统计见 [外部验证记录](docs/superpowers/validation-targets.md)，不将旧运行计数当作当前结果。三OS CI 已配置，原生 Windows/macOS 和实际 Codex/Claude 客户端连接尚未验证。以下规格保留后续目标，完整组编辑/折叠、知识迁移/备份、workspace package/exports、完整 CommonJS 值流和 references 图等仍有缺口，详见 [要求覆盖表](docs/superpowers/readme-coverage.md)。
+> 当前仓库已有本地 UI、真实 TS/JS/Python 索引、SQLite、stdio MCP、中文/英文、主题、功能集、目录约束及撤销重做。首轮 T01–T08 与整体审查通过，四项 Important 与两项 Minor 修复均独立复审通过；本轮精确检查结果见 [环境与验证](docs/environment.md)。固定目标的阶段、修订和统计见 [外部验证记录](docs/superpowers/validation-targets.md)，不将旧运行计数当作当前结果。基线86e6b12的原生 Linux/Windows/macOS CI及Linux Chromium已通过（[run37148507859](https://github.com/huiyuanXP/AtlasMode/actions/runs/37148507859)）；实际 Codex/Claude 客户端连接尚未验证。以下规格保留后续目标，完整组编辑/折叠、知识迁移/备份、workspace package/exports、完整 CommonJS 值流和 references 图等仍有缺口，详见 [要求覆盖表](docs/superpowers/readme-coverage.md)。
 
 当前推送检查点与待办见 [交接记录](docs/superpowers/reviews/static-forwarding-checkpoint/README.md)。
-当前源码七包构建、类型检查、lint 和537项/30文件测试通过。
+Task2候选最终七包构建、类型检查、lint和541项/31文件测试通过；独立审查及整票gate待完成。
 
 本机使用 Node24.19.0/npm11.9.0；分析 Python 项目需 Python3.10+。从仓库根目录运行：
 
@@ -37,9 +37,11 @@ npm start
 覆盖、遮蔽、可变绑定和命名空间逃逸保持
 未知。已实现单次顶层 `module.exports = require(相对字面量)` 的受保护转发，
 最多16边，调用保留实际叶函数身份与物理导入证据；旧局部 `exports` 的对象不会
-被自动当成转发后的叶模块。转发Task1已独立复审通过，新的HTTP/MCP/SQLite/UI
-生命周期和完整Express入口验收仍待Task2。旧Express泛用浏览通过/入口失败保留为
-历史证据；当前不据单元测试宣称它的完整目标入口已通过。动态 mixin、workspace
+被自动当成转发后的叶模块。转发Task1已独立复审通过；Task2实际HTTP/MCP/SQLite
+证明仅改转发目标使规划/路线过期且保留叶声明ID和批准历史，双语源码/复制位置已验。
+唯一新的完整Express严格入口gate仍FAIL：实际createApplication未导出、不在34/34入口中；
+捕获的test/exports.js嵌套原型写入使共享身份保守失效。旧泛用PASS/入口FAIL保留，
+Task2独立审查和整票gate待完成。动态 mixin、workspace
 exports、一般值流和运行时加载兼容性不作保证。
 
 诊断区新增“包配置 / Package manifests”，独立显示捕获数量与相对路径。

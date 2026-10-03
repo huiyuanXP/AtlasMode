@@ -1,7 +1,7 @@
 // Read-only product acceptance for an already checked out, fixed public target.
 import assert from "node:assert/strict";
 import { repositoryProvenance } from "./repository-provenance.mjs";
-import { mkdtemp, mkdir, writeFile, rm } from "node:fs/promises";
+import { mkdtemp, mkdir, writeFile, rm, access } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { parseArgs } from "node:util";
@@ -10,14 +10,18 @@ import {
   startProduction,
   connectMcp,
   http,
+  denyExternalRequests,
 } from "../tests/support/production.mjs";
 const { values } = parseArgs({
-  options: Object.fromEntries(
-    ["path", "commit", "symbol", "file", "label"].map((key) => [
-      key,
-      { type: "string" },
-    ]),
-  ),
+  options: {
+    ...Object.fromEntries(
+      ["path", "commit", "symbol", "file", "label"].map((key) => [
+        key,
+        { type: "string" },
+      ]),
+    ),
+    "require-entry": { type: "boolean", default: false },
+  },
 });
 for (const key of ["path", "commit", "symbol", "file", "label"])
   assert.ok(values[key], `Required --${key}`);
@@ -27,36 +31,32 @@ const { gitRevision } = beforeCapture;
 const root = await mkdtemp(join(tmpdir(), "atlas-target-")),
   out = resolve("artifacts/validation");
 await mkdir(out, { recursive: true });
-let server, mcp, browser;
+let server, mcp, browser, page, failureCapture;
+let entryCriterion = {
+  requested: values["require-entry"],
+  status: "not-requested",
+};
 const errors = [],
-  external = [];
+  external = [],
+  protocolErrors = [];
 try {
   server = await startProduction(join(root, "data"));
   mcp = await connectMcp(server.url);
+  mcp.client.onerror = (error) => protocolErrors.push(String(error));
   browser = await chromium.launch({
     ...(process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE
       ? { executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE }
       : {}),
   });
   const context = await browser.newContext({
-      viewport: { width: 1600, height: 1000 },
-    }),
-    page = await context.newPage();
+    viewport: { width: 1600, height: 1000 },
+  });
+  page = await context.newPage();
   page.on("pageerror", (e) => errors.push(`pageerror: ${e.message}`));
   page.on("console", (m) => {
     if (m.type() === "error") errors.push(`console: ${m.text()}`);
   });
-  await context.route("**/*", (route) => {
-    if (
-      !["127.0.0.1", "localhost", "[::1]"].includes(
-        new URL(route.request().url()).hostname,
-      )
-    ) {
-      external.push(route.request().url());
-      return route.abort("blockedbyclient");
-    }
-    return route.continue();
-  });
+  await denyExternalRequests(context, external);
   await page.goto(server.url);
   await page.getByRole("textbox", { name: "本地项目路径" }).fill(values.path);
   const start = performance.now();
@@ -175,8 +175,63 @@ try {
     path: join(out, `${values.label}-product.png`),
     fullPage: true,
   });
+  failureCapture = {
+    summary,
+    sample: {
+      node,
+      context: contextResult,
+      sourceExcerpt: source.content
+        .split(/\r?\n/)
+        .slice(node.startLine - 1, Math.min(node.endLine, node.startLine + 20))
+        .join("\n"),
+    },
+    bounded,
+    expansion: {
+      nodes: graph.nodes.length,
+      relations: graph.relations.length,
+      truncated: graph.truncated,
+    },
+  };
+  if (values["require-entry"]) {
+    const returnedEntryIds = summary.entrypoints.map((entry) => entry.id);
+    entryCriterion = {
+      requested: true,
+      status: "failed",
+      sampleId: node.id,
+      sampleExported: node.exported,
+      returnedEntryIds,
+      sampleInReturnedEntries: returnedEntryIds.includes(node.id),
+      entrypointTotal: summary.entrypointTotal,
+      returnedCount: returnedEntryIds.length,
+      entrypointsTruncated: summary.entrypointsTruncated,
+    };
+    assert.equal(
+      node.exported,
+      true,
+      "Required sample must be an exported entry",
+    );
+    assert.ok(
+      returnedEntryIds.length <= 50,
+      "Entry response respects its 50-node cap",
+    );
+    assert.ok(
+      summary.entrypointTotal >= returnedEntryIds.length,
+      "Entry total accounts for returned nodes",
+    );
+    assert.equal(
+      summary.entrypointsTruncated,
+      summary.entrypointTotal > returnedEntryIds.length,
+      "Entry truncation agrees with total and returned count",
+    );
+    assert.ok(
+      returnedEntryIds.includes(node.id),
+      "Required sample ID must occur in the actual returned entry list (truncated lists do not waive acceptance)",
+    );
+    entryCriterion.status = "passed";
+  }
   assert.deepEqual(errors, []);
   assert.deepEqual(external, []);
+  assert.deepEqual(protocolErrors, []);
   assert.equal(mcp.stderr(), "");
   const afterCapture = repositoryProvenance(values.path, gitRevision);
   const evidence = {
@@ -188,6 +243,8 @@ try {
       file: values.file,
     },
     observedAt: new Date().toISOString(),
+    status: "passed",
+    entryCriterion,
     openMilliseconds,
     summary,
     search: { total: search.total, limit: search.limit },
@@ -207,6 +264,7 @@ try {
     },
     errors,
     external,
+    protocolErrors,
     scope:
       "Actual compiled API/web + Chromium open/search/source/expand + SDK stdio summary/search/context/subgraph. Source endpoint is HTTP; MCP supplies source locations/call evidence, no read_source tool. Whole supported checkout indexed; target code and upstream tests never executed.",
   };
@@ -223,14 +281,79 @@ try {
       diagnostics: summary.diagnostics.length,
       entrypointTotal: summary.entrypointTotal,
       entrypointsTruncated: summary.entrypointsTruncated,
+      entryCriterion,
       expansion: evidence.expansion,
       errors,
       external,
     }),
   );
+} catch (error) {
+  try {
+    if (page && !page.isClosed())
+      await page.screenshot({
+        path: join(out, `${values.label}-product.png`),
+        fullPage: true,
+      });
+  } catch (captureError) {
+    errors.push(`Failure screenshot: ${captureError}`);
+  }
+  let afterCapture;
+  try {
+    afterCapture = repositoryProvenance(values.path, gitRevision);
+  } catch (captureError) {
+    afterCapture = { error: String(captureError) };
+  }
+  try {
+    await writeFile(
+      join(out, `${values.label}-product.json`),
+      JSON.stringify(
+        {
+          status: "failed",
+          observedAt: new Date().toISOString(),
+          target: {
+            path: values.path,
+            gitRevision,
+            symbol: values.symbol,
+            file: values.file,
+          },
+          provenance: {
+            beforeCapture,
+            afterCapture,
+          },
+          entryCriterion,
+          ...failureCapture,
+          error: String(error),
+          errors,
+          external,
+          protocolErrors,
+          scope:
+            "Actual compiled read-only product validation; target code and upstream tests never executed.",
+        },
+        null,
+        2,
+      ),
+    );
+  } catch (captureError) {
+    console.error(`Failure evidence: ${captureError}`);
+  }
+  throw error;
 } finally {
-  await browser?.close();
-  await mcp?.client.close();
-  await server?.stop();
-  await rm(root, { recursive: true, force: true });
+  const mcpPid = mcp?.transport.pid;
+  try {
+    await browser?.close();
+  } finally {
+    try {
+      await mcp?.client.close();
+    } finally {
+      try {
+        await server?.stop();
+      } finally {
+        await rm(root, { recursive: true, force: true });
+      }
+    }
+  }
+  if (mcpPid) assert.throws(() => process.kill(mcpPid, 0), { code: "ESRCH" });
+  if (server)
+    assert.throws(() => process.kill(server.child.pid, 0), { code: "ESRCH" });
+  await assert.rejects(access(root));
 }
