@@ -1,0 +1,108 @@
+{
+  "plan": "docs/superpowers/plans/2026-10-03-captured-tsconfig.md",
+  "implementationHead": "f860e198a59e848b8de7840a530a7ec4892782b9",
+  "wholeReviewBase": "808fa43e17d2901c210c4449ca56face14a9633c",
+  "rulingCount": 10,
+  "reports": [
+    {
+      "name": "global-constraints-verbatim.md",
+      "sha256": "c68576b6dbca0476e121c22b433741e7d374c9e2bd738da4fd01b0c44e4bf678"
+    },
+    {
+      "name": "progress.md",
+      "sha256": "8b565e7102791b8a2a5a8631031c0f58b10977231c4b71af6f772ad0fc5aff3b"
+    },
+    {
+      "name": "scratch/task-2/task-2-report.md",
+      "sha256": "a75751bcea3f690d4f850dc31f7a1f7d42630320b04ab545d520ee0587f43beb"
+    },
+    {
+      "name": "scratch/task-3/report.md",
+      "sha256": "6abc46c95f328495dc5f2b6ddfabbc3ae1d0e3256d40a1b30cf39760f44a54dd"
+    },
+    {
+      "name": "scratch/task-3/ui-red-artifacts/tsconfig-production-browse-5fae5-ully-in-Chinese-and-English/error-context.md",
+      "sha256": "947e82365849aa7cefddf5df8b49a37d98217903d3f8ffd62b9a409fe539bd66"
+    },
+    {
+      "name": "scratch/task-3/ui-red-artifacts/tsconfig-production-browse-6d832-ully-in-Chinese-and-English/error-context.md",
+      "sha256": "39a101295d6bd6ad5349782837e5dd1bd3cac342cc4d318be3918cf7c9fe8982"
+    },
+    {
+      "name": "scratch/whole-fix/report.md",
+      "sha256": "8b5b4a90cd01626ed92eb5b31cbfefa938a73fc227985d774c5d4937e5089915"
+    },
+    {
+      "name": "task-1-brief.md",
+      "sha256": "85a77cea8a81ee5424e3f052903278f6c54384026478a05feeaffab31559fd3a"
+    },
+    {
+      "name": "task-1-context.md",
+      "sha256": "4693e061fec60785d6080256c08fb2984b571360e52fcb93c0a1dd2a942a1422"
+    },
+    {
+      "name": "task-1-report.md",
+      "sha256": "cbb104b8a109b947edef23b01208cbbf88d4b369e5c1b9ff93d2664ff90f9819"
+    },
+    {
+      "name": "task-1-review.md",
+      "sha256": "7ba1f28cdbe64b820ca8822d20a8866d3cdbd1f36d429efb00fd563df4665385"
+    },
+    {
+      "name": "task-2-brief.md",
+      "sha256": "c94e8e0b69de73ff9051cf0e522c84ec8e0c0ca48bc4dc373873cbe763464c41"
+    },
+    {
+      "name": "task-2-context.md",
+      "sha256": "5bd3f41cb6649b48139fd75a03ad8ceba0b70560d957ec4164e2271d7ef5cf0e"
+    },
+    {
+      "name": "task-2-review.md",
+      "sha256": "44fdc6131f630652f08a00ffca2a1d5628a3de962032704629dff21eb29bba2c"
+    },
+    {
+      "name": "task-3-brief.md",
+      "sha256": "a08a43457f6734ba9661748b8c993cdd47e6adf7479d29b2c1e4f1ef7b5599de"
+    },
+    {
+      "name": "task-3-context.md",
+      "sha256": "30e7351e95aee68a04d725d9960bbc464159586b0898b5a741d9c6f142957c6d"
+    },
+    {
+      "name": "task-3-preflight-notes.md",
+      "sha256": "0bacca05272e03adef418bd7b056677a175638752a354ede614349fccd50a3e1"
+    },
+    {
+      "name": "task-3-review.md",
+      "sha256": "bf85d0656aeaea658ad458cb48459132a55be94e19c7076d3996e05a3e88eb09"
+    },
+    {
+      "name": "whole-context.md",
+      "sha256": "a73c99547c647076957b4b1a4c5afd7d8e672934db8167b6e2a884efa4e0d3b4"
+    },
+    {
+      "name": "whole-declined-adjudication.md",
+      "sha256": "bb57c989294e6769d811e02de0f859c8cd3da6a57aaba5a477c53b03050945b6"
+    },
+    {
+      "name": "whole-fix-brief.md",
+      "sha256": "e0b64f2694e7cdabbf825d16504963d3efde3d08b01383cc0da7d54773acaf69"
+    },
+    {
+      "name": "whole-rereview.md",
+      "sha256": "0b49311729b6807124c4ea796c70b6c582198d6fcd9bd38fededf4262e05b270"
+    },
+    {
+      "name": "whole-review.md",
+      "sha256": "49dc80e1b0d0c32fe385f474c19739e73f9bdbd28e89c2f20e2fda0ca1580c13"
+    }
+  ],
+  "localEvidenceArchive": "artifacts/review-evidence/captured-tsconfig.tar.gz",
+  "localEvidenceArchiveSha256": "dbda84065e1d8e04e427ba2f8d9724a83da5ac0147c0552ef50065a19371a138",
+  "localEvidenceArchiveBytes": 6052009,
+  "limits": [
+    "Raw archive Git-ignored; Markdown reports/rulings/receipt tracked separately.",
+    "Native Windows/macOS, actual Codex/Claude clients, remote CI and fresh-cloud restore unverified.",
+    "Original MVP target evidence retains its earlier revision/time; no unchanged Flask rerun."
+  ]
+}

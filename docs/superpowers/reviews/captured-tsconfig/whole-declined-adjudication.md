@@ -1,0 +1,45 @@
+# Controller dispositions — all33 declined behaviors
+
+Whole reviewer considered these individually; none silently discarded. Current plan
+is bounded captured-tsconfig/static evidence; user continuous backlog authorization
+remains active. These dispositions do not turn unknown/unrun features into passes.
+
+| # | Behavior | Controller disposition and evidence/next owner | Cost if wrong |
+|---|---|---|---|
+|1|shadowedCommonJSrequire falsebinding|Real demonstrated defect; retainexplicitnextCJSsafetypriority fromcompiledprobe, notapprovedsafe|Agent could planagainstwrongfunction|
+|2|overwrittenCommonJSexport falsebinding|Real demonstrated defect; same nextCJSsafetynegativecontrol, notfixedbyconfig|Staleexportcouldmisdirectchanges|
+|3|CommonJSentry discovery|NextCJSstaticentrysubset; currentESMentrypassnotfullNodecoverage|UsersmissactualNodeentrypoints|
+|4|Nodepackage/modulemode andESMextensionruntime|Nextboundedpackagescope; keepruntimeequivalenceunclaimed evencheckerrelativecontrolunchanged|StaticcallmaynotbeexecutableasNodeimport|
+|5|workspaceexports/buildoutputmapping|Separatecapturedmanifest/provenmappingticket, no dist→srcguesses|Monorepocrosspackagecallsremainunknown|
+|6|packageimports mapping|Futuremodule-resolutionticket; unconfiguredbareclassificationexplicit|Hash-prefixedinternalimportsnottraversableyet|
+|7|projectreference expansion|Specdiagnosesunsupported; leafnearestscopeverified, noautotraversal|References-onlyrootshavelessaliascoverage|
+|8|tsconfig.app/editorprojectselection|Acceptexplicitnearesttsconfig.json convention; namedonlyextends, futureexplicitselectionifneeded|Somefrontendsrequirefutureprojectselection|
+|9|package/absolute/nonJSONextends|AcceptboundedrelativeJSONcontractwithdiagnostics; no disk/networkfallback|Dependencies'configinheritanceunavailable|
+|10|dynamicimport/require/generaldispatch|Keepunknown; no targetexecution/valueflowengineinthisplan|Dynamicarchitectureincomplete|
+|11|targettypes/plugins/libs/buildruntime|Staticdeclarationevidenceonly, no targetbuildclaim; compatibilitywarningalreadyrequiresreview|Usermustcheckargument/return/runtimeadaptation|
+|12|atomic/adversarialfilesystemrace|Existingopenedhandle/componentchecksandcapturedimmutabilityaccepted, raceproofunclaimed|Concurrenthostchangesmayyieldmixedsnapshot;manualrefreshneeded|
+|13|nativeWindowsrun|UNRUN; priorportablepath/LinuxregressionsandCIconfigurationonly|Windowsnativeaddon/signals/filesystemmayneedrepair|
+|14|nativemacOSrun|UNRUN; documentedpathsnotnativeproof|macOSnativeaddon/filesystemmayneedrepair|
+|15|CodexAppactualconnect|UNRUN; SDKprotocolpass+instructions, no globalregistrationauthorized|App-specificsetupmayneedadjustment|
+|16|CodexCLIactualconnect|UNRUN; helpchecked+SDKprotocol, no userglobalsettingschange|CLIregistration/sessionmaydiffer|
+|17|ClaudeCodeactualconnect|UNRUN; docs+actualSDKonly, clientnotinstalled|Claude-specificprocessconfigmayneedadjustment|
+|18|nativevendoredskilldiscovery|PARTIAL; localdirectskillreads+75checks, no clientcatalogproof|FuturesessionmayneedmanualAGENTSbootstrap|
+|19|remote3OSCIexecution|UNRUN; rootLinux293/currentchecksnotremotejobs|CI-specificplatformfailuresunknown|
+|20|freshcloudrestoration|UNVERIFIED; draftsaved/localbundleactualclonerecoveryonly, notpublish|Localonlycommitsmayneedbundle/manualrestore|
+|21|newcleaninstall/smokeexactticket|Dependenciesunchanged; preservehistoricalinstall/smoke, currentcompiledpublicchecksnotnewinstallclaim|Freshmachineenvironmentmayneedsetuptroubleshooting|
+|22|freshFlaskstats|No unchangedPythonbenchmarkrepeat; currentPythonrootregressionspassed, earlierFlaskcountsdated|No currentlargePythonperformanceclaim|
+|23|upstreamtests/targetexecution|Intentionallynotrun; indexerMUSTremainnonexecuting, productbrowseonly|Cannotclaimtargetapplication/upstreamcorrectness|
+|24|publish/deploy/push/release|Outsidecurrentlocalauthorization; no action/approvalflowneededwhilebuilding|Userlaterreviewsandpublishesexplicitly|
+|25|groupedit/folding/externalendpoints|READMEbacklog6 remains; preservepresentgroupcreation/use|Densegraphsneedfurtherorganization|
+|26|file/directorydragpathpreview|READMEbacklog6 separate fromlayoutdrag, currentpartialtruthful|Usersmustexplicitlyenterplannedtargetpaths|
+|27|standaloneannotations/reassociation|READMEbacklog3; noautomaticidentityguess, existinghistoryretained|Lostbindingsneedmanualfutureworkflow|
+|28|knowledgeimport/conflicts/SQLitebackup|READMEbacklog4, no destructivecleanup ofuniquestore|Crossmachineknowledgepreservationrequiresfuturefeature|
+|29|structurefile roundtrip/audit|READMEbacklog5, explicitresponsibilitiesnotfullyautomated|Fileconventionsrequiremanualmaintenance|
+|30|rename/moveacceptedidentity/diffs|READMEbacklog7; unchangedsourceIDsverified, no migrationguess|Movescanleaveroutes/notesunbound|
+|31|advancedsequence/wrapperediting|READMEfuturegroupscope, notimpliedbyaliases|Complexrefactorplansneedmanualoperations|
+|32|watcher/incremental/autolayout|Deferuntilneed;Vite5.8soneobservationnotperformanceenvelope|Verylargereposneedmanualrefresh/layout|
+|33|otherlanguages/crossrepos/remote/runtime|READMEfuture, currentTS/JS/Pythonlocalcoreonly|Unsupportedprojectsneedadditionalproviders|
+
+No disposition alters source/HEAD, changes the authored goal, or asks a sleeping user.
+Knownfalsepositivework precedes optionalworkspace expansion. Everyfuturepass needs its
+ownactualevidence and independentgate; no disposition is permission to hide failures.

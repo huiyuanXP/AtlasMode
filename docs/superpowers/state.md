@@ -187,3 +187,8 @@ Playwright1.63.0 worker仍强制FORCE_COLOR=1，不能声称旧日志或未来wo
 WR-M2状态已更正；一次新范围复审及controller对残余warning的裁决待完成，未宣布整轮关闭。
 CommonJS旧缺陷仍归下一独立Ticket；workspace package/exports/references未实施。
 原生Win/mac、远端CI、实际客户端注册、fresh-task恢复/发布仍未执行。
+
+## Captured tsconfig 整轮闭环
+
+三个任务均独立通过；whole091687b为0C/0I/2M，集中docs修正f860e19经一次限定复审：WR-M2状态已修正，WR-M1环境颜色警告保留为非阻断Minor。51个产品源码指纹及46个历史文件未变；293项完整测试与真实接口/浏览器/Vite结果保持Task3原证据，不重跑或宣称所有命令无warning。所有33项审查范围外行为均逐项裁决，CommonJS已复现缺陷优先下一票。
+归档和Ruling日志将保存于reviews/captured-tsconfig与rulings/2026-10-03-captured-tsconfig.md；原始证据完整压缩后再移除当前scratch。用户尚未通知收尾，本地work分支继续，不merge/push/publish。

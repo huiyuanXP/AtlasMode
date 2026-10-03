@@ -106,8 +106,8 @@ MVP gates are complete. Task1 at f913eae passed independent review (no C/I/M);
 Task2 at952bffa passed independent review (no C/I/M); Task3 atab9f8c1 passed
 independent review (0C/0I/1M hostcolorwarning deferred towholegate).
 All three tasks complete. Whole-plan review at091687b found0C/0I/2M;
-the single combined Minor fix wave is documented, with one scoped re-review pending.
-WR-M1 remains partial: portable invocation guidance preserves NO_COLOR, but installed
+the single combined Minor fix wave and the one scoped re-review are complete.
+WR-M1 is parked as nonblocking host debt: portable invocation guidance preserves NO_COLOR, but installed
 Playwright workers force FORCE_COLOR=1. WR-M2 execution status is corrected.
 Current gate status is authoritative in [state.md](../state.md); do not redispatch tasks.
 Controller's rejected-scope/selected-chain rulings are binding.

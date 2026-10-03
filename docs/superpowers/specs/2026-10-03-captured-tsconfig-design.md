@@ -2,7 +2,8 @@
 
 状态：首轮 T08 验收期间准备，MVP gates 通过后已实施；此句保留设计起点。
 执行更新：Task1 f913eae、Task2 952bffa、Task3 ab9f8c1 均已独立审查通过。
-整体审查为0 Critical / 0 Important / 2 Minor；唯一修复波次后范围复审待完成。
+整体审查为0 Critical / 0 Important / 2 Minor；唯一修复波次及一次范围复审已完成。
+WR-M2 已修正；WR-M1 作为非阻断宿主颜色警告保留，没有未解决的 Critical 或 Important。
 当前执行状态以 [state.md](../state.md) 为准；不得重复派遣已完成任务。
 日期：2026-10-03 UTC。属于 README 的模块解析缺口，不改变用户问卷范围。
 
@@ -116,3 +117,5 @@ HTTP/MCP 项目 summary 沿用 coverage，不建立另一套事实或批准规�
 用户睡前已授权自行选择稳定方案；AGENTS.md 的无人值守例外取代阶段人工暂停。
 继续 writing-plans，使用顺序 SDD，每个任务独立实现、独立审查；T08 gate 完成前
 只准备文档，不开始本轮产品实现。
+
+闭环更新：f860e19集中文档修正后的一次限定复审确认WR-M2已修正，WR-M1为真实非阻断环境债，由controller记录保留。三个任务及整轮gate完成，权威当前状态见state；旧检查和原始报告保留其日期/阶段。
