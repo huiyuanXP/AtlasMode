@@ -202,3 +202,11 @@ CommonJS旧缺陷仍归下一独立Ticket；workspace package/exports/references
 Task1：先修复实际复现的 shadowed require/overwritten export 错误连边及.cjs入口；
 Task2：捕获 package.json scope、.js模式、输入新鲜度；Task3：真实HTTP/MCP/UI/固定Express验收。
 所有任务尚待实施/独立审查；准备或目标clone不是产品验收。用户仍未要求收尾。
+
+### CommonJS Task1 已验收
+
+23b60de 的捕获AST注册表及 b0b2a2b 的重复声明修复均完成独立审查。
+首次审查0C/1I/0M，限定复审确认I1已解决、0新C/I/M；最终253/6相关测试、
+core/indexer build/typecheck/rootlint全部通过；83 registry用例及3公开回归。
+Task2包捕获/.js正向模式、Task3公共产品/Express仍待实施；本阶段没有新的全根目录/浏览器验收。
+默认.cjs正向范围，其他模式保守；不执行目标代码、不做值流/转发/workspace映射。
