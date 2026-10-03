@@ -4,8 +4,9 @@
 
 > 当前仓库已有本地 UI、真实 TS/JS/Python 索引、SQLite、stdio MCP、中文/英文、主题、功能集、目录约束及撤销重做。首轮 T01–T08 与整体审查通过，四项 Important 与两项 Minor 修复均独立复审通过；本轮精确检查结果见 [环境与验证](docs/environment.md)。固定目标的阶段、修订和统计见 [外部验证记录](docs/superpowers/validation-targets.md)，不将旧运行计数当作当前结果。基线86e6b12的原生 Linux/Windows/macOS CI及Linux Chromium已通过（[run37148507859](https://github.com/huiyuanXP/AtlasMode/actions/runs/37148507859)）；实际 Codex/Claude 客户端连接尚未验证。以下规格保留后续目标，完整组编辑/折叠、知识迁移/备份、workspace package/exports、完整 CommonJS 值流和 references 图等仍有缺口，详见 [要求覆盖表](docs/superpowers/readme-coverage.md)。
 
-当前推送检查点与待办见 [交接记录](docs/superpowers/reviews/static-forwarding-checkpoint/README.md)。
-Task2候选最终七包构建、类型检查、lint和541项/31文件测试通过；独立审查及整票gate待完成。
+当前已审查的Task2 PARTIAL检查点与待办见 [交接记录](docs/superpowers/reviews/static-forwarding-task2/README.md)。
+Task2的七包构建、类型检查、lint和541项/31文件测试通过，独立task/whole检查点评审已记录；
+唯一集中修复和限定复审正在执行，完整Express入口仍FAIL，整票目标未完成。
 
 本机使用 Node24.19.0/npm11.9.0；分析 Python 项目需 Python3.10+。从仓库根目录运行：
 
@@ -41,7 +42,7 @@ npm start
 证明仅改转发目标使规划/路线过期且保留叶声明ID和批准历史，双语源码/复制位置已验。
 唯一新的完整Express严格入口gate仍FAIL：实际createApplication未导出、不在34/34入口中；
 捕获的test/exports.js嵌套原型写入使共享身份保守失效。旧泛用PASS/入口FAIL保留，
-Task2独立审查和整票gate待完成。动态 mixin、workspace
+Task2独立审查已记录为PARTIAL，整体审查要求的唯一集中修复/限定复审待完成。动态 mixin、workspace
 exports、一般值流和运行时加载兼容性不作保证。
 
 诊断区新增“包配置 / Package manifests”，独立显示捕获数量与相对路径。

@@ -8,7 +8,11 @@
 用户已回答全部大方向，并明确“睡觉了，开始执行”，允许对其余细节选择稳定方案。
 用户要求分阶段 Ticket、设置 Goal，完成问卷后继续对照 README 推进，直到通知收尾。
 不再等待逐阶段人工设计/计划审批，改为自检、独立审查和实际验证。最新用户指令为
-“commit and push”，明确授权当前work分支提交/推送；本次交付Task1检查点，Task2尚未开始。
+“commit and push”，明确授权当前work分支各阶段提交/推送。当前为Task2已独立审查的
+PARTIAL检查点c608fdc：生命周期/浏览器/541项31文件通过，唯一完整Express严格入口
+仍FAIL且原失败无PNG。整体审查已记录M1实际链sentinel及M3活动交接修复要求；
+本次唯一集中修复执行中，限定复审/残余裁决待controller完成，不称整票目标完成。
+当前报告与待办见[Task2交接](reviews/static-forwarding-task2/README.md)。
 应用部署、全局客户端配置及合并main不在本次操作范围。使用当前cloud checkout。
 
 ## 确认决策
@@ -309,7 +313,7 @@ alias-parent回归，Linux RED3→GREEN56；独立review规格PASS/质量APPROVE
 静态转发Task1保持完成；接续原计划Task2实际HTTP/MCP/SQLite/UI和完整Express入口gate。
 
 
-## Static forwarding Task2 当前候选（2026-10-03 UTC）
+## 历史 Static forwarding Task2 实现者候选（2026-10-03 UTC）
 
 Task1已独立复审通过1346a8f，不重做。CI prerequisite86e6b12已推送，native Linux/
 Windows/macOS与Linux官方Chromium全部成功：[run37148507859](https://github.com/huiyuanXP/AtlasMode/actions/runs/37148507859)。
@@ -335,3 +339,24 @@ createApplication真实ID09847e8...、lib/express.js:36，exported=false且无�
 原Express genericPASS/entryFAIL、关闭Important因果缺口、宿主颜色Minor及真实客户端/
 Windows交互式Ctrl+C/新云恢复限制保留。旧忽略Git的成熟目标图片/tar在本恢复环境不可用，
 Git历史报告保留；不得据此声称已恢复。只完成候选，用户持续工作没有因阶段保存而结束。
+
+
+## 当前 Task2 PARTIAL 检查点与唯一集中修复
+
+Task2源码61a0ade经独立task gate：规格PARTIAL/质量APPROVE WITH MINORS，c608fdc保存
+其评审与明确限制。whole审查6c2fc16..c608fdc确认可交付检查点、无新C/I实现缺陷，但
+完整目标未达成；[task review](reviews/static-forwarding-task2/task-review.md)与
+[whole review](reviews/static-forwarding-task2/whole-review.md)保持原文。
+
+计划Task2步骤1/2/4已完成并有原541/31及browser1收据；步骤3已执行但FAILED，sample
+createApplication exported=false、无于34/34入口且原run无PNG。步骤5已有task/whole
+检查点记录，当前仅做ONE集中M1/M3修复，限定复审与最终逐项裁决待controller完成。
+M1将同一marker写入entry/index/barrel及两个leaf首行，leaf声明仍line2，barrel-only改向
+保留同一sentinel；绝不执行fixture来证明它。M3修正活动摘要/README链接和计划历史标记。
+新源码/检查收据只保存至final-fix文件，不改旧evidence/hashes。原丢失REDrawreceipt的M2
+披露不变，不伪造重建；原Express Important及历史关闭因果Important/宿主Minor保留。
+
+最新通过的七包build/typecheck对应同一未改产品源码；fixture改变后定向integration、根
+lint/test及新forwarding browser按顺序核对。无新Express/旧CommonJS/Vite/Flask重复，
+真实客户端/Windows交互式Ctrl+C/Task2remoteCI/新云恢复与部署仍在其明确验证范围之外。
+当前阶段状态与最终修复收据见[Task2交接](reviews/static-forwarding-task2/README.md)。

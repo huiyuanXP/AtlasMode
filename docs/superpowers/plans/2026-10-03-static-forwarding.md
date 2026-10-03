@@ -7,6 +7,18 @@
 **Architecture:** validated captured require records feed bounded alias groups; all existing cycle/lexical/consumer mutation guards precede public entries/calls. HTTP/MCP/UI consume unchanged snapshots.
 **Tech:** Node24.19/npm11.9, TS5.9.3/ts-morph27.0.2, existing SQLite/HTTP/SDK/React/Playwright; no deps.
 
+## Current reviewed PARTIAL checkpoint
+
+Task2 candidate61a0ade and reviewed checkpointc608fdc: actual lifecycle/browser and final541/31
+checks pass; independent task gate SPEC PARTIAL/quality APPROVE WITH MINORS. The single full
+pinned Express strict gate executed FAILED (createApplication exported=false, actual34/34 entry
+IDs omit sample, original failure lacks PNG). Step3 remains unmet; no gate rerun or analyzer widening.
+Aggregate review6c2fc16..c608fdc is recorded, with no new C/I implementation defect and M1/M3 to
+repair in one combined wave. Current fixture sentinel/active-handoff repairs and one scoped review
+are pending; Step5 and whole-plan completion are not claimed. M2 lost initial rawreceipt disclosure,
+original Express failure, historical shutdown cause gap and platform/client limits remain preserved.
+[Active Task2 handoff](../reviews/static-forwarding-task2/README.md).
+
 ## Global Constraints
 
 - Node24.19.0/npm11.9.0/Python>=3.10，现有TS5.9.3/ts-morph27.0.2；不新增依赖、改lockfile/vendor。
@@ -46,11 +58,11 @@
 **Consumes:** existing actual compiled HTTP/officialSDKstdio/SQLite, Task1 facts/IDs and same unchanged endpoints. Validator actual sampled node and actual entry IDs/truncation; old generic commands still supported.
 **Produces:** unchanged public product plus recorded forwarding lifecycle/browser/source/nonexecution proof, unique express-static-forwarding-product JSON/png with explicit criterion outcome. No stale snapshots/approval rewrite, no MCP approval tool.
 
-- [ ] **Step1 actual lifecycle:** Disposable real source/store; caller requires two-hopbarrel and calls leaf function, physical import versus actual leaf context matchesHTTP/MCP. Create/approve plan+call_chain route; change onlyalias destination to another already-present leaf, refresh; allleaf declarationIDs/sourcebytes remain stable, plan/route stale and approval/history/operations preserved. Readonly leafsource/path/line/name actual; unknownunsafe alias fixture remains unknown. Backend may alreadyGREEN, record honestbaseline. Sentinel file absent, protocolstderr/errors empty, stop/reopenactualSQLite unchangedhistory.
-- [ ] **Step2 actual browser:** Supported entry→leaf, unknownreason, Chinese/English originalsource and copylocation; deny nonloopback, collect console/pageerrors, actuallyview screenshots. Do not createUIchanges without genuineRED/missing behavior. Existing root/browser MUSTsequential, no duplicateoffline-routing blocks.
-- [ ] **Step3 strict target:** Add opt-in require-entry assertion to existingvalidator; sampled createApplication MUSTexported=true and returned actualentryIDs mustcontain sample, accounttotal/truncation. ONEnew full pinned Express5.2.1 dbac741a49a5a64336b70c06e85c2e2706e36336, cleanfullHEAD+untrackedbefore/after, symbolcreateApplication,filelib/express.js,line36. Unique label express-static-forwarding. Do not narrow fixtures/install/execute/upstream; genericexit0 notacceptance. If fail, preserveactualreason/status and sendcontrollercontext, no blindrerun/unlimitedwidening. Old Express originalFAIL and genericPASS, Vite/Flask historical unchanged.
-- [ ] **Step4 final checks:** Onefinal7workspace build/typecheck/rootlint/test thennewintegration/browser (or integration includedroot, no passingduplicate); no unrelatedplanningbrowser repeat withoutactualchangedUI/failure/concrete need. Record finalamendedsourceSHA/exactcounts/times/rawlogs andpriorartifacts preserved, actualownedprocess/tempstore cleanup notSDKpidnull inference. Hostwarning/originalImportantcause/nativeplatform/realclient/remoteCI/freshrestore limits retained.
-- [ ] **Step5 docs/commit/gate:** ExactnewstrictExpressoutcome/currentstaticbounds, samebaselineidentity/immutablehistory, no runtimecompatibilityclaim; self-review/coherentcommit/fullreport/freshindependenttaskreview. Controllerfinalwhole review BASE6c2, ONEcombinedfixwave+ONEscopedreview thenresidualrulings/allindividualdeclinedcosts andexhaustive50+new decisions savedbeforearchive/delete. Continuoususerwork notendedbyphaseclosure.
+- [x] **Step1 actual lifecycle:** Disposable real source/store; caller requires two-hopbarrel and calls leaf function, physical import versus actual leaf context matchesHTTP/MCP. Create/approve plan+call_chain route; change onlyalias destination to another already-present leaf, refresh; allleaf declarationIDs/sourcebytes remain stable, plan/route stale and approval/history/operations preserved. Readonly leafsource/path/line/name actual; unknownunsafe alias fixture remains unknown. Backend may alreadyGREEN, record honestbaseline. Sentinel file absent, protocolstderr/errors empty, stop/reopenactualSQLite unchangedhistory.
+- [x] **Step2 actual browser:** Supported entry→leaf, unknownreason, Chinese/English originalsource and copylocation; deny nonloopback, collect console/pageerrors, actuallyview screenshots. Do not createUIchanges without genuineRED/missing behavior. Existing root/browser MUSTsequential, no duplicateoffline-routing blocks.
+- [ ] **Step3 strict target — executed FAILED, criterion unmet:** Add opt-in require-entry assertion to existingvalidator; sampled createApplication MUSTexported=true and returned actualentryIDs mustcontain sample, accounttotal/truncation. ONEnew full pinned Express5.2.1 dbac741a49a5a64336b70c06e85c2e2706e36336, cleanfullHEAD+untrackedbefore/after, symbolcreateApplication,filelib/express.js,line36. Unique label express-static-forwarding. Do not narrow fixtures/install/execute/upstream; genericexit0 notacceptance. If fail, preserveactualreason/status and sendcontrollercontext, no blindrerun/unlimitedwidening. Old Express originalFAIL and genericPASS, Vite/Flask historical unchanged.
+- [x] **Step4 final checks:** Onefinal7workspace build/typecheck/rootlint/test thennewintegration/browser (or integration includedroot, no passingduplicate); no unrelatedplanningbrowser repeat withoutactualchangedUI/failure/concrete need. Record finalamendedsourceSHA/exactcounts/times/rawlogs andpriorartifacts preserved, actualownedprocess/tempstore cleanup notSDKpidnull inference. Hostwarning/originalImportantcause/nativeplatform/realclient/remoteCI/freshrestore limits retained.
+- [ ] **Step5 docs/commit/gate — task/whole checkpoint reviews recorded; final repair/scoped review pending:** ExactnewstrictExpressoutcome/currentstaticbounds, samebaselineidentity/immutablehistory, no runtimecompatibilityclaim; self-review/coherentcommit/fullreport/freshindependenttaskreview. Controllerfinalwhole review BASE6c2, ONEcombinedfixwave+ONEscopedreview thenresidualrulings/allindividualdeclinedcosts andexhaustive50+new decisions savedbeforearchive/delete. Continuoususerwork notendedbyphaseclosure.
 
 ## Plan self-review and producer/consumer preflight
 
@@ -64,6 +76,6 @@ The first complete registry run passed173/174, with only the historical `module.
 
 The current `denyExternalRequests` helper is local to commonjs.spec.ts, so a new spec cannot reuse it by importing an unchanged test module. Relocate that existing routing behavior to tests/support/production.mjs, export it, and consume it from commonjs.spec.ts, the new forwarding spec and the existing validator. Add these two harness files to Task2 ownership; no product code or broader network policy changes. Cost if wrong: a shared harness regression can weaken multiple offline checks; preserve exact loopback/abort/error-recording semantics, review every import, and exercise the new real browser/strict target through the shared helper. A simple unchanged-behavior relocation alone does not justify replaying the old full browser suite; concrete breakage or doubt does.
 
-## Current push checkpoint (2026-10-04 Asia/Singapore)
+## Historical Task1 push checkpoint (2026-10-04 Asia/Singapore)
 
 Task1 candidate d0cab48 and repair1346a8f have completed the fresh independent task gate: I1 detached local exports addressed, no new breakage. All five Task1 steps are complete. Task2 is not started; its public lifecycle/browser/shared-helper/strict Express gates and final whole-plan review remain pending. Latest user instruction is commit and push, so this deliverable is a reviewed Task1 checkpoint, not whole-plan completion. Current full root build/typecheck/lint and537/30tests pass; all earlier results keep their historical stages.

@@ -1,0 +1,9 @@
+{
+  "final-fix-receipt.json": "e90439d1ffb7d7623009777620f1bcd13c3c86d564e4e7c6176e2b67154ce1bd",
+  "final-fix-browser.log.gz": "416552e68cf917aa2fc229d3819ecb53d7cc36441e4e0e5bbd6e1b90b53fd6fd",
+  "final-fix-report.md": "7aef51b0bfde11109bb31cf3003d376116df5b8a29cd0acfa53925df93e8fabb",
+  "final-fix-roottests.log.gz": "2f5bae1b09dd9f8deae6c38f2d70e83acdcd90edbf5b08c03ba64deb9ec99ceb",
+  "final-fix-screenshots.tar.gz": "8f0eeba0bb8af7ecea87e2ee05bdcb3c921b4f170d84ae6462838eb42df52a75",
+  "final-fix-integration.log.gz": "f1977e31267d4e3d7eac74fbfacd1c81561d6339b614aee9810a6da5c939febe",
+  "final-fix-rootlint.log.gz": "dfde3228486a3123da014bfc90f3999043cf4dd6245df69c3f6d09d8bb34b66f"
+}

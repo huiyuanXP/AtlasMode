@@ -1,0 +1,172 @@
+{
+  "start": "2026-10-03T20:03:03.620Z",
+  "end": "2026-10-03T20:03:07.723Z",
+  "command": [
+    "npx",
+    "vitest",
+    "run",
+    "tests/integration/forwarding-resolution.test.ts"
+  ],
+  "exitCode": 0,
+  "base": "c608fdc186832d74d54817eb343fe7d8c6d5c19f",
+  "amendedCommit": "pending controller commit",
+  "sourceSha256": {
+    "tests/support/forwarding.mjs": "6c6271ebdcafa36bfe5a614ad49afa5400c6faee06076926fc0a4ecaec765150"
+  },
+  "sourceFreezeConfirmedAt": "2026-10-03T20:04:34Z",
+  "productCodeChanged": false,
+  "fixtureExecuted": false,
+  "root": {
+    "commands": [
+      "npm run lint",
+      "npm test"
+    ],
+    "exitCodes": [
+      0,
+      0
+    ],
+    "tests": 541,
+    "files": 31,
+    "testStartUTC": "2026-10-03T20:04:34Z",
+    "testRunnerSeconds": 40.38,
+    "buildTypecheck": "Existing successful seven-workspace checks retained for unchanged product tree; not repeated for fixture-only data change."
+  },
+  "browser": {
+    "start": "2026-10-03T20:06:05.998Z",
+    "end": "2026-10-03T20:06:12.195Z",
+    "command": [
+      "npx",
+      "playwright",
+      "test",
+      "tests/e2e/forwarding.spec.ts",
+      "--output",
+      "artifacts/static-forwarding-final-fix/browser-results"
+    ],
+    "env": {
+      "PLAYWRIGHT_CHROMIUM_EXECUTABLE": "/usr/bin/chromium"
+    },
+    "exitCode": 0,
+    "stats": {
+      "startTime": "2026-10-03T20:06:06.846Z",
+      "duration": 5323.571,
+      "expected": 1,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    }
+  },
+  "browserEvidence": {
+    "snapshotId": "snapshot:0c1c773a0d97e3125be9f9aeeb91ef9f",
+    "entryContext": {
+      "node": {
+        "id": "function:43d69a72a90602e96e0305a349b548a4",
+        "kind": "function",
+        "name": "entry",
+        "qualifiedName": "entry",
+        "filePath": "entry.cjs",
+        "parentId": "file:883a7a39392b92b964ce986d54dd1026",
+        "language": "javascript",
+        "signature": "function entry()",
+        "startLine": 2,
+        "endLine": 2,
+        "exported": true
+      },
+      "incoming": [],
+      "outgoing": [
+        {
+          "id": "relation:06fca6e76f32462c0baa9fb04ed771af",
+          "type": "calls",
+          "sourceId": "function:43d69a72a90602e96e0305a349b548a4",
+          "targetId": "function:86811b9438f052cbb3018e931e458986",
+          "resolution": "resolved",
+          "evidence": {
+            "filePath": "entry.cjs",
+            "line": 2,
+            "text": "mod.helper()"
+          }
+        }
+      ],
+      "totalIncoming": 0,
+      "totalOutgoing": 1,
+      "truncated": false,
+      "offset": 0,
+      "limit": 50,
+      "snapshotId": "snapshot:0c1c773a0d97e3125be9f9aeeb91ef9f",
+      "dataSource": "code"
+    },
+    "leaf": {
+      "id": "function:86811b9438f052cbb3018e931e458986",
+      "kind": "function",
+      "name": "helper",
+      "qualifiedName": "helper",
+      "filePath": "leaf-a.cjs",
+      "parentId": "file:73cea2ce9c07a7beb093b5df23c2fee6",
+      "language": "javascript",
+      "signature": "function helper()",
+      "startLine": 2,
+      "endLine": 2,
+      "exported": true
+    },
+    "unknownContext": {
+      "node": {
+        "id": "function:01ab6de6674ea18260dc3478ccc12431",
+        "kind": "function",
+        "name": "unsafeCaller",
+        "qualifiedName": "unsafeCaller",
+        "filePath": "unknown.cjs",
+        "parentId": "file:34debe0512460213ec26c93bd62082aa",
+        "language": "javascript",
+        "signature": "function unsafeCaller()",
+        "startLine": 2,
+        "endLine": 2,
+        "exported": true
+      },
+      "incoming": [],
+      "outgoing": [
+        {
+          "id": "relation:14271aced7dfdf4a3811670f43297225",
+          "type": "calls",
+          "sourceId": "function:01ab6de6674ea18260dc3478ccc12431",
+          "targetId": null,
+          "resolution": "unresolved",
+          "evidence": {
+            "filePath": "unknown.cjs",
+            "line": 2,
+            "text": "unsafe.helper()"
+          },
+          "reason": "CommonJS module mode, namespace identity, or export stability is not established"
+        }
+      ],
+      "totalIncoming": 0,
+      "totalOutgoing": 1,
+      "truncated": false,
+      "offset": 0,
+      "limit": 50,
+      "snapshotId": "snapshot:0c1c773a0d97e3125be9f9aeeb91ef9f",
+      "dataSource": "code"
+    },
+    "languages": [
+      "zh",
+      "en"
+    ],
+    "copiedLocation": "leaf-a.cjs:2",
+    "errors": [],
+    "external": [
+      "https://example.invalid/atlas-offline-probe"
+    ],
+    "protocolErrors": [],
+    "targetNotExecuted": true,
+    "offlineProbe": {
+      "url": "https://example.invalid/atlas-offline-probe",
+      "blockedReason": "net::ERR_BLOCKED_BY_CLIENT",
+      "unexpectedExternalRequests": 0
+    },
+    "observedAt": "2026-10-03T20:06:11.904Z"
+  },
+  "visualInspection": [
+    "leaf-zh.png",
+    "leaf-en.png",
+    "unknown-en.png"
+  ],
+  "otherFiveReviewedSourceHashesUnchanged": true
+}
