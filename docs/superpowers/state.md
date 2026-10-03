@@ -377,3 +377,8 @@ helperSHA256为6c6271ebdcafa36bfe5a614ad49afa5400c6faee06076926fc0a4ecaec765150�
 残余：完整Express入口仍FAIL且原运行无PNG；历史退出SIGKILL因果缺口仍未解决；
 首个夹具失败raw丢失仍明确披露；旧忽略Git的图片未恢复。未进行第二次Express gate、
 产品分析规则放宽、main合并、公开部署或全局客户端配置。按最新用户授权推送work。
+
+最终代码及检查点0192730已上传work，GitHub run37150560646 SUCCESS：原生Ubuntu/
+Windows/macOS和Linux Chromium全部通过。精确SHA/jobID与结论见Task2的remote-ci.json。
+随后只补交接状态/CI收据，未改变已验产品、夹具、测试或工作流；不重复文档更新的CI。
+完整Express入口仍未满足，当前交付为已审查、已验证并上传的PARTIAL检查点。

@@ -484,3 +484,6 @@ npm run test:e2e
 - 项目动机：https://www.aymannadeem.com/artificial/intelligence,/developer/tools/2026/09/24/plan-mode-is-dead.html
 
 本项目自己的明确选择：保留实现前用户理解与确认的步骤，用已有代码图上的可编辑规划替代长篇文字计划，并让图在后续开发中持续保持可用。
+
+当前代码检查点 `0192730` 的 [GitHub CI](https://github.com/huiyuanXP/AtlasMode/actions/runs/37150560646)
+已通过原生 Linux、Windows、macOS 和 Chromium 四项检查，阶段交付在 `work` 分支。

@@ -17,3 +17,12 @@ Residual limits are recorded in scoped-review.md and progress.md. No second Expr
 Initial REDrawreceipt loss remains disclosed; no reconstructed receipt. Latest build/typecheck
 checks still refer to unchanged product source; final fixture/root/browser checks are sequential.
 User's ongoing work continues after this checkpoint. Controller owns commits/pushes/whole closure.
+
+## Uploaded source and native CI
+
+Source/checkpoint commit `019273041284cd78aaf3c377a6d5ad1ea6d32362` uploaded to `work`.
+[Final GitHub CI run37150560646](https://github.com/huiyuanXP/AtlasMode/actions/runs/37150560646)
+completed SUCCESS: native Ubuntu, Windows, macOS, and Linux Chromium all passed.
+Exact job IDs/commit/outcomes are saved in remote-ci.json. Later handoff-only docs
+preserve the identical tested product/fixture/test/workflow tree. The original
+Express FAIL, missing PNG, M2 lost receipt and historical cause gap remain unchanged.

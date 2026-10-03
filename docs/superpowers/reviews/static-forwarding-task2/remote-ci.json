@@ -1,0 +1,35 @@
+{
+  "runId": 37150560646,
+  "url": "https://github.com/huiyuanXP/AtlasMode/actions/runs/37150560646",
+  "sourceCommit": "019273041284cd78aaf3c377a6d5ad1ea6d32362",
+  "status": "completed",
+  "conclusion": "success",
+  "jobs": [
+    {
+      "id": 111283409571,
+      "name": "browser",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 111283409627,
+      "name": "native (macos-latest)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 111283409663,
+      "name": "native (ubuntu-latest)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 111283409737,
+      "name": "native (windows-latest)",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ],
+  "observedAt": "2026-10-03T20:15:32.435Z",
+  "scope": "Final source/checkpoint commit tested by native Ubuntu/Windows/macOS and Linux Chromium. Subsequent handoff-only docs do not change product, fixtures, tests or CI workflow."
+}
