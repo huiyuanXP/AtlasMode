@@ -2,7 +2,7 @@
 
 用可编辑的代码关系图替代传统文字 Plan Mode。Agent 在实际修改代码之前，把规划叠加到现有项目图上；用户理解、调整并确认后，Agent 才实施。人通过图形理解项目，Agent 通过 MCP 查询同一份结构化模型。
 
-> 当前仓库已有本地 UI、真实 TS/JS/Python 索引、SQLite、stdio MCP、中文/英文、主题、功能集、目录约束及撤销重做。T08 当前 Linux 干净安装、七包构建/类型检查、lint、200项测试、生产 smoke、实际 UI/MCP 联合闭环及固定 Vite/Flask 浏览通过；独立 T08 审查待完成。三OS CI 已配置，原生 Windows/macOS 和实际 Codex/Claude 客户端连接尚未验证。以下规格保留后续目标，完整组编辑/折叠、知识迁移/备份和真实 tsconfig/workspace 解析等仍有缺口，详见 [要求覆盖表](docs/superpowers/readme-coverage.md) 和 [环境与验证](docs/environment.md)。
+> 当前仓库已有本地 UI、真实 TS/JS/Python 索引、SQLite、stdio MCP、中文/英文、主题、功能集、目录约束及撤销重做。T08 当前 Linux 干净安装、七包构建/类型检查、lint、200项测试、生产 smoke、实际 UI/MCP 联合闭环及固定 Vite/Flask 浏览通过；Windows preload 路径修复及11项相关检查通过，独立 T08 复审通过，整体分支审查进行中。三OS CI 已配置，原生 Windows/macOS 和实际 Codex/Claude 客户端连接尚未验证。以下规格保留后续目标，完整组编辑/折叠、知识迁移/备份和真实 tsconfig/workspace 解析等仍有缺口，详见 [要求覆盖表](docs/superpowers/readme-coverage.md) 和 [环境与验证](docs/environment.md)。
 
 本机使用 Node24.19.0/npm11.9.0；分析 Python 项目需 Python3.10+。从仓库根目录运行：
 

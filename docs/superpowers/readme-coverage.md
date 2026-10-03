@@ -1,6 +1,6 @@
 # README 要求覆盖与后续工作
 
-2026-10-03 UTC T08 实施者逐项复核；独立任务/全分支审查仍待controller执行。
+2026-10-03 UTC T08 实施者逐项复核，独立任务复审通过；整体分支审查进行中。
 PASS表示下述范围已有实际证据，PARTIAL表示部分功能或平台尚未覆盖，
 UNIMPLEMENTED表示仍为后续需求。测试通过不等于原README所有目标完成。
 问卷要求优先：首轮含Python、多个本地项目、三系统配置和英文，真实MCP为首轮要求。
@@ -55,6 +55,8 @@ UNIMPLEMENTED表示仍为后续需求。测试通过不等于原README所有目�
 - `scripts/validate-repository.mjs`两个固定目标均退出0；产物、范围、准确统计及命令
   见[validation-targets.md](validation-targets.md)。当前本地日志/artifacts默认忽略Git。
 - 环境/客户端/平台限制和启动说明见[../environment.md](../environment.md)。
+- Windows preload file URL 修复24a6d76：真实空格/#路径回归1项及生命周期10项通过，
+  独立复审通过；200项完整套件仍指初始T08结果，没有声称修复后201项全套重跑。
 
 ## 首轮通过后继续的缺口
 

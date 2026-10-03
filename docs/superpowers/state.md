@@ -34,7 +34,7 @@ SDD ledger：.superpowers/sdd/2026-10-03-local-planning-mvp/progress.md（忽略
 （2dc95d7），导航结果竞争和节点聚焦的修复（a9d27a0）已独立复审通过。
 T06 实际 stdio MCP 已实现并独立审查通过（7f7bd95）。T07 英文、分组、
 目录约束和撤销重做已实现并独立审查通过（88c1096），少量客户端错误提示的
-语言切换问题已在 T08 修复。T08 实施验收已通过，等待独立任务审查和全分支审查。
+语言切换问题已在 T08 修复。T08 实施验收及独立任务复审已通过；整体分支审查进行中。
 T01–T08顺序执行，不并行派遣实现者；精确任务/修复轮次以 ledger 为准。
 本轮开始 UTC 2026-10-02 19:55；文档沿用最初 Asia/Singapore 的2026-10-03日期。
 当前环境报告时区 Etc/UTC，后续时间证据以 UTC 为准。
@@ -92,4 +92,8 @@ M2 MCP消费JSON正文超时、M3提示语切换语言和快照变化提示已�
 浏览器发现的改接候选缺失已用当前快照已加载入口/搜索事实及可读reference节点修复。
 CI三系统配置已创建，但原生Win/mac、远端CI、客户端连接、fresh-task恢复未执行。
 环境与可复现命令见 ../environment.md；README精确PASS/PARTIAL/UNIMPLEMENTED见
-readme-coverage.md。独立任务与全分支审查由controller继续，未来票据尚未实施。
+readme-coverage.md。独立任务审查发现的 Windows preload 路径问题已用 file URL
+修复（24a6d76），真实 space/# 路径回归及相关10项生命周期检查通过，独立复审通过。
+200项全套结果来自初始 T08 commit5b22868；修复后未声称重跑201项全套。
+固定目标 validator 的 dirty-tree 防护为 Minor，交整体分支审查裁定；实际两个目标
+工作树已确认干净。全分支审查由controller继续，未来票据尚未实施。
