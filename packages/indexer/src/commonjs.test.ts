@@ -1234,6 +1234,91 @@ describe("captured forwarding identities", () => {
     },
   );
 
+  it.each(["exports.help()", "exports['help']()"])(
+    "rejects detached local exports without losing the forwarded namespace: %s",
+    (call) => {
+      const graph = index({
+        "barrel.cjs": `module.exports = require('./lib.cjs'); function read() { ${call}; module.exports.help(); }`,
+        "lib.cjs": stable,
+        "entry.cjs": entry,
+      });
+      unresolved(graph, call, "barrel.cjs");
+      expect(relation(graph, call, "barrel.cjs").reason).toMatch(/detached/i);
+      expect(
+        relation(graph, "module.exports.help()", "barrel.cjs"),
+      ).toMatchObject({
+        resolution: "resolved",
+        targetId: makeId(
+          "function",
+          "cjs",
+          "lib.cjs",
+          "help",
+          "FunctionDeclaration",
+        ),
+      });
+      resolved(graph, "mod.help()", "help");
+    },
+  );
+
+  it("keeps wrapped detached exports conservative under the existing escape guard", () => {
+    const graph = index({
+      "barrel.cjs":
+        "module.exports = require('./lib.cjs'); function read() { ((exports)).help(); }",
+      "lib.cjs": stable,
+      "entry.cjs": entry,
+    });
+    unresolved(graph, "((exports)).help()", "barrel.cjs");
+    unresolved(graph);
+  });
+
+  it.each([
+    "const selected = exports.help;",
+    "const selected = exports['help'];",
+    "const first = exports.help; const selected = first;",
+  ])(
+    "does not recover a selected detached exports property through const declarations: %s",
+    (selection) => {
+      const graph = index({
+        "barrel.cjs": `module.exports = require('./lib.cjs'); ${selection} function read() { selected(); module.exports.help(); }`,
+        "lib.cjs": stable,
+        "entry.cjs": entry,
+      });
+      unresolved(graph, "selected()", "barrel.cjs");
+      expect(
+        relation(graph, "module.exports.help()", "barrel.cjs"),
+      ).toMatchObject({
+        resolution: "resolved",
+        targetId: makeId(
+          "function",
+          "cjs",
+          "lib.cjs",
+          "help",
+          "FunctionDeclaration",
+        ),
+      });
+      resolved(graph, "mod.help()", "help");
+    },
+  );
+
+  it.each([
+    "const { help: selected } = exports;",
+    "const { ['help']: selected } = exports;",
+    "const alias = exports; const { help: selected } = alias;",
+  ])(
+    "keeps detached exports destructuring outside the supported alias subset: %s",
+    (selection) => {
+      const graph = index({
+        "barrel.cjs": `module.exports = require('./lib.cjs'); ${selection} function read() { selected(); }`,
+        "lib.cjs": stable,
+        "entry.cjs": entry,
+      });
+      unresolved(graph, "selected()", "barrel.cjs");
+      // Existing namespace escape rejection remains conservative for these
+      // unsupported bare-namespace uses; no alias propagation is added.
+      unresolved(graph);
+    },
+  );
+
   it("guards ESM imports through the same forwarding identity", () => {
     const graph = index({
       ...chain(objectLeaf),

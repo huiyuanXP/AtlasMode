@@ -42,7 +42,7 @@
 
 ### Task 2: Real transport, source UI and strict complete-Express entry gate
 
-**Files:** Create tests/support/forwarding.mjs, tests/integration/forwarding-resolution.test.ts, tests/e2e/forwarding.spec.ts. Modify scripts/validate-repository.mjs (narrow opt-in require-entry boolean), README.md, docs/environment.md, docs/superpowers/validation-targets.md, readme-coverage.md, state.md; no new productUI/service/schema tool unless actual missing behavior/RED is proved and controller rules ownership.
+**Files:** Create tests/support/forwarding.mjs, tests/integration/forwarding-resolution.test.ts, tests/e2e/forwarding.spec.ts. Modify tests/support/production.mjs and tests/e2e/commonjs.spec.ts only to relocate the existing browser offline guard as one shared helper, scripts/validate-repository.mjs (same helper and narrow opt-in require-entry boolean), README.md, docs/environment.md, docs/superpowers/validation-targets.md, readme-coverage.md, state.md; no new productUI/service/schema tool unless actual missing behavior/RED is proved and controller rules ownership.
 **Consumes:** existing actual compiled HTTP/officialSDKstdio/SQLite, Task1 facts/IDs and same unchanged endpoints. Validator actual sampled node and actual entry IDs/truncation; old generic commands still supported.
 **Produces:** unchanged public product plus recorded forwarding lifecycle/browser/source/nonexecution proof, unique express-static-forwarding-product JSON/png with explicit criterion outcome. No stale snapshots/approval rewrite, no MCP approval tool.
 
@@ -59,3 +59,7 @@ Task1 owns one private registry pipeline and shares no public change withTask2. 
 ## Task1 controller conflict ruling
 
 The first complete registry run passed173/174, with only the historical `module.exports = require('./forward.cjs')` negative failing because this exact stable single-hop captured forwarding is now intentionally supported. Migrate that one row to a real leaf-ID positive; preserve all other109 old expectations and unsupported-forwarding negatives. This amends a contradictory preservation instruction, not the supported subset. Cost if wrong: changing an old negative can conceal false resolution, so the positive must assert the exact captured leaf identity and retain the new mutation/cycle/mode/escape controls and independent task review.
+
+## Task2 offline-guard preflight ruling
+
+The current `denyExternalRequests` helper is local to commonjs.spec.ts, so a new spec cannot reuse it by importing an unchanged test module. Relocate that existing routing behavior to tests/support/production.mjs, export it, and consume it from commonjs.spec.ts, the new forwarding spec and the existing validator. Add these two harness files to Task2 ownership; no product code or broader network policy changes. Cost if wrong: a shared harness regression can weaken multiple offline checks; preserve exact loopback/abort/error-recording semantics, review every import, and exercise the new real browser/strict target through the shared helper. A simple unchanged-behavior relocation alone does not justify replaying the old full browser suite; concrete breakage or doubt does.

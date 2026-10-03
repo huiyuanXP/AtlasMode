@@ -347,7 +347,10 @@ budget 限制返回节点数（包括可容纳的文件/目录上下文），返
   local overlay exports. Conservative rejection can hide otherwise safe runtime
   aliases, including a shorter chain used by a rejected over-budget forwarder.
   Calls retain actual leaf declaration IDs/names/locations; import evidence and
-  private cycle flags retain their physical source/target identities.
+  private cycle flags retain their physical source/target identities. A
+  forwarder's local `exports` stays detached from its replaced `module.exports`;
+  calls through that local object cannot acquire the forwarded leaf identity.
+  Existing unsupported const/destructured alias forms remain unknown.
 - Mutable importer bindings, ambient/type-only/dynamic values, recursive aliases,
   conditional/repeated/chained/property/nonrelative forwarding, namespace-variable
   forwarding, package exports and unverified ESM re-export chains remain unresolved.

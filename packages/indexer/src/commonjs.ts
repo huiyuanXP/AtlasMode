@@ -698,6 +698,16 @@ export function createCommonJsAnalyzer(
     if (ref)
       return {
         module: modules.get(expression.getSourceFile()),
+        // Replacing module.exports never rebinds the local exports variable.
+        // A forwarder's detached object must not acquire the leaf's exports,
+        // including through nested selections or checker fallback.
+        ...(ref.root.text === "exports" &&
+        forwarding.has(modules.get(expression.getSourceFile())!)
+          ? {
+              reason:
+                "CommonJS local exports is detached from forwarded module.exports",
+            }
+          : {}),
         ...(ref.whole
           ? {}
           : {
