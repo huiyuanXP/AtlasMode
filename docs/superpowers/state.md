@@ -154,4 +154,7 @@ controller补充规则：已枚举但不可用配置以`CONFIGURATION_UNAVAILABL
 接收可选captureDiagnostics，拒绝不可用最近配置的ancestor fallback；独立种子捕获
 成功不能取消另一extends链的深度/循环/预算拒绝，需逐个归属配置验证。
 Task1 f913eae已独立审查通过（0 Critical/Important/Minor），原始报告见新plan ledger。
-Task2解析/UI尚未实施，接下来按每个来源文件应用已捕获配置；全产品最终suite属于Task3。
+Task2 952bffa已实现按来源文件的配置checker解析并独立审查通过（0C/I/M）：160项相关测试、core/indexer build/typecheck和root lint通过。
+最近配置归属、拒绝scope、不跨项目cache、配置alias不可用unknown及捕获-only host均有回归。Task3实际HTTP/MCP/UI历史兼容和最终root suite待验收。
+
+后续调研已实际复现CommonJS两类旧误判（导出覆盖、require遮蔽）及暴露入口缺口；下一独立Ticket先处理这些安全/语义边界，再处理workspace源码映射。当前不宣称完整CommonJS支持或运行时值证明。
