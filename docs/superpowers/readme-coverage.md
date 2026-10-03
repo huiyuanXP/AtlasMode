@@ -17,7 +17,8 @@ UNIMPLEMENTED表示仍为后续需求。测试通过不等于原README所有目�
 | 函数/方法、目录/文件、导入/调用、未知和源码（§5）              | PASS          | 源码与range、动态/external/unresolved样本；UI实际源代码与Chromium原生clipboard.readText                                                                            |
 | 跨文件相对import、局部别名、re-export（§5）                    | PASS          | TS/Python fixtures、实际索引调用证据；限定为当前适配器支持的可证明解析                                                                                             |
 | 受限tsconfig paths/baseUrl与配置可见性                     | PASS          | 捕获JSONC/相对extends、最近配置归属、checker声明解析；配置only生命周期HTTP/SDK与真实SQLite历史读取、双语UI回归通过                                                                                      |
-| workspace package/exports、CommonJS完整语义、references图 | UNIMPLEMENTED | 不展开references或猜测package源码；已发现的CommonJS导出覆盖/require遮蔽旧缺陷另立票据，不宣称完整运行时绑定 |
+| 受保护静态 CommonJS 与包配置 | PARTIAL | .cjs/有效包scope的.js、稳定const require和导出、覆盖/遮蔽guard、包only新鲜度/历史/双语已验；Express全仓canonical入口因forwarding escape仍未满足，完整值流/运行兼容性未实现 |
+| workspace package/exports、references图 | UNIMPLEMENTED | 不展开references或猜测package源码 |
 | 稳定ID、快照摘要、忽略规则和源码安全（§5）                     | PASS          | 插空行身份不变、文件内容hash/捕获字节、安全源码路径、symlink排除等回归；快照记录Git revision                                                                       |
 | 重命名/移动迁移映射和候选（§5）                                | UNIMPLEMENTED | 没有以相似函数自动替换绑定；需要后续显式接受映射流程                                                                                                               |
 | 成熟公开仓库实际浏览                                           | PASS          | 固定Vite/Flask真实HTTP/UI/SDK通过，截图已查看；范围/SHAs/未知/截断见validation-targets.md，上游测试未运行                                                          |
@@ -86,9 +87,9 @@ UNIMPLEMENTED表示仍为后续需求。测试通过不等于原README所有目�
 按可用性和数据保全排序；执行前写独立 spec/plan 与验收项，顺序实施并审查。
 不把 README 的未来路线图当成已实现功能。
 
-1. **目标项目模块解析的剩余边界**：受限 tsconfig paths/baseUrl 已实现。下一独立
-   票据优先处理已复现的 CommonJS 导出覆盖、require 遮蔽与暴露入口，再处理
-   workspace package/exports 和 references 图；条件导出/动态加载不作运行时保证。
+1. **目标项目模块解析的剩余边界**：受限 tsconfig paths/baseUrl 已实现。CommonJS 覆盖/遮蔽与稳定子集已实现，
+   完整 Express 转发使 canonical 入口保守失效；剩余 workspace package/exports、
+   references 图与更广的值流另票处理；条件导出/动态加载不作运行时保证。
 2. **功能集的 Agent 闭环复核**：propose_group 已纳入 T06，固定 agent 来源并
    遵守 project/member 验证；首轮实际 stdio 与 HTTP 一致性验收后再检查高级组合缺口。
 3. **独立持久化知识与失联绑定**：注释不只依附某个规划，保留作者来源与约束语义，
@@ -126,3 +127,13 @@ T08 已按实际通过/部分/未完成更新，截图已实际查看。后续�
 validation-targets.md，旧Flask不重跑。外部请求与console/page errors为空，
 SDK stderr为空，目标sentinel未执行，临时进程/SQLite已清理。
 Task3与整票独立review由controller继续；当前这些是实现者执行的验证证据。
+
+
+## Static CommonJS Task3（独立审查待controller）
+
+最终root build/typecheck/lint与436项/29文件通过；真实HTTP/SDK/SQLite的type-only
+生命周期与历史缺packageFiles读取通过。UI3项真实RED→GREEN，包含双语captured/
+legacy及recorded zero；6张截图已看。规划E2E首轮关闭超时失败，独立重试1项通过，
+未修复或隐瞒间歇退出风险。固定Express泛用浏览通过，但canonical入口exported=false
+未达到原验收；原因、准确行36及scope在validation-targets.md。12张当前图片已查看。
+原始warning保留，无目标执行/上游测试/依赖变更；Win/mac/真实客户端/CI/云恢复未跑。

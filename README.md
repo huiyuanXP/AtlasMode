@@ -2,7 +2,7 @@
 
 用可编辑的代码关系图替代传统文字 Plan Mode。Agent 在实际修改代码之前，把规划叠加到现有项目图上；用户理解、调整并确认后，Agent 才实施。人通过图形理解项目，Agent 通过 MCP 查询同一份结构化模型。
 
-> 当前仓库已有本地 UI、真实 TS/JS/Python 索引、SQLite、stdio MCP、中文/英文、主题、功能集、目录约束及撤销重做。首轮 T01–T08 与整体审查通过，四项 Important 与两项 Minor 修复均独立复审通过；本轮精确检查结果见 [环境与验证](docs/environment.md)。固定目标的阶段、修订和统计见 [外部验证记录](docs/superpowers/validation-targets.md)，不将旧运行计数当作当前结果。三OS CI 已配置，原生 Windows/macOS 和实际 Codex/Claude 客户端连接尚未验证。以下规格保留后续目标，完整组编辑/折叠、知识迁移/备份、workspace package/exports、CommonJS 和 references 图等仍有缺口，详见 [要求覆盖表](docs/superpowers/readme-coverage.md)。
+> 当前仓库已有本地 UI、真实 TS/JS/Python 索引、SQLite、stdio MCP、中文/英文、主题、功能集、目录约束及撤销重做。首轮 T01–T08 与整体审查通过，四项 Important 与两项 Minor 修复均独立复审通过；本轮精确检查结果见 [环境与验证](docs/environment.md)。固定目标的阶段、修订和统计见 [外部验证记录](docs/superpowers/validation-targets.md)，不将旧运行计数当作当前结果。三OS CI 已配置，原生 Windows/macOS 和实际 Codex/Claude 客户端连接尚未验证。以下规格保留后续目标，完整组编辑/折叠、知识迁移/备份、workspace package/exports、完整 CommonJS 值流和 references 图等仍有缺口，详见 [要求覆盖表](docs/superpowers/readme-coverage.md)。
 
 本机使用 Node24.19.0/npm11.9.0；分析 Python 项目需 Python3.10+。从仓库根目录运行：
 
@@ -25,8 +25,19 @@ npm start
 
 导航诊断区的“配置输入 / Configuration inputs”显示成功捕获的配置数量与仓库
 相对路径，独立于源码文件数。历史快照未记录此字段时显示“未记录”，不报告为零。
-`contentHash` 现为带版本的源码与配置输入摘要；仅配置内容改变也会使规划/路线
+`contentHash` 现为带版本的源码、配置和包输入摘要；仅配置或包内容改变也会使规划/路线
 基线过期。升级后首次刷新可使旧基线过期，历史快照和批准保留，无需清理 SQLite。
+
+已支持受保护的静态 CommonJS 子集：`.cjs`，以及最近捕获的有效 `package.json`
+允许 CommonJS 且无 ESM 语法的 `.js`。稳定的顶层导出可作为入口，未遮蔽的字面量
+`require` 与 `const` 绑定可连接真实实现；覆盖、遮蔽、可变绑定和命名空间逃逸保持
+未知。`module.exports = require(...)` 转发不支持，并可能使被转发模块的入口标记
+保守失效；固定 Express 全仓的 `createApplication` 可搜索/读源码，但当前不作为
+已证明入口。动态 mixin、workspace exports 和运行时加载兼容性不作保证。
+
+诊断区新增“包配置 / Package manifests”，独立显示捕获数量与相对路径。
+历史缺字段显示未记录，已记录空数组显示零；仅 `package.type` 改变也会使规划和
+路线过期，源码声明 ID、历史快照与批准保留。包元数据不计入源码文件数。
 
 ## 1. 产品目标
 

@@ -179,6 +179,24 @@ export function Navigation({
               </ul>
             )}
           </section>
+          <section aria-label={zh.packageManifests}>
+            <h3>
+              {zh.packageManifests}
+              {summary.coverage.packageFiles !== undefined &&
+                `: ${summary.coverage.packageFiles.length}`}
+            </h3>
+            {summary.coverage.packageFiles === undefined ? (
+              <p className="muted">{zh.packageUnrecorded}</p>
+            ) : (
+              <ul>
+                {summary.coverage.packageFiles.map((path) => (
+                  <li key={path}>
+                    <code className="path">{path}</code>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
           <p>
             {zh.excluded}: {summary.coverage.excludedPatterns.join(", ")}
           </p>

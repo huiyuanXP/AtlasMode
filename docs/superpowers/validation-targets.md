@@ -116,3 +116,40 @@ PLAYWRIGHT_CHROMIUM_EXECUTABLE=/usr/bin/chromium npm run validate:repository -- 
 调用分类变化反映本轮配置解析及前轮可变绑定修复，不等于运行时调用覆盖率。
 非loopback请求全拒绝，actual external与console/page errors均空，SDK stderr为空；
 只运行AtlasMode，未安装目标依赖、执行目标代码或上游测试。临时服务/数据库已清理。
+
+
+## Static CommonJS：Express5.2.1 实际产品浏览与未满足项
+
+2026-10-03T04:48:13.152Z，AtlasMode基线96db708加Task3最终源码。
+目标 `/tmp/atlasmode-validation-express`，完整SHA
+`dbac741a49a5a64336b70c06e85c2e2706e36336`；捕获前04:48:08.193Z与捕获后
+04:48:13.152Z都校验完整HEAD和含全部untracked的干净Git。未安装目标依赖、
+执行目标代码、npm scripts或上游测试；包含test目录只是静态源码扫描。
+
+实际编译HTTP/浏览器/SDK stdio完成打开、搜索、源码与预算展开；generic validator
+命令退出0，图片已查看，console/page errors及external为空，SDK stderr为空。
+共142源文件、1包配置、0配置输入、3070函数类节点、15216关系；calls为
+304 resolved /22 external /11234 unresolved，0诊断。打开耗时1844ms；
+34/34入口候选未截断。budget1返回1节点且truncated=true；budget80/depth1
+返回4节点/13关系、truncated=false。不是目标运行兼容性证明。
+
+**未满足 canonical 入口验收：** createApplication实际在`lib/express.js:36`
+（原brief的37行是内部app函数），搜索/源码可读，但当前exported=false。
+`index.js:11`的`module.exports = require('./lib/express')`是不支持的转发；
+其namespace escape使原模块也保守失效。精确源副本诊断：只保留原package.json/
+lib/express.js时为true，加入原index.js后相同声明ID为false。该诊断不是缩减目标
+验收，也没有改目标或分析器。完整canonical-entry验收不能据generic命令退出0报PASS。
+五个createApplication调用均unknown：两个mixin调用因var导入可变，两个Object.create
+与app.init缺少唯一实现；未扩大值流/动态mixin/forwarding能力。
+
+```bash
+PLAYWRIGHT_CHROMIUM_EXECUTABLE=/usr/bin/chromium node scripts/validate-repository.mjs --path /tmp/atlasmode-validation-express --commit dbac741a49a5a64336b70c06e85c2e2706e36336 --symbol createApplication --file lib/express.js --label express-commonjs
+```
+
+唯一新产物`artifacts/validation/express-commonjs-product.{json,png}`；源SHA与日志
+在`.superpowers/sdd/2026-10-03-static-commonjs/scratch/task-3/`。
+本票据未重跑Vite/Flask，旧计数/图片/时间保持历史含义；原生Win/mac、实际客户端、
+远端CI/fresh-cloud restore未执行。实现者已将canonical-entry失配交controller裁决。
+
+Controller裁决：保留上述原canonical-entry未满足证据，接受本轮保守escape限制；
+后续独立static-forwarding安全票据在whole-plan关闭后再规划，Task3不扩大分析器范围。

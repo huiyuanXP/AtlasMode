@@ -1,10 +1,45 @@
 # 环境、运行与验收
 
-2026-10-03 UTC：当前 Linux 的 captured-tsconfig 最终集成检查通过：七个 workspace
-build/typecheck、lint、293 项测试（25 个文件，0 失败、0 跳过）。新增配置浏览
-2 项及现有 UI/SDK 联合流程1项通过，固定 Vite 产品验收已刷新。干净安装、生产
-smoke 与 Flask 浏览沿用前轮记录，未在本票据重复运行。
-Windows/macOS 的 CI 已配置，尚未在原生 runner 执行；这不代表三系统均已验证。
+2026-10-03 UTC：当前 Linux 的 static-commonjs 最终集成检查：七个 workspace
+build/typecheck、lint、436 项测试（29 文件）全部通过。新增包配置浏览3项通过；
+既有规划 E2E 首次重启前关闭超时，独立重试1项通过，间歇关闭风险保留。
+固定 Express 实际 HTTP/UI/SDK 浏览完成，但全仓 canonical 入口标记验收未满足：
+转发触发保守 escape guard，`createApplication` 为 exported=false。精确证据见下节。
+原生 Windows/macOS、实际客户端、远端 CI 与 fresh-cloud restore 仍未执行。
+
+## Static CommonJS Task3 实际验证
+
+基线 `96db7084a1ab8439d5c585b559303bba01a00b5e` 加包配置界面和真实回归。
+实现者记录不代表 Task3 独立审查或整体 gate 已通过。
+
+- 最终源码后 root `npm run build`、`npm run typecheck`、`npm run lint`、`npm test`
+  各一次退出0；436/29全部通过，无失败/跳过，30.32s。后端新增生命周期本来已满足，
+  记录 GREEN 基线；首次 harness 错把公开 null targetId 期待为 undefined，修正后通过。
+- `tests/integration/commonjs-resolution.test.ts` 实际编译 HTTP、SDK stdio 与 SQLite：
+  commonjs→module 仅改 package.type，调用由 helper.js:2 resolved 变为 unknown，
+  源码字节/函数ID不变、计划和路线过期、历史快照/批准/操作/revision保留。停服务后
+  仅从临时数据库历史快照移除 packageFiles，重启读取与刷新后保留历史；不是旧二进制迁移。
+- 浏览器3项先因缺少“包配置”区域真实 RED，再 GREEN；覆盖 captured/legacy 双语
+  和 recorded zero、入口→helper源码行、覆盖/遮蔽理由。6张图片实际查看，源中文未翻译。
+- 因 Navigation 改变，运行既有 planning E2E；首次在重启前 stop 的10秒时限后被
+  SIGKILL（未通过），单独重试在11.0s/总12.0s通过。未改超时、preload或服务退出实现。
+  原因尚未确定，不能把重试通过说成已修复。重试r16/hash为
+  `4a6df8fd15745029b6bb138efe44233a872297382a238214224d1066c82d0674`，
+  批准时间04:49:04.299Z；5张源码/规划/主题/窄屏图片实际查看。
+- Express5.2.1固定完整SHA全仓浏览：142源文件/1包配置、3070函数类节点，
+  1.844s打开；`lib/express.js:36`可搜索/查看。原计划37行是内部app声明。
+  generic validator退出0，但 exported=false，canonical入口目标未达成；精确原因和
+  统计在 [validation-targets.md](superpowers/validation-targets.md)，不可标成完整通过。
+- 浏览器拒绝非loopback请求，实际external及console/page errors为空；新回归SDK
+  协议错误/stderr为空，fixture sentinel未执行。成功进程关闭、临时SQLite/目录清理；
+  首次规划失败的进程由既有timeout回收。前轮图片有备份，Vite/Flask旧证据不变。
+
+日志/源码SHA清单/首轮失败与重试在
+`.superpowers/sdd/2026-10-03-static-commonjs/scratch/task-3/`，截图在
+`artifacts/e2e/commonjs/`、`artifacts/e2e/`和`artifacts/validation/express-commonjs-product.png`。
+Playwright1.63 worker强制颜色与NO_COLOR冲突的原始warning保留，未移除NO_COLOR、
+修改依赖或过滤输出；Linux浏览器仍用PLAYWRIGHT_CHROMIUM_EXECUTABLE=/usr/bin/chromium。
+干净安装/生产smoke/Vite/Flask未重复运行，沿用明确标记的历史记录。
 
 ## 整体审查修复波次（2026-10-03 UTC）
 
@@ -235,3 +270,6 @@ MCP 使用绝对 Node 路径直接启动 `apps/mcp/dist/index.js`，HTTP 服务�
 `.github/workflows/ci.yml` 配置 Linux/Windows/macOS 的安装/构建/类型/lint/测试/smoke
 和 Linux Chromium job；尚无远端 CI 执行、发布或新环境恢复验证。
 本地工作树的成功运行、云端草稿保存、远端提交和快照发布是不同结果。
+
+Controller裁决：保留上述原canonical-entry未满足证据，接受本轮保守escape限制；
+后续独立static-forwarding安全票据在whole-plan关闭后再规划，Task3不扩大分析器范围。

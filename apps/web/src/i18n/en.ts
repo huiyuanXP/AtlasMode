@@ -151,6 +151,8 @@ export const en: Record<keyof typeof zh, string> = {
     "⚠ Graph or context differs from the current snapshot; refresh code.",
   approvalHash: "Approval digest",
   included: "Indexed files",
+  packageManifests: "Package manifests",
+  packageUnrecorded: "Package manifests were not recorded for this snapshot",
   configurationInputs: "Configuration inputs",
   configurationUnrecorded:
     "Configuration inputs were not recorded for this snapshot",

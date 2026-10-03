@@ -217,3 +217,21 @@ d217e1d 已独立批准，0C/0I/0M；309/8相关测试、core/indexer构建/类�
 包配置受限捕获、strictJSON/最近opaque scope、.js模式、v3输入hash与可选packageFiles已实现。
 原83身份用例保留，新9语法用例含import.meta/顶层await/计算名称；15源指纹已核对。
 Task3真实HTTP/MCP/SQLite/UI/Express及最终全根目录验收仍待执行，未据单元测试推断通过。
+
+
+### CommonJS Task3 实现者验证（独立gate待完成）
+
+包配置双语导航、真实HTTP/SDK/SQLite package-only新鲜度和历史省略字段回归已完成。
+后端已有GREEN基线；UI3项真实缺区域RED→GREEN。最终根build/typecheck/lint与
+436项/29文件通过（30.32s），原源码字节/FnID/历史批准保留。6张包UI图片已查看。
+既有规划E2E首次重启前10秒关闭超时/SIGKILL，单独重试1项通过（总12.0s），
+未修改退出实现，间歇风险尚未定因；5张规划图片已查看。原始颜色warning保留。
+Express固定SHA全仓真实HTTP/browser/SDK/source已浏览（142文件/1包/3070函数类节点）；
+canonical createApplication实际line36，exported=false：index.js转发触发整模块escape。
+精确源副本诊断证实此因；不改分析器、不缩减目标验收，canonical-entry未达成交controller。
+新Express图已看；当前源SHA/前轮artifact保存检查无差异或遗失，owned进程/临时store清理。
+任务报告和原始证据在当前SDD task-3目录；Task3和whole-plan审查尚未通过。
+原生Win/mac、实际用户客户端、远端CI和fresh-cloud restore仍未执行；无push/publish。
+
+Controller裁决：保留上述原canonical-entry未满足证据，接受本轮保守escape限制；
+后续独立static-forwarding安全票据在whole-plan关闭后再规划，Task3不扩大分析器范围。
