@@ -137,3 +137,12 @@ legacy及recorded zero；6张截图已看。规划E2E首轮关闭超时失败，
 未修复或隐瞒间歇退出风险。固定Express泛用浏览通过，但canonical入口exported=false
 未达到原验收；原因、准确行36及scope在validation-targets.md。12张当前图片已查看。
 原始warning保留，无目标执行/上游测试/依赖变更；Win/mac/真实客户端/CI/云恢复未跑。
+
+### Static CommonJS Task3 当前限定验收状态
+
+140a3aa 修复实际复现的未完成 HTTP 连接关闭问题；完整请求延迟6.1秒且同连接
+存在未完成流水请求时，HTTP200及真实SQLite写入均保留。最终七包构建/类型、
+lint与440项/30文件通过，之后顺序运行规划E2E1项通过；这些更新上述初始436计数，
+不覆盖历史结果。原首次关闭失败仍缺因果记录，五轮限定复审后以真实 Important
+parked进入整体审查，未声称定因；Task3完成不等于整票关闭。Express原入口FAIL及
+泛用浏览PASS分开保留，静态转发安全下一票；平台/客户端/远端CI/云恢复仍未运行。
