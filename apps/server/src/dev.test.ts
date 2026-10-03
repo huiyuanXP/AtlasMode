@@ -13,6 +13,7 @@ import {
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { createRequire } from "node:module";
+import { pathToFileURL } from "node:url";
 
 const cleanup: (() => Promise<void>)[] = [];
 afterEach(async () => {
@@ -87,7 +88,7 @@ compiler.on('exit',code=>process.exit(code??1));`,
     process.execPath,
     [
       "--import",
-      resolve("tests/support/graceful-preload.mjs"),
+      pathToFileURL(resolve("tests/support/graceful-preload.mjs")).href,
       "scripts/dev.mjs",
     ],
     {

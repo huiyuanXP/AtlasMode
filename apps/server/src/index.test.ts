@@ -5,6 +5,7 @@ import { mkdtemp, mkdir, writeFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { resolve, join } from "node:path";
 import { createServer as netServer } from "node:net";
+import { pathToFileURL } from "node:url";
 
 const children: ChildProcess[] = [];
 const roots: string[] = [];
@@ -34,7 +35,7 @@ async function launch(extra: Record<string, string | undefined> = {}) {
     process.execPath,
     [
       "--import",
-      resolve("tests/support/graceful-preload.mjs"),
+      pathToFileURL(resolve("tests/support/graceful-preload.mjs")).href,
       "--import",
       "tsx",
       "apps/server/src/index.ts",

@@ -3,6 +3,7 @@ import { once } from "node:events";
 import { createServer } from "node:net";
 import { mkdir, writeFile, access } from "node:fs/promises";
 import { resolve, join } from "node:path";
+import { pathToFileURL } from "node:url";
 import assert from "node:assert/strict";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
@@ -26,7 +27,7 @@ export async function startProduction(data, port) {
     process.execPath,
     [
       "--import",
-      resolve("tests/support/graceful-preload.mjs"),
+      pathToFileURL(resolve("tests/support/graceful-preload.mjs")).href,
       resolve("apps/server/dist/index.js"),
     ],
     {
