@@ -83,6 +83,37 @@ function route(): BrowseRoute {
 const errors = (issues: ReturnType<typeof validatePlan>) =>
   issues.filter((issue) => issue.severity === "error");
 
+describe("optional captured configuration coverage", () => {
+  it("reads legacy snapshots without configurationFiles", () => {
+    expect(snapshotSchema.parse(snapshot)).toEqual(snapshot);
+  });
+  it("accepts repository-relative configuration metadata separately from source files", () => {
+    const value = {
+      ...snapshot,
+      coverage: {
+        ...snapshot.coverage,
+        configurationFiles: ["tsconfig.json", "config/shared.json"],
+      },
+    };
+    expect(snapshotSchema.parse(value)).toEqual(value);
+  });
+  it.each([
+    "../secret.json",
+    "/etc/config.json",
+    "C:\\config.json",
+    "",
+    "sub/..",
+    "a\u0000.json",
+  ])("rejects configuration coverage path %s", (invalid) => {
+    expect(
+      snapshotSchema.safeParse({
+        ...snapshot,
+        coverage: { ...snapshot.coverage, configurationFiles: [invalid] },
+      }).success,
+    ).toBe(false);
+  });
+});
+
 describe("deterministic identity", () => {
   it("keeps symbol identity stable across metadata changes", () => {
     const original = makeId("function", "p1", "src/a.ts", "a");

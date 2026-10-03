@@ -63,6 +63,81 @@ afterEach(async () => {
 });
 
 describe("SourceIndexer", () => {
+  it("changes input and snapshot identity for configuration-only and whitespace edits while retaining symbol IDs and history", async () => {
+    const root = await temp();
+    await writeFile(join(root, "a.ts"), "export function a() {}");
+    await writeFile(
+      join(root, "tsconfig.json"),
+      '{"compilerOptions":{"baseUrl":"."}}',
+    );
+    const indexer = new SourceIndexer();
+    const before = await indexer.index(root, "configuration");
+    const historical = structuredClone(before);
+    await writeFile(
+      join(root, "tsconfig.json"),
+      '{"compilerOptions":{"baseUrl":"./src"}}',
+    );
+    const changed = await indexer.index(root, "configuration");
+    await writeFile(
+      join(root, "tsconfig.json"),
+      ' {"compilerOptions":{"baseUrl":"./src"}}\n',
+    );
+    const whitespace = await indexer.index(root, "configuration");
+    expect(changed.contentHash).not.toBe(before.contentHash);
+    expect(changed.id).not.toBe(before.id);
+    expect(whitespace.contentHash).not.toBe(changed.contentHash);
+    expect(whitespace.id).not.toBe(changed.id);
+    expect(fn(changed, "a.ts", "a").id).toBe(fn(before, "a.ts", "a").id);
+    expect(fn(whitespace, "a.ts", "a").id).toBe(fn(before, "a.ts", "a").id);
+    expect(before).toEqual(historical);
+    expect(changed.coverage.files).toEqual(["a.ts"]);
+    expect(changed.coverage.configurationFiles).toEqual(["tsconfig.json"]);
+    expect(
+      changed.nodes.filter((n) => n.kind === "file").map((n) => n.filePath),
+    ).toEqual(["a.ts"]);
+    snapshotSchema.parse(changed);
+  });
+
+  it("hashes invalid configuration bytes and captured inherited inputs without indexing JSON nodes", async () => {
+    const root = await temp();
+    await mkdir(join(root, "sub"));
+    await writeFile(join(root, "a.ts"), "export function a() {}");
+    await writeFile(
+      join(root, "sub", "tsconfig.json"),
+      '{ // JSONC\n "extends": "../shared.json", }',
+    );
+    await writeFile(join(root, "shared.json"), "{invalid");
+    const indexer = new SourceIndexer();
+    const before = await indexer.index(root, "configuration");
+    await writeFile(join(root, "shared.json"), "{invalid changed");
+    const after = await indexer.index(root, "configuration");
+    expect(after.contentHash).not.toBe(before.contentHash);
+    expect(after.id).not.toBe(before.id);
+    expect(after.coverage.configurationFiles).toEqual([
+      "shared.json",
+      "sub/tsconfig.json",
+    ]);
+    expect(after.coverage.files).toEqual(["a.ts"]);
+    expect(after.nodes.some((n) => n.filePath?.endsWith(".json"))).toBe(false);
+    expect(
+      after.diagnostics.some(
+        (d) =>
+          d.filePath === "shared.json" && /invalid.*JSONC/i.test(d.message),
+      ),
+    ).toBe(true);
+  });
+
+  it("keeps source-only indexing deterministic without configuration inputs", async () => {
+    const root = await temp();
+    await writeFile(join(root, "a.ts"), "export function a() {}");
+    const indexer = new SourceIndexer();
+    const first = await indexer.index(root, "source-only");
+    const second = await indexer.index(root, "source-only");
+    expect(second.contentHash).toBe(first.contentHash);
+    expect(second.id).toBe(first.id);
+    expect(second.coverage.configurationFiles).toEqual([]);
+  });
+
   it("resolves TS aliases, reexports, named arrows and class methods by declaration identity", async () => {
     const s = await new SourceIndexer().index(
       await fixture("typescript"),

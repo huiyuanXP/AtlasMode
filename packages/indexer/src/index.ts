@@ -49,6 +49,7 @@ export class SourceIndexer implements IndexerPort {
       diagnostics: graph.diagnostics,
       coverage: {
         files: capture.files.map((f) => f.path),
+        configurationFiles: capture.configurations.map((f) => f.path),
         excludedPatterns: capture.excludedPatterns,
         availability: capture.availability,
         unresolvedCount: graph.relations.filter(
@@ -57,7 +58,7 @@ export class SourceIndexer implements IndexerPort {
       },
     };
     // Capabilities and diagnostics are part of immutable facts, while contentHash
-    // continues to identify captured source bytes only.
+    // identifies versioned captured source and configuration inputs.
     const fingerprint = createHash("sha256")
       .update(
         JSON.stringify({

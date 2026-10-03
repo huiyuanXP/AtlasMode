@@ -135,3 +135,22 @@ artifacts/review-evidence/local-planning-mvp.tar.gz。当前work分支继续，�
 配置输入/新鲜度 → 按来源checker解析 → HTTP/MCP/UI真实验证。新的ledger会在
 .superpowers/sdd/2026-10-03-captured-tsconfig/progress.md，已归档任务不得重新派遣。
 操作指南：../first-plan.md。云草稿保存不等于发布，fresh-task恢复仍未验证。
+
+## Captured tsconfig Task1（2026-10-03 UTC）
+
+Task1已实现受限JSONC配置输入捕获和版本化source/configuration hash：
+262144 bytes/文件、4194304 bytes总量、512文件、16层（种子第1层）。
+支持相对`.json` extends及Windows分隔符，捕获bytes只读一次；拒绝缺失、package、
+越界、ignored、symlink、循环及预算超限，诊断不回显原配置。
+可选coverage.configurationFiles与源码计数/CodeNode分离，旧schema仍可读取，
+无DB migration/新依赖/公共port变化。配置-only及空白变更改变hash/snapshot ID，
+函数ID及已返回历史对象保留。既有source availability/ignore/const-call回归保留。
+本任务core/indexer共130项/4文件通过；两包build/typecheck及root lint均退出0。
+RED为capture/schema20失败、identity3失败；补充不可用最近配置3项和post-read
+预算guard mutation2项均有RED/GREEN。未运行root全套、服务或浏览器验收。
+
+controller补充规则：已枚举但不可用配置以`CONFIGURATION_UNAVAILABLE:` message
+前缀+repo-relative filePath保留拒绝scope，不作为源码availability。Task2内部resolver
+接收可选captureDiagnostics，拒绝不可用最近配置的ancestor fallback；独立种子捕获
+成功不能取消另一extends链的深度/循环/预算拒绝，需逐个归属配置验证。
+Task2解析/UI尚未实施，Task1等待独立任务审查gate；全产品最终suite属于Task3。

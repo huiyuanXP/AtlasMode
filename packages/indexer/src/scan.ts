@@ -1,13 +1,14 @@
 import ignore from "ignore";
 import { constants } from "node:fs";
 import { lstat, open, readdir, realpath, stat } from "node:fs/promises";
-import { dirname, isAbsolute, join, relative, sep } from "node:path";
+import { basename, dirname, isAbsolute, join, relative, sep } from "node:path";
 import { createHash } from "node:crypto";
 import {
   DomainError,
   normalizeRepoPath,
   type CodeSnapshot,
 } from "@codemap/core";
+import { captureConfigurations } from "./configCapture.js";
 
 export type SourceFile = { path: string; bytes: Buffer };
 const excludedNames = [
@@ -26,6 +27,8 @@ const excludedNames = [
   "vendor",
 ];
 export const excludedPatterns = excludedNames.map((p) => `**/${p}/**`);
+const configurationSeed = (path: string) =>
+  /^tsconfig.*\.json$/.test(basename(path));
 function contained(root: string, path: string) {
   const r = relative(root, path);
   return r !== ".." && !r.startsWith(`..${sep}`) && !isAbsolute(r);
@@ -83,6 +86,7 @@ export async function readSourceBytes(rootPath: string, filePath: string) {
 export async function scan(rootPath: string): Promise<{
   root: string;
   files: SourceFile[];
+  configurations: SourceFile[];
   contentHash: string;
   diagnostics: CodeSnapshot["diagnostics"];
   excludedPatterns: string[];
@@ -95,6 +99,12 @@ export async function scan(rootPath: string): Promise<{
     directories: string[] = [];
   const unavailable = new Set<string>(),
     excluded: string[] = [];
+  const configurationUnavailable = (filePath: string, reason: string) => {
+    diagnostics.push({
+      filePath,
+      message: `CONFIGURATION_UNAVAILABLE: ${reason}`,
+    });
+  };
   let complete = true;
   // Enumerate eligible directories without following links or descending into
   // the fixed out-of-scope roots. Record every skipped subtree explicitly.
@@ -126,6 +136,7 @@ export async function scan(rootPath: string): Promise<{
   await walk("");
   entries.sort();
   const captures = new Map<string, Buffer>();
+  const configurationCandidates: string[] = [];
   // All reads use the same captured bytes for parsing and hashing. Never let a
   // compiler or the Python helper read additional target files behind the scan.
   for (const entry of entries) {
@@ -134,6 +145,13 @@ export async function scan(rootPath: string): Promise<{
     try {
       const info = await lstat(absolute);
       if (info.isSymbolicLink()) {
+        if (configurationSeed(path)) {
+          configurationUnavailable(
+            path,
+            "Configuration symlinks are not followed",
+          );
+          continue;
+        }
         unavailable.add(path);
         diagnostics.push({
           filePath: path,
@@ -142,18 +160,40 @@ export async function scan(rootPath: string): Promise<{
         });
         continue;
       }
+      if (configurationSeed(path) && !info.isFile()) {
+        configurationUnavailable(
+          path,
+          "Configuration path is not a regular file",
+        );
+        continue;
+      }
       if (
         !info.isFile() ||
-        (!/\.(?:[cm]?[jt]sx?|py)$/.test(path) && !path.endsWith(".gitignore"))
+        (!/\.(?:[cm]?[jt]sx?|py)$/.test(path) &&
+          !path.endsWith(".gitignore") &&
+          !path.endsWith(".json"))
       )
         continue;
       const canonical = await realpath(absolute);
       if (!contained(root, canonical)) {
+        if (configurationSeed(path)) {
+          configurationUnavailable(
+            path,
+            "Configuration path is outside project root",
+          );
+          continue;
+        }
         unavailable.add(path);
         diagnostics.push({
           filePath: path,
           message: "Excluded path outside project root",
         });
+        continue;
+      }
+      // Only eligibility is collected here; configuration bytes are captured
+      // after ignore rules are known, through the bounded metadata reader.
+      if (path.endsWith(".json")) {
+        configurationCandidates.push(path);
         continue;
       }
       const handle = await open(
@@ -166,6 +206,13 @@ export async function scan(rootPath: string): Promise<{
         await handle.close();
       }
     } catch (error) {
+      if (configurationSeed(path)) {
+        configurationUnavailable(
+          path,
+          "Configuration input is missing or could not be inspected safely",
+        );
+        continue;
+      }
       unavailable.add(path);
       diagnostics.push({
         filePath: path,
@@ -200,7 +247,6 @@ export async function scan(rootPath: string): Promise<{
     if (!ignored(candidate.path)) rules.push(candidate);
   for (const directory of directories)
     if (ignored(`${directory}/`)) unavailable.add(directory);
-  const hash = createHash("sha256");
   for (const [path, bytes] of captures) {
     if (path.endsWith(".gitignore")) continue;
     if (ignored(path)) {
@@ -208,14 +254,39 @@ export async function scan(rootPath: string): Promise<{
       continue;
     }
     files.push({ path, bytes });
-    hash.update(`${Buffer.byteLength(path)}:`);
-    hash.update(path);
-    hash.update(`:${bytes.length}:`);
-    hash.update(bytes);
+  }
+  const configurationCapture = await captureConfigurations(
+    root,
+    configurationCandidates.filter((path) => {
+      if (!ignored(path)) return true;
+      if (configurationSeed(path))
+        configurationUnavailable(
+          path,
+          "Configuration input is excluded by Git ignore rules",
+        );
+      return false;
+    }),
+  );
+  diagnostics.push(...configurationCapture.diagnostics);
+  const configurations = configurationCapture.files;
+  // Versioned, typed and length-framed inputs: no ambiguity between paths,
+  // source/configuration records, or arbitrary bytes (including invalid JSONC).
+  const hash = createHash("sha256").update("codemap-index-inputs-v2\0");
+  for (const [type, inputs] of [
+    ["source", files],
+    ["configuration", configurations],
+  ] as const) {
+    for (const { path, bytes } of inputs) {
+      hash.update(`${type}:${Buffer.byteLength(path)}:`);
+      hash.update(path);
+      hash.update(`:${bytes.length}:`);
+      hash.update(bytes);
+    }
   }
   return {
     root,
     files,
+    configurations,
     availability: {
       complete,
       unavailablePaths: [...unavailable].sort(),

@@ -23,6 +23,7 @@ type CodeSnapshot = {
   diagnostics: { filePath: string; line?: number; message: string }[];
   coverage: {
     files: string[]; excludedPatterns: string[]; unresolvedCount: number;
+    configurationFiles?: string[];
     availability?: { complete: boolean; unavailablePaths: string[]; excludedPaths?: string[] };
   };
 };
@@ -63,9 +64,36 @@ type VerificationReport = {
 ## Ports 与纯函数
 
 - `IndexerPort.index(rootPath: string, projectId: string): Promise<CodeSnapshot>`。
-  `contentHash` 仅摘要捕获源码 bytes；snapshot ID 同时纳入确定性分析结果
+  `contentHash` 从 captured-tsconfig Task1 起为版本化索引输入摘要：捕获源码和配置
+  的路径/bytes 均参与 SHA-256，以 `codemap-index-inputs-v2\0` 开头，按 source、
+  configuration 类型分组，再按路径确定排序；每条含类型、UTF-8路径长度、路径、
+  byte长度和原始bytes边界。无效 JSONC 和仅空白变化也改变输入摘要。
+  旧快照和历史批准不重写；升级后再次刷新会保守地产生新基线。
+  snapshot ID 同时纳入确定性分析结果
   （nodes/relations/diagnostics/coverage），排除观察时间、Git revision 和实际 root。
-  同源码/同分析结果保持 ID；解析能力变化不得让不同事实共用 ID 或覆盖历史。
+  同输入/同分析结果保持 ID；解析能力变化不得让不同事实共用 ID 或覆盖历史。
+- `coverage.configurationFiles?: string[]` 列出成功捕获的repo-relative配置路径，
+  与源码 `coverage.files`、文件/函数 CodeNode 和计数分离。缺字段的旧快照schema
+  仍可读取，不新增SQLite migration；IndexerPort、HTTP和MCP接口保持原样。
+- `captureConfigurations(root, allowedPaths)` 返回 `{files: SourceFile[], diagnostics}`；
+  `SourceFile={path:string;bytes:Buffer}`；scan额外返回 `configurations: SourceFile[]`。
+  仅已通过初次枚举、固定排除、Git ignore和symlink检查的JSON路径可成为输入，
+  种子basename为`tsconfig*.json`。以已安装TypeScript解析JSONC，捕获相对`.json`
+  extends（字符串/数组、Windows分隔符）；不读包/node_modules/网络，也不执行目标。
+  确定性排序并共享一次捕获，限制262144 bytes/文件、4194304 bytes总量、512文件、
+  16层（种子为第1层，第17层拒绝）。在实际打开handle的stat和有界读取后检查预算。
+  保留无效JSONC bytes用于hash；预算/读取拒绝的bytes不作为推断输入。
+  诊断只含配置路径和脱敏原因，不回显配置原文。extends拒绝诊断归属引用它的配置，
+  文件读取/预算拒绝归属被拒绝路径，路径/原因确定排序。
+- 已枚举但ignored/symlinked/不可读/非普通文件的配置种子，以及capture读取或预算
+  拒绝的配置，通过原diagnostic结构的稳定message前缀`CONFIGURATION_UNAVAILABLE:`
+  和规范化filePath保留配置不可用证据；不新增diagnostic字段，不把配置种子加入
+  源码availability或数量。固定排除目录不额外遍历；其中没有捕获源码可继承配置。
+  Task2内部resolver可增加可选第三参数`captureDiagnostics=[]`，由TypeScript集成
+  传递scan诊断，以不可用最近`tsconfig.json`阻止ancestor fallback。
+  即使其它独立种子已捕获某条extends链的bytes，resolver仍须逐个归属配置验证
+  深度/循环/预算/拒绝链；全局捕获成功不证明该链可部分应用paths/baseUrl。
+  此Task1仅提供输入与证据，路径解析和UI展示分别由Task2/Task3实现。
 - `coverage.availability` 是可选、向后兼容的扫描证据，参与 snapshot ID，不计入源码文件/函数数量。
   `complete` 表示固定分析范围的目录枚举是否完成，不代表解析成功或运行时完整。
   `unavailablePaths` 是该范围内因 Git ignore、symlink、读取/枚举失败而无法取得的

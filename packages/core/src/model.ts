@@ -32,6 +32,7 @@ export type CodeSnapshot = {
   diagnostics: { filePath: string; line?: number; message: string }[];
   coverage: {
     files: string[];
+    configurationFiles?: string[];
     excludedPatterns: string[];
     unresolvedCount: number;
     availability?: {
