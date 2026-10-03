@@ -1,6 +1,6 @@
 # README 要求覆盖与后续工作
 
-2026-10-03 UTC T08 实施者逐项复核，独立任务复审通过；整体分支审查进行中。
+2026-10-03 UTC T08 实施者逐项复核，独立任务复审通过；整体分支六项发现已实施修复，独立复审待完成。
 PASS表示下述范围已有实际证据，PARTIAL表示部分功能或平台尚未覆盖，
 UNIMPLEMENTED表示仍为后续需求。测试通过不等于原README所有目标完成。
 问卷要求优先：首轮含Python、多个本地项目、三系统配置和英文，真实MCP为首轮要求。
@@ -44,13 +44,35 @@ UNIMPLEMENTED表示仍为后续需求。测试通过不等于原README所有目�
 | 云配置发布、远端恢复和分发                                     | PARTIAL       | controller负责草稿/最终交付；当前实例成功不代表已发布、已push或新任务可恢复                                                                                        |
 | 增量索引、自动布局、运行时证据、多人/额外语言（P4/P5）         | UNIMPLEMENTED | 按README保留后续方向；当前手动刷新、局部展开，无动态真实性保证                                                                                                     |
 
+## 整体审查修复补充
+
+- WR-I1：coverage 可选 availability 保存范围内 unavailablePaths 与固定范围外
+  excludedPaths；旧快照可读取，缺文件无扫描证据为 unknown。真实 file/directory
+  ignore 的函数/关系删除、move、明确排除路径、真实删除及无关正面证据已有回归。
+- WR-I2：敏感 reads/writes 前校验本地 Host/Origin；真实进程及注入测试覆盖拒绝
+  source/approval 且 SQLite 无审批副作用、生产同源、显式5173开发代理、无Origin MCP。
+- WR-I3：唯一同名跨文件替代不能满足 reuse；显式 move、稳定ID和保守删除候选仍可用。
+- WR-I4：let/var与对象/类字段 initializer 保留 unresolved，TS/JS与下游 reuse 有回归；
+  const/direct控制保留。没有加入 tsconfig 或运行时/流分析。
+- WR-M1：固定目标捕获前/后验证干净 Git 与完整 HEAD，4项临时Git回归；没有重跑
+  固定 Vite/Flask。上表的成熟目标数量、图片及旧性能只对应其此前T08修订/时间戳。
+- WR-M2：planned calls/must_call/must_reuse 明确 COMPATIBILITY_UNKNOWN warning；
+  core/service/API/SDK/UI共享结果，结构有效仍可批准，不推断类型兼容性。
+- 本轮集成测试220/22文件：218首轮通过、2新增请求 harness 失败并经更正后2项
+  定向通过；随后增强的真实authority测试1项通过。不是修正后全套220项重跑声明。
+  build/typecheck/lint与生产smoke通过；生产UI/SDK联合1项通过（10.2s/总11.2s），
+  warning可见且批准r16有效，warning/light/dark/narrow/source截图实际查看。
+  本轮hash为dd3888680bb47dd48bcfd83153beaca0ad52c7d8e922fd642a48c5096670e1dc；
+  当前artifacts/e2e是本轮结果。准确命令与修订范围见
+  [环境记录](../environment.md)及忽略目录 whole-fix-report.md。
+
 ## 可复核证据
 
 - `npm ci --cache /tmp/atlasmode-npm-cache`、`npm run build`、`npm run typecheck`、
   `npm run lint`、`npm test`、`npm run smoke`实际退出0；精确本地日志为
   `.superpowers/sdd/2026-10-03-local-planning-mvp/task-8-clean-*.log`。
-- `tests/e2e/planning.spec.mjs`当前实现实际1项通过（0失败/跳过，11.307s）；
-  `artifacts/e2e/results.json`及`joint-flow-evidence.json`，r16/hash
+- 此前T08的 `tests/e2e/planning.spec.mjs` 实际1项通过（0失败/跳过，11.307s）；
+  当时的 `artifacts/e2e/results.json`及`joint-flow-evidence.json`，r16/hash
   `0e88b0efc9dc331316ff36d5795a53a675189eabb2a07e51510db7d2868bd3a8`。
 - `scripts/validate-repository.mjs`两个固定目标均退出0；产物、范围、准确统计及命令
   见[validation-targets.md](validation-targets.md)。当前本地日志/artifacts默认忽略Git。

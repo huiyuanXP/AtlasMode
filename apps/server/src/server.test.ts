@@ -517,3 +517,83 @@ test("domain failures map actionable unavailable errors and sanitize internal de
     if (status === 500) expect(response.body).not.toContain("private");
   }
 });
+
+test("rejects foreign authorities and browser origins before reads or approval side effects", async () => {
+  const { app, open, first, service, storage } = await setup();
+  const project = await open(first);
+  const plan = service.createPlan({ projectId: project.id, title: "Boundary" });
+  for (const headers of [
+    { host: "attacker.example:4310", origin: "http://attacker.example:4310" },
+    { host: "attacker.example:4310" },
+    { host: "127.0.0.1:4310", origin: "http://attacker.example:4310" },
+    { host: "localhost:4310", origin: "null" },
+    { host: "localhost:4310", origin: "http://localhost:5173" },
+    { host: "localhost.attacker.example:4310" },
+  ]) {
+    for (const url of [
+      "/api/projects",
+      `/api/projects/${project.id}/source?filePath=main.ts`,
+    ]) {
+      const response = await app.inject({ method: "GET", url, headers });
+      expect(response.statusCode).toBe(403);
+      expect(response.json().code).toBe("UNTRUSTED_REQUEST");
+      expect(response.body).not.toContain("function entry");
+    }
+    expect(
+      (
+        await app.inject({
+          method: "POST",
+          url: `/api/plans/${plan.plan.id}/approve`,
+          headers,
+          payload: { expectedRevision: 1 },
+        })
+      ).statusCode,
+    ).toBe(403);
+    expect(storage.list("approvals")).toHaveLength(0);
+  }
+  for (const headers of [
+    { host: "127.0.0.1:4310" },
+    { host: "localhost:4310", origin: "http://localhost:4310" },
+    { host: "[::1]:4310", origin: "http://[::1]:4310" },
+  ])
+    expect(
+      (await app.inject({ method: "GET", url: "/api/projects", headers }))
+        .statusCode,
+    ).toBe(200);
+  expect(
+    (
+      await app.inject({
+        method: "POST",
+        url: `/api/plans/${plan.plan.id}/approve`,
+        headers: { host: "127.0.0.1:4310", origin: "http://127.0.0.1:4310" },
+        payload: { expectedRevision: 1 },
+      })
+    ).json().valid,
+  ).toBe(true);
+});
+
+test("explicit development proxy permits only its local authority and origin", async () => {
+  const { app: original, service } = await setup();
+  await original.close();
+  const app = await server.createServer({ service, developmentProxy: true });
+  cleanups.push(() => app.close());
+  expect(
+    (
+      await app.inject({
+        url: "/api/projects",
+        headers: { host: "127.0.0.1:5173", origin: "http://127.0.0.1:5173" },
+      })
+    ).statusCode,
+  ).toBe(200);
+  expect(
+    (
+      await app.inject({
+        url: "/api/projects",
+        headers: {
+          host: "127.0.0.1:5173",
+          origin: "http://attacker.example:5173",
+        },
+      })
+    ).statusCode,
+  ).toBe(403);
+});

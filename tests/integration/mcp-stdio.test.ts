@@ -330,7 +330,18 @@ test("HTTP user approval and SDK share the same revision/hash; draft edits revok
     plan: { revision: 2, operations },
   });
   const args = { projectId: f.project.id, planId: created.plan.id };
-  expect(await success(client, "validate_plan", args)).toEqual([]);
+  const warnings = await success(client, "validate_plan", args);
+  expect(warnings).toEqual([
+    expect.objectContaining({
+      severity: "warning",
+      code: "COMPATIBILITY_UNKNOWN",
+      operationIndex: 0,
+    }),
+  ]);
+  expect(
+    await http(`/api/plans/${created.plan.id}/validate`, "POST", {}),
+  ).toEqual(warnings);
+  expect(created.issues).toEqual(warnings);
   const approved = await http<PlanDetail>(
     `/api/plans/${created.plan.id}/approve`,
     "POST",
@@ -338,6 +349,8 @@ test("HTTP user approval and SDK share the same revision/hash; draft edits revok
   );
   const read = await success<PlanDetail>(client, "get_approved_plan", args);
   expect(read).toEqual(approved);
+  expect(read.valid).toBe(true);
+  expect(read.issues).toEqual(warnings);
   expect(read.approval!.semanticHash).toMatch(/^[a-f0-9]{64}$/);
   await success(client, "update_plan", {
     ...args,

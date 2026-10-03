@@ -585,3 +585,45 @@ it("changes snapshot identity when Python capability changes for identical sourc
     available.id,
   );
 });
+
+describe("mutable callable evidence", () => {
+  it.each(["ts", "js"])(
+    "keeps reassigned %s initializers unresolved while retaining immutable and direct calls",
+    async (extension) => {
+      const root = await temp();
+      await writeFile(
+        join(root, `main.${extension}`),
+        'export let handler = () => "original";\nhandler = () => "replacement";\nexport var variable = () => "first";\nvariable = () => "second";\nexport const object = { handler: () => "first" };\nobject.handler = () => "second";\nexport const stable = () => "stable";\nexport function direct() { return 1; }\nexport function caller() { handler(); variable(); object.handler(); stable(); direct(); }\n',
+      );
+      const snapshot = await new SourceIndexer().index(root, "mutable");
+      const calls = snapshot.relations.filter(
+        (r) =>
+          r.type === "calls" &&
+          r.sourceId === fn(snapshot, `main.${extension}`, "caller").id,
+      );
+      expect(calls.find((r) => r.evidence.text === "handler()")).toMatchObject({
+        resolution: "unresolved",
+        targetId: null,
+      });
+      for (const text of ["variable()", "object.handler()"])
+        expect(calls.find((r) => r.evidence.text === text)).toMatchObject({
+          resolution: "unresolved",
+          targetId: null,
+        });
+      call(
+        snapshot,
+        `main.${extension}`,
+        "caller",
+        `main.${extension}`,
+        "stable",
+      );
+      call(
+        snapshot,
+        `main.${extension}`,
+        "caller",
+        `main.${extension}`,
+        "direct",
+      );
+    },
+  );
+});

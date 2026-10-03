@@ -688,3 +688,162 @@ test("removal absence depends on incomplete files in the symbol's language searc
     "unknown",
   );
 });
+
+test("a unique differently implemented cross-file substitute cannot satisfy approved reuse without a move", async () => {
+  const plan = changeCall();
+  await service.approvePlan(plan.plan.id, 2);
+  await writeFile(
+    join(projectPath, "main.ts"),
+    'import { B } from "./different";\nexport function A() { return 1; }\nexport function caller() { return B(); }\n',
+  );
+  await writeFile(
+    join(projectPath, "different.ts"),
+    'export function B() { throw new Error("different implementation"); }\n',
+  );
+  expect((await service.verifyPlan(plan.plan.id)).items[0]?.status).toBe(
+    "unknown",
+  );
+});
+
+test("a reassigned callable's obsolete initializer cannot satisfy required reuse", async () => {
+  await writeFile(
+    join(projectPath, "main.ts"),
+    'export const handler = () => "original";\nexport function caller() { return handler(); }\n',
+  );
+  await service.refreshIndex(project.id);
+  const plan = draft([
+    {
+      kind: "add_relation",
+      id: "reuse-handler",
+      sourceId: node("caller").id,
+      targetId: node("handler").id,
+      type: "must_reuse",
+    },
+  ]);
+  await service.approvePlan(plan.plan.id, 2);
+  await writeFile(
+    join(projectPath, "main.ts"),
+    'export let handler = () => "original";\nhandler = () => "replacement";\nexport function caller() { return handler(); }\n',
+  );
+  expect((await service.verifyPlan(plan.plan.id)).items[0]?.status).toBe(
+    "unknown",
+  );
+});
+
+test.each(["main.ts", "src/"])(
+  "ignoring unchanged source %s cannot prove approved function or relation removal",
+  async (ignored) => {
+    const path = ignored === "main.ts" ? "main.ts" : "src/main.ts";
+    if (path !== "main.ts") {
+      await mkdir(join(projectPath, "src"));
+      await writeFile(join(projectPath, path), source);
+      await rm(join(projectPath, "main.ts"));
+      await service.refreshIndex(project.id);
+    }
+    const relation = service
+      .getSnapshot(project.id)
+      .relations.find((r) => r.type === "calls")!;
+    const plan = draft([
+      { kind: "remove_function", nodeId: node("A").id },
+      { kind: "remove_relation", relationId: relation.id },
+    ]);
+    await service.approvePlan(plan.plan.id, 2);
+    await writeFile(join(projectPath, ".gitignore"), ignored + "\n");
+    expect(
+      (await service.verifyPlan(plan.plan.id)).items.map((i) => i.status),
+    ).toEqual(["unknown", "unknown"]);
+    expect(await readFile(join(projectPath, path), "utf8")).toBe(source);
+    await rm(join(projectPath, ".gitignore"));
+    await rm(join(projectPath, path));
+    await mkdir(join(projectPath, "node_modules"));
+    await writeFile(join(projectPath, "node_modules", "hidden.ts"), source);
+    await mkdir(join(projectPath, ".git"));
+    expect(
+      (await service.verifyPlan(plan.plan.id)).items.map((i) => i.status),
+    ).toEqual(["satisfied", "satisfied"]);
+  },
+);
+
+test("unavailable source cannot prove an approved move, while unaffected positive facts remain usable", async () => {
+  await writeFile(
+    join(projectPath, "unrelated.ts"),
+    "export function hidden() {}\n",
+  );
+  await service.refreshIndex(project.id);
+  const plan = draft([
+    { kind: "move_function", nodeId: node("B").id, filePath: "moved.ts" },
+    {
+      kind: "add_relation",
+      id: "positive",
+      sourceId: node("caller").id,
+      targetId: node("A").id,
+      type: "must_reuse",
+    },
+    {
+      kind: "add_function",
+      tempId: "excluded",
+      name: "hidden",
+      filePath: "node_modules/hidden.ts",
+    },
+  ]);
+  await service.approvePlan(plan.plan.id, 2);
+  await writeFile(
+    join(projectPath, "moved.ts"),
+    "export function B() { return 2; }\n",
+  );
+  await mkdir(join(projectPath, "node_modules"));
+  await writeFile(
+    join(projectPath, "node_modules", "hidden.ts"),
+    "export function hidden() {}\n",
+  );
+  await writeFile(join(projectPath, ".gitignore"), "unrelated.ts\n");
+  expect(
+    (await service.verifyPlan(plan.plan.id)).items.map((i) => i.status),
+  ).toEqual(["unmet", "satisfied", "unknown"]);
+  await writeFile(join(projectPath, ".gitignore"), "main.ts\nunrelated.ts\n");
+  expect((await service.verifyPlan(plan.plan.id)).items[0]?.status).toBe(
+    "unknown",
+  );
+});
+
+test("fixed excluded dependency symlinks do not hide genuine deletion evidence", async () => {
+  const plan = draft([{ kind: "remove_function", nodeId: node("B").id }]);
+  await service.approvePlan(plan.plan.id, 2);
+  await writeFile(
+    join(projectPath, "main.ts"),
+    source.replace("export function B() { return 2; }\n", ""),
+  );
+  await mkdir(join(root, "dependencies"));
+  await writeFile(join(root, "dependencies", "hidden.ts"), source);
+  await symlink(
+    join(root, "dependencies"),
+    join(projectPath, "node_modules"),
+    "junction",
+  );
+  expect((await service.verifyPlan(plan.plan.id)).items[0]?.status).toBe(
+    "satisfied",
+  );
+});
+
+test("legacy snapshots stay readable and cannot prove removal from omitted files", async () => {
+  const indexer = new SourceIndexer();
+  service = new WorkspaceService({
+    storage: db,
+    indexer: {
+      async index(path, projectId) {
+        const snapshot = await indexer.index(path, projectId);
+        delete snapshot.coverage.availability;
+        snapshot.id += ":legacy";
+        return snapshot;
+      },
+    },
+  });
+  await service.refreshIndex(project.id);
+  const plan = draft([{ kind: "remove_function", nodeId: node("B").id }]);
+  await service.approvePlan(plan.plan.id, 2);
+  expect(service.getPlan(plan.plan.id).valid).toBe(true);
+  await rm(join(projectPath, "main.ts"));
+  expect((await service.verifyPlan(plan.plan.id)).items[0]?.status).toBe(
+    "unknown",
+  );
+});

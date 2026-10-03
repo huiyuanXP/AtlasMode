@@ -152,8 +152,11 @@ describe("strict boundary schemas", () => {
       }).success,
     ).toBe(false);
     expect(
-      operationSchema.safeParse({ kind: "move_function", nodeId: "a", filePath })
-        .success,
+      operationSchema.safeParse({
+        kind: "move_function",
+        nodeId: "a",
+        filePath,
+      }).success,
     ).toBe(false);
   });
   it("parses the complete public entities", () => {
@@ -514,3 +517,30 @@ describe("browse route validation", () => {
       ).toBeGreaterThan(0);
   });
 });
+
+it.each(["calls", "must_call", "must_reuse"] as const)(
+  "warns that planned %s compatibility is unknown without blocking structural approval",
+  (type) => {
+    const issues = validatePlan(
+      plan([
+        {
+          kind: "add_relation",
+          id: "new-call",
+          sourceId: "a",
+          targetId: "b",
+          type,
+        },
+      ]),
+      snapshot,
+    );
+    expect(errors(issues)).toEqual([]);
+    expect(issues).toContainEqual(
+      expect.objectContaining({
+        severity: "warning",
+        code: "COMPATIBILITY_UNKNOWN",
+        operationIndex: 0,
+        message: expect.stringMatching(/compatibility.*unknown.*adaptation/i),
+      }),
+    );
+  },
+);

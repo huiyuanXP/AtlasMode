@@ -70,7 +70,7 @@ const compiler=spawn(process.execPath,[join(root,'node_modules/typescript/bin/ts
 compiler.on('exit',code=>process.exit(code??1));`,
   );
   const childCode = (name: string) =>
-    `import {writeFileSync} from 'node:fs';writeFileSync(process.env.DEV_FIXTURE_ROOT+'/${name}.pid',String(process.pid));writeFileSync(process.env.DEV_FIXTURE_ROOT+'/${name}.cwd',process.cwd());process.on('SIGTERM',()=>process.exit(0));process.on('SIGINT',()=>process.exit(0));setInterval(()=>{},100);${name === "server" ? "if(process.env.FAIL_SERVER)setTimeout(()=>process.exit(7),150);" : ""}`;
+    `import {writeFileSync} from 'node:fs';writeFileSync(process.env.DEV_FIXTURE_ROOT+'/${name}.pid',String(process.pid));writeFileSync(process.env.DEV_FIXTURE_ROOT+'/${name}.cwd',process.cwd());writeFileSync(process.env.DEV_FIXTURE_ROOT+'/${name}.proxy',process.env.CODEMAP_DEV_PROXY??'');process.on('SIGTERM',()=>process.exit(0));process.on('SIGINT',()=>process.exit(0));setInterval(()=>{},100);${name === "server" ? "if(process.env.FAIL_SERVER)setTimeout(()=>process.exit(7),150);" : ""}`;
   await put("apps/server/src/index.ts", childCode("server"));
   await put("apps/web/package.json", '{"type":"module"}');
   await put(
@@ -151,6 +151,7 @@ test.each(["handler", ...(process.platform === "win32" ? [] : ["signal"])])(
     expect(await readFile(join(run.root, "web.cwd"), "utf8")).toBe(
       join(run.root, "apps/web"),
     );
+    expect(await readFile(join(run.root, "server.proxy"), "utf8")).toBe("1");
     const server = await run.pid("server"),
       web = await run.pid("web");
     if (mode === "handler") run.child.send({ testSignal: "SIGTERM" });

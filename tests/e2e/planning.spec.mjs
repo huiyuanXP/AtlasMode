@@ -250,11 +250,9 @@ test("production UI and SDK share the complete planning, approval, persistence a
       (await detail()).plan.operations.some((o) => o.tempId === "spare"),
     ).toBe(false);
     // Add then undo/redo a meaningful new-function intent, and remove it again.
-    const addForm = page
-      .locator("form")
-      .filter({
-        has: page.getByRole("button", { name: "Add function", exact: true }),
-      });
+    const addForm = page.locator("form").filter({
+      has: page.getByRole("button", { name: "Add function", exact: true }),
+    });
     await addForm
       .getByLabel("Function name", { exact: true })
       .fill("historyProbe");
@@ -281,14 +279,12 @@ test("production UI and SDK share the complete planning, approval, persistence a
     await page
       .getByRole("button", { name: "Plan editor", exact: true })
       .click();
-    const editForm = page
-      .locator("form")
-      .filter({
-        has: page.getByRole("button", {
-          name: "Save function intent",
-          exact: true,
-        }),
-      });
+    const editForm = page.locator("form").filter({
+      has: page.getByRole("button", {
+        name: "Save function intent",
+        exact: true,
+      }),
+    });
     await editForm
       .getByLabel("Target file (repository relative)", { exact: true })
       .fill("services/notes.ts");
@@ -340,6 +336,32 @@ test("production UI and SDK share the complete planning, approval, persistence a
       .getByRole("button", { name: "Validate plan", exact: true })
       .click();
     await expect(page.getByRole("status")).toContainText("Validation complete");
+    await expect(
+      page
+        .locator(".plan-editor .warning")
+        .filter({ hasText: "COMPATIBILITY_UNKNOWN" })
+        .first(),
+    ).toBeVisible();
+    await page
+      .locator(".plan-editor .warning")
+      .filter({ hasText: "COMPATIBILITY_UNKNOWN" })
+      .first()
+      .scrollIntoViewIfNeeded();
+    await page.screenshot({
+      path: join(screenshots, "compatibility-warning.png"),
+      fullPage: true,
+    });
+    const validationIssues = await mcp.call("validate_plan", {
+      projectId: project.id,
+      planId: (await detail()).plan.id,
+    });
+    expect(
+      validationIssues.some(
+        (issue) =>
+          issue.code === "COMPATIBILITY_UNKNOWN" &&
+          issue.severity === "warning",
+      ),
+    ).toBe(true);
     await page
       .getByRole("button", { name: "Confirm current revision", exact: true })
       .click();

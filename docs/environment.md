@@ -5,6 +5,34 @@
 实际 Chromium UI 与 SDK stdio MCP 联合流程通过，固定 Vite/Flask 产品浏览通过。
 Windows/macOS 的 CI 已配置，尚未在原生 runner 执行；这不代表三系统均已验证。
 
+## 整体审查修复波次（2026-10-03 UTC）
+
+四项 Important 与两项 Minor 已实施，独立复审待完成。本轮七包 build/typecheck、
+lint 退出0；一次全套执行220项/22文件，218项首次通过、2项新增请求测试失败。
+失败均为测试请求问题：Node24 fetch 替换自定义 Host，以及 JSON Content-Type
+却未附 body。改为 node:http 真正发送 Host、validate POST 附 {} 后，两项定向
+检查通过（2通过/14未选）；随后扩展真实端口上的 source/approval 拒绝与零审批
+持久化检查，1项通过/4未选。未声称修正后再次全量220项通过。
+生产 smoke 已通过 TS/Python HTTP/SDK、静态资源、目标不执行与持久化重启。
+`PLAYWRIGHT_CHROMIUM_EXECUTABLE=/usr/bin/chromium npm run test:e2e` 本轮1项通过
+（测试10.2s，总计11.2s），UI/SDK同revision16/hash，兼容性warning可见且可批准；
+external[]、console/page errors[]，截图warning/light/dark/narrow/source均实际查看。
+当前 `artifacts/e2e/joint-flow-evidence.json` 的批准时间是2026-10-03T01:46:13.750Z，
+semanticHash为 `dd3888680bb47dd48bcfd83153beaca0ad52c7d8e922fd642a48c5096670e1dc`；
+JSON/Markdown下载分别3828/4016bytes。所有本轮日志位于
+`.superpowers/sdd/2026-10-03-local-planning-mvp/scratch/whole-fix/`。
+
+本轮新增边界：忽略/不可用源文件不能证明删除；明确的 move 或稳定 ID 才能建立
+跨文件复用目标；可变 TS/JS callable initializer 保留 unresolved；规划调用接口
+兼容性未知以 warning 呈现，不阻断结构有效的批准。完整 contract 在
+[contracts.md](superpowers/contracts.md)。旧快照仍可读取，缺失扫描证据时保守 unknown。
+
+固定目标 validator 在浏览捕获开始前和结束时分别校验相同完整 HEAD、干净 staged/
+working tree/全部未跟踪文件，并在 evidence.provenance 保存两个检查结果。4项
+临时 Git 回归通过；此检查不是文件系统锁，不能发现两次检查之间修改后又还原的内容。
+Vite/Flask 本轮未重新索引或浏览；旧指标和截图只属于原 T08 修订/时间戳，尤其
+本轮可变 callable 修复可能改变调用确定性计数，不能将旧指标重标为当前代码结果。
+
 ## 已验证版本
 
 | 工具              | 当前实例版本 / 要求                                              |
@@ -35,6 +63,11 @@ npm start
 `GET /api/health`。浏览器内输入目标仓库绝对路径；路径是运行服务机器的路径。
 开发使用 `npm run dev`，它先构建依赖包，再启动 API 与 Vite（默认网页5173）。
 开发网页代理自动读取同一 `CODEMAP_PORT`；显式 `CODEMAP_API_URL` 可覆盖代理目标。
+API 在 service 处理前拒绝非127.0.0.1/localhost/[::1]的 Host、非实际 listener
+端口及外部/null Origin；Origin 若存在必须精确同 Host 的 http origin。无 Origin
+的本地 MCP 保留。开发启动器只给 API 子进程设置 `CODEMAP_DEV_PROXY=1`，明确
+放行本地5173及其同源 Origin，生产默认不放行该代理端口。无 CORS 放宽或 forwarded
+header 信任；云端远程/自定义域名预览不是本轮支持的访问方式。
 
 干净 CI 顺序如下。测试会启动编译后的 MCP/HTTP 入口，先构建再运行测试。
 

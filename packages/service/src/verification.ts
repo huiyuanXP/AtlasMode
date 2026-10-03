@@ -43,7 +43,32 @@ export function verify(
       : /\.[cm]?[jt]sx?$/i.test(path)
         ? "javascript"
         : "unknown";
+  const availability = current.coverage.availability;
+  const touches = (paths: string[], affected: string) =>
+    paths.some((path) => path === affected || path.startsWith(`${affected}/`));
+  const missingCapture = (paths: string[]) =>
+    paths.some((path) => !current.coverage.files.includes(path));
+  const unavailable = (paths: string[], searchAllFiles: boolean) => {
+    // Legacy snapshots remain readable, but an omitted file without captured
+    // enumeration evidence cannot distinguish deletion from exclusion.
+    if (!availability) return missingCapture(paths);
+    if (!availability.complete && (searchAllFiles || missingCapture(paths)))
+      return true;
+    if ((availability.excludedPaths ?? []).some((path) => touches(paths, path)))
+      return true;
+    return availability.unavailablePaths.some(
+      (affected) =>
+        touches(paths, affected) ||
+        (searchAllFiles &&
+          paths.some(
+            (path) =>
+              languageFamily(affected) === "unknown" ||
+              languageFamily(path) === languageFamily(affected),
+          )),
+    );
+  };
   const incomplete = (paths: string[], searchAllFiles = false): boolean =>
+    unavailable(paths, searchAllFiles) ||
     current.diagnostics.some((diagnostic) => {
       const affected = normalizeRepoPath(diagnostic.filePath);
       if (
@@ -65,7 +90,11 @@ export function verify(
         )
       );
     });
-  const bind = (id: string, enforceMove = true): Binding => {
+  const bind = (
+    id: string,
+    enforceMove = true,
+    removalCandidate = false,
+  ): Binding => {
     const added = additions.get(id);
     let nodes: CodeNode[];
     let paths: string[];
@@ -109,7 +138,12 @@ export function verify(
     }
     return {
       nodes,
-      uncertain: nodes.length > 1 || incomplete(paths, searchAllFiles),
+      // Same-name candidates can conservatively block removal, but cannot
+      // establish a positive identity without an explicit approved move.
+      uncertain:
+        nodes.length > 1 ||
+        (searchAllFiles && nodes.length > 0 && !removalCandidate) ||
+        incomplete(paths, searchAllFiles),
     };
   };
   const relationCheck = (
@@ -211,7 +245,7 @@ export function verify(
         break;
       }
       case "remove_function": {
-        const binding = bind(operation.nodeId, false);
+        const binding = bind(operation.nodeId, false, true);
         item = binding.uncertain
           ? result(
               "unknown",

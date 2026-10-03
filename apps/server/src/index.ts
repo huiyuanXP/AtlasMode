@@ -67,7 +67,11 @@ async function main(): Promise<void> {
     } catch (error) {
       if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
     }
-    app = await createServer({ service, webRoot });
+    app = await createServer({
+      service,
+      webRoot,
+      developmentProxy: process.env.CODEMAP_DEV_PROXY === "1",
+    });
     await app.listen({ host: "127.0.0.1", port: Number(rawPort) });
     signal = () => {
       void shutdown().catch((error) => {

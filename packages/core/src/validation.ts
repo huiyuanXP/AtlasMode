@@ -147,6 +147,13 @@ export const snapshotSchema = z.strictObject({
     files: z.array(path),
     excludedPatterns: z.array(z.string()),
     unresolvedCount: z.number().int().nonnegative(),
+    availability: z
+      .strictObject({
+        complete: z.boolean(),
+        unavailablePaths: z.array(path),
+        excludedPaths: z.array(path).optional(),
+      })
+      .optional(),
   }),
 }) satisfies z.ZodType<CodeSnapshot>;
 export const planSchema = z.strictObject({
@@ -380,6 +387,13 @@ export function validatePlan(
       );
       return;
     }
+    issues.push({
+      severity: "warning",
+      code: "COMPATIBILITY_UNKNOWN",
+      message:
+        "Interface compatibility is unknown; arguments, return values, and possible adaptation require human review.",
+      operationIndex: index,
+    });
     for (const { policy, prefix, forbidden } of normalizedPolicies) {
       if (
         source.filePath &&

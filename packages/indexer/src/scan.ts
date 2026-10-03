@@ -1,7 +1,6 @@
-import fg from "fast-glob";
 import ignore from "ignore";
 import { constants } from "node:fs";
-import { lstat, open, realpath, stat } from "node:fs/promises";
+import { lstat, open, readdir, realpath, stat } from "node:fs/promises";
 import { dirname, isAbsolute, join, relative, sep } from "node:path";
 import { createHash } from "node:crypto";
 import {
@@ -11,7 +10,7 @@ import {
 } from "@codemap/core";
 
 export type SourceFile = { path: string; bytes: Buffer };
-export const excludedPatterns = [
+const excludedNames = [
   ".git",
   "node_modules",
   "dist",
@@ -25,7 +24,8 @@ export const excludedPatterns = [
   ".next",
   ".cache",
   "vendor",
-].map((p) => `**/${p}/**`);
+];
+export const excludedPatterns = excludedNames.map((p) => `**/${p}/**`);
 function contained(root: string, path: string) {
   const r = relative(root, path);
   return r !== ".." && !r.startsWith(`..${sep}`) && !isAbsolute(r);
@@ -80,27 +80,51 @@ export async function readSourceBytes(rootPath: string, filePath: string) {
   }
 }
 
-export async function scan(
-  rootPath: string,
-): Promise<{
+export async function scan(rootPath: string): Promise<{
   root: string;
   files: SourceFile[];
   contentHash: string;
   diagnostics: CodeSnapshot["diagnostics"];
   excludedPatterns: string[];
+  availability: NonNullable<CodeSnapshot["coverage"]["availability"]>;
 }> {
   const root = await rootDirectory(rootPath);
   const diagnostics: CodeSnapshot["diagnostics"] = [],
     files: SourceFile[] = [];
-  const entries = (
-    await fg("**/*", {
-      cwd: root,
-      dot: true,
-      onlyFiles: false,
-      followSymbolicLinks: false,
-      ignore: excludedPatterns,
-    })
-  ).sort();
+  const entries: string[] = [],
+    directories: string[] = [];
+  const unavailable = new Set<string>(),
+    excluded: string[] = [];
+  let complete = true;
+  // Enumerate eligible directories without following links or descending into
+  // the fixed out-of-scope roots. Record every skipped subtree explicitly.
+  async function walk(directory: string) {
+    try {
+      for (const entry of await readdir(join(root, directory), {
+        withFileTypes: true,
+      })) {
+        const path = directory ? `${directory}/${entry.name}` : entry.name;
+        if (excludedNames.includes(entry.name)) {
+          excluded.push(path);
+          continue;
+        }
+        entries.push(path);
+        if (entry.isDirectory()) {
+          directories.push(path);
+          await walk(path);
+        }
+      }
+    } catch (error) {
+      complete = false;
+      if (directory) unavailable.add(directory);
+      diagnostics.push({
+        filePath: directory || "<root>",
+        message: `Could not enumerate source: ${(error as Error).message}`,
+      });
+    }
+  }
+  await walk("");
+  entries.sort();
   const captures = new Map<string, Buffer>();
   // All reads use the same captured bytes for parsing and hashing. Never let a
   // compiler or the Python helper read additional target files behind the scan.
@@ -110,6 +134,7 @@ export async function scan(
     try {
       const info = await lstat(absolute);
       if (info.isSymbolicLink()) {
+        unavailable.add(path);
         diagnostics.push({
           filePath: path,
           message:
@@ -124,6 +149,7 @@ export async function scan(
         continue;
       const canonical = await realpath(absolute);
       if (!contained(root, canonical)) {
+        unavailable.add(path);
         diagnostics.push({
           filePath: path,
           message: "Excluded path outside project root",
@@ -140,6 +166,7 @@ export async function scan(
         await handle.close();
       }
     } catch (error) {
+      unavailable.add(path);
       diagnostics.push({
         filePath: path,
         message: `Could not read source: ${(error as Error).message}`,
@@ -159,7 +186,8 @@ export async function scan(
   const ignored = (path: string) => {
     let result = false;
     for (const rule of rules) {
-      if (!path.startsWith(rule.dir) || path === rule.path) continue;
+      if (!path.startsWith(rule.dir) || path === rule.path || path === rule.dir)
+        continue;
       const match = rule.matcher.test(path.slice(rule.dir.length));
       if (match.ignored) result = true;
       else if (match.unignored) result = false;
@@ -170,9 +198,15 @@ export async function scan(
   // its parent. Otherwise deeper rules may override matching parent rules.
   for (const candidate of candidates)
     if (!ignored(candidate.path)) rules.push(candidate);
+  for (const directory of directories)
+    if (ignored(`${directory}/`)) unavailable.add(directory);
   const hash = createHash("sha256");
   for (const [path, bytes] of captures) {
-    if (ignored(path) || path.endsWith(".gitignore")) continue;
+    if (path.endsWith(".gitignore")) continue;
+    if (ignored(path)) {
+      unavailable.add(path);
+      continue;
+    }
     files.push({ path, bytes });
     hash.update(`${Buffer.byteLength(path)}:`);
     hash.update(path);
@@ -182,6 +216,11 @@ export async function scan(
   return {
     root,
     files,
+    availability: {
+      complete,
+      unavailablePaths: [...unavailable].sort(),
+      excludedPaths: excluded.sort(),
+    },
     contentHash: hash.digest("hex"),
     diagnostics,
     excludedPatterns: [

@@ -97,3 +97,30 @@ readme-coverage.md。独立任务审查发现的 Windows preload 路径问题已
 200项全套结果来自初始 T08 commit5b22868；修复后未声称重跑201项全套。
 固定目标 validator 的 dirty-tree 防护为 Minor，交整体分支审查裁定；实际两个目标
 工作树已确认干净。全分支审查由controller继续，未来票据尚未实施。
+
+
+## 整体审查唯一修复波次（2026-10-03 UTC）
+
+基线be10c8418398f4c6262218bddf137dbba1ec6963，现已实施WR-I1–I4及WR-M1–M2，
+待controller派遣唯一范围复审。新contract经controller确认：可选
+coverage.availability={complete,unavailablePaths,excludedPaths?}；固定范围外
+目录不影响范围内真实删除，但明确指向其内部的目标为unknown。旧快照可读取，
+无扫描证据的文件缺失为unknown。未实施后续captured-tsconfig票据。
+
+修复内容：被ignore/不可读的源不能证明删除；同名跨文件候选不能满足正向reuse；
+可变TS/JS callable initializer不再肯定指向旧值；HTTP提前验证本地Host/Origin，
+显式dev5173代理与无Origin本地MCP保留；固定目标validator前后检查干净Git与HEAD；
+规划call/reuse共享COMPATIBILITY_UNKNOWN warning，结构有效仍可批准。
+
+七包build/typecheck、lint通过。唯一完整套件执行220项/22文件，218首轮通过，
+2项新增请求harness失败（fetch忽略Host、空JSON body）；修正测试请求后2项定向
+通过/14未选，增强node:http实际source/approval拒绝及SQLite无审批副作用后1项
+通过/4未选。没有宣称修正后全量220项再跑。生产smoke通过；实际生产UI/SDK联合
+1项通过（测试10.2s，总11.2s），r16/hash一致；兼容性warning可见、批准成功，
+external[]及console/page errors[]。截图warning/light/dark/narrow/source已查看。
+精确日志在 .superpowers/sdd/2026-10-03-local-planning-mvp/scratch/whole-fix/，
+交付报告whole-fix-report.md含最终commit与RED/GREEN记录。
+
+固定Vite/Flask未重跑，旧指标/截图保持原T08修订及时间；本轮可变callable的调用
+确定性变化不能用旧目标计数冒充当前结果。Win/mac、远端CI、实际客户端注册、
+fresh-task恢复及发布仍未执行。依赖/lock/vendor、全局配置及目标仓库均未改动。

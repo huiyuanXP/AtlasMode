@@ -5,6 +5,7 @@ import { mkdtemp, mkdir, writeFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { resolve, join } from "node:path";
 import { createServer as netServer } from "node:net";
+import { request } from "node:http";
 import { pathToFileURL } from "node:url";
 
 const children: ChildProcess[] = [];
@@ -152,4 +153,101 @@ test("CLI opens an explicitly configured default workspace", async () => {
   ]);
   run.child.send({ testSignal: "SIGINT" });
   expect(await run.exited).toEqual([0, null]);
+}, 15000);
+
+test("CLI enforces listener authority and enables the explicit local development proxy only on opt-in", async () => {
+  for (const development of [false, true]) {
+    const run = await launch({
+      CODEMAP_DEV_PROXY: development ? "1" : undefined,
+    });
+    await run.ready();
+    const send = (
+      headers: Record<string, string>,
+      path = "/api/projects",
+      body?: unknown,
+    ) =>
+      new Promise<{ status: number | undefined; body: string }>(
+        (resolve, reject) => {
+          const outgoing = request(
+            `${run.url}${path}`,
+            {
+              headers: {
+                ...headers,
+                ...(body === undefined
+                  ? {}
+                  : { "content-type": "application/json" }),
+              },
+              method: body === undefined ? "GET" : "POST",
+            },
+            (response) => {
+              let text = "";
+              response.on("data", (chunk) => {
+                text += chunk;
+              });
+              response.on("end", () =>
+                resolve({ status: response.statusCode, body: text }),
+              );
+            },
+          ).on("error", reject);
+          outgoing.end(body === undefined ? undefined : JSON.stringify(body));
+        },
+      );
+    const proxyHeaders = {
+      host: "127.0.0.1:5173",
+      origin: "http://127.0.0.1:5173",
+    };
+    expect((await send(proxyHeaders)).status).toBe(development ? 200 : 403);
+    expect((await send({ host: "localhost:1" })).status).toBe(403);
+    expect((await send({ origin: "http://foreign.example" })).status).toBe(403);
+    expect((await send({ origin: run.url })).status).toBe(200);
+    const fixture = join(run.root, "boundary-source");
+    await mkdir(fixture);
+    await writeFile(
+      join(fixture, "main.ts"),
+      "export function sensitive() { return 7; }",
+    );
+    const opened = JSON.parse(
+      (await send({}, "/api/projects", { path: fixture })).body,
+    );
+    const plan = JSON.parse(
+      (
+        await send({}, "/api/plans", {
+          projectId: opened.id,
+          title: "Boundary",
+        })
+      ).body,
+    );
+    for (const headers of [
+      { host: "attacker.example:4310", origin: "http://attacker.example:4310" },
+      { host: "attacker.example:4310" },
+      { origin: "http://foreign.example" },
+    ]) {
+      for (const path of [
+        "/api/projects",
+        `/api/projects/${opened.id}/source?filePath=main.ts`,
+      ]) {
+        const denied = await send(headers, path);
+        expect(denied.status).toBe(403);
+        expect(denied.body).not.toContain("function sensitive");
+      }
+      expect(
+        (
+          await send(headers, `/api/plans/${plan.plan.id}/approve`, {
+            expectedRevision: 1,
+          })
+        ).status,
+      ).toBe(403);
+    }
+    expect(
+      JSON.parse((await send({}, `/api/plans/${plan.plan.id}`)).body),
+    ).toMatchObject({ valid: false, plan: { status: "draft" } });
+    run.child.send({ testSignal: "SIGTERM" });
+    expect(await run.exited).toEqual([0, null]);
+    const { SqliteStorage } = await import("@codemap/storage");
+    const storage = new SqliteStorage(
+      join(run.root, "data", "atlasmode.sqlite"),
+    );
+    expect(storage.list("approvals")).toEqual([]);
+    storage.close();
+  }
 }, 15000);

@@ -34,6 +34,11 @@ export type CodeSnapshot = {
     files: string[];
     excludedPatterns: string[];
     unresolvedCount: number;
+    availability?: {
+      complete: boolean;
+      unavailablePaths: string[];
+      excludedPaths?: string[];
+    };
   };
 };
 export type Project = {

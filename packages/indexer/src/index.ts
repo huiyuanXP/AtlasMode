@@ -50,6 +50,7 @@ export class SourceIndexer implements IndexerPort {
       coverage: {
         files: capture.files.map((f) => f.path),
         excludedPatterns: capture.excludedPatterns,
+        availability: capture.availability,
         unresolvedCount: graph.relations.filter(
           (r) => r.resolution === "unresolved",
         ).length,

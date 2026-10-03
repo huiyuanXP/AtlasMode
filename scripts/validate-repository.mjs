@@ -1,6 +1,6 @@
 // Read-only product acceptance for an already checked out, fixed public target.
 import assert from "node:assert/strict";
-import { execFileSync } from "node:child_process";
+import { repositoryProvenance } from "./repository-provenance.mjs";
 import { mkdtemp, mkdir, writeFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
@@ -22,16 +22,8 @@ const { values } = parseArgs({
 for (const key of ["path", "commit", "symbol", "file", "label"])
   assert.ok(values[key], `Required --${key}`);
 assert.match(values.label, /^[a-z0-9-]+$/);
-const gitRevision = execFileSync(
-  "git",
-  ["-C", values.path, "rev-parse", "HEAD"],
-  { encoding: "utf8" },
-).trim();
-assert.equal(
-  gitRevision,
-  values.commit,
-  "Target must be pinned to the reviewed full commit",
-);
+const beforeCapture = repositoryProvenance(values.path, values.commit);
+const { gitRevision } = beforeCapture;
 const root = await mkdtemp(join(tmpdir(), "atlas-target-")),
   out = resolve("artifacts/validation");
 await mkdir(out, { recursive: true });
@@ -186,7 +178,9 @@ try {
   assert.deepEqual(errors, []);
   assert.deepEqual(external, []);
   assert.equal(mcp.stderr(), "");
+  const afterCapture = repositoryProvenance(values.path, gitRevision);
   const evidence = {
+    provenance: { beforeCapture, afterCapture },
     target: {
       path: values.path,
       gitRevision,

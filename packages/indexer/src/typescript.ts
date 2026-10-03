@@ -219,9 +219,12 @@ export function indexTypeScript(files: SourceFile[], graph: Graph) {
       const direct = declarations.get(declaration);
       if (direct) return direct;
       if (
-        ts.isVariableDeclaration(declaration) ||
-        ts.isPropertyAssignment(declaration) ||
-        ts.isPropertyDeclaration(declaration)
+        // An initializer is a stable callable identity only for a const
+        // binding. let/var and object/class fields may have been overwritten;
+        // the current analyzer does not establish flow-sensitive values.
+        ts.isVariableDeclaration(declaration) &&
+        ts.isVariableDeclarationList(declaration.parent) &&
+        !!(declaration.parent.flags & ts.NodeFlags.Const)
       ) {
         const initializer = declaration.initializer;
         if (initializer) {

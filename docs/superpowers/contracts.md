@@ -21,7 +21,10 @@ type CodeSnapshot = {
   id: string; projectId: string; createdAt: string; gitRevision: string | null;
   contentHash: string; nodes: CodeNode[]; relations: Relation[];
   diagnostics: { filePath: string; line?: number; message: string }[];
-  coverage: { files: string[]; excludedPatterns: string[]; unresolvedCount: number };
+  coverage: {
+    files: string[]; excludedPatterns: string[]; unresolvedCount: number;
+    availability?: { complete: boolean; unavailablePaths: string[]; excludedPaths?: string[] };
+  };
 };
 type Project = { id: string; path: string; name: string; snapshotId?: string };
 type Operation =
@@ -63,6 +66,22 @@ type VerificationReport = {
   `contentHash` 仅摘要捕获源码 bytes；snapshot ID 同时纳入确定性分析结果
   （nodes/relations/diagnostics/coverage），排除观察时间、Git revision 和实际 root。
   同源码/同分析结果保持 ID；解析能力变化不得让不同事实共用 ID 或覆盖历史。
+- `coverage.availability` 是可选、向后兼容的扫描证据，参与 snapshot ID，不计入源码文件/函数数量。
+  `complete` 表示固定分析范围的目录枚举是否完成，不代表解析成功或运行时完整。
+  `unavailablePaths` 是该范围内因 Git ignore、symlink、读取/枚举失败而无法取得的
+  repo-relative 文件/子树；`excludedPaths` 是实际遇到的固定范围外根（如 .git、
+  node_modules、dist，包括同名 symlink）。固定范围外根不参与全语言迁移/缺失搜索，
+  但明确指向其内部的目标不可判定。诊断继续表达解析失败。
+  已有文件被 ignore、原路径/父目录不可用时，删除函数/关系和移动的负面证据为 unknown；
+  完整枚举下真实删除仍可 satisfied。缺 availability 的旧快照仍可读取，但文件缺失
+  不能证明删除；已捕获文件中的确定事实保持可用。不声称防御任意并发文件系统竞态。
+- 核对中的同名跨文件候选不能正向证明 must_reuse/calls；需要稳定 ID 或批准的 move。
+  唯一候选可保守阻止删除成功，多候选/不完整证据保持 unknown。
+- TS/JS 仅 const 变量的直接 callable initializer 可作为稳定初始化绑定；let/var、
+  对象/类字段 initializer 保留 unresolved，不做执行或流分析。直接声明和 const 控制仍可解析。
+- `validatePlan` 对有效端点的每条 planned calls/must_call/must_reuse 返回
+  `severity:'warning', code:'COMPATIBILITY_UNKNOWN'`，提示参数/返回值及可能适配需要人工审阅。
+  警告不阻止结构有效的批准；service、HTTP、MCP 原样传递，UI 展示 warning。
 - `IndexerPort.readSource?(rootPath:string,filePath:string):Promise<{filePath:string;content:string}>`：
   由 indexer 执行实际文件读取与 realpath 范围检查；service 委托此 port，不自行实现代码 I/O。
 - `StoragePort.get<T>(kind: RecordKind, id: string): T | undefined`、`list<T>(kind): T[]`、
@@ -89,7 +108,7 @@ type VerificationReport = {
 - indexer：`class SourceIndexer implements IndexerPort`，无参数构造；允许配置 Python 可执行文件。
 - storage：`class SqliteStorage implements StoragePort`，构造 `(databasePath: string)`，创建父目录并迁移。
 - service：`class WorkspaceService`，构造 `({ storage, indexer }: {storage:StoragePort; indexer:IndexerPort})`。
-- server：`async createServer({ service, webRoot? }): Promise<FastifyInstance>`，工厂不自行 listen。
+- server：`async createServer({ service, webRoot?, developmentProxy? }): Promise<FastifyInstance>`，工厂不自行 listen。
 - server CLI：环境路径与端口，构造实现、打开默认项目（如存在）、再 listen。
 - MCP：`createMcpServer(apiUrl: string)` 返回 SDK server；CLI 连接 stdio，日志 stderr。
 
@@ -139,6 +158,14 @@ call_chain 从第二步起，每一步 relationId 指向上一节点到当前节
 关系并携带源码证据。walkthrough 不需要调用边；若提供 relationId，必须与该步骤节点相关。
 
 ## HTTP（统一 JSON；默认成功返回实体，无额外包裹）
+
+所有请求在读取敏感数据、解析 body 或调用 service 前校验原始 Host/Origin。Host 仅接受
+127.0.0.1、localhost 或 [::1] 及实际 listener 端口；Origin 若存在必须精确为该
+Host 的 http origin。拒绝 foreign/null Origin、foreign Host，403
+`UNTRUSTED_REQUEST`；不信任 forwarded headers，不使用 CORS 放行。
+无 Origin 的本地 MCP/HTTP 可用。生产默认严格；dev launcher 显式给 API 设置
+`CODEMAP_DEV_PROXY=1`，工厂 `developmentProxy:true` 额外允许 loopback:5173
+及相同 origin，使保留 Host 的 Vite 代理可用。它不授予其他来源或远端部署能力。
 
 错误响应固定为 `{code:string,message:string}`；请求 schema 校验失败额外带
 `issues:[{path:(string|number)[],message:string}]`。非预期服务错误返回脱敏的

@@ -18,8 +18,8 @@ function stop(code) {
       for (const child of children) child.kill("SIGKILL");
     }, 5000);
 }
-function launch(args, cwd = root) {
-  const child = spawn(process.execPath, args, { cwd, stdio: "inherit" });
+function launch(args, cwd = root, env = process.env) {
+  const child = spawn(process.execPath, args, { cwd, env, stdio: "inherit" });
   children.add(child);
   child.once("error", (error) => {
     console.error(error.message);
@@ -70,11 +70,11 @@ try {
       "bin",
       "vite.js",
     );
-    const server = launch([
-      "--import",
-      "tsx",
-      join(root, "apps/server/src/index.ts"),
-    ]);
+    const server = launch(
+      ["--import", "tsx", join(root, "apps/server/src/index.ts")],
+      root,
+      { ...process.env, CODEMAP_DEV_PROXY: "1" },
+    );
     const web = launch(
       [vite, "--host", "127.0.0.1", "--port", "5173", "--strictPort"],
       join(root, "apps/web"),
