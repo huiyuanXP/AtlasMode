@@ -71,7 +71,8 @@ legacy缺字段标记未记录。技术名/路径/用户文字保持不翻译。
    shadowing/escape/ESM/no-scope/var/let/ambient/type-only negativecontrols。
 3. 实际compiledHTTP+SDK+browser：entry→helper源码、unknown原因/metadata双语/历史
    staleness一致。固定Express5.2.1 dbac741a49a5a64336b70c06e85c2e2706e36336只做
-   source产品浏览，canonicalentry可见；legacyvar/dynamicmixins保持unknown，不要求
+   source产品浏览、搜索及源码可见；canonicalentry自动标记原要求未满足，见下方裁决。
+   legacyvar/dynamicmixins保持unknown，不要求
    全部运行时关系resolved；不安装/执行target/upstreamtests。
 4. 有意义TDD RED/GREEN、相关checks、最终一次root integratedsuite、截图实际查看、
    console/protocol/externaldeny/ownedcleanup，逐任务独立review及最终wholeplan gate。
@@ -80,8 +81,8 @@ legacy缺字段标记未记录。技术名/路径/用户文字保持不翻译。
 
 需要复杂值流或运行时才能确认时缩回unknown并记录具体证据，不引入分析引擎。
 回退正向解析也保留negativeguard；绝不清库或删除unique知识/批准来消除不一致。
-正式spec落库前必须对照Task2最终接口确定拒绝粒度/模式边界、补写完整taskplan与
-GlobalConstraints/producer-consumerpreflight；正式plan已完成这些检查，当前仍无本轮实现或验收pass。
+正式plan已完成Task2接口、拒绝粒度/模式边界及GlobalConstraints/producer-consumerpreflight。
+Task1/2已独立批准，Task3已提交888386e并完成实现者验证；Task3独立审查与whole-plan仍待完成。
 
 ## 自检后明确的拒绝粒度
 
@@ -94,7 +95,22 @@ importer namespace/memberwrite/escape可影响共享moduleproperty，跨consumer
 不能接受被影响property的旧checker值；const/destructure不会自动撤销target侧拒绝。
 显式static module.exports=require('./local')的单次default re-export可作为有限扩展，
 只递归验证registry identity且检测环，最终plan明确不纳入，显示未知，不用包入口文件形态猜createApplication。
-Canonical lib函数入口可单独验收。
+Canonical lib函数的隔离诊断不能替代完整固定仓库验收。
+
+## 2026-10-03 Express 验收范围裁决（保留原失败）
+
+原要求“完整Express的canonicalentry可见”实际FAIL：固定完整仓库中
+lib/express.js:36–56 的createApplication exported=false。index.js:11的
+module.exports=require('./lib/express')转发将leaf namespace传给不支持的赋值，
+触发已约定的整模块escape拒绝。仅package+lib副本显示true，加回原index后同FnID变false；
+这只是定因诊断，不能作为成熟目标通过证据，不修改或缩减固定目标。
+
+controller在新独立审查前明确接受本轮保守限制：实际HTTP/browser/SDK的完整仓库
+索引、搜索、源码及预算浏览已通过；自动canonical-entry要求仍未达成。
+本轮成熟目标验收按上述完整浏览及诚实unknown收口，不扩大分析器或放松escape规则。
+代价是用户需手动搜索入口；静态转发的alias与跨consumer mutation传播另立优先票据，
+在本轮whole-plan关闭后实施。原失败、完整目标JSON、裁决和next-ticket必须保留。
+另有一次规划E2E退出超时、单次未改源码重试通过，原因未明，由独立审查裁定，不能称已修复。
 
 稳定ID补充：不为新增export理解重写原declaration qualifiedName/身份算法；CJS exportalias先保留在真实import/call/源码证据中。命名函数保留源码名称，匿名实现可沿用既有anonymous名称，不能为了正例搜索方便改变原节点身份。正式验收以实际声明ID/path/line及exposedflag为准，未知/限制如实记录。
 

@@ -235,3 +235,5 @@ canonical createApplication实际line36，exported=false：index.js转发触发�
 
 Controller裁决：保留上述原canonical-entry未满足证据，接受本轮保守escape限制；
 后续独立static-forwarding安全票据在whole-plan关闭后再规划，Task3不扩大分析器范围。
+
+Task3源码提交888386e；正式spec/plan已在独立审查前明确保留Express入口失败并接受本轮保守限制，下一票优先静态转发安全。实际声明line36；文档路径更正，不修改产品或重跑已通过检查。Task3独立gate与whole仍待完成；退出超时仍是未定因风险。
