@@ -702,3 +702,115 @@ describe("mutable callable evidence", () => {
     },
   );
 });
+
+describe("captured configuration integration", () => {
+  it("uses scanner captures to resolve an alias and preserve declaration evidence", async () => {
+    const root = await temp();
+    await mkdir(join(root, "lib"));
+    await writeFile(
+      join(root, "entry.ts"),
+      'import { helper } from "@lib/helper";\nexport function entry() { helper(); }',
+    );
+    await writeFile(join(root, "lib/helper.ts"), "export function helper() {}");
+    await writeFile(
+      join(root, "tsconfig.json"),
+      JSON.stringify({ compilerOptions: { paths: { "@lib/*": ["./lib/*"] } } }),
+    );
+    const snapshot = await new SourceIndexer().index(root, "config");
+    call(snapshot, "entry.ts", "entry", "lib/helper.ts", "helper");
+    expect(
+      snapshot.relations.find(
+        (r) => r.type === "calls" && r.evidence.filePath === "entry.ts",
+      )?.evidence,
+    ).toMatchObject({ line: 2, text: "helper()" });
+    expect(snapshot.coverage.configurationFiles).toEqual(["tsconfig.json"]);
+  });
+  it.each(["ignored", "symlink", "oversized"])(
+    "keeps included sources under an opaque %s nearest config out of ancestor ownership",
+    async (kind) => {
+      const root = await temp();
+      await mkdir(join(root, "child"));
+      await mkdir(join(root, "lib"));
+      await writeFile(
+        join(root, "child/entry.ts"),
+        'import { helper } from "@lib/helper"; export function entry() { helper(); }',
+      );
+      await writeFile(
+        join(root, "lib/helper.ts"),
+        "export function helper() {}",
+      );
+      await writeFile(
+        join(root, "tsconfig.json"),
+        JSON.stringify({
+          compilerOptions: { paths: { "@lib/*": ["./lib/*"] } },
+        }),
+      );
+      if (kind === "ignored") {
+        await writeFile(join(root, ".gitignore"), "child/tsconfig.json\n");
+        await writeFile(join(root, "child/tsconfig.json"), "{}");
+      } else if (kind === "symlink")
+        await symlink(
+          join(root, "tsconfig.json"),
+          join(root, "child/tsconfig.json"),
+        );
+      else
+        await writeFile(join(root, "child/tsconfig.json"), " ".repeat(262145));
+      const snapshot = await new SourceIndexer().index(root, "config");
+      expect(snapshot.coverage.files).toContain("child/entry.ts");
+      expect(
+        snapshot.diagnostics.some(
+          (d) =>
+            d.filePath === "child/tsconfig.json" &&
+            d.message.startsWith("CONFIGURATION_UNAVAILABLE:"),
+        ),
+      ).toBe(true);
+      expect(
+        snapshot.relations.find(
+          (r) => r.type === "calls" && r.evidence.filePath === "child/entry.ts",
+        ),
+      ).toMatchObject({ resolution: "external" });
+    },
+  );
+  it.each(["ignored", "symlink"])(
+    "reports an alias with a %s target as unresolved without exposing target bytes",
+    async (kind) => {
+      const root = await temp();
+      const outside = await temp();
+      await mkdir(join(root, "lib"));
+      await writeFile(
+        join(root, "entry.ts"),
+        'import { helper } from "@lib/helper"; export function entry() { helper(); }',
+      );
+      await writeFile(
+        join(root, "tsconfig.json"),
+        JSON.stringify({
+          compilerOptions: { paths: { "@lib/*": ["./lib/*"] } },
+        }),
+      );
+      const sentinel =
+        'export function helper() { throw new Error("CONFIG_TARGET_SENTINEL"); }';
+      if (kind === "ignored") {
+        await writeFile(join(root, ".gitignore"), "lib/helper.ts\n");
+        await writeFile(join(root, "lib/helper.ts"), sentinel);
+      } else {
+        await writeFile(join(outside, "helper.ts"), sentinel);
+        await symlink(join(outside, "helper.ts"), join(root, "lib/helper.ts"));
+      }
+      const snapshot = await new SourceIndexer().index(root, "config");
+      expect(snapshot.coverage.files).toEqual(["entry.ts"]);
+      for (const type of ["imports", "calls"])
+        expect(snapshot.relations.find((r) => r.type === type)).toMatchObject({
+          resolution: "unresolved",
+          targetId: null,
+        });
+      expect(JSON.stringify(snapshot)).not.toContain("CONFIG_TARGET_SENTINEL");
+      expect(
+        snapshot.diagnostics.some(
+          (d) =>
+            d.filePath === "tsconfig.json" &&
+            /alias.*unavailable/i.test(d.message),
+        ),
+      ).toBe(true);
+    },
+  );
+});

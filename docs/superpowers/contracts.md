@@ -259,3 +259,40 @@ budget 限制返回节点数（包括可容纳的文件/目录上下文），返
 - 新路线/分组固定 `source:'agent'`，分组提议不接受已有 id。读取路线增加 `stale`
   标识但不改写记录。`refresh_index` 返回摘要，不向 Agent 输出全仓图。
 - 不提供批准工具，不写目标源码；原生客户端与平台验证结果必须单独记录。
+
+## Captured tsconfig resolution (Task2)
+
+- Internal `createConfigurationResolver(sources, configurations, captureDiagnostics=[])`
+  returns `resolutionHost`, configuration diagnostics and
+  `configuredAlias(sourcePath,specifier)`. `indexTypeScript` takes configuration
+  captures as argument3 and scanner diagnostics as optional argument4; public
+  IndexerPort/HTTP/MCP contracts are unchanged.
+- Each TS/JS source selects its nearest captured or `CONFIGURATION_UNAVAILABLE:`
+  `tsconfig.json`. Only TypeScript-parsed root-file membership (`files`,
+  `include`, `exclude`, `allowJs`, including inherited declarations) applies that
+  configuration. An excluded, invalid or opaque nearest config blocks ancestor
+  fallback. All captured sources are still extracted. Named `tsconfig.app.json`
+  is only an extends input; project references are diagnosed, never expanded.
+- JSONC and ordered relative `.json` extends arrays use the installed TypeScript
+  parser through public ts-morph APIs on an in-memory captured filesystem.
+  Each selected seed validates the whole chain independently (seed1, max16;
+  cycle, missing, rejected or unsupported parent invalidates the entire chain).
+  Captured membership from another seed never overrides a rejection. Invalid
+  parser options are diagnosed by TS error code without configuration contents.
+- Module resolution applies only paths/baseUrl/module/moduleResolution/
+  resolveJsonModule/customConditions, preserving inherited declaration locations.
+  Configuration-specific caches and checker declaration identity select targets;
+  only captured source implementations can produce resolved calls. A synthetic
+  virtual repository directory keeps escaping paths outside the captured set.
+  No compiler host reads target disk, packages, plugins or runtime code.
+- Matching paths aliases with unavailable targets yield unresolved imports and
+  calls, with evidence and a configuration-scoped boundary diagnostic. Bare
+  imports without an applicable paths match remain external if unresolved;
+  baseUrl can resolve captured modules without declaring an alias. Relative
+  missing imports and calls without implementation bodies remain unresolved.
+  Existing const initializer support and mutable-initializer unknowns remain.
+- This does not implement workspace package/exports/imports, project-reference
+  graphs, build-output-to-source mapping, dynamic imports or new CommonJS
+  analysis. Existing CommonJS runtime-binding limitations are unchanged; no
+  runtime execution/type-correctness or full build-environment equivalence is
+  claimed. Python and source availability/exclusion contracts remain unchanged.

@@ -1,4 +1,6 @@
 import { Project, ts } from "ts-morph";
+import type { CodeSnapshot } from "@codemap/core";
+import { createConfigurationResolver } from "./configResolution.js";
 import type { SourceFile } from "./scan.js";
 import type { Graph } from "./graph.js";
 
@@ -10,9 +12,20 @@ function decode(bytes: Buffer) {
   return bytes.toString("utf8").replace(/^\uFEFF/, "");
 }
 
-export function indexTypeScript(files: SourceFile[], graph: Graph) {
+export function indexTypeScript(
+  files: SourceFile[],
+  graph: Graph,
+  configurations: readonly SourceFile[] = [],
+  captureDiagnostics: readonly CodeSnapshot["diagnostics"][number][] = [],
+) {
   if (!files.length) return;
+  const configuration = createConfigurationResolver(
+    files,
+    configurations,
+    captureDiagnostics,
+  );
   const project = new Project({
+    resolutionHost: configuration.resolutionHost,
     useInMemoryFileSystem: true,
     skipAddingFilesFromTsConfig: true,
     compilerOptions: {
@@ -169,7 +182,11 @@ export function indexTypeScript(files: SourceFile[], graph: Graph) {
         targetSource && sources.includes(targetSource)
           ? graph.file(pathOf(targetSource)).id
           : null;
-      const external = !local && !spec.startsWith(".") && !spec.startsWith("/");
+      const external =
+        !local &&
+        !spec.startsWith(".") &&
+        !spec.startsWith("/") &&
+        !configuration.configuredAlias(path, spec);
       const targetId = local ?? (external ? graph.external(spec).id : null);
       graph.edge(
         "imports",
@@ -181,7 +198,9 @@ export function indexTypeScript(files: SourceFile[], graph: Graph) {
         statement.getText(),
         targetId
           ? undefined
-          : `Module ${spec} was not included or could not be resolved`,
+          : configuration.configuredAlias(path, spec)
+            ? `Configured alias ${spec} has no target within captured sources; see configuration diagnostics for the owning scope and boundary`
+            : `Module ${spec} was not included or could not be resolved`,
       );
       if (
         external &&
@@ -279,4 +298,5 @@ export function indexTypeScript(files: SourceFile[], graph: Graph) {
     }
     visit(source, graph.file(path).id);
   }
+  graph.diagnostics.push(...configuration.diagnostics);
 }

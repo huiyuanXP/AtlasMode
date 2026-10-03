@@ -27,6 +27,8 @@ export class SourceIndexer implements IndexerPort {
     indexTypeScript(
       capture.files.filter((f) => !f.path.endsWith(".py")),
       graph,
+      capture.configurations,
+      capture.diagnostics,
     );
     await indexPython(
       capture.files.filter((f) => f.path.endsWith(".py")),
