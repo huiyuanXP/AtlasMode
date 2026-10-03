@@ -144,3 +144,40 @@ it("invalid colliding temporary IDs cannot redirect fact edges to planned nodes"
     target: "fact:b",
   });
 });
+it("keeps a reconnected searched target readable as a fact reference outside the local graph", () => {
+  const result = projectGraph(
+    graph,
+    [
+      {
+        kind: "add_relation",
+        id: "reuse",
+        sourceId: "a",
+        targetId: "searched",
+        type: "must_reuse",
+      },
+    ],
+    "both",
+    {},
+    "en",
+    [
+      {
+        id: "searched",
+        kind: "function",
+        name: "requestWithRetry",
+        filePath: "requests.ts",
+      },
+      { id: "unused", kind: "function", name: "unrelated" },
+    ],
+  );
+  expect(
+    result.nodes.find((n) => n.id === "fact:searched")?.data,
+  ).toMatchObject({
+    layer: "anchor",
+    node: { name: "requestWithRetry", filePath: "requests.ts" },
+  });
+  expect(result.edges.find((e) => e.id === "plan:reuse")).toMatchObject({
+    target: "fact:searched",
+  });
+  expect(result.nodes.some((n) => n.id === "fact:unused")).toBe(false);
+  expect(graph.nodes.some((n) => n.id === "searched")).toBe(false);
+});

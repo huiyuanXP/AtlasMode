@@ -196,6 +196,7 @@ export const en: Record<keyof typeof zh, string> = {
   validateNotice: "Validation complete; results come from the local service.",
   conflictHelp:
     "Refresh the project and reload the plan to inspect the latest revision.",
+  snapshotChanged: "Snapshot changed; refresh the project and retry.",
   retryHelp: "Check the local service and project path, then retry.",
   draft: "Draft",
   approved: "Approved",

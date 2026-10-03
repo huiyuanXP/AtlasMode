@@ -21,6 +21,7 @@ export function projectGraph(
   filter: LayerFilter,
   positions: ViewState["positions"],
   locale: Locale = "zh",
+  referenceNodes: CodeNode[] = [],
 ) {
   const text = dictionaries[locale];
   const nodes: GraphNode[] = [],
@@ -80,6 +81,12 @@ export function projectGraph(
         },
         "plan",
       );
+  const present = new Set(nodes.map((n) => n.data.node.id));
+  for (const node of referenceNodes)
+    if (referenced.has(node.id) && !present.has(node.id)) {
+      addNode(node, "anchor");
+      present.add(node.id);
+    }
   const byDomain = new Map(nodes.map((n) => [n.data.node.id, n.id]));
   const factsByDomain = new Map(
     nodes

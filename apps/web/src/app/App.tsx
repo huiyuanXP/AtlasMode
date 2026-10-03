@@ -92,7 +92,9 @@ export function App({ workspace }: { workspace?: Workspace }) {
         </header>
         {state.error && (
           <div role="alert" className="banner error">
-            {zh.error}: {state.error}
+            {zh.error}:{" "}
+            {state.errorMessageKey ? zh[state.errorMessageKey] : state.error}{" "}
+            {state.errorHelp && zh[state.errorHelp]}
             <button
               aria-label={zh.dismiss}
               onClick={() => app.store.setState({ error: "" })}

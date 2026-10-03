@@ -1,9 +1,10 @@
 import type { CodeNode } from "@codemap/core";
 import { ApiError } from "../../api/client.js";
+export class SnapshotChangedError extends Error {}
 export type MemberBinding = { id: string } & (
   | { status: "bound"; node: CodeNode }
   | { status: "missing" }
-  | { status: "error"; message: string }
+  | { status: "error"; message: string; messageKey?: "snapshotChanged" }
 );
 /** Read only the visible page with bounded concurrency. Missing != transport failure. */
 export async function readMembers(
@@ -28,7 +29,8 @@ export async function readMembers(
               : {
                   id,
                   status: "error",
-                  message: "Snapshot changed; refresh the project and retry.",
+                  message: "",
+                  messageKey: "snapshotChanged",
                 };
         } catch (error) {
           results[index] =

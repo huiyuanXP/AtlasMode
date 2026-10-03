@@ -125,7 +125,10 @@ export function GroupsPanel({ app }: { app: Workspace }) {
                         </span>
                       ) : (
                         <span className="error">
-                          {text.error}: {binding.message}
+                          {text.error}:{" "}
+                          {binding.messageKey
+                            ? text[binding.messageKey]
+                            : binding.message}
                         </span>
                       )}
                     </li>

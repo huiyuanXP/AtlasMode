@@ -11,7 +11,7 @@ import {
   rm,
 } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { dirname, join } from "node:path";
+import { dirname, join, resolve } from "node:path";
 import { createRequire } from "node:module";
 
 const cleanup: (() => Promise<void>)[] = [];
@@ -83,16 +83,24 @@ compiler.on('exit',code=>process.exit(code??1));`,
     join(root, "node_modules/tsx"),
     "junction",
   );
-  const child = spawn(process.execPath, ["scripts/dev.mjs"], {
-    cwd: root,
-    env: {
-      ...process.env,
-      npm_execpath: join(root, "npm-cli.mjs"),
-      DEV_FIXTURE_ROOT: root,
-      ...extra,
+  const child = spawn(
+    process.execPath,
+    [
+      "--import",
+      resolve("tests/support/graceful-preload.mjs"),
+      "scripts/dev.mjs",
+    ],
+    {
+      cwd: root,
+      env: {
+        ...process.env,
+        npm_execpath: join(root, "npm-cli.mjs"),
+        DEV_FIXTURE_ROOT: root,
+        ...extra,
+      },
+      stdio: ["ignore", "pipe", "pipe", "ipc"],
     },
-    stdio: ["ignore", "pipe", "pipe"],
-  });
+  );
   let output = "";
   child.stdout!.on("data", (data) => (output += data));
   child.stderr!.on("data", (data) => (output += data));
@@ -131,22 +139,27 @@ compiler.on('exit',code=>process.exit(code??1));`,
   return { root, child, exited, ready, pid, output: () => output };
 }
 // Shell-driven launch, launch before builds, swallowed failure, or orphaned children breaks observable supervision.
-test("dev builds dependency packages before directly spawning server and web and reaps both on signal", async () => {
-  const run = await fixture();
-  await run.ready();
-  expect(
-    (await readFile(join(run.root, "builds.txt"), "utf8")).trim().split("\n"),
-  ).toEqual(["core", "indexer", "storage", "service", "server"]);
-  expect(await readFile(join(run.root, "web.cwd"), "utf8")).toBe(
-    join(run.root, "apps/web"),
-  );
-  const server = await run.pid("server"),
-    web = await run.pid("web");
-  run.child.kill("SIGTERM");
-  expect(await run.exited).toEqual([0, null]);
-  expect(() => process.kill(server, 0)).toThrow();
-  expect(() => process.kill(web, 0)).toThrow();
-}, 15000);
+test.each(["handler", ...(process.platform === "win32" ? [] : ["signal"])])(
+  "dev builds prerequisites and reaps children through %s shutdown",
+  async (mode) => {
+    const run = await fixture();
+    await run.ready();
+    expect(
+      (await readFile(join(run.root, "builds.txt"), "utf8")).trim().split("\n"),
+    ).toEqual(["core", "indexer", "storage", "service", "server"]);
+    expect(await readFile(join(run.root, "web.cwd"), "utf8")).toBe(
+      join(run.root, "apps/web"),
+    );
+    const server = await run.pid("server"),
+      web = await run.pid("web");
+    if (mode === "handler") run.child.send({ testSignal: "SIGTERM" });
+    else run.child.kill("SIGTERM");
+    expect(await run.exited).toEqual([0, null]);
+    expect(() => process.kill(server, 0)).toThrow();
+    expect(() => process.kill(web, 0)).toThrow();
+  },
+  15000,
+);
 test("a development child failure exits with failure and stops the other child", async () => {
   const run = await fixture({ FAIL_SERVER: "1" });
   await run.ready();
@@ -175,7 +188,7 @@ test("shutdown during an active prerequisite build stops its live compiler befor
   }
   expect(compiler).toBeDefined();
   expect(() => process.kill(compiler!, 0)).not.toThrow();
-  run.child.kill("SIGTERM");
+  run.child.send({ testSignal: "SIGTERM" });
   expect(await run.exited).toEqual([0, null]);
   expect(() => process.kill(compiler!, 0)).toThrow();
   await expect(readFile(join(run.root, "server.pid"))).rejects.toMatchObject({

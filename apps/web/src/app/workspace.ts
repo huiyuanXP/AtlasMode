@@ -1,8 +1,8 @@
 import {
   readMembers,
+  SnapshotChangedError,
   type MemberBinding,
 } from "../features/groups/memberBindings.js";
-import { dictionaries } from "../i18n/index.js";
 import { createStore } from "zustand/vanilla";
 import type {
   BrowseRoute,
@@ -56,6 +56,8 @@ export type WorkspaceState = {
   filter: LayerFilter;
   busy: Record<string, boolean>;
   error: string;
+  errorHelp?: "conflictHelp" | "retryHelp";
+  errorMessageKey?: "snapshotChanged";
   notice: "" | "refreshNotice" | "validateNotice";
 };
 const blank = (): Omit<WorkspaceState, "projects"> => ({
@@ -100,7 +102,17 @@ export function createWorkspace(
   const fail = (key: string, error: unknown) =>
     set((s) => ({
       busy: { ...s.busy, [key]: false },
-      error: `${error instanceof ApiError ? `${error.code}: ` : ""}${error instanceof Error ? error.message : String(error)}${error instanceof ApiError && error.status === 409 ? ` ${dictionaries[s.view.locale].conflictHelp}` : ` ${dictionaries[s.view.locale].retryHelp}`}`,
+      error:
+        error instanceof SnapshotChangedError
+          ? "SNAPSHOT_CHANGED"
+          : `${error instanceof ApiError ? `${error.code}: ` : ""}${error instanceof Error ? error.message : String(error)}`,
+      errorMessageKey:
+        error instanceof SnapshotChangedError ? "snapshotChanged" : undefined,
+      errorHelp:
+        error instanceof SnapshotChangedError ||
+        (error instanceof ApiError && error.status === 409)
+          ? "conflictHelp"
+          : "retryHelp",
     }));
   const run = <T>(
     key: string,
@@ -550,11 +562,7 @@ export function createWorkspace(
         );
         // A 404 carries no snapshot ID. Confirm the batch still observes this snapshot.
         if ((await api.summary(project.id)).snapshotId !== summary.snapshotId)
-          throw new ApiError(
-            "SNAPSHOT_CHANGED",
-            "Snapshot changed; refresh the project and retry.",
-            409,
-          );
+          throw new SnapshotChangedError();
         return bindings;
       },
       (bindings) => {

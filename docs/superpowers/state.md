@@ -34,7 +34,7 @@ SDD ledger：.superpowers/sdd/2026-10-03-local-planning-mvp/progress.md（忽略
 （2dc95d7），导航结果竞争和节点聚焦的修复（a9d27a0）已独立复审通过。
 T06 实际 stdio MCP 已实现并独立审查通过（7f7bd95）。T07 英文、分组、
 目录约束和撤销重做已实现并独立审查通过（88c1096），少量客户端错误提示的
-语言切换问题留给 T08 修复。当前进入 T08 完整验收。
+语言切换问题已在 T08 修复。T08 实施验收已通过，等待独立任务审查和全分支审查。
 T01–T08顺序执行，不并行派遣实现者；精确任务/修复轮次以 ledger 为准。
 本轮开始 UTC 2026-10-02 19:55；文档沿用最初 Asia/Singapore 的2026-10-03日期。
 当前环境报告时区 Etc/UTC，后续时间证据以 UTC 为准。
@@ -54,7 +54,7 @@ T03 原实现全套112项通过；修复后 storage/service/实际生命周期�
 修复范围18项通过；实际浏览器已操作真实源码、规划、批准、导出与核对，
 并查看浅/深色及窄窗口截图。T06 全产品构建、类型检查和 lint 首次全部通过，
 全套177项通过，其中11项实际 SDK stdio/共享 API/重启持久化测试通过。
-完整 UI/MCP 联合验收、离线检查及三平台 CI 仍待 T08，原生 Win/mac 未执行。
+该 T06 阶段尚未做的 UI/MCP 联合验收及浏览器离线检查现已由 T08 完成；原生 Win/mac 未执行。
 T07 最终192项测试通过，七个 workspace 构建/类型检查和 lint 通过。实际浏览器
 验证了双语/主题重载、共享分组成员、语义撤销重做、知识修改重新确认、禁止依赖、
 临时节点详情/复制位置及失联内容保留，并实际查看截图。会话撤销最多每规划50项、
@@ -74,6 +74,22 @@ Superpowers15技能74文件已固定v6.4.2；start_skill草稿已保存，尚未
   `/tmp/atlasmode-validation-flask`（Flask3.1.3）；版本与 commit 在
   `/tmp/atlasmode-validation-targets.json`。已通过公开 SourceIndexer 实际索引：
   Vite1583文件/11218节点，Flask83文件/1989节点，并抽查源码调用证据。
-  阶段统计见 validation-targets.md；尚未通过产品 HTTP/UI/MCP 验证这些规模场景。
+  阶段及 T08 产品 HTTP/UI/MCP 浏览通过的统计见 validation-targets.md。
 - API 新鲜度约定：批准/核对先真实索引；MCP 读取批准也先刷新。service 源码读取委托
   indexer 的可选 readSource port。契约与 ledger 已同步；T02 实现者已收到接口补充。
+
+## T08 当前验收（2026-10-03 UTC）
+
+当前 Linux：`npm ci --cache /tmp/atlasmode-npm-cache` 安装410包；七包 build、
+typecheck、lint 均退出0；`npm test` 200/20文件通过，无失败/跳过（40.01s）。
+生产 smoke 验证静态资源、TS/Python HTTP/SDK、目标不执行和实际重启。
+真实 Playwright 联合闭环1项通过（11.3s）：最终批准revision16，UI/MCP同hash，
+改接B/移除helper/目标文件/导出/知识使批准失效/布局保持批准/重启/源码核对三状态
+与实际剪贴板均验证；没有外部浏览器请求或console/page errors。
+固定 Vite/Flask 的产品打开/搜索/源码/有预算展开/MCP 通过；修正截图等待条件后
+实际查看可读选中节点和空闲footer；未执行目标代码或上游测试。
+M2 MCP消费JSON正文超时、M3提示语切换语言和快照变化提示已修复并有RED/GREEN；
+浏览器发现的改接候选缺失已用当前快照已加载入口/搜索事实及可读reference节点修复。
+CI三系统配置已创建，但原生Win/mac、远端CI、客户端连接、fresh-task恢复未执行。
+环境与可复现命令见 ../environment.md；README精确PASS/PARTIAL/UNIMPLEMENTED见
+readme-coverage.md。独立任务与全分支审查由controller继续，未来票据尚未实施。

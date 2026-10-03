@@ -31,16 +31,17 @@ export class ApiClient {
   }
 
   async request<T>(path: string, method = "GET", body?: unknown): Promise<T> {
+    const signal = AbortSignal.any([
+      AbortSignal.timeout(30000),
+      this.lifecycle.signal,
+    ]);
     let response: Response;
     try {
       response = await fetch(`${this.base}${path}`, {
         method,
         headers: { "content-type": "application/json" },
         ...(body === undefined ? {} : { body: JSON.stringify(body) }),
-        signal: AbortSignal.any([
-          AbortSignal.timeout(30000),
-          this.lifecycle.signal,
-        ]),
+        signal,
       });
     } catch (error) {
       const timeout = error instanceof Error && error.name === "TimeoutError";
@@ -55,6 +56,16 @@ export class ApiClient {
     try {
       value = await response.json();
     } catch {
+      if (signal.aborted)
+        throw new ApiError(
+          signal.reason?.name === "TimeoutError"
+            ? "API_TIMEOUT"
+            : "API_UNAVAILABLE",
+          signal.reason?.name === "TimeoutError"
+            ? "AtlasMode HTTP service timed out. Check the service and retry."
+            : "AtlasMode HTTP request was cancelled.",
+          response.status,
+        );
       throw new ApiError(
         "API_INVALID_RESPONSE",
         "AtlasMode HTTP service returned an invalid JSON response.",

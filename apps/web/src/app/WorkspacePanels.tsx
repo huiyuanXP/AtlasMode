@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useStore } from "zustand";
 import { useStrings } from "../i18n/index.js";
-import { type Workspace } from "./workspace.js";
+import { type Workspace, type WorkspaceState } from "./workspace.js";
 import { Canvas } from "../features/graph/Canvas.js";
 import { Inspector } from "../features/graph/Inspector.js";
 import { PlanningPanel } from "../features/planning/PlanningPanel.js";
@@ -14,6 +14,27 @@ import {
 import { VerificationPanel } from "../features/verification/VerificationPanel.js";
 import type { LayerFilter } from "../features/graph/projection.js";
 import { Navigation } from "./Navigation.js";
+/** Only already-loaded facts from the current project snapshot become candidates. */
+export function planningCandidates(
+  state: Pick<WorkspaceState, "summary" | "graph" | "search">,
+) {
+  const snapshotId = state.summary?.snapshotId;
+  return [
+    ...new Map(
+      [
+        ...(state.summary?.entrypoints ?? []),
+        ...(state.search?.snapshotId === snapshotId
+          ? (state.search?.items ?? [])
+          : []),
+        ...(state.graph?.snapshotId === snapshotId
+          ? (state.graph?.nodes ?? [])
+          : []),
+      ]
+        .filter((n) => n.kind === "function")
+        .map((n) => [n.id, n]),
+    ).values(),
+  ];
+}
 export function WorkspacePanels({ app }: { app: Workspace }) {
   const zh = useStrings();
   const state = useStore(app.store),
@@ -22,6 +43,7 @@ export function WorkspacePanels({ app }: { app: Workspace }) {
     [relationType, setRelationType] =
       useState<PlannedRelation["type"]>("calls");
   const { project, summary, plan, graph } = state;
+  const candidates = planningCandidates(state);
   const busy = Object.values(state.busy).some(Boolean),
     planBusy =
       !!state.busy.plan || !!state.busy.project || !!state.busy.knowledge;
@@ -122,6 +144,7 @@ export function WorkspacePanels({ app }: { app: Workspace }) {
         )}
         <Canvas
           graph={graph}
+          referenceNodes={candidates}
           operations={plan?.plan.operations ?? []}
           view={state.view}
           filter={state.filter}
@@ -197,7 +220,7 @@ export function WorkspacePanels({ app }: { app: Workspace }) {
                 plans={state.plans}
                 detail={plan}
                 node={state.selectedNode}
-                nodes={graph?.nodes ?? []}
+                nodes={candidates}
                 edge={edge}
                 busy={planBusy || !summary}
                 onChoose={(id) => {

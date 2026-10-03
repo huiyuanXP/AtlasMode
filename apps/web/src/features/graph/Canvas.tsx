@@ -102,6 +102,7 @@ function FocusViewport({
 const nodeTypes = { code: CodeCard };
 export function Canvas(props: {
   graph?: SubgraphResult;
+  referenceNodes?: CodeNode[];
   operations: Operation[];
   view: ViewState;
   filter: LayerFilter;
@@ -128,6 +129,7 @@ export function Canvas(props: {
         props.filter,
         props.view.positions,
         props.view.locale,
+        props.referenceNodes,
       ),
     [
       props.graph,
@@ -135,6 +137,7 @@ export function Canvas(props: {
       props.filter,
       props.view.positions,
       props.view.locale,
+      props.referenceNodes,
     ],
   );
   const [nodes, setNodes] = useState(projection.nodes);

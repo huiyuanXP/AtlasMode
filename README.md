@@ -2,7 +2,7 @@
 
 用可编辑的代码关系图替代传统文字 Plan Mode。Agent 在实际修改代码之前，把规划叠加到现有项目图上；用户理解、调整并确认后，Agent 才实施。人通过图形理解项目，Agent 通过 MCP 查询同一份结构化模型。
 
-> 当前仓库已有可运行的本地 UI、真实 TS/JS/Python 索引、SQLite 和 stdio MCP。T01–T06 已独立审查通过，完整构建、类型检查、lint 和177项测试已通过；英文、分组/目录约束界面与撤销重做正在实施，完整验收和原生 Windows/macOS 检查尚未完成。以下产品规格中的后续目标不代表均已实现；最新状态见 [持续构建记录](docs/superpowers/state.md) 和 [要求覆盖表](docs/superpowers/readme-coverage.md)。
+> 当前仓库已有本地 UI、真实 TS/JS/Python 索引、SQLite、stdio MCP、中文/英文、主题、功能集、目录约束及撤销重做。T08 当前 Linux 干净安装、七包构建/类型检查、lint、200项测试、生产 smoke、实际 UI/MCP 联合闭环及固定 Vite/Flask 浏览通过；独立 T08 审查待完成。三OS CI 已配置，原生 Windows/macOS 和实际 Codex/Claude 客户端连接尚未验证。以下规格保留后续目标，完整组编辑/折叠、知识迁移/备份和真实 tsconfig/workspace 解析等仍有缺口，详见 [要求覆盖表](docs/superpowers/readme-coverage.md) 和 [环境与验证](docs/environment.md)。
 
 本机使用 Node24.19.0/npm11.9.0；分析 Python 项目需 Python3.10+。从仓库根目录运行：
 
@@ -415,8 +415,9 @@ npm ci
 npm run dev
 npm run typecheck
 npm run lint
-npm test
 npm run build
+npm test
+npm run smoke
 ```
 
 根 `dev` 同时启动 web/server；根检查和构建脚本必须按内部依赖顺序执行，不可依赖偶然的 workspace 排序。P3 加入根 `mcp` 脚本，启动 stdio 适配器。
@@ -424,6 +425,7 @@ npm run build
 浏览器测试阶段安装：
 
 ```bash
+npm run build
 npx playwright install chromium
 npm run test:e2e
 ```

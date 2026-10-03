@@ -180,6 +180,7 @@ export const zh = {
   refreshNotice: "已重新索引；规划和路线按新快照检查。",
   validateNotice: "校验完成，结果来自本地服务。",
   conflictHelp: "请刷新项目后重新选择规划，检查最新 revision。",
+  snapshotChanged: "快照已变化；请刷新项目并重试。",
   retryHelp: "请检查本地服务和项目路径后重试。",
   draft: "草稿",
   approved: "已批准",
