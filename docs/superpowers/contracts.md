@@ -292,7 +292,47 @@ budget 限制返回节点数（包括可容纳的文件/目录上下文），返
   missing imports and calls without implementation bodies remain unresolved.
   Existing const initializer support and mutable-initializer unknowns remain.
 - This does not implement workspace package/exports/imports, project-reference
-  graphs, build-output-to-source mapping, dynamic imports or new CommonJS
-  analysis. Existing CommonJS runtime-binding limitations are unchanged; no
-  runtime execution/type-correctness or full build-environment equivalence is
-  claimed. Python and source availability/exclusion contracts remain unchanged.
+  graphs, build-output-to-source mapping or dynamic imports. CommonJS uses the
+  separate guarded subset below; no runtime execution/type-correctness or full
+  build-environment equivalence is claimed. Python and source availability/
+  exclusion contracts remain unchanged.
+
+
+## Static CommonJS registry (Task1)
+
+- `indexTypeScript` has an optional internal fifth `ModuleModeProvider` argument.
+  Default mode is explicit `.cjs` CommonJS, `.mjs` ESM, all other paths unknown;
+  source ESM syntax prevents Node-global inference. Package capture and `.js`
+  package evidence are future Task2. There is no public Port/service/schema change.
+- The registry consumes only captured TypeScript ASTs, public checker symbols and
+  existing implementation IDs. It never loads target code or dependencies.
+  Literal `require` module symbols are consulted only after lexical/mode checks;
+  callable type signatures cannot establish implementation identity.
+- Supported exports are one unconditional top-level `exports.name` or
+  `module.exports.name` assignment to an inline function/arrow, unique function
+  declaration or const callable; one `module.exports` static object with literal
+  properties/shorthand; or one callable module value, including canonical
+  `exports = module.exports = callable`. Callable module values and properties
+  named `default` have distinct identities. Existing declaration names,
+  qualified names, IDs and source lines are preserved; verified implementations
+  gain `exported: true` without renaming anonymous functions.
+- Consumers support unshadowed literal require, const namespace/direct-callable/
+  destructured bindings, literal property selection and direct require-property
+  calls. Import relations preserve the real require path, line and expression.
+  Missing relative/configured targets stay unresolved; missing bare dependencies
+  retain external classification under existing configuration ownership rules.
+- Repeated, compound, conditional, delete and other writes reject the affected
+  known property. Unsupported known values reject only that property. Unknown
+  computed writes, root replacement/mixed namespace identity, lexical shadowing
+  and namespace escape reject the module. Captured consumer member writes and
+  escapes invalidate shared export facts before any consumer is classified,
+  independent of file traversal order. Visible callable rewrites/redeclarations
+  cannot establish the original implementation.
+- Mutable importer bindings, ambient/type-only/dynamic values, recursive aliases,
+  module forwarding (`module.exports = require(...)`), package exports and
+  unverified ESM re-export chains remain unresolved. Direct ESM imports of CJS
+  exports use the same guards; rejected values cannot fall through to checker-only
+  resolution. A real user function named `require` retains its ordinary direct
+  callee identity but its return value supplies no Node namespace.
+- This is a conservative static subset, not runtime load/build compatibility or
+  complete value-flow analysis. Historical snapshots and approvals are unchanged.

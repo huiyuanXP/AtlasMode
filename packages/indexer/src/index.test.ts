@@ -814,3 +814,65 @@ describe("captured configuration integration", () => {
     },
   );
 });
+
+describe("CommonJS public safety", () => {
+  it.each(["overwritten exports", "shadowed require"])(
+    "rejects checker-only identity for %s",
+    async (kind) => {
+      const root = await temp();
+      await writeFile(
+        join(root, "helper.cjs"),
+        "function help() {}\nexports.help = help;\n" +
+          (kind === "overwritten exports"
+            ? "exports.help = function replacement() {};\n"
+            : ""),
+      );
+      await writeFile(
+        join(root, "entry.cjs"),
+        kind === "shadowed require"
+          ? "function entry(require) { const mod = require('./helper.cjs'); mod.help(); }"
+          : "const mod = require('./helper.cjs'); function entry() { mod.help(); }",
+      );
+      const snapshot = await new SourceIndexer().index(root, "commonjs");
+      expect(
+        snapshot.relations.find((r) => r.evidence.text === "mod.help()"),
+      ).toMatchObject({
+        resolution: "unresolved",
+        targetId: null,
+        reason: expect.any(String),
+      });
+    },
+  );
+  it("exposes stable explicit CommonJS entries with actual declaration and import evidence", async () => {
+    const root = await temp();
+    await writeFile(
+      join(root, "helper.cjs"),
+      "function help() {}\nexports.help = help;\n",
+    );
+    await writeFile(
+      join(root, "entry.cjs"),
+      "const mod = require('./helper.cjs');\nfunction entry() { mod.help(); }",
+    );
+    const snapshot = await new SourceIndexer().index(root, "commonjs");
+    expect(fn(snapshot, "helper.cjs", "help")).toMatchObject({
+      exported: true,
+      startLine: 1,
+    });
+    call(snapshot, "entry.cjs", "entry", "helper.cjs", "help");
+    expect(snapshot.relations.find((r) => r.type === "imports")).toMatchObject({
+      resolution: "resolved",
+      targetId: snapshot.nodes.find(
+        (n) => n.kind === "file" && n.filePath === "helper.cjs",
+      )!.id,
+      evidence: {
+        filePath: "entry.cjs",
+        line: 1,
+        text: "require('./helper.cjs')",
+      },
+    });
+    expect(
+      snapshot.relations.find((r) => r.evidence.text === "mod.help()")!.evidence
+        .line,
+    ).toBe(2);
+  });
+});

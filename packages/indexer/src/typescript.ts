@@ -1,5 +1,6 @@
 import { Project, ts } from "ts-morph";
 import type { CodeSnapshot } from "@codemap/core";
+import { createCommonJsAnalyzer, type ModuleModeProvider } from "./commonjs.js";
 import { createConfigurationResolver } from "./configResolution.js";
 import type { SourceFile } from "./scan.js";
 import type { Graph } from "./graph.js";
@@ -17,6 +18,7 @@ export function indexTypeScript(
   graph: Graph,
   configurations: readonly SourceFile[] = [],
   captureDiagnostics: readonly CodeSnapshot["diagnostics"][number][] = [],
+  modeForPath?: ModuleModeProvider,
 ) {
   if (!files.length) return;
   const configuration = createConfigurationResolver(
@@ -163,6 +165,38 @@ export function indexTypeScript(
         message: ts.flattenDiagnosticMessageText(d.messageText, "\n"),
       });
   }
+  const commonjs = createCommonJsAnalyzer(
+    checker,
+    sources,
+    declarations,
+    modeForPath,
+    configuration.configuredAlias,
+  );
+  for (const id of commonjs.exportedDeclarationIds) {
+    const node = graph.nodes.get(id);
+    if (node) node.exported = true;
+  }
+  for (const imported of commonjs.moduleImports) {
+    const target = imported.targetPath
+      ? graph.file(imported.targetPath).id
+      : imported.external
+        ? graph.external(imported.specifier).id
+        : null;
+    graph.edge(
+      "imports",
+      graph.file(imported.sourcePath).id,
+      target,
+      imported.targetPath
+        ? "resolved"
+        : imported.external
+          ? "external"
+          : "unresolved",
+      imported.sourcePath,
+      imported.line,
+      imported.text,
+      imported.reason,
+    );
+  }
   // Module imports and re-exports must use the checker-selected source file.
   for (const source of sources) {
     const path = pathOf(source);
@@ -268,7 +302,10 @@ export function indexTypeScript(
             ? expression.name
             : expression,
         );
-        const target = targetFromSymbol(symbol);
+        const classification = commonjs.classifyCall(expression);
+        const target = classification
+          ? classification.targetId
+          : targetFromSymbol(symbol);
         let root: ts.Expression = expression;
         while (
           ts.isPropertyAccessExpression(root) ||
@@ -276,7 +313,9 @@ export function indexTypeScript(
         )
           root = root.expression;
         const rootSymbol = checker.getSymbolAtLocation(root),
-          externalName = rootSymbol && externalBindings.get(rootSymbol);
+          externalName = classification
+            ? classification.externalName
+            : rootSymbol && externalBindings.get(rootSymbol);
         const external = !target && externalName;
         graph.edge(
           "calls",
@@ -291,7 +330,8 @@ export function indexTypeScript(
           node.getText(),
           target || external
             ? undefined
-            : "No unique indexed implementation for this call (dynamic, ambient, or excluded target)",
+            : (classification?.reason ??
+                "No unique indexed implementation for this call (dynamic, ambient, or excluded target)"),
         );
       }
       ts.forEachChild(node, (child) => visit(child, ownerId));
