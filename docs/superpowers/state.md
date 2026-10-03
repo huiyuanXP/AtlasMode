@@ -251,7 +251,7 @@ Task3独立审查0C/2I/1M；aad35db修复重复浏览器拦截，经限定复审
 当前修复类别及最终440/30和顺序规划验证均保留有效，整票尚未关闭。
 
 
-### Static CommonJS 整体唯一修复波次候选（限定复审待完成）
+### 历史 Static CommonJS 整体唯一修复波次候选
 
 整体审查5badf24为With fixes：WR-I1新阻塞require环初始化错误肯定、WR-M2环境页
 过时状态；WR-I2原关闭故障因果缺口为真实Important、五轮上限后独立接受非阻塞保留，
@@ -264,3 +264,14 @@ WR-M1宿主颜色warning为未解决的非阻塞Minor。当前修复仅commonjs.
 证据仍按原阶段保留。本波次无UI/成熟目标/安装重跑。WR-I2仍NOT ADDRESSED，
 原SIGKILL、五轮verdict及类别修复/保留证据不变；WR-M1仍NOT ADDRESSED。
 唯一限定复审由controller派遣，尚未独立批准或整票关闭，无push/publish。
+
+### 当前 Static CommonJS 整票关闭
+
+唯一整体修复15d2c16经唯一限定复审：WR-I1循环绑定及WR-M2状态文档已解决，
+0新Critical/Important/Minor。controller保留WR-I2为真实未解决Important历史因果缺口，
+WR-M1为未解决非阻断宿主Minor；这是带明确限制的关闭，不称全部问题修复或Task3
+独立干净批准。当前源码458项/30文件及七包build/typecheck/lint通过；原始436、
+440与UI/规划/成熟目标图片按历史阶段保留。本票15项裁决、51项逐项边界及审查
+完整归档在 reviews/static-commonjs，决定原文在 rulings/2026-10-03-static-commonjs.md。
+用户尚未通知收尾，下一独立票据优先静态转发安全；原生平台、真实客户端、远端CI
+和新云恢复仍未运行，无push/publish。

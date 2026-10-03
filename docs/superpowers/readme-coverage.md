@@ -148,7 +148,7 @@ parked进入整体审查，未声称定因；Task3完成不等于整票关闭。
 泛用浏览PASS分开保留，静态转发安全下一票；平台/客户端/远端CI/云恢复仍未运行。
 
 
-### 当前 Static CommonJS 整体修复候选（限定复审待controller）
+### 历史 Static CommonJS 整体修复候选
 
 捕获 require 环的初始化不确定绑定现保持 unknown；导入证据、稳定声明ID与本地函数
 递归保留，属性写入/逃逸guard不能绕过。新增18项控制，真实RED11失败后110项registry、
@@ -157,3 +157,14 @@ parked进入整体审查，未声称定因；Task3完成不等于整票关闭。
 本波次无浏览器/成熟目标重跑；原始关闭原因仍未知，WR-I2为真实Important上限保留，
 WR-M1为未解决的非阻塞宿主颜色warning。WR-I1/WR-M2修复等待唯一限定复审，
 不预先声称独立批准、整票关闭或发布；平台/客户端/CI/云恢复仍未运行。
+
+### 当前 Static CommonJS 整票关闭
+
+唯一整体修复15d2c16经唯一限定复审：WR-I1循环绑定及WR-M2状态文档已解决，
+0新Critical/Important/Minor。controller保留WR-I2为真实未解决Important历史因果缺口，
+WR-M1为未解决非阻断宿主Minor；这是带明确限制的关闭，不称全部问题修复或Task3
+独立干净批准。当前源码458项/30文件及七包build/typecheck/lint通过；原始436、
+440与UI/规划/成熟目标图片按历史阶段保留。本票15项裁决、51项逐项边界及审查
+完整归档在 reviews/static-commonjs，决定原文在 rulings/2026-10-03-static-commonjs.md。
+用户尚未通知收尾，下一独立票据优先静态转发安全；原生平台、真实客户端、远端CI
+和新云恢复仍未运行，无push/publish。

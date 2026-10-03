@@ -1,0 +1,230 @@
+{
+  "plan": "docs/superpowers/plans/2026-10-03-static-commonjs.md",
+  "implementationHead": "15d2c1656ed22f2afb3e6ff2eb3b3bbb7f4417be",
+  "wholeReviewBase": "ec1e37515328d58f7249ec8320d76919136bb279",
+  "rulingCount": 15,
+  "reports": [
+    {
+      "name": "declined-routing-draft.md",
+      "sha256": "175eb9ae8928f4d711b6e8a1d7ae17c670a782345439a600210326134e9d2fe0"
+    },
+    {
+      "name": "global-constraints-verbatim.md",
+      "sha256": "d06cb235273773b404fa6c8b3cdf617362b9fbcdd38dbe9f8eae702840bbc7ef"
+    },
+    {
+      "name": "progress.md",
+      "sha256": "88908ab1fb10cb003578d550f01b8155c99db65c9bc548f5d1bb0af90cd982c8"
+    },
+    {
+      "name": "scratch/task-3/fix-round-3/static-path.md",
+      "sha256": "543d740f116e860c735ed1ba651b3f146ad0da6657fa65ff439f58cf50eea5ef"
+    },
+    {
+      "name": "scratch/task-3/fix-round-4/repair-proposal.md",
+      "sha256": "3b05b93b79d8cf0b2d8c440cdf57b9542952e66e596704de7e6373c4b91cf14c"
+    },
+    {
+      "name": "scratch/task-3/ui-green-artifacts/planning-production-UI-and-0ffc9-d-verification-flow-offline/error-context.md",
+      "sha256": "b0583fda30e3406b513e88588f34697f3bd8fa731be08e28d8ec1f3a6a80f7b8"
+    },
+    {
+      "name": "scratch/task-3/ui-red-artifacts/commonjs-production-browse-3768a-ully-in-Chinese-and-English/error-context.md",
+      "sha256": "35f9890f80c25f4b183f7cc84d8841c6e7671a4f9d1cb9040151fa519b8c7b3f"
+    },
+    {
+      "name": "scratch/task-3/ui-red-artifacts/commonjs-production-browse-39ad5-ully-in-Chinese-and-English/error-context.md",
+      "sha256": "7e741d8d2c95ca75de9a546e5d3b2f5f5c09433f9d5868f4b28272421a515f29"
+    },
+    {
+      "name": "scratch/task-3/ui-red-artifacts/commonjs-recorded-zero-man-cede7-ct-from-unrecorded-coverage/error-context.md",
+      "sha256": "8348b29c7a6163e9ff702e32264849c978c40bb7cb9759db64f70b039a726fae"
+    },
+    {
+      "name": "task-1-brief.md",
+      "sha256": "3379f161312805068d565bb4e654516f0efeff58b241dd59c31261430257c2eb"
+    },
+    {
+      "name": "task-1-context.md",
+      "sha256": "5447bdd6d5185fd6d1b71c394278d916ed320985823801bccf6def2805ffad09"
+    },
+    {
+      "name": "task-1-fix-round-1.md",
+      "sha256": "384e9a9dd82ae878da122064e32c1fea51671811fa4f8c1a1ae8be240ee6c7d1"
+    },
+    {
+      "name": "task-1-report.md",
+      "sha256": "0c8b2178bba0824fb4eb5b96df01649f837f20bbfea76bbfbc46aab6c8bc495c"
+    },
+    {
+      "name": "task-1-rereview-round-1.md",
+      "sha256": "216934252b90e04c88ec28a715ac291ffc98b4263f93127dbee2135e077a15d5"
+    },
+    {
+      "name": "task-1-review-context.md",
+      "sha256": "7e9fafa122fc2b370d1d4fee624abf68c8f8bb9bb42ba0f5cfe8f5352eec0270"
+    },
+    {
+      "name": "task-1-review.md",
+      "sha256": "1b8a1391eb3bd2257a292972b816446ce4b1c3f0fb7e37c9be0588eee0b4f1ae"
+    },
+    {
+      "name": "task-2-brief.md",
+      "sha256": "872b4bfd50b2777cd34482d61b112ed6ef2d41357cca3bb3a7ed3059fd27f845"
+    },
+    {
+      "name": "task-2-context.md",
+      "sha256": "c81fcf0502b2c1bffef88c07d29d17b2c71ee14c9140aa3aac8beb3071890ceb"
+    },
+    {
+      "name": "task-2-preflight-notes.md",
+      "sha256": "81d1c000c9a6ba7fc85749c6542f4d3bd8397c8029f904ff2887958d83c7737f"
+    },
+    {
+      "name": "task-2-report.md",
+      "sha256": "f034a6024b316f7edd7c961fa400063110816aaf4d6b3a3615dd02c8a227662f"
+    },
+    {
+      "name": "task-2-review-context.md",
+      "sha256": "ac8ad1021b476080991410b2aa0f5750716e986ac4b2d8407a9e8b81df595616"
+    },
+    {
+      "name": "task-2-review.md",
+      "sha256": "7217381b6692519be7478fe73212727fe53d87929268fefce88907c903bc8fb6"
+    },
+    {
+      "name": "task-3-brief.md",
+      "sha256": "e0655517a614c22833cbadef2487953653e7b96da61cdad0f8d6269e9a93b05f"
+    },
+    {
+      "name": "task-3-context.md",
+      "sha256": "ccfca385b7c435f3c80f9f9e94af589b355453d6c23d671ce37b86e5ed843f6a"
+    },
+    {
+      "name": "task-3-fix-round-1.md",
+      "sha256": "1e5421fdc86af9f3f2e7de2c8357504d9bb4e753c740047af7661f7de19ed917"
+    },
+    {
+      "name": "task-3-fix-round-2.md",
+      "sha256": "a7d77d653f2466f0b925d667d03dd684ac1b7de986f1c09517c8a875e3b8984c"
+    },
+    {
+      "name": "task-3-fix-round-3.md",
+      "sha256": "f132d519fbda777935f347af9e5a1ad0f88f69840df578a2aaeb42764e6c711d"
+    },
+    {
+      "name": "task-3-fix-round-4.md",
+      "sha256": "aced4f52c242b4f2fba5d79582ed5b781d8bbc3dea3a41d57f70fcf45316a3fb"
+    },
+    {
+      "name": "task-3-fix-round-5.md",
+      "sha256": "04f44a7ffc7137179e3958dc5da00d41fc441b10bf09e6913d7597f83bc60017"
+    },
+    {
+      "name": "task-3-preflight-notes.md",
+      "sha256": "233baa22d95a321b3b097c5b0ff8df073e213af9cf2261949a3ccec76e77e0e8"
+    },
+    {
+      "name": "task-3-report.md",
+      "sha256": "3ec908bd061cdd0676a0b2dcab5f149d90e7468f71b42c366485ab743a5faf2e"
+    },
+    {
+      "name": "task-3-rereview-round-1-context.md",
+      "sha256": "4438413f928ad76d93dcb5d1642594999265ac888c8f8951cddd1f9874c2c331"
+    },
+    {
+      "name": "task-3-rereview-round-1.md",
+      "sha256": "225c94b7270efc950beb5460929ca2a943a76309ef51fa77d6fa9fe15f5d24c5"
+    },
+    {
+      "name": "task-3-rereview-round-2-context.md",
+      "sha256": "368fcfec0a035ef39201ee6c0225632821110083cedfb65a4bd2d4f7183569df"
+    },
+    {
+      "name": "task-3-rereview-round-2.md",
+      "sha256": "fe8e4647a656ee4d4ebb5e309cda97658d3bb01f0db838c481bfebeb220f0353"
+    },
+    {
+      "name": "task-3-rereview-round-3-context.md",
+      "sha256": "14a5d382c84fbe5086f9a78519b6912e9ade57a77171ea7410c1c1c7e272b610"
+    },
+    {
+      "name": "task-3-rereview-round-3.md",
+      "sha256": "70f1b54f45b287b205059726a5bb8c161e7a168a8ad9294f0fb9d98141671a98"
+    },
+    {
+      "name": "task-3-rereview-round-4-context.md",
+      "sha256": "639375437b68eb3d7a0d3f25be3eafe13e4fbd016e46db3d7c22310da4b30d81"
+    },
+    {
+      "name": "task-3-rereview-round-4.md",
+      "sha256": "37aa9ef96a0a5818b32aa27e7439eb198beb0cbaece2ba28445fd0aa3acb13c1"
+    },
+    {
+      "name": "task-3-rereview-round-5-context.md",
+      "sha256": "92e2a1a9f4359f29c99a0bfd80a2e0d177c60efcf4b45e3cfcc390414943674c"
+    },
+    {
+      "name": "task-3-rereview-round-5.md",
+      "sha256": "f5e5be3d3c77a9b6fb999607fe1f55d5965d16d4b1735ad533401dcdcfe129dc"
+    },
+    {
+      "name": "task-3-review-context.md",
+      "sha256": "1d181413c29ece0a2dc077e57c9a56bf257ba1f9f1b4a9311259ba4ad4a3e465"
+    },
+    {
+      "name": "task-3-review.md",
+      "sha256": "9c2b5fbff1aa3b5b2a04f30da7d4cb393abe63b4d9b03fe9002237798d1f372d"
+    },
+    {
+      "name": "whole-context-draft.md",
+      "sha256": "26c84ee9db6214eaeb555db0a54c47a151c9a72afce89cd021721b10bc06db18"
+    },
+    {
+      "name": "whole-declined-adjudication.md",
+      "sha256": "7ef322084bfb166c5f77ae8d2cf662445ed2be52ee6ea117388c88d27f3299a1"
+    },
+    {
+      "name": "whole-fix-brief.md",
+      "sha256": "69545f26c747b7c3adb9a229c52b0ede0eea03b9d0316a03d3684f8f514c70ea"
+    },
+    {
+      "name": "whole-fix-report.md",
+      "sha256": "960434adb2c0d3d4ae5b71b38e58ae009b5895d33ac2e6fa534efa03169f87c0"
+    },
+    {
+      "name": "whole-rereview-context.md",
+      "sha256": "ac785b480d362f22f57e6e07dbe6c0a4c1ee921c100f773643972f016ce2135b"
+    },
+    {
+      "name": "whole-rereview.md",
+      "sha256": "97cde6acbdb30f20f4aa326918d924dc10dd3b6ac5d65db8d83b353612d4056f"
+    },
+    {
+      "name": "whole-review-context.md",
+      "sha256": "22ab8291f3de8e08d7edb04ec2e1264a76816825c8c39c26eeb4cf5c7a10c966"
+    },
+    {
+      "name": "whole-review.md",
+      "sha256": "419be9f8a802c94f905631f1faa45198f6bd9c6d1bc28dd54da0d37aaee08f72"
+    }
+  ],
+  "localEvidenceArchive": "artifacts/review-evidence/static-commonjs.tar.gz",
+  "localEvidenceArchiveSha256": "c15131bf789e3e2331300a06883d3ee67d823c723e84bdf2b91fae12811ed944",
+  "localEvidenceArchiveBytes": 65607756,
+  "residuals": {
+    "Task3-I1 / WR-I2": "Real unresolved Important historical shutdown causal-evidence gap, parked only after five scoped task rounds and accepted as a bounded whole-review limitation; current fault-class repair does not prove the original cause.",
+    "WR-M1": "Known nonblocking host Playwright color warning; raw output retained, no pristine claim."
+  },
+  "expressGate": {
+    "pin": "dbac741a49a5a64336b70c06e85c2e2706e36336",
+    "originalAutomaticEntryCriterion": "FAIL, exported=false due to unsupported root forwarding; never relabeled.",
+    "genericProductBrowse": "PASS on recorded revision, not target-runtime or future-source compatibility.",
+    "nextOwner": "Separately scoped static forwarding safety after this whole gate closes."
+  },
+  "limits": [
+    "Raw archive Git-ignored; Markdown reports/rulings/receipt tracked separately.",
+    "Native Windows/macOS, actual Codex/Claude clients, remote CI and fresh-cloud restore unverified.",
+    "Original Vite/Flask evidence remains historical; fresh Express evidence records its own revision/time and no target execution."
+  ]
+}

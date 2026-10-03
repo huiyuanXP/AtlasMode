@@ -3,8 +3,8 @@
 2026-10-03 UTC：Static CommonJS 整体审查后的唯一修复波次已加入捕获 require 环的
 初始化不确定性检查；环内绑定保持 unknown，真实导入证据与独立稳定导出 ID 保留。
 当前源码的 Linux 七包 build/typecheck、lint 和 **458项/30文件** 全通过（06:54:30 UTC，
-30.24s）；整体审查要求的唯一限定复审仍待 controller，
-本页不代表独立批准或发布。原首次关闭故障原因仍未知（真实 Important，五轮上限
+30.24s）；唯一限定复审已确认循环绑定和文档问题解决、没有新缺陷，
+controller 以保留一项真实 Important 和一项 Minor 的明确裁决关闭本票；无发布。原首次关闭故障原因仍未知（真实 Important，五轮上限
 后保留，WR-I2 未解决）；宿主颜色 warning 仍是非阻塞 Minor（WR-M1 未解决）。
 固定 Express 泛用 HTTP/UI/SDK 浏览 PASS 与原自动 canonical 入口标记 FAIL 分开保留。
 原生 Windows/macOS、实际客户端、远端 CI 与 fresh-cloud restore 仍未执行。
@@ -21,7 +21,9 @@
 - 本波次未改UI，未重跑浏览器、Express/Vite/Flask、生产smoke或安装；下面UI3项、
   规划及目标记录属于其明确历史阶段。458取代440作为当前根套件计数，不重标旧产物。
 - 日志、最终源码指纹和历史产物保留收据在
-  `.superpowers/sdd/2026-10-03-static-commonjs/scratch/whole-fix/`；当前为待限定复审候选。
+  本地忽略Git的完整证据包 `artifacts/review-evidence/static-commonjs.tar.gz` 内
+  `static-commonjs/scratch/whole-fix/`；审查与15项决定见
+  [CommonJS 审查归档](superpowers/reviews/static-commonjs/README.md)。
 
 循环检查只拒绝捕获的 require 环边上的不确定绑定，保留普通本地函数递归。嵌套或
 条件 require 也保守计入依赖，不推断实际执行时机或提前赋值能否打破初始化风险；
@@ -37,7 +39,7 @@
 这是已复现类别的因果修复证据；不是原首次未观测故障的定因，也不是后续环检查源码
 的覆盖结果。五次限定复审均保留原因果证据缺口；上限裁决接受保留真实 Important，
 不称 Task3 独立干净批准。新复发应另开有观测、范围受限的调查。
-原始日志及保留收据见当前 SDD `scratch/task-3/fix-round-4/`。
+原始日志及保留收据见同一完整证据包的 `static-commonjs/scratch/task-3/fix-round-4/`。
 根测试内部重建共享 dist，根检查与浏览器运行必须顺序执行。
 
 ## 历史 Task3 初始集成与未改源码重试（2026-10-03 UTC）
