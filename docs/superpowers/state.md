@@ -296,3 +296,14 @@ Task2未开始；HTTP/MCP/SQLite/UI新转发生命周期和完整Express入口ga
 永久审查归档reviews/static-forwarding-checkpoint；本轮裁决rulings/2026-10-04-static-forwarding-checkpoint.md。
 旧CommonJS关闭原因Important及宿主Minor、原Express入口FAIL、native/client/CI/restore
 未跑状态均保留。当前scratch不删除，原报告与原始检查证据已另存，禁止重新派遣已完成Task1。
+
+## CI 路径修复与继续开发（2026-10-03 UTC）
+
+本会话已恢复GitHub work的62012d3实现；main仍为早期文档。最新用户授权修复CI、
+继续未完成阶段，并在阶段完成后commit/push至GitHub。保留work，不merge main或部署。
+原run37141517790：Ubuntu/browser通过，Windows10/mac12测试失败，定位为临时目录
+raw路径与realpath不同，导致不可读/增长注入和路径断言失效。三fixture规范化并加真实
+alias-parent回归，Linux RED3→GREEN56；独立review规格PASS/质量APPROVE，0C/I/M。
+最终根540/30测试、七包build/typecheck、lint/smoke/vendor通过。修复未改变产品安全。
+报告与无损原始RED/root日志：reviews/ci-paths/。原生runner结果待推送后检查。
+静态转发Task1保持完成；接续原计划Task2实际HTTP/MCP/SQLite/UI和完整Express入口gate。

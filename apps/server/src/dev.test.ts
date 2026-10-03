@@ -3,6 +3,7 @@ import { spawn } from "node:child_process";
 import { once } from "node:events";
 import {
   mkdtemp,
+  realpath,
   mkdir,
   writeFile,
   readFile,
@@ -19,8 +20,20 @@ const cleanup: (() => Promise<void>)[] = [];
 afterEach(async () => {
   for (const fn of cleanup.splice(0).reverse()) await fn();
 });
-async function fixture(extra: Record<string, string> = {}) {
-  const root = await mkdtemp(join(tmpdir(), "atlas-dev-"));
+async function fixture(
+  extra: Record<string, string> = {},
+  aliasedParent = false,
+) {
+  let parent = tmpdir();
+  if (aliasedParent) {
+    const container = await mkdtemp(join(tmpdir(), "atlas-dev-alias-"));
+    cleanup.push(() => rm(container, { recursive: true, force: true }));
+    await mkdir(join(container, "actual"));
+    parent = join(container, "alias");
+    await symlink(join(container, "actual"), parent, "junction");
+  }
+  // Child process.cwd() resolves temporary-directory aliases on macOS.
+  const root = await realpath(await mkdtemp(join(parent, "atlas-dev-")));
   cleanup.push(() => rm(root, { recursive: true, force: true }));
   const put = async (path: string, content: string) => {
     await mkdir(dirname(join(root, path)), { recursive: true });
@@ -140,10 +153,14 @@ compiler.on('exit',code=>process.exit(code??1));`,
   return { root, child, exited, ready, pid, output: () => output };
 }
 // Shell-driven launch, launch before builds, swallowed failure, or orphaned children breaks observable supervision.
-test.each(["handler", ...(process.platform === "win32" ? [] : ["signal"])])(
+test.each([
+  "handler",
+  "aliased-parent",
+  ...(process.platform === "win32" ? [] : ["signal"]),
+])(
   "dev builds prerequisites and reaps children through %s shutdown",
   async (mode) => {
-    const run = await fixture();
+    const run = await fixture({}, mode === "aliased-parent");
     await run.ready();
     expect(
       (await readFile(join(run.root, "builds.txt"), "utf8")).trim().split("\n"),
@@ -154,7 +171,7 @@ test.each(["handler", ...(process.platform === "win32" ? [] : ["signal"])])(
     expect(await readFile(join(run.root, "server.proxy"), "utf8")).toBe("1");
     const server = await run.pid("server"),
       web = await run.pid("web");
-    if (mode === "handler") run.child.send({ testSignal: "SIGTERM" });
+    if (mode !== "signal") run.child.send({ testSignal: "SIGTERM" });
     else run.child.kill("SIGTERM");
     expect(await run.exited).toEqual([0, null]);
     expect(() => process.kill(server, 0)).toThrow();

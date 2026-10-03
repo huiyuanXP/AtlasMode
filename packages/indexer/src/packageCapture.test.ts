@@ -13,9 +13,21 @@ vi.mock("node:fs/promises", async (importOriginal) => {
 });
 const nativeFs = await vi.importActual<typeof fs>("node:fs/promises");
 const temps: string[] = [];
-async function fixture(inputs: Record<string, string>) {
-  const root = await fs.mkdtemp(join(tmpdir(), "codemap-package-"));
-  temps.push(root);
+async function fixture(inputs: Record<string, string>, aliasedParent = false) {
+  let parent = tmpdir();
+  if (aliasedParent) {
+    const container = await fs.mkdtemp(join(tmpdir(), "codemap-alias-"));
+    temps.push(container);
+    await fs.mkdir(join(container, "actual"));
+    parent = join(container, "alias");
+    await fs.symlink(join(container, "actual"), parent, "junction");
+  }
+  // Match production's canonical root (macOS /var and Windows short paths
+  // can alias the temporary directory even without an explicit symlink).
+  const root = await fs.realpath(
+    await fs.mkdtemp(join(parent, "codemap-package-")),
+  );
+  if (!aliasedParent) temps.push(root);
   for (const [path, bytes] of Object.entries(inputs)) {
     await fs.mkdir(dirname(join(root, path)), { recursive: true });
     await fs.writeFile(join(root, path), bytes);
@@ -33,6 +45,30 @@ afterEach(async () => {
 const padded = (size: number) => "{}" + " ".repeat(size - 2);
 
 describe("captured package inputs", () => {
+  it("preserves unreadable capture fault injection through an aliased temporary parent", async () => {
+    const root = await fixture({ "package.json": "{}" }, true);
+    vi.mocked(fs.open).mockImplementation(
+      async (...args: Parameters<typeof fs.open>) => {
+        if (args[0] === join(root, "package.json"))
+          throw Object.assign(new Error("PRIVATE_SENTINEL"), {
+            code: "EACCES",
+          });
+        return nativeFs.open(...args);
+      },
+    );
+    const result = await scan(root);
+    expect(result.manifests).toEqual([]);
+    expect(result.diagnostics).toContainEqual(
+      expect.objectContaining({
+        filePath: "package.json",
+        message: expect.stringMatching(/^PACKAGE_MANIFEST_UNAVAILABLE:/),
+      }),
+    );
+    expect(JSON.stringify(result.diagnostics)).not.toContain(
+      "PRIVATE_SENTINEL",
+    );
+  });
+
   it("captures deterministic package inputs separately and reuses configuration overlap bytes", async () => {
     const root = await fixture({
       "package.json": "{}",
