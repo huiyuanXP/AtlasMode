@@ -275,3 +275,12 @@ WR-M1为未解决非阻断宿主Minor；这是带明确限制的关闭，不称�
 完整归档在 reviews/static-commonjs，决定原文在 rulings/2026-10-03-static-commonjs.md。
 用户尚未通知收尾，下一独立票据优先静态转发安全；原生平台、真实客户端、远端CI
 和新云恢复仍未运行，无push/publish。
+
+### 下一票：Static CommonJS forwarding safety（设计/计划完成，未实现）
+
+已关闭基线6c2fc16；设计specs/2026-10-03-static-forwarding-design.md，计划
+plans/2026-10-03-static-forwarding.md。两顺序任务：受限相对转发身份/共享写入保护；
+实际HTTP/MCP/SQLite/UI及唯一完整Express明确入口gate。当前cycleflag/private接口
+已核对，不能被canonical leaf查找绕过；v3输入hash/公共shape/历史声明ID保持。
+设计、任务计划和8条完全一致约束已自检；未派工，未声称新入口或转发已通过。
+用户尚未通知收尾，继续无人值守，原Important及所有UNRUN状态保留。
