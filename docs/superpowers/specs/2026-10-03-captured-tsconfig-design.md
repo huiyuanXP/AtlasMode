@@ -1,6 +1,7 @@
 # 受限 tsconfig 路径解析设计
 
 状态：首轮 T08 验收期间准备；通过首轮独立验收和整体审查后实施。
+执行更新：MVP gates 已通过；Task1 f913eae 已独立审查通过，Task2/3 待实施。
 日期：2026-10-03 UTC。属于 README 的模块解析缺口，不改变用户问卷范围。
 
 ## 目标与选择
@@ -33,6 +34,13 @@ references 图、package imports 和其他语言各自另立 Ticket。本轮不�
 - 在读取前使用实际打开的 handle 的 stat 检查预算，读取后再检查长度；超限、
   循环、缺失、无效 JSONC、越界或不支持的 extends 都生成带配置路径的诊断。
   拒绝输入不部分应用该配置的 paths/baseUrl，也不静默采用更远的父配置。
+- 已枚举但 ignored、symlink、不可读或非普通文件的配置种子，用既有诊断的
+  `CONFIGURATION_UNAVAILABLE:` 前缀和归一化 filePath 保留拒绝 scope；不读取
+  内容或加入源码 availability。内部 resolver 接收可选 captureDiagnostics，
+  最近配置包括这些不透明拒绝 scope，不能因未捕获字节而采用祖先配置。
+- 每个选中的 extends 链独立验证：种子为第1层，第16层允许，第17层拒绝。
+  另一独立种子成功捕获链内文件，不能取消本链的深度、循环或输入拒绝；
+  全局捕获成功不等于该归属配置可部分应用其选项。
 - 源码和配置都只以捕获字节供解析和摘要使用；TypeScript host 不访问真实磁盘。
   不执行配置、脚本、插件或目标模块。不在诊断中回显配置原文。
 

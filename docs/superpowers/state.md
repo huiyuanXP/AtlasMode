@@ -153,4 +153,5 @@ controller补充规则：已枚举但不可用配置以`CONFIGURATION_UNAVAILABL
 前缀+repo-relative filePath保留拒绝scope，不作为源码availability。Task2内部resolver
 接收可选captureDiagnostics，拒绝不可用最近配置的ancestor fallback；独立种子捕获
 成功不能取消另一extends链的深度/循环/预算拒绝，需逐个归属配置验证。
-Task2解析/UI尚未实施，Task1等待独立任务审查gate；全产品最终suite属于Task3。
+Task1 f913eae已独立审查通过（0 Critical/Important/Minor），原始报告见新plan ledger。
+Task2解析/UI尚未实施，接下来按每个来源文件应用已捕获配置；全产品最终suite属于Task3。
