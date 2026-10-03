@@ -7,7 +7,7 @@ Windows/macOS 的 CI 已配置，尚未在原生 runner 执行；这不代表三
 
 ## 整体审查修复波次（2026-10-03 UTC）
 
-四项 Important 与两项 Minor 已实施，独立复审待完成。本轮七包 build/typecheck、
+四项 Important 与两项 Minor 已实施并独立复审通过（56e7f6f）。本轮七包 build/typecheck、
 lint 退出0；一次全套执行220项/22文件，218项首次通过、2项新增请求测试失败。
 失败均为测试请求问题：Node24 fetch 替换自定义 Host，以及 JSON Content-Type
 却未附 body。改为 node:http 真正发送 Host、validate POST 附 {} 后，两项定向
@@ -152,7 +152,9 @@ MCP 使用绝对 Node 路径直接启动 `apps/mcp/dist/index.js`，HTTP 服务�
   在真实子进程调用已注册的生产退出 handler，验证退出码、HTTP关闭、数据库和子进程清理；
   Unix 额外执行真实 SIGTERM。无生产 IPC 控制入口，原生 Windows Ctrl+C 仍未验证。
 
-运行输出保存于忽略目录 `.superpowers/sdd/2026-10-03-local-planning-mvp/task-8-*.log`；
+首轮运行输出完整归档在忽略产物 `artifacts/review-evidence/local-planning-mvp.tar.gz`；
+独立任务及整体审查报告、ledger和摘要收据保存在
+`docs/superpowers/reviews/local-planning-mvp/`。
 浏览器结果/截图在 `artifacts/e2e/`，目标证据在 `artifacts/validation/`。
 这些本地证据不随 Git 自动分发。准确目标 commit、范围、统计与复现命令见
 [validation-targets.md](superpowers/validation-targets.md)，功能缺口见

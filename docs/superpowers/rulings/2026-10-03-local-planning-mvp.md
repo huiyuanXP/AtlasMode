@@ -1,6 +1,6 @@
 # 无人值守首轮决策记录
 
-状态：T08 和整体审查进行中；本文件记录决策，不代表验收完成。
+状态：T01–T08及整体审查修复复审通过；继续后续模块解析计划。验证边界见state.md。
 
 按实际 ledger 顺序逐项保留代为选择及判断错误时的代价。用户明确要求的范围也保留，以便复核其落实方式。
 
@@ -26,6 +26,10 @@
 20. 保留约646行的项目/请求协调器，把历史、成员读取和面板职责放在专门模块。 代价：未来出现实际耦合时再做局部提取。
 21. T07 的非阻塞语言提示问题带入相关 T08 修复，整体验收前必须解决。 代价：在 T08 完成前不能宣称问卷完整通过。
 22. T08 改接候选纳入已加载、同快照的入口/搜索事实，并保留 service 验证和可读端点。 代价：可能需要修复候选生命周期或端点呈现；必须回归测试。
+
+23. 接受整体审查四项重要及两项小问题，集中修复后只做一次针对性复审。 代价：更保守的未知、警告和本地代理限制可能需要局部适配。
+24. 为快照增加可选扫描可用性，旧数据继续可读；缺失证据不当作删除成功。 代价：部分核对更保守，新事实指纹可能使旧基线需重新确认。
+25. 区分默认排除目录和范围内不可用文件，避免依赖/Git目录使所有删除无法判定；开发代理由启动器显式启用。 代价：以后可能需要细化可用性分类或本地代理配置。
 
 ## 原始记录
 
@@ -118,3 +122,15 @@
 原 ledger 第223行：
 
 > Ruling: T08 observed UI reconnect cannot choose already-searched reusable B when B is outside bounded graph.nodes; allow deduplicated current-snapshot loaded entry/search facts as editor candidates, retaining service validation and readable accepted endpoint. Reason: required actual A-to-B reconnect cannot complete with graph-only candidates; no new API/indexing/unbounded snapshot. Cost if wrong: candidate-lifecycle or endpoint-display repair; regression must cover absent-from-graph target and project/snapshot isolation. Sole active T08 implementer owns focused RED/GREEN.
+
+原 ledger 第253行：
+
+> Ruling: accept all six whole-review findings and repair them together before the MVP gate. Preserve conservative unknown evidence, genuine deletion/explicit moves/local UI+MCP, nonblocking compatibility warnings and existing clean public-target evidence; do not implement future tsconfig/workspace/migration/runtime work. Cost if wrong: additional conservative unknowns/warnings or local proxy restrictions may require targeted adaptation, while untouched mature target evidence remains bounded to its actual clean runs. Parent dispatches one most-capable implementer and one scoped re-review per final-wave rule; no source fixes by controller.
+
+原 ledger 第255行：
+
+> Ruling: approve optional coverage.availability {complete:boolean, unavailablePaths:string[]} for bounded scan eligibility evidence, fingerprinted but not source counts, with no new IndexerPort/DB table. Legacy missing metadata stays readable and insufficient absence evidence is unknown. complete is scoped to the supported source-analysis universe; always-excluded dependency/Git/workflow trees must not erase genuine eligible-source deletion proof, while newly ignored/unreadable/symlinked baseline paths/subtrees must. Reason: shared factual metadata lets all consumers avoid false negative-evidence success without service disk access. Cost if wrong: conservative unknowns may need narrower availability categories; added snapshot identity can stale old baselines once, but source IDs and history must remain intact. Worker must prove genuine deletion control and document exact scope.
+
+原 ledger 第256行：
+
+> Ruling: refine approved availability with optional excludedPaths for fixed out-of-scope subtree roots, separating them from otherwise eligible unavailablePaths. Direct target-path checks consider both; global relocation/absence searches consider in-scope unavailability/completeness, not always-excluded Git/dependency trees. Reason: explicit planned targets under fixed exclusions need honest unknown without making all ordinary deletion proof impossible. Cost if wrong: one small optional contract field may need category refinement, no DB/port change; genuine deletion and excluded-target controls required. WR-I2 explicit dev-proxy mode belongs only to dev launcher, production authority/origin stays strict and local origin-less MCP works.

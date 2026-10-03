@@ -1,0 +1,132 @@
+{
+  "plan": "docs/superpowers/plans/2026-10-03-local-planning-mvp.md",
+  "implementationHead": "56e7f6f6be10072d5dc65e8035bd9add6d1aeddf",
+  "wholeReviewBase": "944b48c",
+  "wholeReviewHead": "be10c8418398f4c6262218bddf137dbba1ec6963",
+  "rulingCount": 25,
+  "reports": [
+    {
+      "name": "progress.md",
+      "sha256": "0d8baf76d6b0af901ac94c9d00cfb4089bffa0672a1cb5e3cea3658070ccffbe"
+    },
+    {
+      "name": "task-1-report.md",
+      "sha256": "1b19064ea860bc4c1ee2c06bf0681d287fddc1c126040c49d2da91178b231ce6"
+    },
+    {
+      "name": "task-1-rereview.md",
+      "sha256": "ea8c7f313b99713d8748aeaccb53f471402615593587f71cde9440c981aeeb28"
+    },
+    {
+      "name": "task-1-review.md",
+      "sha256": "f490e748da22f3feb30a5de1fd99304271d2f43e6d6a8ce3f2aa2ebf2007e304"
+    },
+    {
+      "name": "task-2-report.md",
+      "sha256": "15e93b02d27967d1403e91919f7358adbaba5ae259e19d9476ea0fb0b5c5b3c8"
+    },
+    {
+      "name": "task-2-rereview.md",
+      "sha256": "753541c4547c8cd18da8a0bd25476b6c2b1dcc6b4a3bd0d94134286f8d4811c4"
+    },
+    {
+      "name": "task-2-review.md",
+      "sha256": "cdf6f1367347d4682263ffe272bec2bf1ffa11639dc190ae7be789cfc8195e11"
+    },
+    {
+      "name": "task-3-report.md",
+      "sha256": "a118b0c9e4eaded01b5557a91322c258f7a0bd91db59b4c4ce75cf537e420453"
+    },
+    {
+      "name": "task-3-rereview.md",
+      "sha256": "a0bd2401ec68378b845b43afe052ab8ad755cc25c09cf389e39e52d2e0987b1b"
+    },
+    {
+      "name": "task-3-review.md",
+      "sha256": "ef96313e95aea5b7c1454333986c565c63a1e47435c7e0aa4adb0944c8a5d245"
+    },
+    {
+      "name": "task-4-report.md",
+      "sha256": "ba48d21512f600912937b5452948530651eb429810bd006b8866489662464a49"
+    },
+    {
+      "name": "task-4-rereview.md",
+      "sha256": "cd5acb139001a364f8c66bbb826c5ffc22661dd1329a64dcbc6f57b3f368634d"
+    },
+    {
+      "name": "task-4-review.md",
+      "sha256": "f9a736738b651e88863d17d05473e7c242684c40a80472dbee3c5cbc84d6ad59"
+    },
+    {
+      "name": "task-5-report.md",
+      "sha256": "64d0bddf994654c8e0bb0f43dd0310842f75a6fdf9b50c7139b180b76f20c917"
+    },
+    {
+      "name": "task-5-rereview.md",
+      "sha256": "92f91a7bba80aa02e665cb5bce46ddefd3a6b39d9f58696fb17760565308438c"
+    },
+    {
+      "name": "task-5-review.md",
+      "sha256": "e3342c6cd4eb6ab2d0c557862ffc51500b9e2d27c1b4d8aadecbaa10955a7a91"
+    },
+    {
+      "name": "task-6-report.md",
+      "sha256": "11bbe11af0e16b9f3e10573281de66ec7cd8b3ecc59d0ce066bbc24d0c46df39"
+    },
+    {
+      "name": "task-6-review.md",
+      "sha256": "b4291d078f0b99508459d8ca76254819048fcafa794877beed5e99b00ab10bda"
+    },
+    {
+      "name": "task-7-report.md",
+      "sha256": "8e00ccc7109c55d4ae9f3e1763572e7274716c2bfa9663885e02ff8299b1cdc0"
+    },
+    {
+      "name": "task-7-review.md",
+      "sha256": "8291da2ff1f61ac80d91cac3247ac5f4c912349cb31a59728dd335d001fe90b8"
+    },
+    {
+      "name": "task-8-report.md",
+      "sha256": "febcc8960ad355e9c0c429f0c8841e3d482ca429d012ff92409e02e16734685b"
+    },
+    {
+      "name": "task-8-rereview.md",
+      "sha256": "ad7a7ab8ce24cbf2da6ef17fe410f2c57f5e5ff85d49416b98ebb316723515c6"
+    },
+    {
+      "name": "task-8-review.md",
+      "sha256": "3aea5d97a42a11c0d7c13dbcce25d82d4207dcb7b79a9d2f382820b73e64bfbb"
+    },
+    {
+      "name": "whole-declined-adjudication.md",
+      "sha256": "46360d93acf18915cf63590bd4b7aa54eb502efa84b2c74c4288ad5a8cb86bb5"
+    },
+    {
+      "name": "whole-fix-brief.md",
+      "sha256": "ae1831327106c678cee8f45677c84b547c44c963c604b68c80d804c116374123"
+    },
+    {
+      "name": "whole-fix-report.md",
+      "sha256": "7f043d806a83d183fdae0c36ccc2c8138789bd5922c635b9bd6ee2d040247806"
+    },
+    {
+      "name": "whole-rereview.md",
+      "sha256": "f1575921898bb2afc1198b0054b39befeecb852ac116a60cb33ed69fa4d37342"
+    },
+    {
+      "name": "whole-review-context.md",
+      "sha256": "fd934c0662ef6a6ee848eb256cbcb51c6aff397451f2314317eb0968748ac18c"
+    },
+    {
+      "name": "whole-review.md",
+      "sha256": "9863cca49bccd0009c233fc576cb9478bab286d2899c828befad62e9d31715c0"
+    }
+  ],
+  "localEvidenceArchive": "artifacts/review-evidence/local-planning-mvp.tar.gz",
+  "localEvidenceArchiveSha256": "83d0e71827cfce53e975dac45934f7eb8756a98639d7e2314d72f7517225f83c",
+  "localEvidenceArchiveBytes": 881478,
+  "limits": [
+    "Archive/artifacts are Git-ignored; Markdown reports and receipt are tracked separately.",
+    "Native Windows/macOS, actual Codex/Claude clients, remote CI and fresh-task restore remain unverified."
+  ]
+}

@@ -34,7 +34,7 @@ SDD ledger：.superpowers/sdd/2026-10-03-local-planning-mvp/progress.md（忽略
 （2dc95d7），导航结果竞争和节点聚焦的修复（a9d27a0）已独立复审通过。
 T06 实际 stdio MCP 已实现并独立审查通过（7f7bd95）。T07 英文、分组、
 目录约束和撤销重做已实现并独立审查通过（88c1096），少量客户端错误提示的
-语言切换问题已在 T08 修复。T08 实施验收及独立任务复审已通过；整体分支审查进行中。
+语言切换问题已在 T08 修复。T08 实施验收及独立任务复审已通过；整体分支六项修复及独立复审通过（56e7f6f）。
 T01–T08顺序执行，不并行派遣实现者；精确任务/修复轮次以 ledger 为准。
 本轮开始 UTC 2026-10-02 19:55；文档沿用最初 Asia/Singapore 的2026-10-03日期。
 当前环境报告时区 Etc/UTC，后续时间证据以 UTC 为准。
@@ -78,7 +78,7 @@ Superpowers15技能74文件已固定v6.4.2；start_skill草稿已保存，尚未
 - API 新鲜度约定：批准/核对先真实索引；MCP 读取批准也先刷新。service 源码读取委托
   indexer 的可选 readSource port。契约与 ledger 已同步；T02 实现者已收到接口补充。
 
-## T08 当前验收（2026-10-03 UTC）
+## T08 初始验收（2026-10-03 UTC）
 
 当前 Linux：`npm ci --cache /tmp/atlasmode-npm-cache` 安装410包；七包 build、
 typecheck、lint 均退出0；`npm test` 200/20文件通过，无失败/跳过（40.01s）。
@@ -102,7 +102,7 @@ readme-coverage.md。独立任务审查发现的 Windows preload 路径问题已
 ## 整体审查唯一修复波次（2026-10-03 UTC）
 
 基线be10c8418398f4c6262218bddf137dbba1ec6963，现已实施WR-I1–I4及WR-M1–M2，
-待controller派遣唯一范围复审。新contract经controller确认：可选
+唯一范围复审已通过（0新增Critical/Important/Minor）。新contract经controller确认：可选
 coverage.availability={complete,unavailablePaths,excludedPaths?}；固定范围外
 目录不影响范围内真实删除，但明确指向其内部的目标为unknown。旧快照可读取，
 无扫描证据的文件缺失为unknown。未实施后续captured-tsconfig票据。
@@ -124,3 +124,14 @@ external[]及console/page errors[]。截图warning/light/dark/narrow/source已�
 固定Vite/Flask未重跑，旧指标/截图保持原T08修订及时间；本轮可变callable的调用
 确定性变化不能用旧目标计数冒充当前结果。Win/mac、远端CI、实际客户端注册、
 fresh-task恢复及发布仍未执行。依赖/lock/vendor、全局配置及目标仓库均未改动。
+
+## 首轮归档与继续
+
+T01–T08及整体审查gate已完成；25项Ruling与代价见
+rulings/2026-10-03-local-planning-mvp.md。任务/修复/整体报告和ledger归档到
+reviews/local-planning-mvp/；原始diff/log完整压缩在忽略产物
+artifacts/review-evidence/local-planning-mvp.tar.gz。当前work分支继续，本轮不merge/push/publish。
+用户尚未通知收尾，继续实施已准备的captured-tsconfig spec/plan，顺序SDD三任务：
+配置输入/新鲜度 → 按来源checker解析 → HTTP/MCP/UI真实验证。新的ledger会在
+.superpowers/sdd/2026-10-03-captured-tsconfig/progress.md，已归档任务不得重新派遣。
+操作指南：../first-plan.md。云草稿保存不等于发布，fresh-task恢复仍未验证。
