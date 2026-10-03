@@ -246,15 +246,21 @@ export function createCommonJsAnalyzer(
     if (!ts.isIdentifier(expression)) return undefined;
     return callableSymbol(symbol(expression));
   }
-  function callableSymbol(sym: ts.Symbol | undefined): string | undefined {
-    if (!sym || rewritten.has(sym)) return undefined;
-    // No aliases, imported types, signatures, or recursive value propagation.
-    const values =
+  function valueDeclarations(sym: ts.Symbol) {
+    // Signatures do not introduce another executable body. Export validation
+    // and local-call guards must agree about duplicate runtime declarations.
+    return (
       sym.declarations?.filter(
         (d) =>
           (ts.isFunctionDeclaration(d) && d.body) ||
           ts.isVariableDeclaration(d),
-      ) ?? [];
+      ) ?? []
+    );
+  }
+  function callableSymbol(sym: ts.Symbol | undefined): string | undefined {
+    if (!sym || rewritten.has(sym)) return undefined;
+    // No aliases, imported types, signatures, or recursive value propagation.
+    const values = valueDeclarations(sym);
     if (values.length !== 1) return undefined;
     const declaration = values[0]!;
     if (ts.isFunctionDeclaration(declaration))
@@ -689,10 +695,13 @@ export function createCommonJsAnalyzer(
       sym = checker.getAliasedSymbol(sym);
     if (
       sym &&
-      rewritten.has(sym) &&
-      modules.get(expression.getSourceFile())?.candidate
+      modules.get(expression.getSourceFile())?.candidate &&
+      (rewritten.has(sym) || valueDeclarations(sym).length > 1)
     )
-      return { reason: "CommonJS callable binding has visible rewriting" };
+      return {
+        reason:
+          "CommonJS callable binding has visible rewriting or ambiguous executable declarations",
+      };
     if (
       sym?.declarations?.some(
         (d) =>

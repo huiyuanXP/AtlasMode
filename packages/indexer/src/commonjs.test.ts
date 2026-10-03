@@ -467,4 +467,47 @@ describe("captured CommonJS", () => {
       unresolved(graph, "help()", "lib.cjs");
     },
   );
+  it("rejects duplicate local executable declarations before checker fallback", () => {
+    const graph = index({
+      "lib.cjs":
+        "function help() { first(); } function help() { second(); } exports.help = help; function caller() { help(); }",
+      "entry.cjs": consumer,
+    });
+    unresolved(graph, "help()", "lib.cjs");
+    unresolved(graph);
+    expect(
+      [...graph.nodes.values()]
+        .filter((n) => n.filePath === "lib.cjs" && n.name === "help")
+        .map((n) => n.qualifiedName),
+    ).toEqual(["help", "help#2"]);
+  });
+  it("retains unique local CJS declarations and a single implementation with overload signatures", () => {
+    const graph = index({
+      "lib.cjs": `${stable} function caller() { help(); }`,
+      "overloads.ts":
+        "function help(value: string): void; function help(value: number): void; function help(value: string | number) {} exports.help = help; function caller() { help('value'); }",
+      "entry.cjs": consumer,
+    });
+    expect(relation(graph, "help()", "lib.cjs")).toMatchObject({
+      resolution: "resolved",
+      targetId: makeId(
+        "function",
+        "cjs",
+        "lib.cjs",
+        "help",
+        "FunctionDeclaration",
+      ),
+    });
+    expect(relation(graph, "help('value')", "overloads.ts")).toMatchObject({
+      resolution: "resolved",
+      targetId: makeId(
+        "function",
+        "cjs",
+        "overloads.ts",
+        "help",
+        "FunctionDeclaration",
+      ),
+    });
+    resolved(graph, "mod.help()", "help");
+  });
 });
