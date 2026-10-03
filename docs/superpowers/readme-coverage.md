@@ -158,7 +158,7 @@ parked进入整体审查，未声称定因；Task3完成不等于整票关闭。
 WR-M1为未解决的非阻塞宿主颜色warning。WR-I1/WR-M2修复等待唯一限定复审，
 不预先声称独立批准、整票关闭或发布；平台/客户端/CI/云恢复仍未运行。
 
-### 当前 Static CommonJS 整票关闭
+### 历史 Static CommonJS 整票关闭
 
 唯一整体修复15d2c16经唯一限定复审：WR-I1循环绑定及WR-M2状态文档已解决，
 0新Critical/Important/Minor。controller保留WR-I2为真实未解决Important历史因果缺口，
@@ -169,7 +169,7 @@ WR-M1为未解决非阻断宿主Minor；这是带明确限制的关闭，不称�
 用户尚未通知收尾，下一独立票据优先静态转发安全；原生平台、真实客户端、远端CI
 和新云恢复仍未运行，无push/publish。
 
-## 当前Git推送检查点（2026-10-04 Asia/Singapore）
+## 历史 Task1 Git推送检查点（2026-10-04 Asia/Singapore）
 
 用户明确要求commit and push。转发Task1独立修复复审已通过，原local exports误连
 已修复；最终七包构建/类型、lint及537项/30文件根测试全部通过。Task2公共生命周期、

@@ -266,7 +266,7 @@ WR-M1宿主颜色warning为未解决的非阻塞Minor。当前修复仅commonjs.
 原SIGKILL、五轮verdict及类别修复/保留证据不变；WR-M1仍NOT ADDRESSED。
 唯一限定复审由controller派遣，尚未独立批准或整票关闭，无push/publish。
 
-### 当前 Static CommonJS 整票关闭
+### 历史 Static CommonJS 整票关闭
 
 唯一整体修复15d2c16经唯一限定复审：WR-I1循环绑定及WR-M2状态文档已解决，
 0新Critical/Important/Minor。controller保留WR-I2为真实未解决Important历史因果缺口，
@@ -286,7 +286,7 @@ plans/2026-10-03-static-forwarding.md。两顺序任务：受限相对转发身�
 设计、任务计划和8条完全一致约束已自检；未派工，未声称新入口或转发已通过。
 用户尚未通知收尾，继续无人值守，原Important及所有UNRUN状态保留。
 
-## 当前推送检查点（2026-10-04 Asia/Singapore）
+## 历史 Task1 推送检查点（2026-10-04 Asia/Singapore）
 
 受保护静态转发Task1 d0cab48→1346a8f已实现并独立初审/第一轮限定复审完成；
 初审I1局部exports误连已解决，0新C/I/M。406/8affected检查和最终七包build/typecheck、
