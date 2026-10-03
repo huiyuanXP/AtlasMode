@@ -1,0 +1,11 @@
+{
+  "repository": "https://github.com/expressjs/express",
+  "version": "5.2.1",
+  "tag": "v5.2.1",
+  "commit": "dbac741a49a5a64336b70c06e85c2e2706e36336",
+  "root": "/tmp/atlasmode-validation-express",
+  "cleanIncludingUntracked": true,
+  "targetInstalled": false,
+  "targetExecuted": false,
+  "productGateRun": false
+}

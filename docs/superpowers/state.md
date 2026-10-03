@@ -192,3 +192,13 @@ CommonJS旧缺陷仍归下一独立Ticket；workspace package/exports/references
 
 三个任务均独立通过；whole091687b为0C/0I/2M，集中docs修正f860e19经一次限定复审：WR-M2状态已修正，WR-M1环境颜色警告保留为非阻断Minor。51个产品源码指纹及46个历史文件未变；293项完整测试与真实接口/浏览器/Vite结果保持Task3原证据，不重跑或宣称所有命令无warning。所有33项审查范围外行为均逐项裁决，CommonJS已复现缺陷优先下一票。
 归档和Ruling日志将保存于reviews/captured-tsconfig与rulings/2026-10-03-captured-tsconfig.md；原始证据完整压缩后再移除当前scratch。用户尚未通知收尾，本地work分支继续，不merge/push/publish。
+
+## Static CommonJS 安全：当前活动计划
+
+配置一轮归档提交 ec1e375；23 报告、10 rulings、原始证据 receipt 已保存，原 scratch 已删除。
+配置恢复 bundle 782275 bytes 已实际克隆并验证75 vendor项与23报告；fresh-cloud restore 未验证。
+新的设计 specs/2026-10-03-static-commonjs-design.md，计划 plans/2026-10-03-static-commonjs.md；
+当前 ledger .superpowers/sdd/2026-10-03-static-commonjs/progress.md。
+Task1：先修复实际复现的 shadowed require/overwritten export 错误连边及.cjs入口；
+Task2：捕获 package.json scope、.js模式、输入新鲜度；Task3：真实HTTP/MCP/UI/固定Express验收。
+所有任务尚待实施/独立审查；准备或目标clone不是产品验收。用户仍未要求收尾。

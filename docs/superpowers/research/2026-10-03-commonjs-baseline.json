@@ -1,0 +1,84 @@
+{
+  "head": "27702f71cd7b152e5df5b497591fd8df8868c112",
+  "node": "24.19.0",
+  "compiledBefore": "c734223d89d18ff5144574a9568ef772fff7cda7e7f3f0320423c1d16595c309",
+  "compiledAfter": "c734223d89d18ff5144574a9568ef772fff7cda7e7f3f0320423c1d16595c309",
+  "results": [
+    {
+      "name": "stable",
+      "files": [
+        "entry.cjs",
+        "helper.cjs"
+      ],
+      "call": {
+        "id": "relation:8f3a0048cc9b2729fbcbbbdf8a26c135",
+        "type": "calls",
+        "sourceId": "function:3e67f7cffc8419c7f1fedb0d76bbd1c7",
+        "targetId": "function:203c008c203de106ba34c58646f6097a",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "entry.cjs",
+          "line": 1,
+          "text": "mod.help()"
+        }
+      },
+      "target": {
+        "name": "help",
+        "filePath": "helper.cjs",
+        "startLine": 1,
+        "exported": false
+      }
+    },
+    {
+      "name": "overwritten",
+      "files": [
+        "entry.cjs",
+        "helper.cjs"
+      ],
+      "call": {
+        "id": "relation:8f3a0de8939b2729fbcbbbdf8fbccb80",
+        "type": "calls",
+        "sourceId": "function:3e67f7cffc8419c7f1fedb0d76bbd1c7",
+        "targetId": "function:203c008c203de106ba34c58646f6097a",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "entry.cjs",
+          "line": 1,
+          "text": "mod.help()"
+        }
+      },
+      "target": {
+        "name": "help",
+        "filePath": "helper.cjs",
+        "startLine": 1,
+        "exported": false
+      }
+    },
+    {
+      "name": "shadowed",
+      "files": [
+        "entry.cjs",
+        "helper.cjs"
+      ],
+      "call": {
+        "id": "relation:04ec3cd4e714ecf8bbb39efd715d036b",
+        "type": "calls",
+        "sourceId": "function:f2cbed0c86e44e69004adee29edb089d",
+        "targetId": "function:203c008c203de106ba34c58646f6097a",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "entry.cjs",
+          "line": 1,
+          "text": "mod.help()"
+        }
+      },
+      "target": {
+        "name": "help",
+        "filePath": "helper.cjs",
+        "startLine": 1,
+        "exported": false
+      }
+    }
+  ],
+  "targetExecuted": false
+}
