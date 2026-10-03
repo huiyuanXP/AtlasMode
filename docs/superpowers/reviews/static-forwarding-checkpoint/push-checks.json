@@ -1,0 +1,49 @@
+[
+  {
+    "label": "build",
+    "args": [
+      "npm",
+      "run",
+      "build"
+    ],
+    "startedAt": "2026-10-03T17:35:16.742347+00:00",
+    "finishedAt": "2026-10-03T17:35:29.646266+00:00",
+    "seconds": 12.904,
+    "exitCode": 0
+  },
+  {
+    "label": "typecheck",
+    "args": [
+      "npm",
+      "run",
+      "typecheck"
+    ],
+    "startedAt": "2026-10-03T17:35:29.646670+00:00",
+    "finishedAt": "2026-10-03T17:35:49.952830+00:00",
+    "seconds": 20.306,
+    "exitCode": 0
+  },
+  {
+    "label": "lint",
+    "args": [
+      "npm",
+      "run",
+      "lint"
+    ],
+    "startedAt": "2026-10-03T17:35:49.953171+00:00",
+    "finishedAt": "2026-10-03T17:35:51.983214+00:00",
+    "seconds": 2.03,
+    "exitCode": 0
+  },
+  {
+    "label": "test",
+    "args": [
+      "npm",
+      "test"
+    ],
+    "startedAt": "2026-10-03T17:35:51.983627+00:00",
+    "finishedAt": "2026-10-03T17:36:22.597661+00:00",
+    "seconds": 30.614,
+    "exitCode": 0
+  }
+]

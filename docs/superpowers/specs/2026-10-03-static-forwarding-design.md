@@ -110,4 +110,4 @@ node必须exported=true，真实返回entry列表包含其ID，并检查truncati
 代码producer/consumer和当前cycle flag已实读，公共shape不变；两顺序任务分别拥有
 registry安全和actual产品验收。无逐阶段人工等待（用户已授权），无额外spec reviewer。
 原Important历史因果缺口不影响静态alias身份证明，但始终保留；不能借新positive掩盖。
-此设计尚未实现；RootExpress新入口验收未运行。静态转发能力不能因文档而宣称完成。
+设计自检时尚未实现。当前检查点Task1已实现并经独立修复复审通过；Task2公共生命周期/浏览器及完整Express新入口验收未运行，整票未完成。

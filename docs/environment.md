@@ -1,15 +1,20 @@
 # 环境、运行与验收
 
-2026-10-03 UTC：Static CommonJS 整体审查后的唯一修复波次已加入捕获 require 环的
-初始化不确定性检查；环内绑定保持 unknown，真实导入证据与独立稳定导出 ID 保留。
-当前源码的 Linux 七包 build/typecheck、lint 和 **458项/30文件** 全通过（06:54:30 UTC，
-30.24s）；唯一限定复审已确认循环绑定和文档问题解决、没有新缺陷，
-controller 以保留一项真实 Important 和一项 Minor 的明确裁决关闭本票；无发布。原首次关闭故障原因仍未知（真实 Important，五轮上限
-后保留，WR-I2 未解决）；宿主颜色 warning 仍是非阻塞 Minor（WR-M1 未解决）。
-固定 Express 泛用 HTTP/UI/SDK 浏览 PASS 与原自动 canonical 入口标记 FAIL 分开保留。
-原生 Windows/macOS、实际客户端、远端 CI 与 fresh-cloud restore 仍未执行。
+2026-10-04 Asia/Singapore：当前源码1346a8f包含受保护的精确相对CommonJS转发；
+Task1的独立初审发现局部exports身份误连，修复后限定复审确认I1已解决、无新缺陷。
+本次推送前顺序执行七包build/typecheck、lint与npm test：全部退出0，**537项/30文件**
+通过，无失败或跳过。测试于2026-10-04 01:35:51+08:00启动（原始UTC收据见归档），
+30.25s runner/30.614s command。相关受影响检查406/8保持其原阶段证据。
 
-## 当前 Static CommonJS 整体修复检查（2026-10-03 UTC）
+本次为Task1检查点；Task2新的HTTP/SDK/SQLite转发生命周期、浏览器、共享离线守卫
+与完整固定Express入口gate尚未执行，整票与最终whole-plan gate未完成。
+此前核心UI、MCP与固定Vite/Flask浏览和视觉检查保持其已记录历史阶段，未重跑。
+原关闭故障原因仍为真实未解决Important；宿主颜色warning仍为非阻断Minor。
+原生Windows/macOS、实际Codex/Claude客户端、远端CI与fresh-cloud restore仍未验证。
+用户已明确授权本次Git commit/push；应用部署与全局客户端配置不在此授权内。
+当前交接及审查原文见 [检查点归档](superpowers/reviews/static-forwarding-checkpoint/README.md)。
+
+## 历史 Static CommonJS 整体修复检查（2026-10-03 UTC）
 
 - `npx vitest run packages/indexer/src/commonjs.test.ts`：**110项** 通过。新增18项
   包含双模块/自身/三模块环、源顺序、直接/属性/default/解构形式和原有guard保留；
@@ -19,7 +24,7 @@ controller 以保留一项真实 Important 和一项 Minor 的明确裁决关闭
   `npm test`：全部退出0，七个workspace，**458项/30文件** 全通过，无失败/跳过；
   root suite于06:54:30 UTC启动，30.24s。覆盖实际编译HTTP/SDK/SQLite及关闭保留回归。
 - 本波次未改UI，未重跑浏览器、Express/Vite/Flask、生产smoke或安装；下面UI3项、
-  规划及目标记录属于其明确历史阶段。458取代440作为当前根套件计数，不重标旧产物。
+  规划及目标记录属于其明确历史阶段。该阶段458取代440，当前计数见本文开头，不重标旧产物。
 - 日志、最终源码指纹和历史产物保留收据在
   本地忽略Git的完整证据包 `artifacts/review-evidence/static-commonjs.tar.gz` 内
   `static-commonjs/scratch/whole-fix/`；审查与15项决定见

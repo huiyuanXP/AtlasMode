@@ -11,13 +11,13 @@ UNIMPLEMENTED表示仍为后续需求。测试通过不等于原README所有目�
 | README / 问卷要求                                              | 状态          | 实际证据与边界                                                                                                                                                     |
 | -------------------------------------------------------------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | Superpowers 可重新发现，Codex/Claude流程                       | PARTIAL       | 15技能/74文件vendor校验通过，AGENTS/CLAUDE引导存在；原生客户端技能目录自动发现未验证                                                                               |
-| 单根锁、Node LTS、包边界、统一脚本（§7/8/14）                  | PASS          | 干净npmci410包；7包build/typecheck、eslint边界检查退出0；全套200/20文件，无失败或跳过                                                                              |
+| 单根锁、Node LTS、包边界、统一脚本（§7/8/14）                  | PASS          | 干净npmci410包；7包build/typecheck、eslint边界检查退出0；当前全根537/30无失败或跳过；200/20为历史阶段，干净安装未重跑                                                                              |
 | 单用户本地服务、多项目隔离（§2）                               | PASS          | API/UI/SQLite；E2E TS→Python→TS切换；迟到请求隔离单元回归、显式项目MCP所有权验证                                                                                   |
 | TS/JS/TSX/JSX、Python真实静态索引（§5/P1）                     | PASS          | indexer与跨包集成；固定Vite1583文件及Flask83文件；Python仅AST、恶意顶层代码未执行                                                                                  |
 | 函数/方法、目录/文件、导入/调用、未知和源码（§5）              | PASS          | 源码与range、动态/external/unresolved样本；UI实际源代码与Chromium原生clipboard.readText                                                                            |
 | 跨文件相对import、局部别名、re-export（§5）                    | PASS          | TS/Python fixtures、实际索引调用证据；限定为当前适配器支持的可证明解析                                                                                             |
 | 受限tsconfig paths/baseUrl与配置可见性                     | PASS          | 捕获JSONC/相对extends、最近配置归属、checker声明解析；配置only生命周期HTTP/SDK与真实SQLite历史读取、双语UI回归通过                                                                                      |
-| 受保护静态 CommonJS 与包配置 | PARTIAL | .cjs/有效包scope的.js、稳定const require和导出、覆盖/遮蔽guard、包only新鲜度/历史/双语已验；Express全仓canonical入口因forwarding escape仍未满足，完整值流/运行兼容性未实现 |
+| 受保护静态 CommonJS 与包配置 | PARTIAL | .cjs/有效包scope的.js、稳定const require和导出、覆盖/遮蔽guard、包only新鲜度/历史/双语已验；受保护精确转发Task1已复审通过；新公共生命周期/完整Express入口gate待Task2，旧失败保持历史，完整值流/运行兼容性未实现 |
 | workspace package/exports、references图 | UNIMPLEMENTED | 不展开references或猜测package源码 |
 | 稳定ID、快照摘要、忽略规则和源码安全（§5）                     | PASS          | 插空行身份不变、文件内容hash/捕获字节、安全源码路径、symlink排除等回归；快照记录Git revision                                                                       |
 | 重命名/移动迁移映射和候选（§5）                                | UNIMPLEMENTED | 没有以相似函数自动替换绑定；需要后续显式接受映射流程                                                                                                               |
@@ -168,3 +168,12 @@ WR-M1为未解决非阻断宿主Minor；这是带明确限制的关闭，不称�
 完整归档在 reviews/static-commonjs，决定原文在 rulings/2026-10-03-static-commonjs.md。
 用户尚未通知收尾，下一独立票据优先静态转发安全；原生平台、真实客户端、远端CI
 和新云恢复仍未运行，无push/publish。
+
+## 当前Git推送检查点（2026-10-04 Asia/Singapore）
+
+用户明确要求commit and push。转发Task1独立修复复审已通过，原local exports误连
+已修复；最终七包构建/类型、lint及537项/30文件根测试全部通过。Task2公共生命周期、
+浏览器和完整固定Express入口验收尚未开始；不把旧目标记录或单元事实当成新验收。
+永久报告见reviews/static-forwarding-checkpoint，四项当前裁决见相应rulings日志；
+此前50项裁决保持各历史日志。scratch保留、整票未关闭，未声称原生客户端/平台/
+远端CI/新云恢复通过。后续README缺口在该检查点之后继续安排。

@@ -1,0 +1,82 @@
+{
+  "observedAt": "2026-10-03T17:40:08.201186+00:00",
+  "localTime": "2026-10-04T01:40:08.201186+08:00",
+  "testedSourceHead": "1346a8f70ff3fdc7afb852e02bd3954c40491ad1",
+  "task1IndependentGate": "I1 addressed; no new breakage",
+  "task2": "not started",
+  "wholePlan": "incomplete",
+  "checks": [
+    {
+      "label": "build",
+      "args": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "startedAt": "2026-10-03T17:35:16.742347+00:00",
+      "finishedAt": "2026-10-03T17:35:29.646266+00:00",
+      "seconds": 12.904,
+      "exitCode": 0
+    },
+    {
+      "label": "typecheck",
+      "args": [
+        "npm",
+        "run",
+        "typecheck"
+      ],
+      "startedAt": "2026-10-03T17:35:29.646670+00:00",
+      "finishedAt": "2026-10-03T17:35:49.952830+00:00",
+      "seconds": 20.306,
+      "exitCode": 0
+    },
+    {
+      "label": "lint",
+      "args": [
+        "npm",
+        "run",
+        "lint"
+      ],
+      "startedAt": "2026-10-03T17:35:49.953171+00:00",
+      "finishedAt": "2026-10-03T17:35:51.983214+00:00",
+      "seconds": 2.03,
+      "exitCode": 0
+    },
+    {
+      "label": "test",
+      "args": [
+        "npm",
+        "test"
+      ],
+      "startedAt": "2026-10-03T17:35:51.983627+00:00",
+      "finishedAt": "2026-10-03T17:36:22.597661+00:00",
+      "seconds": 30.614,
+      "exitCode": 0
+    }
+  ],
+  "archiveFilesSha256": {
+    "progress.md": "23e4635e2039a9e23dcde428f7691bacd1f036d04e343da72fe0ca1cedd7b1f4",
+    "task-1-review.md": "f900be34beec0b3beba5fe2d32652fdc695df9e437ce15a987673cfe574f8b19",
+    "push-checks.json": "7f9fd4f27b58b4225046ba91511e52387242fd89e06c44172141c785b14a1cb2",
+    "task-1-r1-finding-verbatim.md": "1e6a7e24cd2f39824d3d1b1314630c46a384a58fc68d2ba26bae013ba7449a35",
+    "task-1-r1-review.md": "0142020b3cc5dc2c8420d14ed805c92ae50d7ee6efd650bc93256da8d77d9273",
+    "global-constraints-verbatim.md": "551677b323ae1563b8b856d3621973400f95f561265e024b6d371c58395411f2",
+    "push-build.log": "cf50af70029c4b544a1bfe2d7b9991fc4d00a448c71682993d487f285c31dd40",
+    "push-lint.log": "7800494729c08273ed821839df88b07aa887e163a5d86a3fd5f0a034acfa0ca4",
+    "push-typecheck.log": "f043efb8a7b56011d916aec2ea75ceb60ecddc07a702c5f003d46082cb5f7e93",
+    "task-1-context.md": "23517f4759ae09487f3c9c985f06ee350040dca3ab2378c12ae292d9a6cd1447",
+    "task-1-r1-review-prompt.md": "9d97e9a63d848400b4ff1304d4908bfeea200860f3265293851a51de3feb51c1",
+    "task-1-brief.md": "1e5177df69e37f4cc98701be3a544926b214d50427d48c1bbdacfbdab231b940",
+    "push-test.log": "e29a733038a85faeaaddb31fd0aa6187cc6009820e711e93653c146effff97a8",
+    "task-1-review-prompt.md": "5615fc302897ceec0373cead8e363d2545f307cee29c97d5731323a711da9752",
+    "task-2-brief.md": "4a2f24f4329ad968051c40bf9b8b9fa6709153d6e6c83bc3131a41c01e3f7bb4",
+    "push-source-sha256.json": "010c63c113fe8825c95608fff3bbb8e9b876ab29e7984ee2775daf5ff1dc87f3",
+    "task-1-report.md": "cb7818868cc6c70a7c9f42554cf6dcc3fba8304b783fe48e5ff4b31b0e6eb665"
+  },
+  "scratchDeleted": false,
+  "rawArchive": {
+    "path": "artifacts/review-evidence/static-forwarding-checkpoint.tar.gz",
+    "bytes": 81356,
+    "sha256": "eebe5bbcce92e1bde36caaba2b9a4718ed8f3440677d0fc44d9f6a4b06a26b8b"
+  }
+}

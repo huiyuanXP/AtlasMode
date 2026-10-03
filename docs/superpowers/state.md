@@ -7,8 +7,9 @@
 ## 最新授权
 用户已回答全部大方向，并明确“睡觉了，开始执行”，允许对其余细节选择稳定方案。
 用户要求分阶段 Ticket、设置 Goal，完成问卷后继续对照 README 推进，直到通知收尾。
-不再等待逐阶段人工设计/计划审批，改为自检、独立审查和实际验证。无发布/共享分支
-push 授权。使用当前 cloud checkout，分阶段本地 commit。
+不再等待逐阶段人工设计/计划审批，改为自检、独立审查和实际验证。最新用户指令为
+“commit and push”，明确授权当前work分支提交/推送；本次交付Task1检查点，Task2尚未开始。
+应用部署、全局客户端配置及合并main不在本次操作范围。使用当前cloud checkout。
 
 ## 确认决策
 - 客户端：Codex App/CLI、Claude Code；真实 stdio MCP 接同一个本地 HTTP 服务。
@@ -284,3 +285,14 @@ plans/2026-10-03-static-forwarding.md。两顺序任务：受限相对转发身�
 已核对，不能被canonical leaf查找绕过；v3输入hash/公共shape/历史声明ID保持。
 设计、任务计划和8条完全一致约束已自检；未派工，未声称新入口或转发已通过。
 用户尚未通知收尾，继续无人值守，原Important及所有UNRUN状态保留。
+
+## 当前推送检查点（2026-10-04 Asia/Singapore）
+
+受保护静态转发Task1 d0cab48→1346a8f已实现并独立初审/第一轮限定复审完成；
+初审I1局部exports误连已解决，0新C/I/M。406/8affected检查和最终七包build/typecheck、
+lint及537/30全根测试通过；同字节输入/声明身份/物理导入不变，新事实使snapshotID变化。
+Task2未开始；HTTP/MCP/SQLite/UI新转发生命周期和完整Express入口gate、整票whole
+审查仍待后续执行。本次按最新指令保存并推送work检查点，不启动新功能或称整票完成。
+永久审查归档reviews/static-forwarding-checkpoint；本轮裁决rulings/2026-10-04-static-forwarding-checkpoint.md。
+旧CommonJS关闭原因Important及宿主Minor、原Express入口FAIL、native/client/CI/restore
+未跑状态均保留。当前scratch不删除，原报告与原始检查证据已另存，禁止重新派遣已完成Task1。
