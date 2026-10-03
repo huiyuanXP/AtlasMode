@@ -75,6 +75,7 @@
 **Files:**
 - Create: tests/integration/commonjs-resolution.test.ts, tests/e2e/commonjs.spec.ts, tests/support/commonjs.mjs
 - Modify: apps/web/src/app/Navigation.tsx, apps/web/src/i18n/zh.ts, apps/web/src/i18n/en.ts, README.md, docs/environment.md, docs/superpowers/validation-targets.md, docs/superpowers/readme-coverage.md, docs/superpowers/state.md
+- Task3 review fix scope: tests/e2e/commonjs.spec.ts owns the repeated offline-routing setup. One bounded instrumented investigation may inspect tests/support/production.mjs, tests/support/graceful-preload.mjs, tests/e2e/planning.spec.mjs and apps/server/src/index.ts. Change a shutdown unit and its focused lifecycle regression only if causal evidence identifies that unit; preserve the 10-second stop bound and real handler semantics. No unrelated analyzer/target reruns.
 
 **Interfaces:**
 - Consumes: existing actual compiled HTTP/MCP tools/store, Task1 guarded facts and Task2 coverage.packageFiles optional; no new endpoint/tool/approval channel.
