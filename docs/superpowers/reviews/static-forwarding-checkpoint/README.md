@@ -12,7 +12,7 @@ Task1；源码1346a8f，最终七包build/typecheck、lint与537项/30文件根�
 原Express泛用浏览PASS/入口FAIL、原关闭因果Important与宿主Minor、native/client/CI/
 restore限制保持；本次没有重跑浏览器、成熟目标或安装，没有部署。
 
-receipt.json保存当前检查收据和全部归档文件SHA256；push-*.log是当前实际根检查输出，
+receipt.json保存当前检查收据和全部归档文件SHA256；push-*.log.gz是当前实际根检查输出的无损压缩（解压SHA256见receipt），
 push-source-sha256.json标记测试过的源码。四项本轮裁决见
 [裁决记录](../../rulings/2026-10-04-static-forwarding-checkpoint.md)，前50项保持各历史journal。
 当前SDD scratch保留，因为计划未完成；完整原始diff/日志/fixture另存本地忽略Git的
