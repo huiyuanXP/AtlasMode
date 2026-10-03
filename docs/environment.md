@@ -37,8 +37,9 @@ Vite/Flask 本轮未重新索引或浏览；旧指标和截图只属于原 T08 �
 ## Captured tsconfig 最终集成（2026-10-03 UTC）
 
 在基线 `10eea272940a5c60f5136418ec46c9fabab1efb5` 加 Task3 界面/回归变更后执行。
-Task1/2 已独立审查，Task3 与整体票据审查待 controller gate；这里记录实际检查，
-不将实现者自检称为独立审查。
+Task1/2/3 均已独立审查通过；整体票据审查在091687b完成（0C/0I/2M）。
+唯一Minor修复波次后的一次范围复审与残余warning裁决待controller gate。
+这里记录实际检查，不将实现者自检称为独立审查。
 
 - 最终产品源码完成后 root `npm run build`、`npm run typecheck`、`npm run lint`、
   `npm test` 各执行一次且退出0；293/25全部通过，无失败/跳过，suite30.25s。
@@ -140,6 +141,37 @@ PLAYWRIGHT_CHROMIUM_EXECUTABLE=/usr/bin/chromium npm run test:e2e
 如在 PowerShell 指定已安装浏览器，先运行
 `$env:PLAYWRIGHT_CHROMIUM_EXECUTABLE = 'C:\absolute\path\chrome.exe'`；该原生示例未执行。
 设置代理允许域名或保存配置草稿不等于运行时已应用，也不证明官方下载成功。
+
+### 后续 Playwright 调用的颜色策略
+
+若宿主同时传入 `NO_COLOR` 和 `FORCE_COLOR`，保留用户的 `NO_COLOR` 意图，
+只在本次Node进程移除 `FORCE_COLOR`，再加载已安装的CLI。以下命令在仓库根目录
+可用于Linux/macOS shell及Windows PowerShell，不改宿主或客户端全局变量：
+
+```text
+node -e "if(process.env.NO_COLOR!==undefined)delete process.env.FORCE_COLOR;process.argv.splice(1,0,'playwright');require('./node_modules/playwright/cli.js')" -- test --list --reporter=list tests/e2e/tsconfig.spec.ts tests/e2e/planning.spec.mjs
+```
+
+同一调用去掉 `--list --reporter=list` 即为后续真实浏览器检查命令：
+
+```text
+node -e "if(process.env.NO_COLOR!==undefined)delete process.env.FORCE_COLOR;process.argv.splice(1,0,'playwright');require('./node_modules/playwright/cli.js')" -- test tests/e2e/tsconfig.spec.ts tests/e2e/planning.spec.mjs
+```
+
+列表命令已在本Linux实例刻意传入 `NO_COLOR=1`、`FORCE_COLOR=1` 验证：原CLI
+有冲突warning；上述调用退出0、列出3项/2文件，无冲突warning或ANSI颜色。
+列表只发现测试，不执行测试或启动浏览器，约0.46s；第二条浏览器命令未在本波次执行。
+Windows/macOS原生执行仍未验证。可选浏览器路径仍使用上节的变量。
+
+**残余限制（WR-M1仅部分处理，代码层面未解决）：** 已安装Playwright1.63.0在
+`node_modules/playwright/lib/runner/index.js:5453` 的 `WorkerHost` 无条件设置
+`FORCE_COLOR: "1"`，worker会重新产生与保留的 `NO_COLOR` 的冲突。普通
+`npm run test:e2e` / `npx playwright test` 未改动；上述调用仅清理CLI继承冲突，
+不保证worker无warning。未移除 `NO_COLOR`、修改依赖、过滤stderr或抑制其他warning。
+Task3原始ui/planning日志中的warning完整保留，不重标为干净输出；已通过的产品
+浏览器/root/固定目标gate未仅为颜色噪声重跑。证据与自检在
+`.superpowers/sdd/2026-10-03-captured-tsconfig/scratch/whole-fix/`，残余由controller
+在唯一范围复审后裁决，不据此宣称产品或整轮gate关闭。
 
 ## 本地数据与 MCP
 

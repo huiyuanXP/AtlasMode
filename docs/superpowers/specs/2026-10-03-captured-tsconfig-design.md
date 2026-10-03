@@ -1,7 +1,9 @@
 # 受限 tsconfig 路径解析设计
 
-状态：首轮 T08 验收期间准备；通过首轮独立验收和整体审查后实施。
-执行更新：MVP gates 已通过；Task1 f913eae 已独立审查通过，Task2/3 待实施。
+状态：首轮 T08 验收期间准备，MVP gates 通过后已实施；此句保留设计起点。
+执行更新：Task1 f913eae、Task2 952bffa、Task3 ab9f8c1 均已独立审查通过。
+整体审查为0 Critical / 0 Important / 2 Minor；唯一修复波次后范围复审待完成。
+当前执行状态以 [state.md](../state.md) 为准；不得重复派遣已完成任务。
 日期：2026-10-03 UTC。属于 README 的模块解析缺口，不改变用户问卷范围。
 
 ## 目标与选择

@@ -131,8 +131,8 @@ T01–T08及整体审查gate已完成；25项Ruling与代价见
 rulings/2026-10-03-local-planning-mvp.md。任务/修复/整体报告和ledger归档到
 reviews/local-planning-mvp/；原始diff/log完整压缩在忽略产物
 artifacts/review-evidence/local-planning-mvp.tar.gz。当前work分支继续，本轮不merge/push/publish。
-用户尚未通知收尾，继续实施已准备的captured-tsconfig spec/plan，顺序SDD三任务：
-配置输入/新鲜度 → 按来源checker解析 → HTTP/MCP/UI真实验证。新的ledger会在
+用户尚未通知收尾；captured-tsconfig 的顺序SDD三任务均已实现并独立审查通过：
+配置输入/新鲜度 → 按来源checker解析 → HTTP/MCP/UI真实验证。当前ledger在
 .superpowers/sdd/2026-10-03-captured-tsconfig/progress.md，已归档任务不得重新派遣。
 操作指南：../first-plan.md。云草稿保存不等于发布，fresh-task恢复仍未验证。
 
@@ -155,7 +155,7 @@ controller补充规则：已枚举但不可用配置以`CONFIGURATION_UNAVAILABL
 成功不能取消另一extends链的深度/循环/预算拒绝，需逐个归属配置验证。
 Task1 f913eae已独立审查通过（0 Critical/Important/Minor），原始报告见新plan ledger。
 Task2 952bffa已实现按来源文件的配置checker解析并独立审查通过（0C/I/M）：160项相关测试、core/indexer build/typecheck和root lint通过。
-最近配置归属、拒绝scope、不跨项目cache、配置alias不可用unknown及捕获-only host均有回归。Task3实际HTTP/MCP/UI历史兼容和最终root suite已通过，详细证据见下节；整轮审查待完成。
+最近配置归属、拒绝scope、不跨项目cache、配置alias不可用unknown及捕获-only host均有回归。Task3实际HTTP/MCP/UI历史兼容和最终root suite已通过，详细证据见下节；整轮Minor修复的范围复审待完成。
 
 后续调研已实际复现CommonJS两类旧误判（导出覆盖、require遮蔽）及暴露入口缺口；下一独立Ticket先处理这些安全/语义边界，再处理workspace源码映射。当前不宣称完整CommonJS支持或运行时值证明。
 
@@ -181,6 +181,9 @@ Task1/2已满足后端生命周期，因此后端是新增GREEN基线，不制�
 外部浏览器请求拒绝，实际external/console/page errors/SDK stderr均空；sentinel
 未执行，owned进程及临时SQLite/目录已清理。详细命令/时间/指纹与报告在当前
 `.superpowers/sdd/2026-10-03-captured-tsconfig/scratch/task-3/`。
-Task3 ab9f8c1独立任务审查通过（0C/0I/1M），环境颜色变量的Playwright warning记入Minor，由整轮审查裁决；全计划审查仍待完成。
+Task3 ab9f8c1独立任务审查通过（0C/0I/1M）；全计划审查在091687b完成（0C/0I/2M）。
+唯一修复波次更正spec任务状态，并记录保留NO_COLOR的可移植后续命令；WR-M1仅部分处理，
+Playwright1.63.0 worker仍强制FORCE_COLOR=1，不能声称旧日志或未来worker输出无warning。
+WR-M2状态已更正；一次新范围复审及controller对残余warning的裁决待完成，未宣布整轮关闭。
 CommonJS旧缺陷仍归下一独立Ticket；workspace package/exports/references未实施。
 原生Win/mac、远端CI、实际客户端注册、fresh-task恢复/发布仍未执行。
