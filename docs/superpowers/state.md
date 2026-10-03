@@ -9,9 +9,10 @@
 用户要求分阶段 Ticket、设置 Goal，完成问卷后继续对照 README 推进，直到通知收尾。
 不再等待逐阶段人工设计/计划审批，改为自检、独立审查和实际验证。最新用户指令为
 “commit and push”，明确授权当前work分支各阶段提交/推送。当前为Task2已独立审查的
-PARTIAL检查点c608fdc：生命周期/浏览器/541项31文件通过，唯一完整Express严格入口
+PARTIAL检查点3287a0b：生命周期/浏览器/541项31文件通过，唯一完整Express严格入口
 仍FAIL且原失败无PNG。整体审查已记录M1实际链sentinel及M3活动交接修复要求；
-本次唯一集中修复执行中，限定复审/残余裁决待controller完成，不称整票目标完成。
+本次唯一集中修复已实现，根lint/541项31文件及forwarding browser1通过；
+限定复审已批准、残余问题按明确限制保留，不称整票目标完成。
 当前报告与待办见[Task2交接](reviews/static-forwarding-task2/README.md)。
 应用部署、全局客户端配置及合并main不在本次操作范围。使用当前cloud checkout。
 
@@ -350,7 +351,7 @@ Task2源码61a0ade经独立task gate：规格PARTIAL/质量APPROVE WITH MINORS�
 
 计划Task2步骤1/2/4已完成并有原541/31及browser1收据；步骤3已执行但FAILED，sample
 createApplication exported=false、无于34/34入口且原run无PNG。步骤5已有task/whole
-检查点记录，当前仅做ONE集中M1/M3修复，限定复审与最终逐项裁决待controller完成。
+检查点记录，当前ONE集中M1/M3修复已实现并验证，限定复审已批准，残余裁决见本节末尾。
 M1将同一marker写入entry/index/barrel及两个leaf首行，leaf声明仍line2，barrel-only改向
 保留同一sentinel；绝不执行fixture来证明它。M3修正活动摘要/README链接和计划历史标记。
 新源码/检查收据只保存至final-fix文件，不改旧evidence/hashes。原丢失REDrawreceipt的M2
@@ -360,3 +361,19 @@ M1将同一marker写入entry/index/barrel及两个leaf首行，leaf声明仍line
 lint/test及新forwarding browser按顺序核对。无新Express/旧CommonJS/Vite/Flask重复，
 真实客户端/Windows交互式Ctrl+C/Task2remoteCI/新云恢复与部署仍在其明确验证范围之外。
 当前阶段状态与最终修复收据见[Task2交接](reviews/static-forwarding-task2/README.md)。
+
+
+本次修复最终checks：定向integration1项（20:03:04 UTC，3.46s）；controller根lint及
+541/31（20:04:34 UTC，40.38s）全通过；顺序forwarding browser1项（20:06:06.846Z，
+5.324s）通过、3图实际看。新final-fix收据独立保存，旧源hash/日志/图片归档未改，
+helperSHA256为6c6271ebdcafa36bfe5a614ad49afa5400c6faee06076926fc0a4ecaec765150。
+仅fixture/helper变更，无产品修改/目标执行/Express重跑；最终已验源码检查点3287a0b，限定复审APPROVE。
+
+## 当前最终检查点：限定复审通过，保留PARTIAL
+
+源码3287a0b，唯一限定复审APPROVE：M1执行哨兵覆盖实际转发链，M3交接摘要已修复，
+无新增问题。最后根lint/541项31文件与顺序浏览器1项通过；七包build/typecheck对应
+未变产品源码，未重复无关检查。当前独立审查/收据/逐项裁决见Task2交接及progress.md。
+残余：完整Express入口仍FAIL且原运行无PNG；历史退出SIGKILL因果缺口仍未解决；
+首个夹具失败raw丢失仍明确披露；旧忽略Git的图片未恢复。未进行第二次Express gate、
+产品分析规则放宽、main合并、公开部署或全局客户端配置。按最新用户授权推送work。

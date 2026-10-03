@@ -1,6 +1,6 @@
 # 环境、运行与验收
 
-## 当前 Static forwarding Task2 候选（2026-10-03 UTC）
+## 当前 Static forwarding Task2 PARTIAL检查点（2026-10-03 UTC）
 
 基线86e6b12已推送，原生Linux/Windows/macOS检查及Linux官方Chromium job全部成功：
 [GitHub run37148507859](https://github.com/huiyuanXP/AtlasMode/actions/runs/37148507859)。
@@ -24,7 +24,7 @@ Vite/Flask或执行目标。此失败早于截图，未产生新的Express PNG�
 取证，在一次最终disposable非入口负例中取得真实sample/context/source和PNG，退出1
 证明拒绝有效。ownedPID用kill(pid,0)的ESRCH核对，nested finally保证stop/rm执行。
 
-Task2独立审查和整票whole gate待controller完成。原关闭Important因果缺口及宿主颜色
+Task2任务/整体检查点审查及唯一集中修复限定复审已完成；整票目标仍PARTIAL。原关闭Important因果缺口及宿主颜色
 Minor保持；真实Codex/Claude客户端、Windows交互式Ctrl+C、新云恢复/发布仍未验证。
 旧阶段关于native/远端CI未执行的条目保持历史含义，当前native/CI仅上述已推送基线已验。
 该恢复环境没有旧忽略Git的Vite/Flask/Express截图或证据tar；Git历史报告仍在，不能声称

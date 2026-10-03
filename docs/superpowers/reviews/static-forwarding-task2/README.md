@@ -11,8 +11,9 @@ Old historical Express FAIL/genericPASS and shutdown Important causality gap rem
 
 The ONE combined final fix adds a marker directly to the traversed forwarding chain and corrects
 active summaries/plan/link. [New repair report](final-fix-report.md) and unique final-fix receipts
-record its checks, without replacing old evidence/hashes. Scoped independent review and controller
-residual rulings pending. No second Express gate, product widening or whole-plan completion claim.
+record integration1/rootlint/541tests31files/browser1 passing checks and viewed3 screenshots,
+without replacing old evidence/hashes. Scoped independent review APPROVED3287a0b; M1/M3 addressed with no new breakage.
+Residual limits are recorded in scoped-review.md and progress.md. No second Express gate, product widening or whole-plan completion claim.
 Initial REDrawreceipt loss remains disclosed; no reconstructed receipt. Latest build/typecheck
 checks still refer to unchanged product source; final fixture/root/browser checks are sequential.
 User's ongoing work continues after this checkpoint. Controller owns commits/pushes/whole closure.

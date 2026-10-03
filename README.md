@@ -6,7 +6,8 @@
 
 当前已审查的Task2 PARTIAL检查点与待办见 [交接记录](docs/superpowers/reviews/static-forwarding-task2/README.md)。
 Task2的七包构建、类型检查、lint和541项/31文件测试通过，独立task/whole检查点评审已记录；
-唯一集中修复和限定复审正在执行，完整Express入口仍FAIL，整票目标未完成。
+唯一集中修复后根lint/541项31文件及forwarding browser1通过，限定复审已批准；
+完整Express入口仍FAIL，整票目标未完成。
 
 本机使用 Node24.19.0/npm11.9.0；分析 Python 项目需 Python3.10+。从仓库根目录运行：
 
@@ -42,7 +43,7 @@ npm start
 证明仅改转发目标使规划/路线过期且保留叶声明ID和批准历史，双语源码/复制位置已验。
 唯一新的完整Express严格入口gate仍FAIL：实际createApplication未导出、不在34/34入口中；
 捕获的test/exports.js嵌套原型写入使共享身份保守失效。旧泛用PASS/入口FAIL保留，
-Task2独立审查已记录为PARTIAL，整体审查要求的唯一集中修复/限定复审待完成。动态 mixin、workspace
+Task2独立审查已记录为PARTIAL，整体审查要求的唯一集中修复已验证，限定复审已批准，仍为PARTIAL检查点。动态 mixin、workspace
 exports、一般值流和运行时加载兼容性不作保证。
 
 诊断区新增“包配置 / Package manifests”，独立显示捕获数量与相对路径。
