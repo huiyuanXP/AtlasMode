@@ -1,6 +1,8 @@
 import Fastify, { type FastifyInstance } from "fastify";
 import fastifyStatic from "@fastify/static";
 import { resolve, extname } from "node:path";
+import type { IncomingMessage } from "node:http";
+import type { Socket } from "node:net";
 import { DomainError } from "@codemap/core";
 import type { WorkspaceService } from "@codemap/service";
 import { ZodError } from "zod";
@@ -27,6 +29,40 @@ export async function createServer({
   developmentProxy?: boolean;
 }): Promise<FastifyInstance> {
   const app = Fastify({ logger: false });
+  // Native idle-connection closing does not discard raw/partial requests.
+  // Preserve every fully received request until its response has drained,
+  // including when a partial next request shares the same pipelined socket.
+  const connections = new Map<Socket, Set<IncomingMessage>>();
+  let closing = false;
+  const closeIncomplete = (socket: Socket) => {
+    const requests = connections.get(socket);
+    if (
+      closing &&
+      requests &&
+      ![...requests].some((request) => request.complete)
+    )
+      socket.destroy();
+  };
+  app.server.on("connection", (socket) => {
+    connections.set(socket, new Set());
+    socket.once("close", () => connections.delete(socket));
+    closeIncomplete(socket);
+  });
+  app.server.on("request", (request, response) => {
+    const socket = request.socket;
+    const requests = connections.get(socket);
+    requests?.add(request);
+    const finished = () => {
+      requests?.delete(request);
+      closeIncomplete(socket);
+    };
+    response.once("finish", finished);
+    response.once("close", finished);
+  });
+  app.addHook("preClose", async () => {
+    closing = true;
+    for (const socket of connections.keys()) closeIncomplete(socket);
+  });
   // Validate raw authority before parsing bodies or invoking any service method.
   // Forwarded headers are intentionally irrelevant to this local-only boundary.
   app.addHook("onRequest", async (request, reply) => {
