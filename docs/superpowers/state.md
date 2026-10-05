@@ -382,3 +382,7 @@ helperSHA256为6c6271ebdcafa36bfe5a614ad49afa5400c6faee06076926fc0a4ecaec765150�
 Windows/macOS和Linux Chromium全部通过。精确SHA/jobID与结论见Task2的remote-ci.json。
 随后只补交接状态/CI收据，未改变已验产品、夹具、测试或工作流；不重复文档更新的CI。
 完整Express入口仍未满足，当前交付为已审查、已验证并上传的PARTIAL检查点。
+
+## Main/work integration (2026-10-05 UTC)
+
+The latest human request explicitly authorizes merging main's VM2 work into work and pushing work. Inputs main b87644f and work 69be14b independently built incompatible implementations from 944b48c. The merge retains the reviewed work product tree, contract, lock/runtime pins, vendor skills and planned/residual work. Main history remains reachable; issues #1–#7 and historical reports are preserved under docs/issues and docs/history/vm2-first-release. This is integration/handoff only, not new product functionality or resolution of Express/PARTIAL limits. Fresh check and review results: reviews/main-work-merge.md.

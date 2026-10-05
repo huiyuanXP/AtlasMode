@@ -42,6 +42,14 @@
       "purpose": "stdio MCP bridge using HTTP",
       "allowed": ["SDK", "HTTP", "core"],
       "forbidden": ["SQLite", "indexer", "service imports"]
+    },
+    {
+      "path": "docs/history/vm2-first-release",
+      "purpose": "Historical main-branch reports, explicitly superseded by work state and contracts"
+    },
+    {
+      "path": "docs/issues",
+      "purpose": "Preserved GitHub first-release issue bodies and publication manifest from main"
     }
   ],
   "dependencyRules": [

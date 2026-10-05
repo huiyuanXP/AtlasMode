@@ -1,0 +1,47 @@
+{
+  "repository": "huiyuanXP/AtlasMode",
+  "issues": [
+    {
+      "key": "release",
+      "title": "首版交付总验收：真实索引、图编辑 CRUD、持久化与 MCP 闭环",
+      "bodyFile": "docs/issues/release.md",
+      "url": "https://github.com/huiyuanXP/AtlasMode/issues/1"
+    },
+    {
+      "key": "indexing",
+      "title": "真实 TS/JS 索引：自动扫描、跨文件调用、稳定 ID 与未知证据",
+      "bodyFile": "docs/issues/indexing.md",
+      "url": "https://github.com/huiyuanXP/AtlasMode/issues/2"
+    },
+    {
+      "key": "storage",
+      "title": "SQLite 持久化与知识 CRUD：快照、注释、功能集、规则、布局和历史",
+      "bodyFile": "docs/issues/storage.md",
+      "url": "https://github.com/huiyuanXP/AtlasMode/issues/3"
+    },
+    {
+      "key": "browser",
+      "title": "真实仓库图浏览与编辑：查询、文件框、注释/功能集/布局 CRUD",
+      "bodyFile": "docs/issues/browser.md",
+      "url": "https://github.com/huiyuanXP/AtlasMode/issues/4"
+    },
+    {
+      "key": "planning",
+      "title": "规划 CRUD 与人工审批：版本冲突、语义摘要、基线过期和图上编辑",
+      "bodyFile": "docs/issues/planning.md",
+      "url": "https://github.com/huiyuanXP/AtlasMode/issues/5"
+    },
+    {
+      "key": "mcp",
+      "title": "官方 stdio MCP：有预算的图查询、规划/知识 CRUD 与同源状态",
+      "bodyFile": "docs/issues/mcp.md",
+      "url": "https://github.com/huiyuanXP/AtlasMode/issues/6"
+    },
+    {
+      "key": "verification",
+      "title": "实现后核对与首版 E2E：临时符号绑定、结构偏差和重启恢复",
+      "bodyFile": "docs/issues/verification.md",
+      "url": "https://github.com/huiyuanXP/AtlasMode/issues/7"
+    }
+  ]
+}
