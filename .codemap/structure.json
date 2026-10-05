@@ -1,0 +1,182 @@
+{
+  "schemaVersion": 1,
+  "folders": [
+    {
+      "path": "packages/core/src",
+      "purpose": "Pure fact/knowledge/plan/view schemas, domain validation/transitions, verification and ports",
+      "allowed": ["pure TypeScript", "schema", "interfaces"],
+      "forbidden": ["HTTP", "filesystem", "React", "SQL"]
+    },
+    {
+      "path": "packages/core/src/graph",
+      "purpose": "Parser-owned code snapshots and graph reference integrity; legacy demo schema remains separate"
+    },
+    {
+      "path": "apps/server/src",
+      "purpose": "Loopback HTTP routes, runtime assembly, startup indexing and knowledge file mirrors"
+    },
+    {
+      "path": "apps/web/src/app",
+      "purpose": "Application entry and page layout"
+    },
+    {
+      "path": "apps/web/src/features/graph",
+      "purpose": "Real fact/plan/knowledge canvas projection, selection and persisted layout"
+    },
+    {
+      "path": "apps/web/src/api",
+      "purpose": "Shared HTTP client and transport types"
+    },
+    {
+      "path": "apps/web/src/styles",
+      "purpose": "Base presentation styles"
+    },
+    {
+      "path": "docs",
+      "purpose": "Architecture, verified environment, validation reports and next steps"
+    },
+    {
+      "path": ".codemap",
+      "purpose": "Versioned directory responsibilities and machine-checkable dependency rules"
+    },
+    {
+      "path": "docs/issues",
+      "purpose": "Reviewable first-release GitHub issue bodies and idempotent publication manifest"
+    },
+    {
+      "path": "scripts",
+      "purpose": "Thin development, validation, and authorized issue publication entry points"
+    },
+    {
+      "path": "packages/indexer/src",
+      "purpose": "Read-only bounded code scanning and TS/JS symbol indexing"
+    },
+    {
+      "path": "packages/storage/src",
+      "purpose": "SQLite migrations and transactional persistence adapters"
+    },
+    {
+      "path": "packages/service/src",
+      "purpose": "Use-case orchestration using injected core ports"
+    },
+    {
+      "path": "apps/mcp/src",
+      "purpose": "stdio SDK tools that use the shared loopback HTTP API"
+    },
+    {
+      "path": "packages/core/src/planning",
+      "purpose": "Pure versioned plan models, validation, approval and semantic content rules"
+    },
+    {
+      "path": "packages/core/src/ports",
+      "purpose": "Indexer and persistence abstractions"
+    },
+    {
+      "path": "packages/core/src/knowledge",
+      "purpose": "Knowledge and view schemas independent of code facts"
+    },
+    {
+      "path": "packages/core/src/diff",
+      "purpose": "Evidence-based structural verification"
+    },
+    {
+      "path": "packages/storage/migrations",
+      "purpose": "Numbered SQL migration history"
+    },
+    {
+      "path": "fixtures",
+      "purpose": "Small non-sensitive parser and implementation-verification fixtures"
+    },
+    {
+      "path": "tests/integration",
+      "purpose": "Cross-package HTTP, storage and MCP lifecycle tests"
+    },
+    {
+      "path": "tests/e2e",
+      "purpose": "Real browser graph-editing and approval scenarios"
+    },
+    {
+      "path": "apps/web/src/features/planning",
+      "purpose": "Planning forms and semantic edit presentation"
+    },
+    {
+      "path": "apps/web/src/features/annotations",
+      "purpose": "Knowledge annotations, constraints and orphan rebinding UI"
+    },
+    {
+      "path": "apps/web/src/features/groups",
+      "purpose": "Many-to-many capability membership UI"
+    },
+    {
+      "path": "apps/web/src/features/structure",
+      "purpose": "Directory policy CRUD and ownership preview"
+    },
+    {
+      "path": "apps/web/src/features/verification",
+      "purpose": "Evidence-based implementation verification UI"
+    },
+    {
+      "path": "docs/decisions",
+      "purpose": "Evidence-backed architecture/dependency decisions and tradeoffs"
+    }
+  ],
+  "workspaceRules": [
+    {
+      "path": "packages/core",
+      "package": "@codemap/core",
+      "allowedWorkspaceDependencies": []
+    },
+    {
+      "path": "apps/server",
+      "package": "@codemap/server",
+      "allowedWorkspaceDependencies": [
+        "@codemap/core",
+        "@codemap/indexer",
+        "@codemap/storage",
+        "@codemap/service"
+      ]
+    },
+    {
+      "path": "apps/web",
+      "package": "@codemap/web",
+      "allowedWorkspaceDependencies": ["@codemap/core"]
+    },
+    {
+      "path": "packages/indexer",
+      "package": "@codemap/indexer",
+      "allowedWorkspaceDependencies": ["@codemap/core"]
+    },
+    {
+      "path": "packages/storage",
+      "package": "@codemap/storage",
+      "allowedWorkspaceDependencies": ["@codemap/core"]
+    },
+    {
+      "path": "packages/service",
+      "package": "@codemap/service",
+      "allowedWorkspaceDependencies": ["@codemap/core"]
+    },
+    {
+      "path": "apps/mcp",
+      "package": "@codemap/mcp",
+      "allowedWorkspaceDependencies": ["@codemap/core"]
+    }
+  ],
+  "dependencyRules": [
+    {
+      "from": "apps/web/**",
+      "mustNotImport": [
+        "@codemap/indexer",
+        "@codemap/storage",
+        "@codemap/service",
+        "@codemap/server"
+      ],
+      "reason": "Browser UI uses HTTP for application operations; core only for shared schemas"
+    },
+    {
+      "from": "packages/core/**",
+      "mustNotImport": ["node:*", "react", "react-dom", "fastify"],
+      "reason": "Core remains pure and platform independent"
+    }
+  ]
+}

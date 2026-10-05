@@ -1,0 +1,49 @@
+{
+  "name": "atlasmode",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "packages/core",
+    "packages/indexer",
+    "packages/storage",
+    "packages/service",
+    "apps/server",
+    "apps/mcp",
+    "apps/web"
+  ],
+  "engines": {
+    "node": "24.21.0",
+    "npm": "11.19.0"
+  },
+  "packageManager": "npm@11.19.0",
+  "scripts": {
+    "dev": "npm run build:backend && concurrently --kill-others --names core,indexer,storage,service,server,web \"npm run dev --workspace @codemap/core\" \"npm run dev --workspace @codemap/indexer\" \"npm run dev --workspace @codemap/storage\" \"npm run dev --workspace @codemap/service\" \"npm run dev --workspace @codemap/server\" \"npm run dev --workspace @codemap/web\"",
+    "build": "npm run build:backend && npm run build --workspace @codemap/server && npm run build --workspace @codemap/mcp && npm run build --workspace @codemap/web",
+    "typecheck": "npm run build:backend && npm run typecheck --workspace @codemap/core && npm run typecheck --workspace @codemap/indexer && npm run typecheck --workspace @codemap/storage && npm run typecheck --workspace @codemap/service && npm run typecheck --workspace @codemap/server && npm run typecheck --workspace @codemap/mcp && npm run typecheck --workspace @codemap/web && tsc -p tsconfig.check.json",
+    "test": "npm run build:backend && vitest run",
+    "lint": "eslint . --max-warnings 0 && prettier --check .",
+    "format": "prettier --write .",
+    "check": "npm run typecheck && npm run lint && npm test && npm run build",
+    "build:backend": "npm run build --workspace @codemap/core && npm run build --workspace @codemap/indexer && npm run build --workspace @codemap/storage && npm run build --workspace @codemap/service",
+    "mcp": "node apps/mcp/dist/index.js",
+    "issues:publish": "node scripts/publish-issues.mjs",
+    "test:e2e": "npm run build:backend && npm run build --workspace @codemap/server && npm run build --workspace @codemap/mcp && playwright test"
+  },
+  "devDependencies": {
+    "@modelcontextprotocol/sdk": "1.32.0",
+    "@playwright/test": "1.63.0",
+    "@types/node": "24.19.1",
+    "concurrently": "10.0.5",
+    "eslint": "10.12.0",
+    "prettier": "3.9.9",
+    "tsx": "4.23.15",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.71.0",
+    "vitest": "5.0.3"
+  },
+  "allowScripts": {
+    "esbuild@0.28.2": true,
+    "better-sqlite3@13.0.3": true
+  }
+}

@@ -2,7 +2,21 @@
 
 用可编辑的代码关系图替代传统文字 Plan Mode。Agent 在实际修改代码之前，把规划叠加到现有项目图上；用户理解、调整并确认后，Agent 才实施。人通过图形理解项目，Agent 通过 MCP 查询同一份结构化模型。
 
-> 当前仓库阶段：设计与启动说明。此 README 不代表功能已经实现，也不包含已经可运行的应用。可以先只提交这一个文件到 GitHub，再让 Codex Cloud 按本文初始化环境并分阶段构建。
+> 当前已具备真实 TS/JS 索引、代码关系图浏览、SQLite 持久化、规划与知识记录增删改查、人工确认、基线过期检测、实现后结构核对，以及 stdio MCP。默认页面使用真实索引数据，不再是 P0 demo。静态图不是运行时轨迹；动态调用与无法判断的约束仍会明确标为未知。已验证能力与限制见 [docs/V1-VALIDATION.md](docs/V1-VALIDATION.md)。
+
+运行方式（Node 24.21.0 / npm 11.19.0）：
+
+```bash
+npm ci
+npm run dev
+# 另一个终端执行：
+npm run check
+npm run test:e2e
+```
+
+默认自动索引本仓库。可通过 `CODEMAP_WORKSPACE_ROOT` 固定另一个授权目标仓库，使用 `CODEMAP_DATA_DIR` 指定数据目录。网页/API 仅监听 loopback：`http://127.0.0.1:5173` / `http://127.0.0.1:4310/api/health`。MCP 配置与运行说明见 [docs/environment.md](docs/environment.md)。
+
+首版工作跟踪：[GitHub 总验收 #1](https://github.com/huiyuanXP/AtlasMode/issues/1)，子任务 #2–#7。代码目前仅在本地工作树中，尚未提交或推送；issues 保持打开等待审阅。以下完整规格还包含后续高级组合、增量索引等路线图，不表示所有后续阶段都已完成。
 
 ## 1. 产品目标
 
@@ -152,7 +166,7 @@
 | `apps/server` | `fastify` | 本地 HTTP API，作为业务操作入口 | P0 |
 | `packages/core` | `zod` | 对图、规划和边界输入做 schema 校验 | P0 |
 | `packages/indexer` | `typescript`、`ts-morph` | 解析 TS/JS、解析符号引用 | P1 |
-| `packages/indexer` | `fast-glob`、`ignore` | 扫描和排除文件 | P1 |
+| `packages/indexer` | `Node.js 24 readdir`、`ignore` | 有预算的原生目录遍历和排除文件（避免 fast-glob 未修复公告，见 docs/decisions/001-native-scanning.md） | P1 |
 | `packages/storage` | `better-sqlite3` | SQLite 持久化和事务 | P1 |
 | `packages/storage` dev | `@types/better-sqlite3` | 数据库类型定义 | P1 |
 | `apps/mcp` | 官方 MCP TypeScript SDK 的稳定 server 包、其要求的 schema 依赖 | stdio MCP 入口 | P3 |
