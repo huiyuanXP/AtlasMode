@@ -11,10 +11,13 @@ import {
   type SubgraphResult,
 } from "@codemap/core";
 import type { WorkspaceService } from "@codemap/service";
+import { navigationScope, type ScopeInput } from "./navigation-query.js";
 
 /** Transport glue only: every query receives the project's current service snapshot. */
 export function projectQueries(service: WorkspaceService) {
   return {
+    scope: (id: string, input: ScopeInput) =>
+      navigationScope(service.getSnapshot(id), input),
     dependencies: (
       id: string,
       input: { nodeId: string; budget?: number },

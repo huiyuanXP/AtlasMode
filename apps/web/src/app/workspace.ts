@@ -22,6 +22,10 @@ import type {
 import { ApiError, HttpApi } from "../api/client.js";
 import { ProjectScope } from "../api/scope.js";
 import type { FunnelState } from "../features/graph/funnel.js";
+import {
+  plannedScopeIds,
+  type NavigationLocation,
+} from "../features/navigation/path.js";
 import type { LayerFilter } from "../features/graph/projection.js";
 import {
   affectedNodeIds,
@@ -48,6 +52,7 @@ export type WorkspaceState = {
   selectedNode?: CodeNode;
   focusRequest?: FocusRequest;
   funnel?: FunnelState;
+  navigationLocation?: NavigationLocation;
   context?: FunctionContextResult;
   source?: { filePath: string; content: string };
   search?: FunctionSearchResult;
@@ -77,6 +82,7 @@ const blank = (): Omit<WorkspaceState, "projects"> => ({
   selectedNode: undefined,
   focusRequest: undefined,
   funnel: undefined,
+  navigationLocation: undefined,
   context: undefined,
   source: undefined,
   search: undefined,
@@ -182,7 +188,20 @@ export function createWorkspace(
         plans: [plan, ...s.plans.filter((p) => p.plan.id !== plan.plan.id)],
         report: undefined,
         ...(deleted
-          ? { selectedNode: undefined, context: undefined, source: undefined }
+          ? {
+              selectedNode: undefined,
+              context: undefined,
+              source: undefined,
+              navigationLocation: undefined,
+            }
+          : {}),
+        ...(s.navigationLocation?.planned &&
+        !plannedScopeIds(
+          plan.plan.operations,
+          s.navigationLocation.path,
+          s.navigationLocation.kind,
+        ).length
+          ? { navigationLocation: undefined }
           : {}),
       };
     });
@@ -234,12 +253,20 @@ export function createWorkspace(
     scope.invalidate("graph");
     scope.invalidate("route");
     scope.invalidate("funnel");
+    scope.invalidate("navigation");
     set((s) => ({
       selectedNode: node,
+      navigationLocation: undefined,
       focusRequest: { nodeId: node.id, nodeIds: [node.id], sequence },
       context: undefined,
       source: undefined,
-      busy: { ...s.busy, graph: false, route: false, funnel: false },
+      busy: {
+        ...s.busy,
+        graph: false,
+        route: false,
+        funnel: false,
+        navigation: false,
+      },
     }));
     const isFact =
       get().graph?.nodes.some((n) => n.id === node.id) ||
@@ -367,6 +394,119 @@ export function createWorkspace(
         (graph) => commit(graph, graph.unknownCount),
       );
   };
+  const navigateScope = async (path: string, kind: "folder" | "file") => {
+    const state = get(),
+      project = state.project,
+      snapshotId = state.summary?.snapshotId;
+    if (!project || !snapshotId) return;
+    const sequence = ++focusGeneration;
+    scope.invalidate("graph");
+    scope.invalidate("route");
+    scope.invalidate("inspect");
+    scope.invalidate("funnel");
+    set((s) => ({
+      focusRequest: undefined,
+      busy: {
+        ...s.busy,
+        graph: false,
+        route: false,
+        inspect: false,
+        funnel: false,
+      },
+    }));
+    let funneling: Promise<void> | undefined;
+    await run(
+      "navigation",
+      async () => {
+        const ids = plannedScopeIds(
+          state.plan?.plan.operations ?? [],
+          path,
+          kind,
+        );
+        let capturedSnapshotId = snapshotId;
+        try {
+          const graph = await api.scope(
+            project.id,
+            path,
+            kind,
+            80,
+            snapshotId,
+            ids.length > 0,
+          );
+          if (!graph.missing) {
+            const focusIds = [
+              ...new Set([
+                ...graph.nodes.map((n) => n.id),
+                ...(kind === "folder" ? ids : []),
+              ]),
+            ];
+            return {
+              graph: {
+                ...graph,
+                truncated: graph.truncated || focusIds.length > 80,
+              },
+              planned: false,
+              ids: focusIds.slice(0, 80),
+            };
+          }
+          capturedSnapshotId = graph.snapshotId;
+        } catch (error) {
+          if (error instanceof ApiError && error.code === "SNAPSHOT_CHANGED")
+            throw new SnapshotChangedError();
+          throw error;
+        }
+        if (capturedSnapshotId !== get().summary?.snapshotId)
+          throw new SnapshotChangedError();
+        const temporary = new Set(
+          (state.plan?.plan.operations ?? []).flatMap((o) =>
+            o.kind === "add_function" ? [o.tempId] : [],
+          ),
+        );
+        const facts = ids.slice(0, 80).filter((id) => !temporary.has(id));
+        const graph = facts.length
+          ? await api.graph(project.id, facts, 0, 80)
+          : {
+              snapshotId,
+              nodes: [],
+              relations: [],
+              dataSource: "code" as const,
+              truncated: false,
+            };
+        return {
+          graph: { ...graph, truncated: graph.truncated || ids.length > 80 },
+          planned: true,
+          ids: ids.slice(0, 80),
+        };
+      },
+      (result) => {
+        if (sequence !== focusGeneration) return;
+        if (result.graph.snapshotId !== get().summary?.snapshotId)
+          throw new SnapshotChangedError();
+        const root = "root" in result.graph ? result.graph.root : undefined;
+        // Only a successful captured lookup exits the previous transient scene.
+        restoreFunnel();
+        if (!result.planned && kind === "file" && root) {
+          funneling = enterFunnel(root);
+        } else {
+          set({
+            graph: result.graph,
+            selectedNode: result.planned ? undefined : root,
+            source: undefined,
+            context: undefined,
+            funnel: undefined,
+            filter: "both",
+            navigationLocation: { path, kind, planned: result.planned },
+            focusRequest: {
+              nodeIds: result.ids,
+              nodeId: result.ids[0],
+              sequence,
+            },
+          });
+        }
+      },
+    );
+    await funneling;
+  };
   const expand = async (nodeId: string, depth = 1, budget = 80) => {
     exitFunnel();
     const project = get().project;
@@ -375,9 +515,10 @@ export function createWorkspace(
     // in flight under the separate route request key.
     const sequence = ++focusGeneration;
     scope.invalidate("route");
+    scope.invalidate("navigation");
     set((s) => ({
       focusRequest: undefined,
-      busy: { ...s.busy, route: false },
+      busy: { ...s.busy, route: false, navigation: false },
     }));
     // Each expansion is bounded independently; never accumulate an unbounded graph.
     await run(
@@ -502,7 +643,54 @@ export function createWorkspace(
       const hidden =
         (s.filter === "fact" && ids.some((id) => temporary.has(id))) ||
         (s.filter === "plan" && ids.some((id) => !temporary.has(id)));
+      const op =
+        ids.length === 1
+          ? detail.plan.operations.find(
+              (o) => o.kind === "add_function" && o.tempId === ids[0],
+            )
+          : undefined;
+      const fact =
+        ids.length === 1
+          ? [
+              ...(s.graph?.snapshotId === s.summary?.snapshotId
+                ? (s.graph?.nodes ?? [])
+                : []),
+              ...(s.summary?.entrypoints ?? []),
+              ...(s.search?.snapshotId === s.summary?.snapshotId
+                ? (s.search?.items ?? [])
+                : []),
+            ].find((n) => n.id === ids[0])
+          : undefined;
+      let selectedNode: CodeNode | undefined =
+        op?.kind === "add_function"
+          ? {
+              id: op.tempId,
+              kind: "function",
+              name: op.name,
+              filePath: op.filePath,
+              signature: op.signature,
+              language: op.language,
+            }
+          : fact;
+      const move = detail.plan.operations.find(
+        (o) => o.kind === "move_function" && o.nodeId === selectedNode?.id,
+      );
+      if (selectedNode && move?.kind === "move_function")
+        selectedNode = { ...selectedNode, filePath: move.filePath };
+      const sameSelection =
+        selectedNode &&
+        selectedNode.id === s.selectedNode?.id &&
+        selectedNode.filePath === s.selectedNode.filePath;
+      scope.invalidate("inspect");
+      scope.invalidate("navigation");
       set({
+        selectedNode,
+        navigationLocation:
+          selectedNode?.filePath && (op || move)
+            ? { path: selectedNode.filePath, kind: "file", planned: true }
+            : undefined,
+        ...(!sameSelection ? { source: undefined, context: undefined } : {}),
+        busy: { ...s.busy, inspect: false, navigation: false },
         focusRequest: { nodeId: ids[0], nodeIds: ids, sequence },
         ...(hidden ? { filter: "both" as const } : {}),
       });
@@ -607,6 +795,7 @@ export function createWorkspace(
       history: undefined,
       report: undefined,
       focusRequest: undefined,
+      navigationLocation: undefined,
       busy: { ...s.busy, plan: false, graph: false, route: false },
       ...(s.plan?.plan.operations.some(
         (o) => o.kind === "add_function" && o.tempId === s.selectedNode?.id,
@@ -834,6 +1023,7 @@ export function createWorkspace(
     openProject,
     selectProject,
     selectNode,
+    navigateScope,
     enterFunnel,
     exitFunnel,
     focus,

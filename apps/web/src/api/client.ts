@@ -1,5 +1,6 @@
 import type {
   BrowseRoute,
+  CodeNode,
   FunctionGroup,
   DirectoryPolicy,
   CodeSnapshot,
@@ -119,6 +120,28 @@ export class HttpApi {
       "POST",
       { nodeId, budget },
     );
+  scope = (
+    id: string,
+    path: string,
+    kind: "folder" | "file",
+    budget = 80,
+    snapshotId?: string,
+    allowMissing = false,
+  ) =>
+    this.request<
+      SubgraphResult & {
+        root?: CodeNode;
+        path: string;
+        kind: "folder" | "file";
+        missing?: boolean;
+      }
+    >(`/projects/${encodeURIComponent(id)}/scope`, "POST", {
+      path,
+      kind,
+      budget,
+      ...(snapshotId ? { snapshotId } : {}),
+      ...(allowMissing ? { allowMissing: true } : {}),
+    });
   search = (id: string, q: string, offset = 0) =>
     this.request<FunctionSearchResult>(
       `/projects/${encodeURIComponent(id)}/functions?${new URLSearchParams({ q, offset: String(offset), limit: "50" })}`,

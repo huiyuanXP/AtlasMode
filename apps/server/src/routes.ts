@@ -42,6 +42,13 @@ const dependencyBody = z.strictObject({
   nodeId: id,
   budget: z.number().int().min(1).max(300).optional(),
 });
+const scopeBody = z.strictObject({
+  path: z.string().min(1),
+  kind: z.enum(["folder", "file"]),
+  budget: z.number().int().min(1).max(300).optional(),
+  snapshotId: id.optional(),
+  allowMissing: z.boolean().optional(),
+});
 const createPlan = z.strictObject({
   projectId: id,
   title: nonblank,
@@ -151,6 +158,9 @@ export function registerRoutes(
     },
     contextQuery,
     functionParams,
+  );
+  write("POST", "/api/projects/:id/scope", scopeBody, (request) =>
+    queries.scope(projectId(request), scopeBody.parse(request.body)),
   );
   write("POST", "/api/projects/:id/dependencies", dependencyBody, (request) =>
     queries.dependencies(

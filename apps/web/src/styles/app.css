@@ -319,6 +319,49 @@ form > button {
   padding: 10px 18px;
   border-bottom: 1px solid var(--border);
 }
+.breadcrumbs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 18px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  min-width: 0;
+}
+.breadcrumbs ol {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  min-width: 0;
+}
+.breadcrumbs li {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+.breadcrumbs button {
+  border-color: transparent;
+  padding: 4px 6px;
+  overflow-wrap: anywhere;
+  text-align: left;
+}
+.breadcrumbs button[aria-current="location"] {
+  font-weight: 600;
+  color: var(--accent);
+}
+.breadcrumb-separator {
+  color: var(--muted);
+}
+.breadcrumb-planned,
+.breadcrumb-plan-scope {
+  color: var(--muted);
+  font-size: 11px;
+}
 .graph-toolbar label {
   margin: 0;
   display: flex;

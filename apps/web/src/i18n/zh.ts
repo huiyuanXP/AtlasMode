@@ -1,5 +1,8 @@
 /** Authored names, paths, notes and service evidence remain verbatim. */
 export const zh = {
+  location: "当前位置",
+  plannedContext: "规划上下文",
+  affectedObjects: "受影响对象",
   funnelDependents: "调用方／依赖者",
   funnelCurrent: "当前对象",
   funnelDependencies: "被调用方／依赖项",

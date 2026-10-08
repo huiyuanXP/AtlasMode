@@ -1,5 +1,8 @@
 import type { zh } from "./zh.js";
 export const en: Record<keyof typeof zh, string> = {
+  location: "Location",
+  plannedContext: "Planned context",
+  affectedObjects: "Affected objects",
   funnelDependents: "Dependents",
   funnelCurrent: "Current",
   funnelDependencies: "Dependencies",

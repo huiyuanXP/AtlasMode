@@ -15,6 +15,7 @@ import {
 import { VerificationPanel } from "../features/verification/VerificationPanel.js";
 import type { LayerFilter } from "../features/graph/projection.js";
 import { Navigation } from "./Navigation.js";
+import { Breadcrumbs } from "../features/navigation/Breadcrumbs.js";
 const emptyOperations: Operation[] = [];
 /** Only already-loaded facts from the current project snapshot become candidates. */
 export function planningCandidates(
@@ -106,6 +107,45 @@ export function WorkspacePanels({ app }: { app: Workspace }) {
     <main className="workspace">
       <Navigation app={app} onFocus={() => setTab("source")} />
       <section className="graph-area">
+        <Breadcrumbs
+          project={project}
+          node={state.selectedNode}
+          location={
+            state.navigationLocation ??
+            (state.selectedNode &&
+            plan?.plan.operations.some(
+              (o) =>
+                o.kind === "add_function" &&
+                o.tempId === state.selectedNode?.id,
+            )
+              ? {
+                  path: state.selectedNode.filePath ?? ".",
+                  kind: "file",
+                  planned: true,
+                }
+              : undefined)
+          }
+          label={zh.location}
+          plannedLabel={zh.plannedContext}
+          scopeLabel={
+            !state.selectedNode &&
+            !state.navigationLocation &&
+            plan &&
+            state.focusRequest?.nodeIds?.length
+              ? `${plan.plan.title} · ${zh.affectedObjects} ${state.focusRequest.nodeIds.length}`
+              : undefined
+          }
+          onScope={(path, kind) => {
+            void app.navigateScope(path, kind);
+            setEdge(undefined);
+            setTab("source");
+          }}
+          onFunction={(node) => {
+            void app.focus(node);
+            setEdge(undefined);
+            setTab("source");
+          }}
+        />
         <div className="graph-toolbar">
           <label>
             {zh.layers}
@@ -165,7 +205,9 @@ export function WorkspacePanels({ app }: { app: Workspace }) {
           canEdit={!!plan && !planBusy}
           relationType={relationType}
           onSelect={(n) => {
-            void app.selectNode(n);
+            if (n.kind === "folder" || n.kind === "file")
+              void app.navigateScope(n.filePath ?? ".", n.kind);
+            else void app.selectNode(n);
             setEdge(undefined);
             setTab("source");
           }}
