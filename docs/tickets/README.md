@@ -32,3 +32,4 @@
 | [OPS-01](OPS-01.md) | 新云恢复与分发 | P2 | QA-02 | TODO |
 | [SEC-01](SEC-01.md) | 继承依赖审计整改 | P1 | 无 | TODO |
 | [FUT-01](FUT-01.md) | P5扩展证据评估 | P3 | DIFF-01 | TODO |
+| [AG-02](AG-02.md) | 用户确认后的自动源码实施 | P1 | AG-01、UI-04、QA-01 | TODO |
