@@ -6,6 +6,7 @@ import type {
   ViewState,
 } from "@codemap/core";
 import type { Edge, Node } from "@xyflow/react";
+import type { FocusRequest } from "./focus.js";
 export type LayerFilter = "fact" | "plan" | "both";
 export type CardData = {
   node: CodeNode;
@@ -15,6 +16,12 @@ export type CardData = {
 };
 export type GraphNode = Node<CardData>;
 export type GraphEdge = Edge<{ layer: "fact" | "plan"; domainId: string }>;
+export function focusTargets(nodes: GraphNode[], request?: FocusRequest) {
+  const ids = new Set(
+    request?.nodeIds ?? (request?.nodeId ? [request.nodeId] : []),
+  );
+  return nodes.filter((node) => ids.has(node.data.node.id));
+}
 export function projectGraph(
   graph: SubgraphResult | undefined,
   operations: Operation[],

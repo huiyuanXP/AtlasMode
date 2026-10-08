@@ -23,15 +23,21 @@ const page = {
 };
 const searchQuery = z.strictObject({ q: z.string().optional(), ...page });
 const contextQuery = z.strictObject(page);
-const graphBody = z.strictObject({
-  nodeIds: z.array(id).min(1),
-  depth: z.number().int().min(0).max(5).optional(),
-  budget: z.number().int().min(1).max(300).optional(),
-  relationTypes: z
-    .array(z.enum(["calls", "imports", "contains"]))
-    .min(1)
-    .optional(),
-});
+const graphBody = z
+  .strictObject({
+    nodeIds: z.array(id),
+    relationIds: z.array(id).max(300).optional(),
+    depth: z.number().int().min(0).max(5).optional(),
+    budget: z.number().int().min(1).max(300).optional(),
+    relationTypes: z
+      .array(z.enum(["calls", "imports", "contains"]))
+      .min(1)
+      .optional(),
+  })
+  .refine(
+    (body) => body.nodeIds.length > 0 || !!body.relationIds?.length,
+    "Expected at least one node or relation anchor",
+  );
 const createPlan = z.strictObject({
   projectId: id,
   title: nonblank,

@@ -22,11 +22,14 @@ import type {
 import { useStrings } from "../../i18n/index.js";
 import {
   projectGraph,
+  focusTargets,
   type GraphNode,
   type GraphEdge,
   type LayerFilter,
 } from "./projection.js";
 import type { EdgeReference, PlannedRelation } from "../planning/operations.js";
+import type { FocusRequest } from "./focus.js";
+export type { FocusRequest } from "./focus.js";
 import "@xyflow/react/dist/style.css";
 function CodeCard({ data }: NodeProps<GraphNode>) {
   const zh = useStrings();
@@ -57,25 +60,23 @@ function CodeCard({ data }: NodeProps<GraphNode>) {
     </div>
   );
 }
-export type FocusRequest = { nodeId: string; sequence: number };
 /** Consume explicit navigation only once, after the current projection has been
  * adopted and measured by React Flow. Layout/selection updates are not focus. */
 function FocusViewport({
   request,
-  target,
+  targets,
 }: {
   request?: FocusRequest;
-  target?: GraphNode;
+  targets: GraphNode[];
 }) {
   const { fitView, viewportInitialized } = useReactFlow<GraphNode, GraphEdge>();
   const initialized = useNodesInitialized();
-  const rendered = useNodes<GraphNode>().find((n) => n.id === target?.id);
+  const rendered = useNodes<GraphNode>();
   const consumed = useRef<number | undefined>(undefined);
   useEffect(() => {
     if (
       !request ||
-      !target ||
-      !rendered ||
+      !targets.length ||
       !initialized ||
       !viewportInitialized ||
       consumed.current === request.sequence
@@ -83,20 +84,32 @@ function FocusViewport({
       return;
     // The old graph can contain the same ID. Wait until the newly supplied
     // projection reaches the canvas store, not just until any old node exists.
+    const ready = targets.map((target) =>
+      rendered.find((n) => n.id === target.id),
+    );
     if (
-      rendered.data !== target.data ||
-      !rendered.measured?.width ||
-      !rendered.measured.height
+      ready.some(
+        (node, i) =>
+          !node ||
+          node.data !== targets[i]!.data ||
+          !node.measured?.width ||
+          !node.measured.height,
+      )
     )
       return;
     consumed.current = request.sequence;
     void fitView({
-      nodes: [rendered],
-      duration: 250,
+      nodes: ready as GraphNode[],
+      duration: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        ? 0
+        : 250,
+      // Explicit focus must fit even a widely spread saved layout. The manual
+      // zoom controls retain their normal minimum; do not reposition targets.
+      minZoom: 0,
       maxZoom: 1.1,
       padding: 0.5,
     });
-  }, [request, target, rendered, initialized, viewportInitialized, fitView]);
+  }, [request, targets, rendered, initialized, viewportInitialized, fitView]);
   return null;
 }
 const nodeTypes = { code: CodeCard };
@@ -200,9 +213,7 @@ export function Canvas(props: {
       >
         <FocusViewport
           request={props.focusRequest}
-          target={projection.nodes.find(
-            (n) => n.data.node.id === props.focusRequest?.nodeId,
-          )}
+          targets={focusTargets(projection.nodes, props.focusRequest)}
         />
         <Background gap={22} size={1} />
         <Controls position="bottom-left" orientation="horizontal" />

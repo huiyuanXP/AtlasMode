@@ -93,11 +93,23 @@ export class HttpApi {
       "POST",
       input,
     );
-  graph = (id: string, nodeIds: string[], depth = 1, budget = 80) =>
+  graph = (
+    id: string,
+    nodeIds: string[],
+    depth = 1,
+    budget = 80,
+    relationIds?: string[],
+  ) =>
     this.request<SubgraphResult>(
       `/projects/${encodeURIComponent(id)}/subgraph`,
       "POST",
-      { nodeIds, depth, budget, relationTypes: ["calls", "contains"] },
+      {
+        nodeIds,
+        depth,
+        budget,
+        relationTypes: ["calls", "contains"],
+        ...(relationIds?.length ? { relationIds } : {}),
+      },
     );
   search = (id: string, q: string, offset = 0) =>
     this.request<FunctionSearchResult>(

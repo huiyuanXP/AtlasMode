@@ -156,6 +156,72 @@ test("unknown and foreign node IDs are rejected for context and subgraph, even u
     (await request("GET", "/api/projects/missing/snapshot")).statusCode,
   ).toBe(404);
 });
+test("relation anchors resolve actual endpoints in the selected snapshot and honor node budgets", async () => {
+  const { request, open, first, second } = await setup();
+  const a = await open(first),
+    b = await open(second);
+  const base = `/api/projects/${a.id}`;
+  const snapshot = (await request("GET", `${base}/snapshot`)).json();
+  const edge = snapshot.relations.find(
+    (r: { type: string; resolution: string }) =>
+      r.type === "calls" && r.resolution === "resolved",
+  );
+  const result = await request("POST", `${base}/subgraph`, {
+    nodeIds: [],
+    relationIds: [edge.id],
+    depth: 0,
+    budget: 80,
+  });
+  expect(result.statusCode).toBe(200);
+  expect(
+    result
+      .json()
+      .nodes.filter((n: { kind: string }) => n.kind === "function")
+      .map((n: { id: string }) => n.id)
+      .sort(),
+  ).toEqual([edge.sourceId, edge.targetId].sort());
+  expect(result.json().snapshotId).toBe(snapshot.id);
+  const limited = await request("POST", `${base}/subgraph`, {
+    nodeIds: [],
+    relationIds: [edge.id],
+    depth: 0,
+    budget: 1,
+  });
+  expect(limited.statusCode).toBe(200);
+  expect(limited.json().nodes).toHaveLength(1);
+  expect(limited.json().truncated).toBe(true);
+  for (const [projectId, relations] of [
+    [a.id, [edge.id, "missing"]],
+    [b.id, [edge.id]],
+  ] as const)
+    expect(
+      (
+        await request("POST", `/api/projects/${projectId}/subgraph`, {
+          nodeIds: [],
+          relationIds: relations,
+          budget: 1,
+        })
+      ).statusCode,
+    ).toBe(404);
+  expect(
+    (
+      await request("POST", `${base}/subgraph`, {
+        nodeIds: [],
+        relationIds: [],
+        budget: 80,
+      })
+    ).statusCode,
+  ).toBe(400);
+  expect(
+    (
+      await request("POST", `${base}/subgraph`, {
+        nodeIds: [],
+        relationIds: [edge.id],
+        budget: 301,
+      })
+    ).statusCode,
+  ).toBe(400);
+});
 test("source reads are scoped per project and reject traversal, absolute paths, and symlink escapes", async () => {
   const { request, open, first, second } = await setup();
   const a = await open(first),

@@ -22,7 +22,11 @@ import type {
 import { ApiError, HttpApi } from "../api/client.js";
 import { ProjectScope } from "../api/scope.js";
 import type { LayerFilter } from "../features/graph/projection.js";
-import type { FocusRequest } from "../features/graph/Canvas.js";
+import {
+  affectedNodeIds,
+  affectedOperations,
+  type FocusRequest,
+} from "../features/graph/focus.js";
 import {
   observeHistory,
   commitHistory,
@@ -195,6 +199,7 @@ export function createWorkspace(
     return { summary, view, plans, routes, groups, policies, graph };
   };
   const selectProject = async (project: Project) => {
+    focusGeneration++;
     scope.select(project.id);
     set({ ...blank(), project });
     remember(project.id);
@@ -205,6 +210,7 @@ export function createWorkspace(
     );
   };
   const openProject = async (path: string) => {
+    focusGeneration++;
     scope.select("");
     set(blank());
     await run(
@@ -221,12 +227,12 @@ export function createWorkspace(
   const selectNode = async (node: CodeNode, offset = 0) => {
     const project = get().project;
     if (!project) return;
-    focusGeneration++;
+    const sequence = ++focusGeneration;
     scope.invalidate("graph");
     scope.invalidate("route");
     set((s) => ({
       selectedNode: node,
-      focusRequest: undefined,
+      focusRequest: { nodeId: node.id, nodeIds: [node.id], sequence },
       context: undefined,
       source: undefined,
       busy: { ...s.busy, graph: false, route: false },
@@ -269,7 +275,8 @@ export function createWorkspace(
     await run(
       "graph",
       () => api.graph(project.id, [nodeId], depth, budget),
-      (graph) => set({ graph, focusRequest: { nodeId, sequence } }),
+      (graph) =>
+        set({ graph, focusRequest: { nodeId, nodeIds: [nodeId], sequence } }),
     );
   };
   const focus = async (node: CodeNode) => {
@@ -289,6 +296,7 @@ export function createWorkspace(
     const project = get().project;
     if (!project) return;
     const selectedPlan = get().plan?.plan.id;
+    focusGeneration++;
     scope.select(project.id);
     set({ ...blank(), project });
     await run(
@@ -325,6 +333,102 @@ export function createWorkspace(
     );
   };
   let viewWrites: Promise<unknown> = Promise.resolve();
+  const focusPlan = async (
+    detail: PlanDetail,
+    sequence: number,
+    previous?: Operation[],
+  ) => {
+    const state = get(),
+      project = state.project;
+    const current = () =>
+      sequence === focusGeneration &&
+      get().plan?.plan.id === detail.plan.id &&
+      get().plan?.plan.revision === detail.plan.revision;
+    if (!project || !current()) return;
+    const invalid = detail.issues.flatMap((issue) => {
+      const op =
+        issue.operationIndex === undefined
+          ? undefined
+          : detail.plan.operations[issue.operationIndex];
+      return issue.code === "INVALID_TARGET" && op?.kind === "annotate"
+        ? [op.targetId]
+        : [];
+    });
+    let ids = affectedNodeIds(
+      detail.plan.operations,
+      previous,
+      state.graph?.relations,
+      invalid,
+    );
+    const missingRelations = affectedOperations(
+      detail.plan.operations,
+      previous,
+    ).flatMap((o) =>
+      o.kind === "remove_relation" &&
+      !state.graph?.relations.some((r) => r.id === o.relationId)
+        ? [o.relationId]
+        : [],
+    );
+    if (!ids.length && !missingRelations.length) return;
+    const temporary = new Set(
+      detail.plan.operations.flatMap((o) =>
+        o.kind === "add_function" ? [o.tempId] : [],
+      ),
+    );
+    const facts = ids.filter((id) => !temporary.has(id));
+    const loaded = new Set(
+      [
+        ...(state.graph && state.graph.snapshotId === state.summary?.snapshotId
+          ? state.graph.nodes
+          : []),
+        ...(state.summary?.entrypoints ?? []),
+        ...(state.search &&
+        state.search.snapshotId === state.summary?.snapshotId
+          ? state.search.items
+          : []),
+      ].map((n) => n.id),
+    );
+    const emit = () => {
+      if (!current() || !ids.length) return;
+      const s = get();
+      const hidden =
+        (s.filter === "fact" && ids.some((id) => temporary.has(id))) ||
+        (s.filter === "plan" && ids.some((id) => !temporary.has(id)));
+      set({
+        focusRequest: { nodeId: ids[0], nodeIds: ids, sequence },
+        ...(hidden ? { filter: "both" as const } : {}),
+      });
+    };
+    if (missingRelations.length || facts.some((id) => !loaded.has(id))) {
+      await run(
+        "graph",
+        () =>
+          api.graph(
+            project.id,
+            facts.slice(0, 300),
+            0,
+            Math.min(
+              300,
+              Math.max(80, facts.length + missingRelations.length * 2),
+            ),
+            missingRelations.slice(0, 300),
+          ),
+        (graph) => {
+          if (!current()) return;
+          if (graph.snapshotId !== get().summary?.snapshotId)
+            throw new SnapshotChangedError();
+          set({ graph });
+          ids = affectedNodeIds(
+            detail.plan.operations,
+            previous,
+            [...graph.relations, ...(state.graph?.relations ?? [])],
+            invalid,
+          );
+          emit();
+        },
+      );
+    } else emit();
+  };
   const savePlan = async (
     operations: Operation[],
     title?: string,
@@ -339,6 +443,11 @@ export function createWorkspace(
       get().busy.project
     )
       return;
+    const sequence = ++focusGeneration;
+    scope.invalidate("graph");
+    scope.invalidate("route");
+    set((s) => ({ busy: { ...s.busy, graph: false, route: false } }));
+    let focusing: Promise<void> | undefined;
     await run(
       "plan",
       () =>
@@ -360,8 +469,10 @@ export function createWorkspace(
           ),
         );
         acceptPlan(accepted);
+        focusing = focusPlan(accepted, sequence, detail.plan.operations);
       },
     );
+    await focusing;
   };
   const travel = async (direction: "undo" | "redo") => {
     const { plan, history } = get();
@@ -378,12 +489,14 @@ export function createWorkspace(
   const choosePlan = async (id: string) => {
     scope.invalidate("plan");
     scope.invalidate("graph");
-    const focusAtStart = focusGeneration;
+    const sequence = ++focusGeneration;
+    scope.invalidate("route");
     set((s) => ({
       plan: undefined,
       history: undefined,
       report: undefined,
-      busy: { ...s.busy, plan: false, graph: false },
+      focusRequest: undefined,
+      busy: { ...s.busy, plan: false, graph: false, route: false },
       ...(s.plan?.plan.operations.some(
         (o) => o.kind === "add_function" && o.tempId === s.selectedNode?.id,
       )
@@ -397,40 +510,7 @@ export function createWorkspace(
         () => api.plan(id),
         (detail) => {
           acceptPlan(detail);
-          const project = get().project;
-          const temporary = new Set(
-            detail.plan.operations.flatMap((o) =>
-              o.kind === "add_function" ? [o.tempId] : [],
-            ),
-          );
-          const ids = [
-            ...new Set(
-              detail.plan.operations
-                .filter(
-                  (o, index) =>
-                    !(
-                      o.kind === "annotate" &&
-                      detail.issues.some(
-                        (issue) =>
-                          issue.operationIndex === index &&
-                          issue.code === "INVALID_TARGET",
-                      )
-                    ),
-                )
-                .flatMap((o) => [
-                  ...("nodeId" in o ? [o.nodeId] : []),
-                  ...("sourceId" in o ? [o.sourceId] : []),
-                  ...("targetId" in o ? [o.targetId] : []),
-                ]),
-            ),
-          ].filter((id) => !temporary.has(id));
-          if (project && ids.length && focusAtStart === focusGeneration) {
-            anchors = run(
-              "graph",
-              () => api.graph(project.id, ids, 0, 80),
-              (graph) => set({ graph }),
-            );
-          }
+          anchors = focusPlan(detail, sequence);
         },
       );
     await anchors;
@@ -541,7 +621,13 @@ export function createWorkspace(
         const node = graph.nodes.find((n) => n.id === step.nodeId);
         if (node) {
           void selectNode(node);
-          set({ focusRequest: { nodeId: node.id, sequence: focusGeneration } });
+          set({
+            focusRequest: {
+              nodeId: node.id,
+              nodeIds: [node.id],
+              sequence: focusGeneration,
+            },
+          });
         }
       },
     );

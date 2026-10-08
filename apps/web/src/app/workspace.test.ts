@@ -1,6 +1,7 @@
 import { expect, it } from "vitest";
 import { HttpApi } from "../api/client.js";
 import { createWorkspace } from "./workspace.js";
+import type { Operation } from "@codemap/core";
 const reply = (data: unknown) =>
   Promise.resolve(new Response(JSON.stringify(data), { status: 200 }));
 function fixture(path: string) {
@@ -726,4 +727,229 @@ it("refresh preserves same-revision session history but resets it after an exter
   };
   await app.refresh();
   expect(app.store.getState().history?.past).toEqual([]);
+});
+
+const added: Operation = {
+  kind: "add_function",
+  tempId: "temp:new",
+  name: "new",
+  filePath: "new.ts",
+};
+const linked: Operation = {
+  kind: "add_relation",
+  id: "edge",
+  sourceId: "temp:new",
+  targetId: "f",
+  type: "calls",
+};
+function focusFixture(operations: Operation[] = []) {
+  let current = planDetail(operations),
+    conflict = false;
+  const app = createWorkspace(
+    new HttpApi((async (input: RequestInfo | URL, init?: RequestInit) => {
+      if (String(input) === "/api/plans/p") {
+        if (init?.method === "PUT") {
+          if (conflict)
+            return new Response(
+              JSON.stringify({ code: "REVISION_CONFLICT", message: "Changed" }),
+              { status: 409 },
+            );
+          current = {
+            ...current,
+            plan: {
+              ...current.plan,
+              ...JSON.parse(String(init.body)),
+              revision: current.plan.revision + 1,
+            },
+          };
+        }
+        return reply(current);
+      }
+      return reply(fixture(String(input)));
+    }) as typeof fetch),
+  );
+  return {
+    app,
+    reject: () => {
+      conflict = true;
+    },
+  };
+}
+it("choosing a plan focuses every added function and existing move annotation and relation endpoint", async () => {
+  const { app } = focusFixture([
+    added,
+    linked,
+    { kind: "move_function", nodeId: "f", filePath: "moved.ts" },
+    { kind: "annotate", targetId: "f", text: "note" },
+  ]);
+  await app.selectProject({ id: "a", name: "a", path: "/a" });
+  app.store.setState({ filter: "fact" });
+  await app.choosePlan("p");
+  expect(app.store.getState().focusRequest).toMatchObject({
+    nodeId: "temp:new",
+    nodeIds: ["temp:new", "f"],
+  });
+  expect(app.store.getState().filter).toBe("both");
+});
+it("successful add edit reconnect remove undo and redo focus only surviving affected context", async () => {
+  const { app } = focusFixture();
+  await app.selectProject({ id: "a", name: "a", path: "/a" });
+  await app.choosePlan("p");
+  await app.savePlan([added, linked]);
+  expect(app.store.getState().focusRequest?.nodeIds).toEqual(["temp:new", "f"]);
+  const first = app.store.getState().focusRequest!.sequence;
+  const edit: Operation = { ...added, name: "edited" };
+  await app.savePlan([edit, linked]);
+  expect(app.store.getState().focusRequest?.nodeIds).toEqual(["temp:new"]);
+  expect(app.store.getState().focusRequest!.sequence).toBeGreaterThan(first);
+  const next: Operation = {
+    kind: "add_function",
+    tempId: "temp:target",
+    name: "target",
+    filePath: "new.ts",
+  };
+  await app.savePlan([edit, linked, next]);
+  await app.savePlan([edit, { ...linked, targetId: "temp:target" }, next]);
+  expect(app.store.getState().focusRequest?.nodeIds).toEqual([
+    "temp:new",
+    "f",
+    "temp:target",
+  ]);
+  await app.savePlan([next]);
+  expect(app.store.getState().focusRequest?.nodeIds).toEqual(["temp:target"]);
+  await app.undo();
+  expect(app.store.getState().focusRequest?.nodeIds).toEqual([
+    "temp:new",
+    "temp:target",
+  ]);
+  await app.redo();
+  expect(app.store.getState().focusRequest?.nodeIds).toEqual(["temp:target"]);
+});
+it("failed semantic update and theme or drag preserve the last camera request", async () => {
+  const { app, reject } = focusFixture([added]);
+  await app.selectProject({ id: "a", name: "a", path: "/a" });
+  await app.choosePlan("p");
+  const focus = app.store.getState().focusRequest;
+  app.saveView({
+    positions: { "plan:temp:new": { x: 500, y: 600 } },
+    theme: "dark",
+    locale: "zh",
+  });
+  expect(app.store.getState().focusRequest).toEqual(focus);
+  reject();
+  await app.savePlan([]);
+  expect(app.store.getState().focusRequest).toEqual(focus);
+  await app.selectProject({ id: "b", name: "b", path: "/b" });
+});
+it.each(["node", "project", "plan"])(
+  "later %s selection supersedes delayed plan anchors and their camera",
+  async (later) => {
+    let release!: (value: Response) => void;
+    const detail = planDetail([added, { ...linked, targetId: "g" }]);
+    const app = createWorkspace(
+      new HttpApi((async (input: RequestInfo | URL, init?: RequestInit) => {
+        if (String(input) === "/api/plans/p") return reply(detail);
+        if (
+          String(input).endsWith("/subgraph") &&
+          String(init?.body).includes('"g"')
+        )
+          return new Promise<Response>((resolve) => {
+            release = resolve;
+          });
+        return reply(fixture(String(input)));
+      }) as typeof fetch),
+    );
+    await app.selectProject({ id: "a", name: "a", path: "/a" });
+    const pending = app.choosePlan("p");
+    while (!release) await Promise.resolve();
+    if (later === "node")
+      await app.selectNode({
+        id: "f",
+        name: "fn",
+        kind: "function",
+        filePath: "a.ts",
+      });
+    else if (later === "project")
+      await app.selectProject({ id: "b", name: "b", path: "/b" });
+    else await app.choosePlan("");
+    const focus = app.store.getState().focusRequest;
+    release(
+      new Response(
+        JSON.stringify({
+          ...(fixture("/api/projects/a/subgraph") as object),
+          nodes: [{ id: "g", kind: "function", name: "late" }],
+        }),
+      ),
+    );
+    await pending;
+    expect(app.store.getState().graph?.nodes[0]?.id).toBe("f");
+    expect(app.store.getState().focusRequest).toEqual(focus);
+    if (later === "node") expect(focus?.nodeIds).toEqual(["f"]);
+  },
+);
+it("choosing an unloaded removed fact relation resolves and focuses its actual surviving endpoints", async () => {
+  const app = createWorkspace(
+    new HttpApi((async (input: RequestInfo | URL, init?: RequestInit) => {
+      if (String(input) === "/api/plans/p")
+        return reply(
+          planDetail([{ kind: "remove_relation", relationId: "actual-edge" }]),
+        );
+      if (
+        String(input).endsWith("/subgraph") &&
+        String(init?.body).includes("actual-edge")
+      )
+        return reply({
+          ...(fixture("/api/projects/a/subgraph") as object),
+          nodes: [
+            { id: "f", kind: "function", name: "fn" },
+            { id: "g", kind: "function", name: "g" },
+          ],
+          relations: [
+            {
+              id: "actual-edge",
+              sourceId: "f",
+              targetId: "g",
+              type: "calls",
+              resolution: "resolved",
+              evidence: { filePath: "a.ts", line: 1 },
+            },
+          ],
+        });
+      return reply(fixture(String(input)));
+    }) as typeof fetch),
+  );
+  await app.selectProject({ id: "a", name: "a", path: "/a" });
+  await app.choosePlan("p");
+  expect(app.store.getState().focusRequest?.nodeIds).toEqual(["f", "g"]);
+});
+it("a successful semantic response after a newer node selection preserves its camera", async () => {
+  let release!: (value: Response) => void;
+  const app = createWorkspace(
+    new HttpApi((async (input: RequestInfo | URL, init?: RequestInit) => {
+      if (String(input) === "/api/plans/p") {
+        if (init?.method === "PUT")
+          return new Promise<Response>((r) => {
+            release = r;
+          });
+        return reply(planDetail([added]));
+      }
+      return reply(fixture(String(input)));
+    }) as typeof fetch),
+  );
+  await app.selectProject({ id: "a", name: "a", path: "/a" });
+  await app.choosePlan("p");
+  const pending = app.savePlan([added, linked]);
+  await app.selectNode({ id: "f", name: "fn", kind: "function" });
+  const focus = app.store.getState().focusRequest;
+  release(
+    new Response(
+      JSON.stringify({
+        ...planDetail([added, linked]),
+        plan: { ...planDetail([added, linked]).plan, revision: 5 },
+      }),
+    ),
+  );
+  await pending;
+  expect(app.store.getState().plan?.plan.revision).toBe(5);
+  expect(app.store.getState().focusRequest).toEqual(focus);
 });
