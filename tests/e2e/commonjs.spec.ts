@@ -1,3 +1,8 @@
+import {
+  openCodeNavigation,
+  openSourceDrawer,
+  openAdvancedNavigation,
+} from "../support/chat-shell.mjs";
 import { test, expect } from "@playwright/test";
 import { mkdtemp, mkdir, writeFile, rm, access } from "node:fs/promises";
 import { tmpdir } from "node:os";
@@ -52,7 +57,9 @@ for (const legacy of [false, true]) {
         .getByRole("combobox", { name: "切换项目", exact: true })
         .selectOption(project.id);
       await expect(page.locator(".project-heading h1")).toHaveText("commonjs");
+      await openCodeNavigation(page);
       await page.getByRole("button", { name: /ƒ entry/ }).click();
+      await openSourceDrawer(page);
       await expect(page.getByTestId("source-snippet")).toContainText(
         "return mod.helper()",
       );
@@ -66,16 +73,19 @@ for (const legacy of [false, true]) {
       );
       await expect(targetCard).toBeVisible();
       await targetCard.click();
+      await openSourceDrawer(page);
       await expect(page.getByTestId("source-snippet")).toContainText(
         'return "中文 helper"',
       );
       await expect(page.locator(".inspector code.path")).toHaveText(
         "helper.js:2",
       );
+      await openSourceDrawer(page);
       await expect(page.getByTestId("source-snippet")).not.toHaveAttribute(
         "contenteditable",
         "true",
       );
+      await openAdvancedNavigation(page);
       const diagnostics = page
         .locator(".navigation details")
         .filter({ has: page.locator("summary", { hasText: "静态分析诊断" }) });
@@ -118,6 +128,7 @@ for (const legacy of [false, true]) {
           "package.json",
         ]);
       }
+      await openSourceDrawer(page);
       await expect(page.getByTestId("source-snippet")).toContainText(
         'return "中文 helper"',
       );
@@ -130,7 +141,9 @@ for (const legacy of [false, true]) {
         fullPage: true,
       });
       // Unknowns must expose their authored call evidence and conservative reason.
+      await openCodeNavigation(page);
       await page.getByRole("button", { name: /ƒ overwritten/ }).click();
+      await openSourceDrawer(page);
       await expect(page.getByTestId("source-snippet")).toContainText(
         "return mod.helper()",
       );
@@ -146,6 +159,7 @@ for (const legacy of [false, true]) {
         path: join(out, `${legacy ? "legacy" : "captured"}-unknown-en.png`),
         fullPage: true,
       });
+      await openCodeNavigation(page);
       await page.getByRole("button", { name: /ƒ shadowed/ }).click();
       const shadowed = snapshot.nodes.find(
         (n: { name: string }) => n.name === "shadowed",
@@ -228,6 +242,7 @@ test("recorded zero manifests is distinct from unrecorded coverage", async ({
     await page
       .getByRole("combobox", { name: "切换项目", exact: true })
       .selectOption(project.id);
+    await openAdvancedNavigation(page);
     await page
       .locator(".navigation details")
       .filter({ has: page.locator("summary", { hasText: "静态分析诊断" }) })

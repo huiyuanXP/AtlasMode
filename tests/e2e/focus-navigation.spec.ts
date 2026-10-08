@@ -1,3 +1,4 @@
+import { openSourceDrawer } from "../support/chat-shell.mjs";
 import { test, expect, type Page } from "@playwright/test";
 import { mkdtemp, mkdir, writeFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
@@ -121,7 +122,7 @@ test("semantic creation after overview and multi-change plan choice fit their af
       "focus-project",
     );
     await page
-      .getByRole("button", { name: "Plan editor", exact: true })
+      .getByRole("button", { name: "Advanced editing", exact: true })
       .click();
     await page
       .getByRole("combobox", { name: "Choose plan", exact: true })
@@ -203,7 +204,7 @@ test("semantic creation after overview and multi-change plan choice fit their af
       "focus-project",
     );
     await page
-      .getByRole("button", { name: "Plan editor", exact: true })
+      .getByRole("button", { name: "Advanced editing", exact: true })
       .click();
     await page
       .getByRole("combobox", { name: "Choose plan", exact: true })
@@ -352,7 +353,9 @@ test("double-click builds an animated directional funnel, restores overview and 
     await expect(
       page.getByRole("button", { name: "Exit funnel (Esc)", exact: true }),
     ).toBeVisible();
+    await openSourceDrawer(page);
     await expect(page.locator(".inspector-content h2")).toHaveText("selected");
+    await openSourceDrawer(page);
     await expect(page.getByTestId("source-snippet")).toContainText(
       "unknownCall()",
     );
@@ -498,10 +501,13 @@ test("double-click builds an animated directional funnel, restores overview and 
     const rootLane = page.locator('[data-funnel-lane="selected"]');
     await expect(rootLane).toHaveCount(1);
     await expect(rootLane).toContainText("root.ts");
+    await openSourceDrawer(page);
     await expect(page.locator(".inspector-content h2")).toHaveText("root.ts");
+    await openSourceDrawer(page);
     await expect(page.locator(".inspector-content .path")).toContainText(
       "root.ts",
     );
+    await openSourceDrawer(page);
     await expect(page.getByTestId("source-snippet")).toContainText(
       "export function selected",
     );

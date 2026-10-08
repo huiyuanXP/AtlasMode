@@ -1,5 +1,13 @@
 /** Authored names, paths, notes and service evidence remain verbatim. */
 export const zh = {
+  browseCode: "浏览代码",
+  advancedControls: "高级控件",
+  advancedEditing: "高级编辑",
+  backToChat: "返回对话",
+  viewSource: "查看源码",
+  openProjectDialog: "打开项目",
+  close: "关闭",
+  planOverview: "规划概览",
   location: "当前位置",
   plannedContext: "规划上下文",
   affectedObjects: "受影响对象",
@@ -24,6 +32,7 @@ export const zh = {
   loading: "正在读取本地项目…",
   working: "请求处理中…",
   error: "操作失败",
+  scopeMissingNotice: "代码已刷新，原位置已不存在，请选择其他函数或文件。",
   empty: "打开本地项目，开始浏览真实代码",
   emptyHint: "选择由本机服务读取的项目目录。核心功能可离线使用。",
   entrypoints: "入口候选",
@@ -48,7 +57,8 @@ export const zh = {
   both: "事实 + 规划",
   layers: "显示层",
   relationType: "新增/改接关系类型",
-  graphHelp: "点击节点查看源码；双击函数或文件进入依赖漏斗。Esc 返回概览。",
+  graphHelp:
+    "选中对象后点“查看源码”；双击函数或文件进入依赖漏斗。Esc 返回概览。",
   graphEmpty: "选择入口、搜索结果或路线步骤以浏览子图",
   bounded: "每次展开最多 80 个节点 / 240 条关系；按需可增至 300 / 900。",
   expand: "展开一层",

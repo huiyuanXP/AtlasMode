@@ -1,5 +1,13 @@
 import type { zh } from "./zh.js";
 export const en: Record<keyof typeof zh, string> = {
+  browseCode: "Browse code",
+  advancedControls: "Advanced controls",
+  advancedEditing: "Advanced editing",
+  backToChat: "Back to chat",
+  viewSource: "View source",
+  openProjectDialog: "Open project",
+  close: "Close",
+  planOverview: "Plan overview",
   location: "Location",
   plannedContext: "Planned context",
   affectedObjects: "Affected objects",
@@ -24,6 +32,8 @@ export const en: Record<keyof typeof zh, string> = {
   loading: "Reading local project…",
   working: "Working…",
   error: "Action failed",
+  scopeMissingNotice:
+    "Code refreshed. The previous location no longer exists; choose another function or file.",
   empty: "Open a local project to explore real code",
   emptyHint:
     "Choose a directory read by your local service. Core features work offline.",
@@ -53,7 +63,7 @@ export const en: Record<keyof typeof zh, string> = {
   layers: "Visible layers",
   relationType: "New/reconnected relation type",
   graphHelp:
-    "Click to inspect source; double-click a function or file for its dependency funnel. Esc returns to overview.",
+    "Select a node, then View source to inspect it. Double-click a function or file for its dependency funnel. Esc returns to overview.",
   graphEmpty: "Choose an entry, search result or route step to explore",
   bounded: "Expansion: up to 80 nodes / 240 relations; optionally 300 / 900.",
   expand: "Expand one level",

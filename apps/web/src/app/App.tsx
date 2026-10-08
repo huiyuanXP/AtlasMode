@@ -1,14 +1,17 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useStore } from "zustand";
 import { dictionaries, LocaleProvider } from "../i18n/index.js";
 import { createWorkspace, type Workspace } from "./workspace.js";
+import { createChatSessions } from "../features/chat/sessions.js";
 import { WorkspacePanels } from "./WorkspacePanels.js";
 export function App({ workspace }: { workspace?: Workspace }) {
   const [app] = useState(
       () => workspace ?? createWorkspace(undefined, window.localStorage),
     ),
     state = useStore(app.store),
-    [path, setPath] = useState("");
+    [path, setPath] = useState(""),
+    [chatSessions] = useState(() => createChatSessions()),
+    projectDialog = useRef<HTMLDialogElement>(null);
   const zh = dictionaries[state.view.locale];
   useEffect(() => {
     document.documentElement.lang = state.view.locale;
@@ -16,6 +19,7 @@ export function App({ workspace }: { workspace?: Workspace }) {
   useEffect(() => {
     void app.init();
   }, [app]);
+  useEffect(() => () => chatSessions.dispose(), [chatSessions]);
   return (
     <LocaleProvider locale={state.view.locale}>
       <div className="app" data-theme={state.view.theme}>
@@ -24,24 +28,53 @@ export function App({ workspace }: { workspace?: Workspace }) {
             ◈ {zh.brand}
             <span>{zh.tagline}</span>
           </a>
-          <form
-            className="open-project"
-            onSubmit={(e) => {
-              e.preventDefault();
-              void app.openProject(path);
-            }}
+          <button
+            type="button"
+            onClick={() => projectDialog.current?.showModal()}
           >
-            <input
-              aria-label={zh.projectPath}
-              value={path}
-              onChange={(e) => setPath(e.target.value)}
-              placeholder={zh.pathHint}
-              required
-            />
-            <button disabled={!!state.busy.project} className="primary">
-              {zh.open}
-            </button>
-          </form>
+            {zh.openProjectDialog}
+          </button>
+          <dialog
+            ref={projectDialog}
+            className="project-dialog"
+            aria-label={zh.openProjectDialog}
+          >
+            <div className="drawer-heading">
+              <h2>{zh.openProjectDialog}</h2>
+              <button
+                type="button"
+                aria-label={zh.close}
+                onClick={() => projectDialog.current?.close()}
+              >
+                ×
+              </button>
+            </div>
+            <p className="muted">{zh.emptyHint}</p>
+            <form
+              className="open-project"
+              onSubmit={(e) => {
+                e.preventDefault();
+                void app.openProject(path).then(() => {
+                  if (app.store.getState().project)
+                    projectDialog.current?.close();
+                });
+              }}
+            >
+              <label>
+                {zh.projectPath}
+                <input
+                  aria-label={zh.projectPath}
+                  value={path}
+                  onChange={(e) => setPath(e.target.value)}
+                  placeholder={zh.pathHint}
+                  required
+                />
+              </label>
+              <button disabled={!!state.busy.project} className="primary">
+                {zh.open}
+              </button>
+            </form>
+          </dialog>
           <select
             aria-label={zh.project}
             value={state.project?.id ?? ""}
@@ -119,7 +152,11 @@ export function App({ workspace }: { workspace?: Workspace }) {
             {zh.loading}
           </div>
         )}
-        <WorkspacePanels key={state.project?.id ?? "none"} app={app} />
+        <WorkspacePanels
+          key={state.project?.id ?? "none"}
+          app={app}
+          chatSessions={chatSessions}
+        />
       </div>
     </LocaleProvider>
   );

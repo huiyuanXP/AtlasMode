@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { PlanDetail, Operation } from "@codemap/core";
 import { useStrings } from "../../i18n/index.js";
 import { deleteTemporary, editFunction, temporaryId } from "./operations.js";
@@ -29,6 +29,10 @@ export function PlanEditor(props: PlanningPanelProps & { detail: PlanDetail }) {
     : node;
   const metadataDirty =
     title !== plan.title || description !== plan.description;
+  useEffect(() => {
+    props.onDirtyChange?.(metadataDirty);
+  }, [metadataDirty, props.onDirtyChange]);
+  useEffect(() => () => props.onDirtyChange?.(false), [props.onDirtyChange]);
   return (
     <fieldset disabled={props.busy} className="plan-editor">
       <div className="plan-status">

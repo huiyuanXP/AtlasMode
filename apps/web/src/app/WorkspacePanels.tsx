@@ -15,6 +15,10 @@ import {
 import { VerificationPanel } from "../features/verification/VerificationPanel.js";
 import type { LayerFilter } from "../features/graph/projection.js";
 import { Navigation } from "./Navigation.js";
+import { ChatPanel } from "../features/chat/ChatPanel.js";
+import type { ChatSessions } from "../features/chat/sessions.js";
+import type { ChatContext } from "../features/chat/types.js";
+import { PlanOverview } from "../features/planning/PlanOverview.js";
 import { Breadcrumbs } from "../features/navigation/Breadcrumbs.js";
 const emptyOperations: Operation[] = [];
 /** Only already-loaded facts from the current project snapshot become candidates. */
@@ -38,10 +42,16 @@ export function planningCandidates(
     ).values(),
   ];
 }
-export function WorkspacePanels({ app }: { app: Workspace }) {
+export function WorkspacePanels({
+  app,
+  chatSessions,
+}: {
+  app: Workspace;
+  chatSessions: ChatSessions;
+}) {
   const zh = useStrings();
   const state = useStore(app.store),
-    [tab, setTab] = useState<"source" | "plan" | "verify">("source"),
+    [tab, setTab] = useState<"chat" | "source" | "plan" | "verify">("chat"),
     [edge, setEdge] = useState<EdgeReference>(),
     [relationType, setRelationType] =
       useState<PlannedRelation["type"]>("calls");
@@ -94,6 +104,45 @@ export function WorkspacePanels({ app }: { app: Workspace }) {
     a.click();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   };
+  const chatContext = (): ChatContext => {
+    const current = app.store.getState(),
+      node = current.selectedNode,
+      location = current.navigationLocation;
+    return {
+      ...(current.summary ? { snapshotId: current.summary.snapshotId } : {}),
+      ...(current.plan
+        ? {
+            planId: current.plan.plan.id,
+            expectedRevision: current.plan.plan.revision,
+          }
+        : {}),
+      ...(node?.kind === "function" ? { nodeId: node.id } : {}),
+      ...(location
+        ? { scope: { kind: location.kind, path: location.path } }
+        : node?.filePath &&
+            (node.kind === "function" ||
+              node.kind === "file" ||
+              node.kind === "folder")
+          ? {
+              scope: {
+                kind: node.kind,
+                path: node.filePath,
+                ...(node.kind === "function" ? { nodeId: node.id } : {}),
+              },
+            }
+          : {}),
+    };
+  };
+  const onSend = () => {
+    const token = app.captureAgentSync();
+    return async ({
+      run,
+    }: {
+      run?: import("../features/chat/types.js").ChatRun;
+    }) => {
+      await app.syncAgentChanges(run?.changedPlanIds ?? [], token);
+    };
+  };
   if (!project)
     return (
       <div className="welcome">
@@ -105,7 +154,13 @@ export function WorkspacePanels({ app }: { app: Workspace }) {
     );
   return (
     <main className="workspace">
-      <Navigation app={app} onFocus={() => setTab("source")} />
+      <Navigation
+        app={app}
+        chatSessions={chatSessions}
+        context={chatContext}
+        onSend={onSend}
+        onFocus={() => setEdge(undefined)}
+      />
       <section className="graph-area">
         <Breadcrumbs
           project={project}
@@ -138,12 +193,10 @@ export function WorkspacePanels({ app }: { app: Workspace }) {
           onScope={(path, kind) => {
             void app.navigateScope(path, kind);
             setEdge(undefined);
-            setTab("source");
           }}
           onFunction={(node) => {
             void app.focus(node);
             setEdge(undefined);
-            setTab("source");
           }}
         />
         <div className="graph-toolbar">
@@ -199,7 +252,6 @@ export function WorkspacePanels({ app }: { app: Workspace }) {
           onFunnel={(node) => {
             void app.enterFunnel(node);
             setEdge(undefined);
-            setTab("source");
           }}
           onExitFunnel={app.exitFunnel}
           canEdit={!!plan && !planBusy}
@@ -209,7 +261,6 @@ export function WorkspacePanels({ app }: { app: Workspace }) {
               void app.navigateScope(n.filePath ?? ".", n.kind);
             else void app.selectNode(n);
             setEdge(undefined);
-            setTab("source");
           }}
           onExpand={(id) => void app.expand(id)}
           onLayout={(positions) => app.saveView({ ...state.view, positions })}
@@ -226,17 +277,58 @@ export function WorkspacePanels({ app }: { app: Workspace }) {
       </section>
       <aside className="inspector" aria-label={zh.inspector}>
         <nav className="tabs">
-          {(["source", "plan", "verify"] as const).map((t) => (
-            <button key={t} aria-pressed={tab === t} onClick={() => setTab(t)}>
-              {t === "source"
-                ? zh.sourceTab
-                : t === "plan"
-                  ? zh.planTab
-                  : zh.verifyTab}
-            </button>
-          ))}
+          {tab !== "chat" && (
+            <button onClick={() => setTab("chat")}>{zh.backToChat}</button>
+          )}
+          <button
+            aria-pressed={tab === "source"}
+            disabled={!state.selectedNode && !state.navigationLocation}
+            onClick={() => setTab("source")}
+          >
+            {zh.viewSource}
+          </button>
+          <button aria-pressed={tab === "plan"} onClick={() => setTab("plan")}>
+            {zh.advancedEditing}
+          </button>
+          <button
+            aria-pressed={tab === "verify"}
+            onClick={() => setTab("verify")}
+          >
+            {zh.verifyTab}
+          </button>
         </nav>
         <div className="inspector-scroll">
+          {tab === "chat" && (
+            <PlanOverview
+              plans={state.plans}
+              detail={plan}
+              nodes={candidates}
+              busy={planBusy}
+              canUndo={!!state.history?.past.length}
+              canRedo={!!state.history?.future.length}
+              onChoose={(id) => {
+                setEdge(undefined);
+                void app.choosePlan(id);
+              }}
+              onUndo={() => void app.undo()}
+              onRedo={() => void app.redo()}
+              onValidate={() => void app.validate()}
+              onApprove={() => void app.approve()}
+              onExport={(format) => void app.exportPlan(format, download)}
+              onVerify={() => {
+                setTab("verify");
+                void app.verify();
+              }}
+            />
+          )}
+          <div hidden={tab !== "chat"} className="planning-chat">
+            <ChatPanel
+              controller={chatSessions.get(project.id, "plan")}
+              locale={state.view.locale}
+              context={chatContext}
+              onSend={onSend}
+            />
+          </div>
           {tab === "source" && (
             <Inspector
               key={state.selectedNode?.id ?? "none"}
@@ -290,6 +382,7 @@ export function WorkspacePanels({ app }: { app: Workspace }) {
                 onApprove={() => void app.approve()}
                 onExport={(format) => void app.exportPlan(format, download)}
                 onClearEdge={() => setEdge(undefined)}
+                onDirtyChange={app.setPlanEditorDirty}
               />
             </>
           )}

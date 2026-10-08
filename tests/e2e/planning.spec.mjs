@@ -1,3 +1,8 @@
+import {
+  openCodeNavigation,
+  openSourceDrawer,
+  openAdvancedNavigation,
+} from "../support/chat-shell.mjs";
 import { test, expect } from "@playwright/test";
 import { mkdtemp, mkdir, writeFile, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
@@ -45,16 +50,49 @@ test("production UI and SDK share the complete planning, approval, persistence a
       const edge = page
         .getByTestId(`rf__edge-${id}`)
         .locator(".react-flow__edge-interaction");
-      const point = await edge.evaluate((path) => {
-        const p = path.getPointAtLength(path.getTotalLength() / 2);
-        const transformed = new DOMPoint(p.x, p.y).matrixTransform(
-          path.getScreenCTM(),
-        );
-        return { x: transformed.x, y: transformed.y };
-      });
+      let point;
+      await expect
+        .poll(async () => {
+          point = await edge.evaluate((path) => {
+            // Crossing curves can cover the midpoint. Click a visible segment
+            // belonging to this relation, using actual browser hit testing.
+            for (let segment = 1; segment < 100; segment++) {
+              const fraction = segment / 100;
+              const p = path.getPointAtLength(path.getTotalLength() * fraction);
+              const transformed = new DOMPoint(p.x, p.y).matrixTransform(
+                path.getScreenCTM(),
+              );
+              for (const [dx, dy] of [
+                [0, 0],
+                [0, 4],
+                [0, -4],
+                [4, 0],
+                [-4, 0],
+              ]) {
+                const x = transformed.x + dx,
+                  y = transformed.y + dy;
+                const hit = document.elementFromPoint(x, y);
+                if (
+                  hit?.closest(".react-flow__edge") ===
+                  path.closest(".react-flow__edge")
+                )
+                  return { x, y };
+              }
+            }
+            return null;
+          });
+          return point !== null;
+        })
+        .toBe(true);
       await page.mouse.click(point.x, point.y);
       await expect(
         page.getByRole("combobox", { name: "Source function", exact: true }),
+      ).toBeVisible();
+      await expect(
+        page.getByText(
+          `Selected relation: ${id.replace(/^(fact|plan):/, "")}`,
+          { exact: true },
+        ),
       ).toBeVisible();
     };
     mcp = await connectMcp(server.url);
@@ -62,10 +100,12 @@ test("production UI and SDK share the complete planning, approval, persistence a
       origin: server.url,
     });
     await page.goto(server.url);
+    await page.getByRole("button", { name: "打开项目", exact: true }).click();
     await page.getByRole("textbox", { name: "本地项目路径" }).fill(f.ts);
     await page.getByRole("button", { name: "打开并索引" }).click();
     await expect(page.locator(".project-heading h1")).toHaveText("typescript");
     await page.getByRole("combobox", { name: "界面语言" }).selectOption("en");
+    await openAdvancedNavigation(page);
     const [project] = await api("/api/projects");
     const args = { projectId: project.id };
     const snapshot = await api(`/api/projects/${project.id}/snapshot`);
@@ -77,7 +117,9 @@ test("production UI and SDK share the complete planning, approval, persistence a
         r.sourceId === node("caller").id &&
         r.targetId === node("A").id,
     );
+    await openCodeNavigation(page);
     await page.getByRole("button", { name: /ƒ caller/ }).click();
+    await openSourceDrawer(page);
     await expect(page.getByTestId("source-snippet")).toContainText(
       "return A()",
     );
@@ -163,16 +205,23 @@ test("production UI and SDK share the complete planning, approval, persistence a
     await expect(
       page.getByRole("heading", { name: "typescript", exact: true }),
     ).toBeVisible();
+    await openCodeNavigation(page);
     await page
       .getByRole("combobox", { name: "Browse routes", exact: true })
       .selectOption(chain.id);
     await page.getByRole("button", { name: "Next step", exact: true }).click();
-    await expect(page.locator(".inspector h2")).toHaveText("A");
+    await openSourceDrawer(page);
+    await expect(page.locator(".inspector-content h2")).toHaveText("A");
+    await openCodeNavigation(page);
     await page
       .getByRole("combobox", { name: "Browse routes", exact: true })
       .selectOption(walk.id);
-    await expect(page.locator(".inspector h2")).toHaveText("requestWithRetry");
+    await openSourceDrawer(page);
+    await expect(page.locator(".inspector-content h2")).toHaveText(
+      "requestWithRetry",
+    );
     // A second group shares a member without changing file ownership.
+    await openAdvancedNavigation(page);
     await page
       .getByLabel("Group title", { exact: true })
       .fill("Shared membership");
@@ -204,7 +253,7 @@ test("production UI and SDK share the complete planning, approval, persistence a
       "Reuse existing request behavior",
     );
     await page
-      .getByRole("button", { name: "Plan editor", exact: true })
+      .getByRole("button", { name: "Advanced editing", exact: true })
       .click();
     await page
       .getByRole("combobox", { name: "Choose plan", exact: true })
@@ -236,7 +285,7 @@ test("production UI and SDK share the complete planning, approval, persistence a
     await page.getByRole("button", { name: "Fit view", exact: true }).click();
     await page.locator('.react-flow__node[data-id="plan:spare"]').click();
     await page
-      .getByRole("button", { name: "Plan editor", exact: true })
+      .getByRole("button", { name: "Advanced editing", exact: true })
       .click();
     await save(() =>
       page
@@ -277,7 +326,7 @@ test("production UI and SDK share the complete planning, approval, persistence a
     await page.getByRole("button", { name: "Fit view", exact: true }).click();
     await page.locator('.react-flow__node[data-id="plan:notes"]').click();
     await page
-      .getByRole("button", { name: "Plan editor", exact: true })
+      .getByRole("button", { name: "Advanced editing", exact: true })
       .click();
     const editForm = page.locator("form").filter({
       has: page.getByRole("button", {
@@ -303,10 +352,12 @@ test("production UI and SDK share the complete planning, approval, persistence a
       page.getByRole("button", { name: "Add annotation", exact: true }).click(),
     );
     // Reconnect an actual existing A call: removal intent and B target must coexist.
+    await openCodeNavigation(page);
     await page
       .getByRole("button", { name: /ƒ caller/ })
       .first()
       .click();
+    await openSourceDrawer(page);
     await page
       .getByRole("button", { name: "Expand one level", exact: true })
       .click();
@@ -335,7 +386,9 @@ test("production UI and SDK share the complete planning, approval, persistence a
     await page
       .getByRole("button", { name: "Validate plan", exact: true })
       .click();
-    await expect(page.getByRole("status")).toContainText("Validation complete");
+    await expect(page.locator('.banner[role="status"]')).toContainText(
+      "Validation complete",
+    );
     await expect(
       page
         .locator(".plan-editor .warning")
@@ -440,7 +493,7 @@ test("production UI and SDK share the complete planning, approval, persistence a
       .not.toBe(JSON.stringify(originalView.positions));
     expect(await detail()).toEqual(approved);
     await page
-      .getByRole("button", { name: "Plan editor", exact: true })
+      .getByRole("button", { name: "Advanced editing", exact: true })
       .click();
     await page
       .getByLabel("Plan title", { exact: true })
@@ -525,7 +578,7 @@ test("production UI and SDK share the complete planning, approval, persistence a
     await page.reload();
     await expect(page.locator(".app")).toHaveAttribute("data-theme", "dark");
     await page
-      .getByRole("button", { name: "Plan editor", exact: true })
+      .getByRole("button", { name: "Advanced editing", exact: true })
       .click();
     await page
       .getByRole("combobox", { name: "Choose plan", exact: true })
@@ -562,6 +615,7 @@ test("production UI and SDK share the complete planning, approval, persistence a
     await page
       .getByRole("button", { name: "Refresh code", exact: true })
       .click();
+    await openCodeNavigation(page);
     await page
       .getByRole("combobox", { name: "Browse routes", exact: true })
       .selectOption(chain.id);
@@ -606,6 +660,9 @@ test("production UI and SDK share the complete planning, approval, persistence a
     evidence.unknown = unknown;
     // A different language/project clears the previous plan and source selection.
     await page
+      .getByRole("button", { name: "Open project", exact: true })
+      .click();
+    await page
       .getByRole("textbox", { name: "Local project path" })
       .fill(f.python);
     await page
@@ -613,7 +670,9 @@ test("production UI and SDK share the complete planning, approval, persistence a
       .click();
     await expect(page.locator(".project-heading h1")).toHaveText("python");
     await page.getByRole("combobox", { name: "界面语言" }).selectOption("en");
+    await openCodeNavigation(page);
     await page.getByRole("button", { name: /ƒ entry/ }).click();
+    await openSourceDrawer(page);
     await expect(page.getByTestId("source-snippet")).toContainText(
       "return helper()",
     );
@@ -621,7 +680,7 @@ test("production UI and SDK share the complete planning, approval, persistence a
       .getByRole("button", { name: "Expand one level", exact: true })
       .click();
     await page
-      .getByRole("button", { name: "Plan editor", exact: true })
+      .getByRole("button", { name: "Advanced editing", exact: true })
       .click();
     await expect(
       page.getByRole("combobox", { name: "Choose plan", exact: true }),

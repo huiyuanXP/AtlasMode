@@ -40,6 +40,11 @@ import {
   type PlanHistory,
   type HistoryAction,
 } from "../features/planning/history.js";
+export interface AgentSyncToken {
+  projectId?: string;
+  sequence: number;
+  plans: PlanDetail[];
+}
 export type WorkspaceState = {
   history?: PlanHistory;
   groups: FunctionGroup[];
@@ -69,7 +74,7 @@ export type WorkspaceState = {
   error: string;
   errorHelp?: "conflictHelp" | "retryHelp";
   errorMessageKey?: "snapshotChanged";
-  notice: "" | "refreshNotice" | "validateNotice";
+  notice: "" | "refreshNotice" | "validateNotice" | "scopeMissingNotice";
 };
 const blank = (): Omit<WorkspaceState, "projects"> => ({
   history: undefined,
@@ -108,7 +113,8 @@ export function createWorkspace(
     ...blank(),
   }));
   const scope = new ProjectScope();
-  let focusGeneration = 0;
+  let focusGeneration = 0,
+    dirtyPlanEditor = false;
   const histories = new Map<string, PlanHistory>();
   const set = store.setState,
     get = store.getState;
@@ -725,6 +731,191 @@ export function createWorkspace(
       );
     } else emit();
   };
+  const setPlanEditorDirty = (dirty: boolean) => {
+    dirtyPlanEditor = dirty;
+    if (!dirty && !get().busy.plan && !get().busy.knowledge) {
+      const current = get().plan,
+        latest = get().plans.find((p) => p.plan.id === current?.plan.id);
+      if (current && latest && latest.plan.revision > current.plan.revision)
+        acceptPlan(latest);
+    }
+  };
+  const captureAgentSync = (): AgentSyncToken => ({
+    projectId: get().project?.id,
+    sequence: focusGeneration,
+    plans: get().plans,
+  });
+  const syncAgentChanges = async (
+    planIds: string[] = [],
+    token: AgentSyncToken = captureAgentSync(),
+  ) => {
+    const project = get().project;
+    if (!project || project.id !== token.projectId || get().busy.project)
+      return;
+    const scene = get(),
+      sceneSequence = focusGeneration;
+    let focusing: Promise<void> | undefined;
+    await run(
+      "agentSync",
+      async () => {
+        const [summary, plans, groups, routes, policies] = await Promise.all([
+          api.summary(project.id),
+          api.plans(project.id),
+          api.groups(project.id),
+          api.routes(project.id),
+          api.policies(project.id),
+        ]);
+        let projection: SubgraphResult | undefined,
+          unknownCount: number | undefined,
+          missingScope = false;
+        if (scene.summary?.snapshotId !== summary.snapshotId) {
+          const temporary = new Set(
+            scene.plan?.plan.operations.flatMap((o) =>
+              o.kind === "add_function" ? [o.tempId] : [],
+            ) ?? [],
+          );
+          try {
+            if (scene.funnel && !temporary.has(scene.funnel.root.id)) {
+              const result = await api.dependencies(
+                project.id,
+                scene.funnel.root.id,
+              );
+              projection = result;
+              unknownCount = result.unknownCount;
+            } else if (
+              scene.navigationLocation &&
+              !scene.navigationLocation.planned
+            ) {
+              projection = await api.scope(
+                project.id,
+                scene.navigationLocation.path,
+                scene.navigationLocation.kind,
+                80,
+                summary.snapshotId,
+              );
+            } else {
+              const roots = [
+                ...new Set([
+                  ...(scene.graph?.nodes.map((n) => n.id) ?? []),
+                  ...(scene.selectedNode ? [scene.selectedNode.id] : []),
+                ]),
+              ]
+                .filter((id) => !temporary.has(id))
+                .slice(0, 300);
+              if (roots.length)
+                projection = await api.graph(project.id, roots, 0, 300);
+            }
+          } catch (error) {
+            if (
+              !(error instanceof ApiError) ||
+              error.code !== "NOT_FOUND" ||
+              error.status !== 404
+            )
+              throw error;
+            missingScope = true;
+          }
+          if (projection && projection.snapshotId !== summary.snapshotId)
+            throw new SnapshotChangedError();
+        }
+        return {
+          summary,
+          plans,
+          groups,
+          routes,
+          policies,
+          projection,
+          unknownCount,
+          missingScope,
+        };
+      },
+      (data) => {
+        const state = get();
+        // A local save may finish while this reread is in flight. Never downgrade it.
+        const plans = data.plans.map((detail) => {
+          const newer = state.plans.find(
+            (p) =>
+              p.plan.id === detail.plan.id &&
+              p.plan.revision > detail.plan.revision,
+          );
+          return newer ?? detail;
+        });
+        const editing =
+          state.busy.plan || state.busy.knowledge || dirtyPlanEditor;
+        const canFocus = token.sequence === focusGeneration && !editing;
+        const changed = canFocus
+          ? [...planIds]
+              .reverse()
+              .map((id) => plans.find((p) => p.plan.id === id))
+              .find(Boolean)
+          : undefined;
+        const selected = plans.find((p) => p.plan.id === state.plan?.plan.id);
+        set({
+          summary: data.summary,
+          plans,
+          groups: data.groups,
+          routes: data.routes,
+          policies: data.policies,
+        });
+        if (!editing && (changed || selected))
+          acceptPlan((changed ?? selected)!);
+        if (data.missingScope && sceneSequence === focusGeneration) {
+          for (const key of [
+            "inspect",
+            "funnel",
+            "graph",
+            "navigation",
+            "route",
+          ])
+            scope.invalidate(key);
+          set({
+            graph: undefined,
+            selectedNode: undefined,
+            navigationLocation: undefined,
+            funnel: undefined,
+            focusRequest: undefined,
+            source: undefined,
+            context: undefined,
+            notice: "scopeMissingNotice",
+            busy: {
+              ...get().busy,
+              inspect: false,
+              funnel: false,
+              graph: false,
+              navigation: false,
+              route: false,
+            },
+            ...(state.funnel ? { filter: state.funnel.previousFilter } : {}),
+          });
+        }
+        if (changed) {
+          restoreFunnel();
+          if (data.projection && sceneSequence === focusGeneration)
+            set({ graph: data.projection });
+          scope.invalidate("graph");
+          scope.invalidate("route");
+          scope.invalidate("navigation");
+          const sequence = ++focusGeneration;
+          const previous = token.plans.find(
+            (p) => p.plan.id === changed.plan.id,
+          )?.plan.operations;
+          focusing = focusPlan(changed, sequence, previous);
+        }
+        if (!changed && data.projection && sceneSequence === focusGeneration) {
+          set({
+            graph: data.projection,
+            ...(state.funnel && data.unknownCount !== undefined
+              ? { funnel: { ...state.funnel, unknownCount: data.unknownCount } }
+              : {}),
+          });
+        }
+        // Preserve the current projection when the snapshot has not changed.
+        // Stale source/context is explicitly cleared; graph retains its old snapshot label.
+        if (state.summary?.snapshotId !== data.summary.snapshotId)
+          set({ source: undefined, context: undefined, search: undefined });
+      },
+    );
+    await focusing;
+  };
   const savePlan = async (
     operations: Operation[],
     title?: string,
@@ -1013,6 +1204,9 @@ export function createWorkspace(
   };
   return {
     store,
+    setPlanEditorDirty,
+    captureAgentSync,
+    syncAgentChanges,
     loadMembers,
     saveGroup: (input: Omit<FunctionGroup, "id" | "projectId">) =>
       saveKnowledge("group", input),

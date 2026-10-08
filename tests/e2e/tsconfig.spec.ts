@@ -1,3 +1,8 @@
+import {
+  openCodeNavigation,
+  openSourceDrawer,
+  openAdvancedNavigation,
+} from "../support/chat-shell.mjs";
 import { test, expect } from "@playwright/test";
 import { mkdtemp, mkdir, writeFile, rm, access } from "node:fs/promises";
 import { tmpdir } from "node:os";
@@ -59,7 +64,9 @@ for (const legacy of [false, true]) {
       await expect(page.locator(".project-heading h1")).toHaveText(
         "typescript",
       );
+      await openCodeNavigation(page);
       await page.getByRole("button", { name: /ƒ entry/ }).click();
+      await openSourceDrawer(page);
       await expect(page.getByTestId("source-snippet")).toContainText(
         "return target()",
       );
@@ -73,16 +80,19 @@ for (const legacy of [false, true]) {
       );
       await expect(targetCard).toBeVisible();
       await targetCard.click();
+      await openSourceDrawer(page);
       await expect(page.getByTestId("source-snippet")).toContainText(
         'return "A 原文"',
       );
       await expect(page.locator(".inspector code.path")).toHaveText(
         "targetA.ts:2",
       );
+      await openSourceDrawer(page);
       await expect(page.getByTestId("source-snippet")).not.toHaveAttribute(
         "contenteditable",
         "true",
       );
+      await openAdvancedNavigation(page);
       const diagnostics = page
         .locator(".navigation details")
         .filter({ has: page.locator("summary", { hasText: "静态分析诊断" }) });
@@ -127,6 +137,7 @@ for (const legacy of [false, true]) {
           "tsconfig.json",
         ]);
       }
+      await openSourceDrawer(page);
       await expect(page.getByTestId("source-snippet")).toContainText(
         'return "A 原文"',
       );

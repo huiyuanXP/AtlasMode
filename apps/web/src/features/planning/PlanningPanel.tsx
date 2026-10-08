@@ -21,6 +21,7 @@ export type PlanningPanelProps = {
   onApprove: () => void;
   onExport: (format: "json" | "markdown") => void;
   onClearEdge: () => void;
+  onDirtyChange?: (dirty: boolean) => void;
 };
 export function PlanningPanel(props: PlanningPanelProps) {
   const zh = useStrings();

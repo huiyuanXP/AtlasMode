@@ -1,3 +1,4 @@
+import { openSourceDrawer } from "../support/chat-shell.mjs";
 import { test, expect, type Page } from "@playwright/test";
 import { mkdtemp, mkdir, writeFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
@@ -119,6 +120,7 @@ test("breadcrumbs navigate function, indexed file, folders, root and truthful pl
     await expect(page.locator('[data-funnel-lane="selected"]')).toContainText(
       "index.ts",
     );
+    await openSourceDrawer(page);
     await expect(page.locator(".inspector-content .path")).toContainText(
       "src/nested/index.ts",
     );
@@ -174,11 +176,12 @@ test("breadcrumbs navigate function, indexed file, folders, root and truthful pl
       "other",
       "index.ts",
     ]);
+    await openSourceDrawer(page);
     await expect(page.locator(".inspector-content .path")).toContainText(
       "other/index.ts",
     );
     await page
-      .getByRole("button", { name: "Plan editor", exact: true })
+      .getByRole("button", { name: "Advanced editing", exact: true })
       .click();
     await page
       .getByRole("combobox", { name: "Choose plan", exact: true })
