@@ -32,6 +32,167 @@ async function assertCardsInside(page: Page, ids: string[]) {
     .toBe(true);
 }
 
+test("high-degree function and file funnels keep readable neighbor windows with truthful totals and restore overview", async ({
+  page,
+  context,
+}) => {
+  const root = await mkdtemp(join(tmpdir(), "atlas-funnel-pages-"));
+  let server;
+  const errors: string[] = [],
+    external: string[] = [];
+  page.on("pageerror", (e) => errors.push(e.message));
+  await denyExternalRequests(context, external);
+  try {
+    const target = join(root, "pages-project");
+    await mkdir(target);
+    const imports: string[] = [],
+      calls: string[] = [];
+    for (let i = 0; i < 8; i++) {
+      await writeFile(
+        join(target, `up${i}.ts`),
+        `import { selected } from './root'; export function up${i}(){return selected();}`,
+      );
+      await writeFile(
+        join(target, `down${i}.ts`),
+        `export function down${i}(){return ${i};}`,
+      );
+      imports.push(`import { down${i} } from './down${i}';`);
+      calls.push(`down${i}()`);
+    }
+    await writeFile(
+      join(target, "root.ts"),
+      `${imports.join("\n")}\nexport function selected(){return ${calls.join("+")};}`,
+    );
+    server = await startProduction(join(root, "data"));
+    const project = await http(server.url, "/api/projects", "POST", {
+      path: target,
+    });
+    await http(server.url, `/api/projects/${project.id}/view`, "PUT", {
+      positions: {},
+      locale: "en",
+      theme: "light",
+    });
+    await page.goto(server.url);
+    await page
+      .getByRole("combobox", { name: "切换项目", exact: true })
+      .selectOption(project.id);
+    await expect(page.locator(".project-heading h1")).toHaveText(
+      "pages-project",
+    );
+    await page
+      .getByRole("textbox", { name: "Search functions", exact: true })
+      .fill("selected");
+    await page.getByRole("button", { name: "Search", exact: true }).click();
+    await page.getByRole("button", { name: /ƒ selected/ }).click();
+    const selected = page
+      .locator(".react-flow__node")
+      .filter({
+        has: page.locator(".code-card strong", { hasText: /^selected$/ }),
+      });
+    await selected.dblclick();
+    const summary = page.locator(".funnel-summary");
+    await expect(summary).toContainText("Dependents 8");
+    await expect(summary).toContainText("Dependencies 8");
+    await expect(summary).toContainText("Showing 1–3/8");
+    const readable = async () => {
+      await expect(page.locator('[data-funnel-lane="selected"]')).toHaveCount(
+        1,
+      );
+      await expect(page.locator('[data-funnel-lane="dependent"]')).toHaveCount(
+        3,
+      );
+      await expect(page.locator('[data-funnel-lane="dependency"]')).toHaveCount(
+        3,
+      );
+      await expect
+        .poll(async () => {
+          const cards = page.locator(
+            '.code-card[data-funnel-lane]:not([data-funnel-lane="side"])',
+          );
+          return cards.evaluateAll((elements) =>
+            elements.every((e) => e.getBoundingClientRect().width >= 200),
+          );
+        })
+        .toBe(true);
+      const ids = await page
+        .locator(".react-flow__node")
+        .filter({
+          has: page.locator('.code-card:not([data-funnel-lane="side"])'),
+        })
+        .evaluateAll((elements) =>
+          elements.map((e) => e.getAttribute("data-id")!),
+        );
+      await assertCardsInside(page, ids);
+    };
+    await readable();
+    const firstDown = await page
+      .locator('[data-funnel-lane="dependency"] strong')
+      .allTextContents();
+    await page
+      .getByRole("button", {
+        name: "Dependencies · Next neighbors",
+        exact: true,
+      })
+      .click();
+    await expect(summary).toContainText("Showing 4–6/8");
+    await readable();
+    expect(
+      await page
+        .locator('[data-funnel-lane="dependency"] strong')
+        .allTextContents(),
+    ).not.toEqual(firstDown);
+    await page
+      .getByRole("button", { name: "Dependents · Next neighbors", exact: true })
+      .click();
+    await expect(summary.locator(".funnel-pages").first()).toContainText(
+      "Showing 4–6/8",
+    );
+    await readable();
+    await page
+      .getByRole("button", {
+        name: "Dependencies · Previous neighbors",
+        exact: true,
+      })
+      .click();
+    await expect(
+      page.locator('[data-funnel-lane="dependency"] strong'),
+    ).toHaveText(firstDown);
+    const out = resolve("artifacts/e2e/focus-navigation");
+    await mkdir(out, { recursive: true });
+    await page.screenshot({
+      path: join(out, "funnel-high-degree.png"),
+      fullPage: true,
+    });
+    await page.keyboard.press("Escape");
+    await expect(summary).toHaveCount(0);
+    expect(
+      (await http(server.url, `/api/projects/${project.id}/view`)).positions,
+    ).toEqual({});
+    await page
+      .getByRole("navigation", { name: "Location", exact: true })
+      .getByRole("button", { name: "root.ts", exact: true })
+      .click();
+    await expect(summary).toContainText("Dependents 8");
+    await expect(summary).toContainText("Dependencies 8");
+    await expect(summary).toContainText("Showing 1–3/8");
+    await readable();
+    await page
+      .getByRole("button", { name: "Toggle light/dark", exact: true })
+      .click();
+    await expect(page.locator(".app")).toHaveAttribute("data-theme", "dark");
+    await readable();
+    await page.screenshot({
+      path: join(out, "funnel-high-degree-file.png"),
+      fullPage: true,
+    });
+    expect(errors).toEqual([]);
+    expect(external).toEqual([]);
+  } finally {
+    await server?.stop();
+    await rm(root, { recursive: true, force: true });
+  }
+});
+
 test("semantic creation after overview and multi-change plan choice fit their affected cards", async ({
   page,
   context,

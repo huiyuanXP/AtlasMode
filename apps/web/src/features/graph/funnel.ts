@@ -12,6 +12,11 @@ export type FunnelState = {
 };
 export type DependencyGraph = SubgraphResult & { unknownCount: number };
 export type FunnelLane = "dependent" | "selected" | "dependency" | "side";
+export type FunnelWindow = {
+  dependentsPage: number;
+  dependenciesPage: number;
+  pageSize: number;
+};
 
 /** Direct directional lanes, never treating membership as a dependency.
  * Reciprocal neighbors occur once above, with both arrows and an explicit badge.
@@ -19,6 +24,7 @@ export type FunnelLane = "dependent" | "selected" | "dependency" | "side";
 export function layoutFunnel(
   projection: { nodes: GraphNode[]; edges: GraphEdge[] },
   rootId: string,
+  window?: FunnelWindow,
 ) {
   const root = projection.nodes.find((n) => n.data.node.id === rootId);
   const incoming = new Set<string>(),
@@ -47,50 +53,89 @@ export function layoutFunnel(
   for (const n of projection.nodes) lanes[laneOf(n)].push(n);
   for (const lane of Object.values(lanes))
     lane.sort((a, b) => a.id.localeCompare(b.id));
+  const page = (list: GraphNode[], requested: number) => {
+    const size = Math.max(1, window?.pageSize ?? list.length),
+      pages = Math.max(1, Math.ceil(list.length / size)),
+      current = Math.min(Math.max(0, requested), pages - 1),
+      start = current * size;
+    return {
+      nodes: list.slice(start, start + size),
+      range: {
+        start: list.length ? start + 1 : 0,
+        end: Math.min(start + size, list.length),
+        total: list.length,
+        page: current,
+        pages,
+      },
+    };
+  };
+  const dependents = page(lanes.dependent, window?.dependentsPage ?? 0),
+    dependencies = page(lanes.dependency, window?.dependenciesPage ?? 0);
+  const visibleLanes = {
+    ...lanes,
+    dependent: dependents.nodes,
+    dependency: dependencies.nodes,
+  };
+  const visible = new Set(
+    Object.values(visibleLanes)
+      .flat()
+      .map((n) => n.id),
+  );
+  const columns = Math.min(4, window?.pageSize ?? 4);
   const width =
     Math.max(270, ...projection.nodes.map((n) => n.measured?.width ?? 0)) + 60;
   const height =
     Math.max(150, ...projection.nodes.map((n) => n.measured?.height ?? 0)) + 80;
   const relatedWidth = Math.max(
     1,
-    Math.min(4, Math.max(lanes.dependent.length, lanes.dependency.length)),
+    Math.min(
+      columns,
+      Math.max(dependents.nodes.length, dependencies.nodes.length),
+    ),
   );
-  const nodes = projection.nodes.map((n) => {
-    const lane = laneOf(n),
-      list = lanes[lane],
-      i = list.indexOf(n);
-    const rowCount = Math.min(4, list.length),
-      row = Math.floor(i / 4);
-    const x =
-      lane === "selected"
-        ? 0
-        : lane === "side"
-          ? width * (relatedWidth / 2 + 1.5 + i)
-          : ((i % 4) - (rowCount - 1) / 2) * width;
-    const y =
-      lane === "selected"
-        ? 0
-        : lane === "dependent"
-          ? -(row + 1) * height
-          : lane === "dependency"
-            ? (row + 1) * height
-            : height * 0.6;
-    return {
-      ...n,
-      position: { x, y },
-      data: {
-        ...n.data,
-        funnelLane: lane,
-        reciprocal: incoming.has(n.id) && outgoing.has(n.id),
-      },
-    };
-  });
+  const nodes = projection.nodes
+    .filter((n) => visible.has(n.id))
+    .map((n) => {
+      const lane = laneOf(n),
+        list = visibleLanes[lane],
+        i = list.indexOf(n);
+      const rowCount = Math.min(columns, list.length),
+        row = Math.floor(i / columns);
+      const x =
+        lane === "selected"
+          ? 0
+          : lane === "side"
+            ? width * (relatedWidth / 2 + 1.5 + i)
+            : ((i % columns) - (rowCount - 1) / 2) * width;
+      const y =
+        lane === "selected"
+          ? 0
+          : lane === "dependent"
+            ? -(row + 1) * height
+            : lane === "dependency"
+              ? (row + 1) * height
+              : height * 0.6;
+      return {
+        ...n,
+        position: { x, y },
+        data: {
+          ...n.data,
+          funnelLane: lane,
+          reciprocal: incoming.has(n.id) && outgoing.has(n.id),
+        },
+      };
+    });
   const relatedIds = nodes
     .filter((n) => n.data.funnelLane !== "side")
     .map((n) => n.id);
   const related = new Set(relatedIds);
   const edges = projection.edges
-    .filter((e) => e.data?.relationType !== "contains")
+    .filter(
+      (e) =>
+        e.data?.relationType !== "contains" &&
+        visible.has(e.source) &&
+        visible.has(e.target),
+    )
     .map((e) => ({
       ...e,
       sourceHandle: null,
@@ -104,6 +149,8 @@ export function layoutFunnel(
     nodes,
     edges,
     relatedIds,
+    reciprocalCount: [...incoming].filter((id) => outgoing.has(id)).length,
+    windows: { dependents: dependents.range, dependencies: dependencies.range },
     counts: {
       dependents: incoming.size,
       dependencies: outgoing.size,

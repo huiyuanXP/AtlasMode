@@ -95,21 +95,25 @@ function CodeCard({ data }: NodeProps<GraphNode>) {
 function FocusViewport({
   request,
   targets,
+  padding = 0.5,
+  focusKey = "",
 }: {
   request?: FocusRequest;
   targets: GraphNode[];
+  padding?: number;
+  focusKey?: string;
 }) {
   const { fitView, viewportInitialized } = useReactFlow<GraphNode, GraphEdge>();
   const initialized = useNodesInitialized();
   const rendered = useNodes<GraphNode>();
-  const consumed = useRef<number | undefined>(undefined);
+  const consumed = useRef<string | undefined>(undefined);
   useEffect(() => {
     if (
       !request ||
       !targets.length ||
       !initialized ||
       !viewportInitialized ||
-      consumed.current === request.sequence
+      consumed.current === `${request.sequence}:${focusKey}`
     )
       return;
     // The old graph can contain the same ID. Wait until the newly supplied
@@ -129,7 +133,7 @@ function FocusViewport({
       )
     )
       return;
-    consumed.current = request.sequence;
+    consumed.current = `${request.sequence}:${focusKey}`;
     void fitView({
       nodes: ready as GraphNode[],
       duration: window.matchMedia("(prefers-reduced-motion: reduce)").matches
@@ -139,9 +143,18 @@ function FocusViewport({
       // zoom controls retain their normal minimum; do not reposition targets.
       minZoom: 0,
       maxZoom: 1.1,
-      padding: 0.5,
+      padding,
     });
-  }, [request, targets, rendered, initialized, viewportInitialized, fitView]);
+  }, [
+    request,
+    targets,
+    rendered,
+    initialized,
+    viewportInitialized,
+    fitView,
+    padding,
+    focusKey,
+  ]);
   return null;
 }
 function OverviewViewport({
@@ -192,6 +205,29 @@ export function Canvas(props: {
   ) => void;
 }) {
   const zh = useStrings();
+  const canvas = useRef<HTMLDivElement>(null);
+  const [pageSize, setPageSize] = useState(3);
+  const [pages, setPages] = useState({
+    sequence: -1,
+    dependents: 0,
+    dependencies: 0,
+    focusSequence: 0,
+  });
+  const activePages =
+    pages.sequence === props.funnel?.sequence
+      ? pages
+      : { dependents: 0, dependencies: 0, focusSequence: 0 };
+  useEffect(() => {
+    if (!canvas.current) return;
+    const update = () => {
+      const width = canvas.current!.getBoundingClientRect().width;
+      setPageSize(width < 500 ? 1 : width < 800 ? 2 : 3);
+    };
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(canvas.current);
+    return () => observer.disconnect();
+  }, []);
   const projection = useMemo(
     () =>
       projectGraph(
@@ -241,9 +277,21 @@ export function Canvas(props: {
               })),
             },
             props.funnel.root.id,
+            {
+              dependentsPage: activePages.dependents,
+              dependenciesPage: activePages.dependencies,
+              pageSize,
+            },
           )
         : undefined,
-    [projection, props.funnel, measurements],
+    [
+      projection,
+      props.funnel,
+      measurements,
+      activePages.dependents,
+      activePages.dependencies,
+      pageSize,
+    ],
   );
   useEffect(() => {
     const target = funnelProjection?.nodes ?? projection.nodes;
@@ -308,7 +356,8 @@ export function Canvas(props: {
   const selectedFocus =
     props.funnel &&
     props.focusRequest &&
-    props.focusRequest.sequence > props.funnel.sequence
+    props.focusRequest.sequence > props.funnel.sequence &&
+    props.focusRequest.sequence > activePages.focusSequence
       ? props.focusRequest
       : undefined;
   const editable = props.canEdit && props.funnel?.root.kind !== "file";
@@ -317,8 +366,40 @@ export function Canvas(props: {
     markerEnd: { type: MarkerType.ArrowClosed, width: 16, height: 16 },
     reconnectable: editable && e.reconnectable,
   }));
+  const pageControls = (lane: "dependents" | "dependencies") => {
+    const range = funnelProjection?.windows[lane];
+    if (!range || range.total <= pageSize) return null;
+    const label =
+      lane === "dependents" ? zh.funnelDependents : zh.funnelDependencies;
+    const choose = (page: number) =>
+      setPages({
+        ...activePages,
+        sequence: props.funnel!.sequence,
+        [lane]: page,
+        focusSequence: props.focusRequest?.sequence ?? 0,
+      });
+    return (
+      <span className="funnel-pages">
+        <button
+          aria-label={`${label} · ${zh.funnelPrevious}`}
+          disabled={range.page === 0}
+          onClick={() => choose(range.page - 1)}
+        >
+          ←
+        </button>
+        {zh.funnelShowing} {range.start}–{range.end}/{range.total}
+        <button
+          aria-label={`${label} · ${zh.funnelNext}`}
+          disabled={range.page + 1 >= range.pages}
+          onClick={() => choose(range.page + 1)}
+        >
+          →
+        </button>
+      </span>
+    );
+  };
   return (
-    <div className="canvas-shell" aria-label={zh.graph}>
+    <div className="canvas-shell" aria-label={zh.graph} ref={canvas}>
       <ReactFlow<GraphNode, GraphEdge>
         onInit={(flow) => {
           instance.current = flow;
@@ -419,6 +500,12 @@ export function Canvas(props: {
       >
         <OverviewViewport active={!!props.funnel} saved={savedViewport} />
         <FocusViewport
+          padding={props.funnel && !selectedFocus ? 0.08 : 0.5}
+          focusKey={
+            props.funnel && !selectedFocus
+              ? `${pageSize}:${funnelProjection?.windows.dependents.page}:${funnelProjection?.windows.dependencies.page}`
+              : ""
+          }
           request={
             selectedFocus ??
             (props.funnel
@@ -460,10 +547,17 @@ export function Canvas(props: {
           <span>
             ↑ {zh.funnelDependents} {funnelProjection.counts.dependents}
           </span>
+          {pageControls("dependents")}
           <span>◇ {zh.funnelCurrent} 1</span>
           <span>
             ↓ {zh.funnelDependencies} {funnelProjection.counts.dependencies}
           </span>
+          {pageControls("dependencies")}
+          {funnelProjection.reciprocalCount > 0 && (
+            <span>
+              {zh.funnelReciprocal} {funnelProjection.reciprocalCount}
+            </span>
+          )}
           <span>
             {zh.funnelSide} {funnelProjection.counts.side} · {zh.funnelUnknown}{" "}
             {props.funnel.unknownCount}

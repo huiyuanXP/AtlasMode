@@ -99,3 +99,75 @@ it("handles an isolated root and planned-only relations without pretending conta
     result.nodes.find((n) => n.data.node.id === "new")!.position.y,
   );
 });
+it("pages each directional lane without relabeling omitted dependencies as unrelated or retaining dangling edges", () => {
+  const g: SubgraphResult = {
+    ...graph([]),
+    nodes: [
+      node("selected"),
+      node("other"),
+      ...Array.from({ length: 8 }, (_, i) => node(`up${i}`)),
+      ...Array.from({ length: 7 }, (_, i) => node(`down${i}`)),
+    ],
+    relations: [
+      ...Array.from({ length: 8 }, (_, i) => edge(`up${i}`, "selected")),
+      ...Array.from({ length: 7 }, (_, i) => edge("selected", `down${i}`)),
+      edge("selected", "up0"),
+    ],
+  };
+  const projection = projectGraph(g, [], "both", {});
+  const first = funnel.layoutFunnel(projection, "selected", {
+    dependentsPage: 0,
+    dependenciesPage: 0,
+    pageSize: 3,
+  });
+  expect(first.counts).toEqual({ dependents: 8, dependencies: 8, side: 1 });
+  expect(first.reciprocalCount).toBe(1);
+  expect(
+    first.nodes
+      .filter((n) => n.data.funnelLane === "dependent")
+      .map((n) => n.data.node.id),
+  ).toEqual(["up0", "up1", "up2"]);
+  expect(
+    first.nodes
+      .filter((n) => n.data.funnelLane === "dependency")
+      .map((n) => n.data.node.id),
+  ).toEqual(["down0", "down1", "down2"]);
+  expect(
+    first.nodes
+      .filter((n) => n.data.funnelLane === "side")
+      .map((n) => n.data.node.id),
+  ).toEqual(["other"]);
+  expect(first.windows.dependents).toMatchObject({
+    start: 1,
+    end: 3,
+    total: 8,
+    page: 0,
+    pages: 3,
+  });
+  expect(
+    first.nodes.find((n) => n.data.node.id === "up0")?.data.reciprocal,
+  ).toBe(true);
+  const all = new Set<string>();
+  for (let page = 0; page < 3; page++) {
+    const result = funnel.layoutFunnel(projection, "selected", {
+      dependentsPage: page,
+      dependenciesPage: page,
+      pageSize: 3,
+    });
+    const ids = new Set(result.nodes.map((n) => n.id));
+    expect(
+      result.edges.every((e) => ids.has(e.source) && ids.has(e.target)),
+    ).toBe(true);
+    for (const n of result.nodes.filter((n) => n.data.funnelLane !== "side"))
+      all.add(n.data.node.id);
+    expect(
+      result.nodes.filter((n) => n.data.funnelLane === "selected"),
+    ).toHaveLength(1);
+  }
+  expect([...all].sort()).toEqual(
+    g.nodes
+      .filter((n) => n.id !== "other")
+      .map((n) => n.id)
+      .sort(),
+  );
+});

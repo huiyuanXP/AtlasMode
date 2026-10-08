@@ -902,6 +902,14 @@ summary {
   color: var(--muted);
   margin-bottom: 6px;
 }
+.funnel-pages {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.funnel-pages button {
+  padding: 3px 6px;
+}
 .code-card.funnel-selected {
   border-color: var(--accent);
   box-shadow: 0 0 0 2px var(--accent);
