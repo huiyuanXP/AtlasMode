@@ -113,6 +113,12 @@ export class HttpApi {
         ...(relationIds?.length ? { relationIds } : {}),
       },
     );
+  dependencies = (id: string, nodeId: string, budget = 80) =>
+    this.request<SubgraphResult & { unknownCount: number }>(
+      `/projects/${encodeURIComponent(id)}/dependencies`,
+      "POST",
+      { nodeId, budget },
+    );
   search = (id: string, q: string, offset = 0) =>
     this.request<FunctionSearchResult>(
       `/projects/${encodeURIComponent(id)}/functions?${new URLSearchParams({ q, offset: String(offset), limit: "50" })}`,

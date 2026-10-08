@@ -21,6 +21,7 @@ import type {
 } from "@codemap/core";
 import { ApiError, HttpApi } from "../api/client.js";
 import { ProjectScope } from "../api/scope.js";
+import type { FunnelState } from "../features/graph/funnel.js";
 import type { LayerFilter } from "../features/graph/projection.js";
 import {
   affectedNodeIds,
@@ -46,6 +47,7 @@ export type WorkspaceState = {
   graph?: SubgraphResult;
   selectedNode?: CodeNode;
   focusRequest?: FocusRequest;
+  funnel?: FunnelState;
   context?: FunctionContextResult;
   source?: { filePath: string; content: string };
   search?: FunctionSearchResult;
@@ -74,6 +76,7 @@ const blank = (): Omit<WorkspaceState, "projects"> => ({
   graph: undefined,
   selectedNode: undefined,
   focusRequest: undefined,
+  funnel: undefined,
   context: undefined,
   source: undefined,
   search: undefined,
@@ -230,12 +233,13 @@ export function createWorkspace(
     const sequence = ++focusGeneration;
     scope.invalidate("graph");
     scope.invalidate("route");
+    scope.invalidate("funnel");
     set((s) => ({
       selectedNode: node,
       focusRequest: { nodeId: node.id, nodeIds: [node.id], sequence },
       context: undefined,
       source: undefined,
-      busy: { ...s.busy, graph: false, route: false },
+      busy: { ...s.busy, graph: false, route: false, funnel: false },
     }));
     const isFact =
       get().graph?.nodes.some((n) => n.id === node.id) ||
@@ -260,7 +264,111 @@ export function createWorkspace(
       (data) => set(data),
     );
   };
+  const restoreFunnel = () => {
+    scope.invalidate("funnel");
+    set((s) => ({
+      ...(s.funnel
+        ? { graph: s.funnel.previousGraph, filter: s.funnel.previousFilter }
+        : {}),
+      funnel: undefined,
+      ...(s.funnel || s.busy.funnel ? { focusRequest: undefined } : {}),
+      busy: { ...s.busy, funnel: false },
+    }));
+  };
+  const exitFunnel = () => {
+    focusGeneration++;
+    restoreFunnel();
+  };
+  const enterFunnel = async (node: CodeNode, budget = 80) => {
+    const state = get(),
+      project = state.project;
+    if (!project || (node.kind !== "function" && node.kind !== "file")) return;
+    const previousGraph = state.funnel
+      ? state.funnel.previousGraph
+      : state.graph;
+    const previousFilter = state.funnel?.previousFilter ?? state.filter;
+    // Selection starts source/context requests immediately; their scope guard
+    // prevents an older double click from replacing this root's inspector.
+    void selectNode(node);
+    const sequence = ++focusGeneration;
+    set({ focusRequest: undefined });
+    const commit = (
+      graph: SubgraphResult | undefined,
+      unknownCount: number,
+    ) => {
+      if (sequence !== focusGeneration) return;
+      if (graph && graph.snapshotId !== get().summary?.snapshotId)
+        throw new SnapshotChangedError();
+      const related = new Map((graph?.nodes ?? []).map((n) => [n.id, n]));
+      const snapshotId = graph?.snapshotId ?? get().summary?.snapshotId;
+      const previousGraphs = [previousGraph, state.graph].filter(
+        (g): g is SubgraphResult => !!g && g.snapshotId === snapshotId,
+      );
+      // Keep old visible facts as a secondary lane. The related query and total
+      // visible union both remain bounded; never recursively accumulate graphs.
+      const retained = [
+        ...new Map(
+          previousGraphs.flatMap((g) => g.nodes).map((n) => [n.id, n]),
+        ).values(),
+      ].filter((n) => !related.has(n.id));
+      const nodes = [...related.values(), ...retained].slice(0, 300);
+      const visible = new Set(nodes.map((n) => n.id));
+      const relations = [
+        ...new Map(
+          [
+            ...(graph?.relations ?? []),
+            ...previousGraphs
+              .flatMap((g) => g.relations)
+              .filter((r) => r.sourceId !== node.id && r.targetId !== node.id),
+          ].map((r) => [r.id, r]),
+        ).values(),
+      ]
+        .filter(
+          (r) =>
+            visible.has(r.sourceId) && (!r.targetId || visible.has(r.targetId)),
+        )
+        .slice(0, 900);
+      set({
+        graph:
+          graph || previousGraphs[0]
+            ? {
+                ...(graph ?? previousGraphs[0]!),
+                nodes,
+                relations,
+                truncated:
+                  !!graph?.truncated || related.size + retained.length > 300,
+              }
+            : undefined,
+        funnel: {
+          root: node,
+          sequence,
+          previousGraph,
+          previousFilter,
+          unknownCount,
+        },
+        filter: "both",
+        focusRequest: undefined,
+      });
+    };
+    const planned = state.plan?.plan.operations.some(
+      (o) => o.kind === "add_function" && o.tempId === node.id,
+    );
+    if (planned)
+      commit(
+        previousGraph?.snapshotId === get().summary?.snapshotId
+          ? previousGraph
+          : undefined,
+        0,
+      );
+    else
+      await run(
+        "funnel",
+        () => api.dependencies(project.id, node.id, budget),
+        (graph) => commit(graph, graph.unknownCount),
+      );
+  };
   const expand = async (nodeId: string, depth = 1, budget = 80) => {
+    exitFunnel();
     const project = get().project;
     if (!project) return;
     // A manual expansion supersedes route navigation, including a response still
@@ -444,6 +552,7 @@ export function createWorkspace(
     )
       return;
     const sequence = ++focusGeneration;
+    scope.invalidate("funnel");
     scope.invalidate("graph");
     scope.invalidate("route");
     set((s) => ({ busy: { ...s.busy, graph: false, route: false } }));
@@ -459,6 +568,7 @@ export function createWorkspace(
           description ?? detail.plan.description,
         ),
       (accepted) => {
+        restoreFunnel();
         histories.set(
           historyKey(accepted.plan),
           commitHistory(
@@ -487,6 +597,7 @@ export function createWorkspace(
       );
   };
   const choosePlan = async (id: string) => {
+    exitFunnel();
     scope.invalidate("plan");
     scope.invalidate("graph");
     const sequence = ++focusGeneration;
@@ -591,6 +702,7 @@ export function createWorkspace(
     );
   };
   const routeStep = async (routeId: string, index: number) => {
+    exitFunnel();
     const state = get(),
       route = state.routes.find((r) => r.id === routeId),
       step = route?.steps[index];
@@ -722,6 +834,8 @@ export function createWorkspace(
     openProject,
     selectProject,
     selectNode,
+    enterFunnel,
+    exitFunnel,
     focus,
     expand,
     search,

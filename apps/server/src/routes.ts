@@ -38,6 +38,10 @@ const graphBody = z
     (body) => body.nodeIds.length > 0 || !!body.relationIds?.length,
     "Expected at least one node or relation anchor",
   );
+const dependencyBody = z.strictObject({
+  nodeId: id,
+  budget: z.number().int().min(1).max(300).optional(),
+});
 const createPlan = z.strictObject({
   projectId: id,
   title: nonblank,
@@ -147,6 +151,12 @@ export function registerRoutes(
     },
     contextQuery,
     functionParams,
+  );
+  write("POST", "/api/projects/:id/dependencies", dependencyBody, (request) =>
+    queries.dependencies(
+      projectId(request),
+      dependencyBody.parse(request.body),
+    ),
   );
   write("POST", "/api/projects/:id/subgraph", graphBody, (request) =>
     queries.subgraph(projectId(request), graphBody.parse(request.body)),

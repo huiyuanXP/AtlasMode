@@ -1,5 +1,12 @@
 /** Authored names, paths, notes and service evidence remain verbatim. */
 export const zh = {
+  funnelDependents: "调用方／依赖者",
+  funnelCurrent: "当前对象",
+  funnelDependencies: "被调用方／依赖项",
+  funnelSide: "旁侧上下文",
+  funnelUnknown: "未知／外部关系",
+  funnelReciprocal: "双向依赖",
+  exitFunnel: "退出漏斗 (Esc)",
   brand: "AtlasMode",
   tagline: "代码事实 · 图上规划",
   projectPath: "本地项目路径",
@@ -38,7 +45,7 @@ export const zh = {
   both: "事实 + 规划",
   layers: "显示层",
   relationType: "新增/改接关系类型",
-  graphHelp: "点击节点查看源码；双击展开一层。拖动只保存布局。",
+  graphHelp: "点击节点查看源码；双击函数或文件进入依赖漏斗。Esc 返回概览。",
   graphEmpty: "选择入口、搜索结果或路线步骤以浏览子图",
   bounded: "每次展开最多 80 个节点 / 240 条关系；按需可增至 300 / 900。",
   expand: "展开一层",

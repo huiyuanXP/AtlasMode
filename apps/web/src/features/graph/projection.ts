@@ -15,7 +15,11 @@ export type CardData = {
   [key: string]: unknown;
 };
 export type GraphNode = Node<CardData>;
-export type GraphEdge = Edge<{ layer: "fact" | "plan"; domainId: string }>;
+export type GraphEdge = Edge<{
+  layer: "fact" | "plan";
+  domainId: string;
+  relationType?: string;
+}>;
 export function focusTargets(nodes: GraphNode[], request?: FocusRequest) {
   const ids = new Set(
     request?.nodeIds ?? (request?.nodeId ? [request.nodeId] : []),
@@ -120,7 +124,7 @@ export function projectGraph(
         source: factsByDomain.get(r.sourceId)!,
         target: factsByDomain.get(r.targetId)!,
         label: `${text.fact} · ${text[r.type]}${removed ? ` · ${text.plannedRemoval}` : ""}`,
-        data: { layer: "fact", domainId: r.id },
+        data: { layer: "fact", domainId: r.id, relationType: r.type },
         deletable: false,
         reconnectable: r.type === "calls",
         style: {
@@ -142,7 +146,7 @@ export function projectGraph(
         source: byDomain.get(op.sourceId)!,
         target: byDomain.get(op.targetId)!,
         label: `${text.plan} · ${text[op.type]}`,
-        data: { layer: "plan", domainId: op.id },
+        data: { layer: "plan", domainId: op.id, relationType: op.type },
         deletable: false,
         reconnectable: true,
         style: { stroke: "#8962ce", strokeDasharray: "6 3" },

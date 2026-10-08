@@ -1,5 +1,12 @@
 import type { zh } from "./zh.js";
 export const en: Record<keyof typeof zh, string> = {
+  funnelDependents: "Dependents",
+  funnelCurrent: "Current",
+  funnelDependencies: "Dependencies",
+  funnelSide: "Side context",
+  funnelUnknown: "Unknown/external",
+  funnelReciprocal: "Reciprocal",
+  exitFunnel: "Exit funnel (Esc)",
   brand: "AtlasMode",
   tagline: "Code facts · Visual planning",
   projectPath: "Local project path",
@@ -43,7 +50,7 @@ export const en: Record<keyof typeof zh, string> = {
   layers: "Visible layers",
   relationType: "New/reconnected relation type",
   graphHelp:
-    "Click to inspect source; double-click to expand. Dragging saves layout only.",
+    "Click to inspect source; double-click a function or file for its dependency funnel. Esc returns to overview.",
   graphEmpty: "Choose an entry, search result or route step to explore",
   bounded: "Expansion: up to 80 nodes / 240 relations; optionally 300 / 900.",
   expand: "Expand one level",

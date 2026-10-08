@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import type { Operation } from "@codemap/core";
 import { useStore } from "zustand";
 import { useStrings } from "../i18n/index.js";
 import { type Workspace, type WorkspaceState } from "./workspace.js";
@@ -14,6 +15,7 @@ import {
 import { VerificationPanel } from "../features/verification/VerificationPanel.js";
 import type { LayerFilter } from "../features/graph/projection.js";
 import { Navigation } from "./Navigation.js";
+const emptyOperations: Operation[] = [];
 /** Only already-loaded facts from the current project snapshot become candidates. */
 export function planningCandidates(
   state: Pick<WorkspaceState, "summary" | "graph" | "search">,
@@ -43,7 +45,10 @@ export function WorkspacePanels({ app }: { app: Workspace }) {
     [relationType, setRelationType] =
       useState<PlannedRelation["type"]>("calls");
   const { project, summary, plan, graph } = state;
-  const candidates = planningCandidates(state);
+  const candidates = useMemo(
+    () => planningCandidates(state),
+    [state.summary, state.graph, state.search],
+  );
   const busy = Object.values(state.busy).some(Boolean),
     planBusy =
       !!state.busy.plan || !!state.busy.project || !!state.busy.knowledge;
@@ -145,10 +150,18 @@ export function WorkspacePanels({ app }: { app: Workspace }) {
         <Canvas
           graph={graph}
           referenceNodes={candidates}
-          operations={plan?.plan.operations ?? []}
+          operations={plan?.plan.operations ?? emptyOperations}
           view={state.view}
           filter={state.filter}
           focusRequest={state.focusRequest}
+          funnel={state.funnel}
+          funnelPending={!!state.busy.funnel}
+          onFunnel={(node) => {
+            void app.enterFunnel(node);
+            setEdge(undefined);
+            setTab("source");
+          }}
+          onExitFunnel={app.exitFunnel}
           canEdit={!!plan && !planBusy}
           relationType={relationType}
           onSelect={(n) => {

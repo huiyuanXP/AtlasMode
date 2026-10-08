@@ -9,6 +9,8 @@ import {
   applyNodeChanges,
   MarkerType,
   type NodeProps,
+  type ReactFlowInstance,
+  type Viewport,
   useNodes,
   useNodesInitialized,
   useReactFlow,
@@ -28,16 +30,39 @@ import {
   type LayerFilter,
 } from "./projection.js";
 import type { EdgeReference, PlannedRelation } from "../planning/operations.js";
+import { layoutFunnel, type FunnelState, type FunnelLane } from "./funnel.js";
 import type { FocusRequest } from "./focus.js";
 export type { FocusRequest } from "./focus.js";
 import "@xyflow/react/dist/style.css";
 function CodeCard({ data }: NodeProps<GraphNode>) {
   const zh = useStrings();
   const n = data.node,
-    callable = n.kind === "function";
+    callable = n.kind === "function" || n.kind === "file",
+    lane = data.funnelLane as FunnelLane | undefined;
   return (
-    <div className={`code-card ${data.layer} kind-${n.kind}`}>
-      {callable && <Handle type="target" position={Position.Left} />}
+    <div
+      className={`code-card ${data.layer} kind-${n.kind} ${lane ? `funnel-${lane}` : ""}`}
+      data-funnel-lane={lane}
+    >
+      {callable && (
+        <Handle type="target" position={lane ? Position.Top : Position.Left} />
+      )}
+      {lane && (
+        <div className="funnel-card-lane">
+          {
+            zh[
+              lane === "dependent"
+                ? "funnelDependents"
+                : lane === "dependency"
+                  ? "funnelDependencies"
+                  : lane === "selected"
+                    ? "funnelCurrent"
+                    : "funnelSide"
+            ]
+          }
+          {data.reciprocal ? ` · ${zh.funnelReciprocal}` : ""}
+        </div>
+      )}
       <div className="card-meta">
         <span>
           {data.layer === "plan"
@@ -56,7 +81,12 @@ function CodeCard({ data }: NodeProps<GraphNode>) {
           {change}
         </div>
       ))}
-      {callable && <Handle type="source" position={Position.Right} />}
+      {callable && (
+        <Handle
+          type="source"
+          position={lane ? Position.Bottom : Position.Right}
+        />
+      )}
     </div>
   );
 }
@@ -92,6 +122,8 @@ function FocusViewport({
         (node, i) =>
           !node ||
           node.data !== targets[i]!.data ||
+          node.position.x !== targets[i]!.position.x ||
+          node.position.y !== targets[i]!.position.y ||
           !node.measured?.width ||
           !node.measured.height,
       )
@@ -112,7 +144,29 @@ function FocusViewport({
   }, [request, targets, rendered, initialized, viewportInitialized, fitView]);
   return null;
 }
+function OverviewViewport({
+  active,
+  saved,
+}: {
+  active: boolean;
+  saved: { current: Viewport | undefined };
+}) {
+  const { getViewport, setViewport } = useReactFlow();
+  const wasActive = useRef(false);
+  useEffect(() => {
+    if (active && !wasActive.current) saved.current ??= getViewport();
+    if (!active && wasActive.current && saved.current) {
+      void setViewport(saved.current, { duration: 0 });
+      saved.current = undefined;
+    }
+    wasActive.current = active;
+  }, [active, saved, getViewport, setViewport]);
+  return null;
+}
 const nodeTypes = { code: CodeCard };
+// React Flow queues explicit fit options. Stable overview options avoid a
+// parent render overwriting that queued request with a fit of every node.
+const overviewFitOptions = { padding: 0.25, maxZoom: 1 };
 export function Canvas(props: {
   graph?: SubgraphResult;
   referenceNodes?: CodeNode[];
@@ -120,10 +174,14 @@ export function Canvas(props: {
   view: ViewState;
   filter: LayerFilter;
   focusRequest?: FocusRequest;
+  funnel?: FunnelState;
+  funnelPending?: boolean;
+  onFunnel: (node: CodeNode) => void;
+  onExitFunnel: () => void;
   canEdit: boolean;
   relationType: PlannedRelation["type"];
   onSelect: (node: CodeNode) => void;
-  onExpand: (id: string) => void;
+  onExpand?: (id: string) => void;
   onLayout: (positions: ViewState["positions"]) => void;
   onEdge: (edge: EdgeReference) => void;
   onConnect: (
@@ -154,17 +212,117 @@ export function Canvas(props: {
     ],
   );
   const [nodes, setNodes] = useState(projection.nodes);
-  useEffect(() => setNodes(projection.nodes), [projection.nodes]);
+  const currentNodes = useRef(nodes);
+  const instance = useRef<ReactFlowInstance<GraphNode, GraphEdge> | undefined>(
+    undefined,
+  );
+  const savedViewport = useRef<Viewport | undefined>(undefined);
+  const clickViewport = useRef<Viewport | undefined>(undefined);
+  const clickTimer = useRef<ReturnType<typeof setTimeout> | undefined>(
+    undefined,
+  );
+  useEffect(
+    () => () => clearTimeout(clickTimer.current),
+    [props.graph?.snapshotId, props.focusRequest?.sequence],
+  );
+  const [settled, setSettled] = useState<number | undefined>();
+  const [measurements, setMeasurements] = useState<
+    Record<string, { width?: number; height?: number }>
+  >({});
+  const funnelProjection = useMemo(
+    () =>
+      props.funnel
+        ? layoutFunnel(
+            {
+              ...projection,
+              nodes: projection.nodes.map((n) => ({
+                ...n,
+                measured: measurements[n.id],
+              })),
+            },
+            props.funnel.root.id,
+          )
+        : undefined,
+    [projection, props.funnel, measurements],
+  );
+  useEffect(() => {
+    const target = funnelProjection?.nodes ?? projection.nodes;
+    let frame = 0;
+    setSettled(undefined);
+    const update = (next: GraphNode[]) => {
+      currentNodes.current = next;
+      setNodes(next);
+    };
+    if (
+      !props.funnel ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+      update(target);
+      setSettled(props.funnel?.sequence);
+      return;
+    }
+    const previous = new Map(
+      currentNodes.current.map((n) => [n.id, n.position]),
+    );
+    const start = performance.now();
+    const animate = (now: number) => {
+      const progress = Math.min(1, (now - start) / 300);
+      const eased = progress * progress * (3 - 2 * progress);
+      if (progress === 1) {
+        // Adopt exact destinations. Interpolation arithmetic can retain a tiny
+        // rounding delta and prevent the viewport's adoption check from firing.
+        update(target);
+        setSettled(props.funnel?.sequence);
+        return;
+      }
+      update(
+        target.map((n) => {
+          // New cards start at their normal overview position, not at the destination.
+          const from =
+            previous.get(n.id) ??
+            projection.nodes.find((p) => p.id === n.id)!.position;
+          return {
+            ...n,
+            position: {
+              x: from.x + (n.position.x - from.x) * eased,
+              y: from.y + (n.position.y - from.y) * eased,
+            },
+          };
+        }),
+      );
+      frame = requestAnimationFrame(animate);
+    };
+    frame = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(frame);
+  }, [projection.nodes, funnelProjection, props.funnel]);
+  useEffect(() => {
+    if (!props.funnel && !props.funnelPending) return;
+    const exit = (event: KeyboardEvent) => {
+      if (event.key === "Escape") props.onExitFunnel();
+    };
+    window.addEventListener("keydown", exit);
+    return () => window.removeEventListener("keydown", exit);
+  }, [props.funnel, props.funnelPending, props.onExitFunnel]);
   const domain = (id: string) =>
     projection.nodes.find((n) => n.id === id)?.data.node.id;
-  const edges = projection.edges.map((e) => ({
+  const selectedFocus =
+    props.funnel &&
+    props.focusRequest &&
+    props.focusRequest.sequence > props.funnel.sequence
+      ? props.focusRequest
+      : undefined;
+  const editable = props.canEdit && props.funnel?.root.kind !== "file";
+  const edges = (funnelProjection?.edges ?? projection.edges).map((e) => ({
     ...e,
     markerEnd: { type: MarkerType.ArrowClosed, width: 16, height: 16 },
-    reconnectable: props.canEdit && e.reconnectable,
+    reconnectable: editable && e.reconnectable,
   }));
   return (
     <div className="canvas-shell" aria-label={zh.graph}>
       <ReactFlow<GraphNode, GraphEdge>
+        onInit={(flow) => {
+          instance.current = flow;
+        }}
         ariaLabelConfig={{
           "controls.zoomIn.ariaLabel": zh.zoomIn,
           "controls.zoomOut.ariaLabel": zh.zoomOut,
@@ -175,45 +333,117 @@ export function Canvas(props: {
         nodes={nodes}
         edges={edges}
         nodeTypes={nodeTypes}
-        onNodesChange={(changes) =>
-          setNodes((current) => applyNodeChanges(changes, current))
-        }
-        onNodeClick={(_, node) => props.onSelect(node.data.node)}
-        onNodeDoubleClick={(_, node) => {
-          if (node.data.layer !== "plan") props.onExpand(node.data.node.id);
+        onNodesChange={(changes) => {
+          setNodes((current) => {
+            const next = applyNodeChanges(changes, current);
+            currentNodes.current = next;
+            return next;
+          });
+          const dimensions = changes.filter(
+            (c) => c.type === "dimensions" && c.dimensions,
+          );
+          if (dimensions.length)
+            setMeasurements((previous) => {
+              const next = { ...previous };
+              let changed = false;
+              for (const change of dimensions)
+                if (
+                  change.type === "dimensions" &&
+                  change.dimensions &&
+                  (next[change.id]?.width !== change.dimensions.width ||
+                    next[change.id]?.height !== change.dimensions.height)
+                ) {
+                  next[change.id] = change.dimensions;
+                  changed = true;
+                }
+              return changed ? next : previous;
+            });
         }}
-        onNodeDragStop={(_, node) =>
-          props.onLayout({ ...props.view.positions, [node.id]: node.position })
-        }
+        onNodeClick={(event, node) => {
+          if (!props.funnel && event.detail < 2)
+            clickViewport.current = instance.current?.getViewport();
+          clearTimeout(clickTimer.current);
+          // Wait for the double-click gesture before moving its target card.
+          // Immediate single-click focus can move the card between click events.
+          clickTimer.current = setTimeout(
+            () => props.onSelect(node.data.node),
+            200,
+          );
+        }}
+        onNodeDoubleClick={(_, node) => {
+          clearTimeout(clickTimer.current);
+          if (
+            node.data.node.kind === "file" ||
+            node.data.node.kind === "function"
+          ) {
+            if (!props.funnel)
+              savedViewport.current =
+                clickViewport.current ?? instance.current?.getViewport();
+            props.onFunnel(node.data.node);
+          }
+        }}
+        onNodeDragStop={(_, node) => {
+          if (!props.funnel)
+            props.onLayout({
+              ...props.view.positions,
+              [node.id]: node.position,
+            });
+        }}
+        nodesDraggable={!props.funnel}
+        zoomOnDoubleClick={false}
         onEdgeClick={(_, edge) => {
-          if (edge.data) props.onEdge({ id: edge.id, ...edge.data });
+          if (props.funnel?.root.kind !== "file" && edge.data)
+            props.onEdge({ id: edge.id, ...edge.data });
         }}
         onConnect={(connection) => {
           const a = domain(connection.source),
             b = domain(connection.target);
-          if (props.canEdit && a && b)
-            props.onConnect(a, b, props.relationType);
+          if (editable && a && b) props.onConnect(a, b, props.relationType);
         }}
         onReconnect={(edge, connection) => {
           const a = domain(connection.source),
             b = domain(connection.target);
-          if (props.canEdit && a && b && edge.data)
+          if (editable && a && b && edge.data)
             props.onConnect(a, b, props.relationType, {
               id: edge.id,
               ...edge.data,
             });
         }}
-        nodesConnectable={props.canEdit}
+        nodesConnectable={editable}
         deleteKeyCode={null}
         fitView
-        fitViewOptions={{ padding: 0.25, maxZoom: 1 }}
+        fitViewOptions={overviewFitOptions}
         minZoom={0.1}
         maxZoom={2}
         colorMode={props.view.theme}
       >
+        <OverviewViewport active={!!props.funnel} saved={savedViewport} />
         <FocusViewport
-          request={props.focusRequest}
-          targets={focusTargets(projection.nodes, props.focusRequest)}
+          request={
+            selectedFocus ??
+            (props.funnel
+              ? settled === props.funnel.sequence
+                ? {
+                    sequence: props.funnel.sequence,
+                    nodeIds: funnelProjection?.nodes
+                      .filter((n) => n.data.funnelLane !== "side")
+                      .map((n) => n.data.node.id),
+                  }
+                : undefined
+              : props.focusRequest)
+          }
+          targets={
+            selectedFocus
+              ? focusTargets(
+                  funnelProjection?.nodes ?? projection.nodes,
+                  selectedFocus,
+                )
+              : props.funnel
+                ? (funnelProjection?.nodes.filter(
+                    (n) => n.data.funnelLane !== "side",
+                  ) ?? [])
+                : focusTargets(projection.nodes, props.focusRequest)
+          }
         />
         <Background gap={22} size={1} />
         <Controls position="bottom-left" orientation="horizontal" />
@@ -224,6 +454,23 @@ export function Canvas(props: {
           nodeColor={(n) => (n.data.layer === "plan" ? "#a687d4" : "#8195aa")}
         />
       </ReactFlow>
+      {props.funnel && funnelProjection && (
+        <div className="funnel-summary" role="status">
+          <strong>{props.funnel.root.name}</strong>
+          <span>
+            ↑ {zh.funnelDependents} {funnelProjection.counts.dependents}
+          </span>
+          <span>◇ {zh.funnelCurrent} 1</span>
+          <span>
+            ↓ {zh.funnelDependencies} {funnelProjection.counts.dependencies}
+          </span>
+          <span>
+            {zh.funnelSide} {funnelProjection.counts.side} · {zh.funnelUnknown}{" "}
+            {props.funnel.unknownCount}
+          </span>
+          <button onClick={props.onExitFunnel}>{zh.exitFunnel}</button>
+        </div>
+      )}
       {!nodes.length && <div className="canvas-empty">{zh.graphEmpty}</div>}
       {projection.notices.length > 0 && (
         <details className="canvas-notices">
