@@ -201,6 +201,10 @@ export function createNativeRunner(
         );
       if (!provider)
         return unavailable("Unsupported Agent provider. Use codex or claude.");
+      if (process.platform === "win32")
+        return unavailable(
+          "Native Agent Chat is unsupported on Windows until owned process-job cleanup is available. HTTP, UI and MCP remain supported.",
+        );
       const command = await resolveAgentCommand(
         env.CODEMAP_AGENT_COMMAND ?? provider,
         env,
@@ -273,6 +277,8 @@ export function createNativeRunner(
   return {
     status: async () => (await inspect()).status,
     start: async (context, emit) => {
+      if (process.platform === "win32")
+        throw new Error("AGENT_PLATFORM_UNSUPPORTED");
       const ready = await inspect();
       if (!ready.status.available || !ready.command || !provider)
         throw new Error("AGENT_UNAVAILABLE");

@@ -4,7 +4,9 @@
 
 ## 设置
 
-先使用 Node.js 24 LTS 安装并构建 AtlasMode：`npm ci`、`npm run build`。在本机安装官方 CLI，通过该 CLI 登录，再以受信任的服务启动环境选择提供者：
+先使用 Node.js 24 LTS 安装并构建 AtlasMode：`npm ci`、`npm run build`。原生 Chat 当前支持 POSIX 启动边界，Linux 已验证；macOS 原生清理尚未实跑。Windows 暂不支持原生 Agent Chat，状态检测和进程启动在 spawn 前明确拒绝，等待独立的 Windows owned-job 实现；HTTP、UI 与通用 stdio MCP 的 Windows 支持保持不变。
+
+在支持的平台安装官方 CLI，通过该 CLI 登录，再以受信任的服务启动环境选择提供者：
 
 ```sh
 CODEMAP_AGENT_PROVIDER=codex npm start
@@ -41,11 +43,11 @@ ChatRun 为 `{runId,status,messages:[{role:'assistant',text}],activity:[{tool,st
 
 每个项目/频道最多 20 轮上下文（含当前输入），历史最多 65536 字符；单条用户输入最多 4096 字符。每轮 stdout/stderr 合计最多 1 MiB，默认 120 秒运行超时；完成运行保留 10 分钟，并设全局 200 条完成运行和 80 个空闲会话的保留上限。会话/运行在内存，服务重启清空；实际草稿仍保存在原 SQLite 中。
 
-取消及关闭按所属 Unix 进程组或 Windows taskkill /T 清理树；给予 2 秒宽限后强制终止，等待所属主进程与 stdio 关闭。临时 cwd 随运行结束清理。服务本来的 Host/Origin 检查继续保护 Chat。该边界限制正常客户端的能力，不宣称抵御拥有本机完整进程/文件权限的恶意软件。
+取消及关闭按所属 Unix 进程组清理树；给予 2 秒宽限后强制终止，等待所属主进程与 stdio 关闭。Windows 的 taskkill 在根进程退出后无法保留可靠的后代归属，不能用作此处的清理保证，因此原生 Chat 启动前直接拒绝。临时 cwd 随运行结束清理。服务本来的 Host/Origin 检查继续保护 Chat。该边界限制正常客户端的能力，不宣称抵御拥有本机完整进程/文件权限的恶意软件。
 
 ## 验证与限制（2026-10-08 UTC）
 
-当前 Linux 的 Codex 0.160.0 已安装但 `codex login status` 为 **Not logged in**；Claude 未安装。生产状态/提交烟雾验证分别返回禁用、未登录与命令缺失，并拒绝提交；真实索引目标的执行 sentinel 未出现。未尝试模型请求，未声称实际原生 Agent/MCP 模型闭环通过。Claude 协议通过明确标注为 test-only 的子进程夹具验证；原生 Claude、Windows/macOS 进程清理未在本次环境实跑。
+当前 Linux 的 Codex 0.160.0 已安装但 `codex login status` 为 **Not logged in**；Claude 未安装。生产状态/提交烟雾验证分别返回禁用、未登录与命令缺失，并拒绝提交；真实索引目标的执行 sentinel 未出现。未尝试模型请求，未声称实际原生 Agent/MCP 模型闭环通过。Claude 协议通过明确标注为 test-only 的子进程夹具验证；原生 Claude/macOS 清理未在本次环境实跑。Windows 原生 Chat 明确不支持，拒绝边界已在 Linux 用 Windows platform 分支与实际子进程 sentinel 验证；这不是原生 Windows 作业清理验证。
 
 针对性验证命令：
 

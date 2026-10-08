@@ -28,11 +28,15 @@ export function startProcess(
   input: ProcessInvocation,
   emit: (event: AgentEvent) => void,
 ): RunningAgent {
+  // taskkill cannot retain descendant ownership after the CLI root exits. Refuse
+  // Windows until an owned-job implementation can guarantee cancel/close cleanup.
+  if (process.platform === "win32")
+    throw new Error("AGENT_PLATFORM_UNSUPPORTED");
   const child = spawn(input.command, input.args, {
     cwd: input.cwd,
     env: input.env ?? process.env,
     shell: false,
-    detached: process.platform !== "win32",
+    detached: true,
     stdio: ["pipe", "pipe", "pipe"],
     windowsHide: true,
   });
@@ -56,29 +60,14 @@ export function startProcess(
   const grace = input.graceMs ?? 2000;
   async function signalTree(force: boolean) {
     if (!child.pid) return;
-    if (process.platform === "win32") {
-      // taskkill's /T is the native Windows ownership-aware descendant walk.
-      await new Promise<void>((resolve) => {
-        const killer = spawn(
-          "taskkill",
-          ["/PID", String(child.pid), "/T", ...(force ? ["/F"] : [])],
-          { shell: false, stdio: "ignore", windowsHide: true },
-        );
-        killer.once("error", () => resolve());
-        killer.once("exit", () => resolve());
-      });
-    } else {
-      try {
-        process.kill(-child.pid, force ? "SIGKILL" : "SIGTERM");
-      } catch (error) {
-        if ((error as NodeJS.ErrnoException).code !== "ESRCH") throw error;
-      }
+    try {
+      process.kill(-child.pid, force ? "SIGKILL" : "SIGTERM");
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code !== "ESRCH") throw error;
     }
   }
   function groupAlive() {
     if (!child.pid) return false;
-    if (process.platform === "win32")
-      return child.exitCode === null && child.signalCode === null;
     try {
       process.kill(-child.pid, 0);
       return true;
