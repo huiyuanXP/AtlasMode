@@ -2,11 +2,18 @@ import { resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { createMcpServer } from "./server.js";
+import { mcpChannelTools } from "./scope.js";
 export { createMcpServer } from "./server.js";
 
 async function main(): Promise<void> {
   const server = createMcpServer(
     process.env.CODEMAP_API_URL ?? "http://127.0.0.1:4310",
+    {
+      projectId: process.env.CODEMAP_MCP_PROJECT_ID,
+      allowedTools: process.env.CODEMAP_MCP_CHANNEL
+        ? mcpChannelTools(process.env.CODEMAP_MCP_CHANNEL)
+        : undefined,
+    },
   );
   const transport = new StdioServerTransport();
   let stopping = false;

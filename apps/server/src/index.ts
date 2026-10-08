@@ -8,6 +8,14 @@ import { SqliteStorage } from "@codemap/storage";
 import { WorkspaceService } from "@codemap/service";
 import { createServer } from "./server.js";
 export { createServer } from "./server.js";
+export type {
+  AgentRunnerFactory,
+  AgentRunner,
+  AgentContext,
+  AgentStatus,
+  ChatInput,
+  ChatRun,
+} from "./agent/types.js";
 
 function dataDirectory(): string {
   if (process.env.CODEMAP_DATA_DIR)

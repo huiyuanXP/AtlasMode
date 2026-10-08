@@ -50,6 +50,21 @@
     {
       "path": "docs/issues",
       "purpose": "Preserved GitHub first-release issue bodies and publication manifest from main"
+    },
+    {
+      "path": "apps/server/src/agent",
+      "purpose": "Local CLI JSONL bridge, owned process lifecycle, scoped loopback MCP gateway and Chat HTTP transport",
+      "allowed": [
+        "Trusted CLI subprocess I/O",
+        "service public context validation",
+        "scoped HTTP transport"
+      ],
+      "forbidden": [
+        "Target code execution",
+        "source implementation",
+        "approval writes",
+        "SQL or domain duplication"
+      ]
     }
   ],
   "dependencyRules": [

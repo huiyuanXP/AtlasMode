@@ -45,7 +45,21 @@ function content(value: unknown) {
   return [{ type: "text" as const, text: JSON.stringify(value) }];
 }
 
-export function createMcpServer(apiUrl: string): McpServer {
+export interface McpScope {
+  projectId?: string;
+  allowedTools?: readonly string[];
+}
+/** Optional restrictions are copied once; tool arguments can never broaden them. */
+export function createMcpServer(
+  apiUrl: string,
+  options: McpScope = {},
+): McpServer {
+  if (options.projectId !== undefined && !options.projectId.trim())
+    throw new Error("MCP project scope requires a nonempty project ID.");
+  const boundProject = options.projectId;
+  const allowedTools = options.allowedTools
+    ? new Set(options.allowedTools)
+    : undefined;
   const api = new ApiClient(apiUrl);
   const server = new McpServer({ name: "atlasmode", version: "0.1.0" });
   server.server.onclose = () => api.close();
@@ -55,13 +69,25 @@ export function createMcpServer(apiUrl: string): McpServer {
     fields: T,
     run: (args: z.output<z.ZodObject<T>>) => Promise<unknown>,
   ) {
+    if (allowedTools && !allowedTools.has(name)) return;
     const schema = z.strictObject(fields);
     server.registerTool<z.ZodRawShape, typeof schema>(
       name,
       { description, inputSchema: schema },
       async (args) => {
         try {
-          return { content: content(await run(schema.parse(args))) };
+          const parsed = schema.parse(args);
+          if (
+            boundProject &&
+            "projectId" in parsed &&
+            parsed.projectId !== boundProject
+          )
+            throw new ApiError(
+              "PROJECT_MISMATCH",
+              "Tool is restricted to the selected project.",
+              403,
+            );
+          return { content: content(await run(parsed)) };
         } catch (error) {
           return { isError: true, content: content(errorValue(error)) };
         }
@@ -84,7 +110,13 @@ export function createMcpServer(apiUrl: string): McpServer {
     "list_projects",
     "Discover projects already opened in the shared service. Select an explicit projectId for subsequent tools; pagination does not open folders.",
     pagination,
-    async (input) => page(await api.request<Project[]>("/api/projects"), input),
+    async (input) => {
+      const projects = await api.request<Project[]>("/api/projects");
+      return page(
+        boundProject ? projects.filter((p) => p.id === boundProject) : projects,
+        input,
+      );
+    },
   );
   tool(
     "get_project_summary",
@@ -163,6 +195,25 @@ export function createMcpServer(apiUrl: string): McpServer {
       };
     },
   );
+
+  if (boundProject) {
+    tool(
+      "list_plans",
+      "Read drafts and historical approvals in the selected project.",
+      { ...project, ...pagination },
+      async ({ projectId, ...input }) =>
+        page(
+          await api.request<unknown[]>(`${projectPath(projectId)}/plans`),
+          input,
+        ),
+    );
+    tool(
+      "get_plan",
+      "Read current draft, revision and approval state without refreshing source or approving.",
+      plan,
+      ({ projectId, planId }) => ownedPlan(projectId, planId),
+    );
+  }
 
   tool(
     "propose_plan",

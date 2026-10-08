@@ -7,6 +7,8 @@ import { DomainError } from "@codemap/core";
 import type { WorkspaceService } from "@codemap/service";
 import { ZodError } from "zod";
 import { registerRoutes } from "./routes.js";
+import { registerAgentRoutes } from "./agent/routes.js";
+import type { AgentRunnerFactory } from "./agent/types.js";
 
 const domainStatuses: Record<string, number> = {
   NOT_FOUND: 404,
@@ -16,6 +18,7 @@ const domainStatuses: Record<string, number> = {
   VALIDATION_FAILED: 400,
   REVISION_CONFLICT: 409,
   BASELINE_CONFLICT: 409,
+  SNAPSHOT_CHANGED: 409,
   NOT_APPROVED: 409,
   SOURCE_UNAVAILABLE: 503,
 };
@@ -23,10 +26,12 @@ export async function createServer({
   service,
   webRoot,
   developmentProxy = false,
+  agentRunnerFactory,
 }: {
   service: WorkspaceService;
   webRoot?: string;
   developmentProxy?: boolean;
+  agentRunnerFactory?: AgentRunnerFactory;
 }): Promise<FastifyInstance> {
   const app = Fastify({ logger: false });
   // Native idle-connection closing does not discard raw/partial requests.
@@ -117,6 +122,7 @@ export async function createServer({
       .send({ code: "INTERNAL_ERROR", message: "Internal server error." });
   });
   registerRoutes(app, service);
+  registerAgentRoutes(app, service, agentRunnerFactory);
   if (webRoot) await app.register(fastifyStatic, { root: resolve(webRoot) });
   app.setNotFoundHandler((request, reply) => {
     const pathname = new URL(request.url, "http://localhost").pathname;

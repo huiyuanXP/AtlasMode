@@ -72,12 +72,15 @@ async function startApi() {
   }
   expect.fail(`Compiled API failed to start: ${apiOutput}`);
 }
-async function connect(apiUrl = url) {
+async function connect(apiUrl = url, projectId?: string) {
   let stderr = "";
   const transport = new StdioClientTransport({
     command: process.execPath,
     args: [entry],
-    env: { CODEMAP_API_URL: apiUrl },
+    env: {
+      CODEMAP_API_URL: apiUrl,
+      ...(projectId ? { CODEMAP_MCP_PROJECT_ID: projectId } : {}),
+    },
     stderr: "pipe",
     cwd: tmpdir(),
   });
@@ -728,3 +731,66 @@ test("transport failure cancels an in-flight HTTP request instead of retaining t
     await new Promise<void>((done) => stalled.close(() => done()));
   }
 }, 5000);
+
+// Read-only recovery must preserve drafts and reject even otherwise valid foreign project/plan pairs.
+test("list_plans pages current project drafts and get_plan reads without reindex or foreign plan access", async () => {
+  const first = await fixture(),
+    second = await fixture();
+  const { client } = await connect();
+  const create = (f: Awaited<ReturnType<typeof fixture>>, title: string) =>
+    success<PlanDetail>(client, "propose_plan", {
+      projectId: f.project.id,
+      title,
+      baselineSnapshotId: f.snapshot.id,
+      operations: [],
+    });
+  const p = await create(first, "first draft");
+  await create(first, "second draft");
+  const foreign = await create(second, "foreign");
+  const { client: scoped } = await connect(url, first.project.id);
+  expect((await scoped.listTools()).tools).toHaveLength(18);
+  const page = await success<{
+    items: PlanDetail[];
+    total: number;
+    truncated: boolean;
+  }>(scoped, "list_plans", {
+    projectId: first.project.id,
+    offset: 1,
+    limit: 1,
+  });
+  expect(page.total).toBe(2);
+  expect(page.items).toHaveLength(1);
+  expect(page.truncated).toBe(true);
+  expect(page.items[0]!.plan.projectId).toBe(first.project.id);
+  await writeFile(
+    join(first.path, "main.ts"),
+    source + "export function later(){return 3;}",
+  );
+  const read = await success<PlanDetail>(scoped, "get_plan", {
+    projectId: first.project.id,
+    planId: p.plan.id,
+  });
+  expect(read.plan).toEqual(p.plan);
+  const snapshot = await http<CodeSnapshot>(
+    `/api/projects/${first.project.id}/snapshot`,
+  );
+  expect(snapshot.id).toBe(first.snapshot.id);
+  const denied = await call<{ code: string }>(scoped, "get_plan", {
+    projectId: first.project.id,
+    planId: foreign.plan.id,
+  });
+  expect(denied.error).toBe(true);
+  expect(denied.value.code).toBe("NOT_FOUND");
+  const foreignTuple = await call<{ code: string }>(scoped, "get_plan", {
+    projectId: second.project.id,
+    planId: foreign.plan.id,
+  });
+  expect(foreignTuple.error).toBe(true);
+  expect(foreignTuple.value.code).toBe("PROJECT_MISMATCH");
+  const projects = await success<{ items: Project[] }>(
+    scoped,
+    "list_projects",
+    {},
+  );
+  expect(projects.items.map((p) => p.id)).toEqual([first.project.id]);
+});

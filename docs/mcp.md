@@ -192,3 +192,6 @@ Historical approval records and approved plan content remain available for
 verification. The MVP does not reconstruct historical group/policy context;
 revision invalidation protects current approval without changing the public
 Plan/Approval schema or semantic hash format.
+
+
+For web Chat isolation and the trusted CLI setup, see [local Agent Chat](agent-chat.md). Optional immutable MCP scope uses `CODEMAP_MCP_PROJECT_ID` and `CODEMAP_MCP_CHANNEL=explore|plan`; generic clients keep their 16 tools. Project-bound clients additionally offer the read-only `list_plans` (paged drafts) and `get_plan` (owned current draft without reindex) for recovery, with up to 18 tools before channel filtering. Chat exposes only its channel allowlist and project list.
