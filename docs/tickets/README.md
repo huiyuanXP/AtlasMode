@@ -1,17 +1,17 @@
 # AtlasMode Tickets
 
-按依赖顺序逐票认领、实施、独立审查。先执行用户要求的 UI-01→UI-02→UI-03→AG-01→UI-04→QA-01，再按优先级处理现有缺口。文档票据是当前来源，不自动发布 GitHub Issue。
+按依赖顺序逐票认领、实施、验证。先执行用户要求的 UI-01→UI-02→UI-03 与 AG-01（独立后端并行），再 UI-04→QA-01，再按优先级处理现有缺口。文档票据是当前来源，不自动发布 GitHub Issue。
 
 状态：TODO → CLAIMED → REVIEW → DONE；失败验收保持 PARTIAL，不用测试数量替代目标。所有剩余需求已登记，未来扩展仍需各自设计。
 
 | Ticket | 内容 | 优先级 | 依赖 | 状态 |
 | --- | --- | --- | --- | --- |
-| [UI-01](UI-01.md) | 操作与批量变更自动聚焦 | P0 | 无 | CLAIMED |
-| [UI-02](UI-02.md) | 动画漏斗依赖视图 | P0 | UI-01 | TODO |
-| [UI-03](UI-03.md) | 可点击路径与作用域导航 | P0 | UI-02 | TODO |
-| [AG-01](AG-01.md) | 本地 Agent 到网页 Chat 的真实桥接 | P0 | UI-03 | TODO |
-| [UI-04](UI-04.md) | Chat 左栏与规划概述右栏 | P0 | AG-01 | TODO |
-| [QA-01](QA-01.md) | 项目内真实 MCP 接入 Test | P0 | UI-04 | TODO |
+| [UI-01](UI-01.md) | 操作与批量变更自动聚焦 | P0 | 无 | DONE |
+| [UI-02](UI-02.md) | 动画漏斗依赖视图 | P0 | UI-01 | DONE |
+| [UI-03](UI-03.md) | 可点击路径与作用域导航 | P0 | UI-02 | DONE |
+| [AG-01](AG-01.md) | 本地 Agent 到网页 Chat 的真实桥接 | P0 | 无，后端并行 | DONE（Windows限制见票） |
+| [UI-04](UI-04.md) | Chat 左栏与规划概述右栏 | P0 | AG-01、UI-03 | DONE |
+| [QA-01](QA-01.md) | 项目内真实 MCP 接入 Test | P0 | UI-04、AG-04 | DONE |
 | [IDX-01](IDX-01.md) | Express严格入口保守失效修复 | P1 | 无 | TODO |
 | [IDX-02](IDX-02.md) | workspace包及exports源码映射 | P1 | IDX-01 | TODO |
 | [IDX-03](IDX-03.md) | tsconfig references 项目图 | P1 | IDX-02 | TODO |
@@ -33,3 +33,6 @@
 | [SEC-01](SEC-01.md) | 继承依赖审计整改 | P1 | 无 | TODO |
 | [FUT-01](FUT-01.md) | P5扩展证据评估 | P3 | DIFF-01 | TODO |
 | [AG-02](AG-02.md) | 用户确认后的自动源码实施 | P1 | AG-01、UI-04、QA-01 | TODO |
+| [AG-03](AG-03.md) | Windows 原生 Agent 所属 Job 清理 | P1 | AG-01、QA-02 | TODO |
+| [AG-04](AG-04.md) | 复用 Codex CLI / Profile 认证 | P0 | AG-01 | DONE |
+| [AG-05](AG-05.md) | 直接 API Call Agent 接入 | P1 下一票 | AG-04、QA-01 | TODO |

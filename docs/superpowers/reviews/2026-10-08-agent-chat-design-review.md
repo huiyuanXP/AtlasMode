@@ -51,3 +51,19 @@ HTTP 入参只有 nodeId / planId，目录或 funnel scope 没有明确字段。
 - 失败 / 取消的测试 fixtures 应明确 test-only。已有全局 MCP 集成测试不能替代新增 Chat scope 与取消恢复测试。
 
 修订后请围绕以上条款限定复审；不要求重复已通过的焦点 / funnel 独立任务审查。
+
+## 限定复审：ce29840（2026-10-08 UTC）
+
+**结论：设计 / 计划通过，可实施 AG-01。** 对原 I1 / I2 / I3 / M1 / M2 及其修订引入的矛盾进行复审，5 项均在设计层关闭；未发现新增阻断问题。此结论不代表产品实现、原生 CLI 兼容性或真实模型闭环已通过。
+
+| 原问题 | 修订证据与结论 |
+| --- | --- |
+| I1 原生能力边界 | 最终边界章节与 Task 1 同时要求可信空 cwd、隔离用户配置、关闭原生执行等工具、MCP allowlist / required startup、版本不支持时 fail closed；Claude 明确限制默认工具并隔离 MCP 配置。模型行为也改成明确的 CLI 默认值 / 管理员 override，消除“忽略配置却继承用户模型”的歧义。关闭。 |
+| I2 项目范围 | 新增不可变 MCP project / channel binding，过滤 list_projects，拒绝完整合法的外项目参数；run-owned HTTP gateway 再校验归属并禁止 approval / open-project 转发。Task 1 包含对应负向用例和 MCP 文件范围。关闭。 |
+| I3 取消 / 部分提交 | 新增 HTTP mutation journal，不再依赖 CLI tool-completed；明确全部终态重读、保留 recovery、不可归因时提示、不抢占新导航；2 秒退出宽限、拥有的进程树清理、迟到 start acknowledgement 取消均进入实施与测试步骤。关闭。 |
+| M1 scope 缺失 | POST contract 增加结构化 scope、snapshotId、expectedRevision，设计明确服务端验证且禁止用作 cwd。关闭。 |
+| M2 并发 / 资源上限 | 明确每会话单 run / 409、全局四 run / 429、消息 / 历史 / 输出限制及 terminal TTL，并增加多标签页与过期测试。关闭。 |
+
+实施时沿既定条款验证两项细节：gateway 清理需等待或核对已转发的在途 mutation，不能仅等 CLI 退出就完成最后一次同步；新增 gateway 也应落实已有本地 Host / Origin 约束，拒绝不属于协议的路径 / 方法 / 请求体。它们属于 I2 / I3 已接受边界的实现验收，不新增架构或审批阶段。
+
+本次只读取修订文档与 HEAD（`ce29840`），并追加本报告；未修改正在实施的 focus 产品代码，未执行 native Agent。精确 CLI flags、provider 能力检测及运行时拒绝证据由 Task 1 验证；Codex 未登录、Claude 未安装的限制继续保留。

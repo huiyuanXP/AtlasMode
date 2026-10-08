@@ -22,3 +22,7 @@ RED/GREEN tests for action-to-focus and navigation races. Layout tests for asymm
 ## Decisions
 
 Use a deterministic lane algorithm rather than a new layout dependency: preserves stable ordering and is sufficient for a two-sided funnel. Broad automatic layout stays a separate backlog ticket. Persist semantic data and manual layout; funnel camera/layout are transient. The right/left form migration comes later, so these tickets preserve existing controls until the chat shell replaces them.
+
+## Final medium-repository readability correction
+
+Actual Flask function funnel had four lower neighbors and unnecessary 0.5 fit padding; app.py had36 upper/14lower and unreadable global-fit labels. Use funnel-specific0.08 padding and directional pages (up to3 cards each on desktop,1/2 narrow) so the center and visible neighbors are readable. Show total/range/previous/next for each direction. Retain full bounded query evidence, reciprocal labels and unknown/truncated notices; off-page related nodes are hidden rather than mislabeled unrelated. Changing pages animates/refits, exit restores overview. All affected plan nodes remain fitted together; only high-degree dependency browsing is paginated. This follows observed product usability, not speculative scope expansion.

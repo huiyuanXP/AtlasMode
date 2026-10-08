@@ -1,6 +1,27 @@
 # AtlasMode 持续构建状态
 
-## 临时公网 UI 演示（2026-10-08 UTC）
+## 当前交付：Focus / 漏斗 / 路径 / Agent Chat（2026-10-08 UTC）
+
+UI-01/02/03/04、AG-01/04和QA-01已实现，用户可重新开启Tunnel验收；本轮没有重开Tunnel。
+剩余规格与新需求均登记在 [Tickets](../tickets/README.md)，独立API适配器AG-05为下一票，
+源码自动实施AG-02、Windows原生Agent所属Job AG-03及原索引/知识等范围保持待办。
+[本轮交付与精确验证](reviews/focus-chat-2026-10-08/README.md) 保存设计、实现者报告、修正与限制。
+
+图上新增/改动自动聚焦；双击上下游漏斗有300ms位移、可读的方向分页及恢复；路径逐级可点击。
+默认左探索Chat、中图与路径、右规划概述和规划Chat；源码与工程表单显式打开，直接搜索保留。
+Codex0.160.0复用既有Profile/API环境无需Device登录；真实mimo/mimo-v2.6-flash→MCP→
+未批准草稿revision2通过，选定Provider/model/catalog保留。GPT/Gemini配置就绪未重复模型实测；
+Claude未安装，Windows原生Chat暂不支持而普通HTTP/UI/MCP支持范围保留。
+
+最终产品基线c1e5a96七包build/typecheck、rootlint、636测试/50文件、12Chromium全部通过；
+真实SDK连接test:mcp通过。其后实际Flask高扇出可读性修正仅做相称相关检查，见交付报告；
+可读性修正867b25c的4项布局/3项浏览器与web构建/相关lint通过；不把之前636/12冒充修正后重跑。真实Flask83文件/1575函数类，未知调用继续明确标记。
+
+最新用户约束优先：独立复杂任务并行，共享状态顺序集成；相称测试、必要检查；
+不重复无意义校验/逐票审批门禁。唯一限时关键进程/写入复核的Windows清理问题已明确处理。
+当前work保存所有本轮代码与文档，不push/merge；用户外部修改的AGENTS.md保留不覆盖。
+
+## 历史临时公网 UI 演示（2026-10-08 UTC，现已关闭）
 
 用户明确授权使用 Cloudflare 暴露公开中型代码库示例，供审核实际 UI/交互。
 已启动 Flask3.1.2 真实索引演示，独立临时数据库，仅允许打开该示例目录。

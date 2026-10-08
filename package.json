@@ -27,7 +27,9 @@
     "test:e2e": "playwright test",
     "mcp": "node apps/mcp/dist/index.js",
     "smoke": "node scripts/smoke.mjs",
-    "validate:repository": "node scripts/validate-repository.mjs"
+    "validate:repository": "node scripts/validate-repository.mjs",
+    "test:mcp": "node scripts/test-mcp-connection.mjs",
+    "test:agent": "node scripts/test-agent-connection.mjs"
   },
   "devDependencies": {
     "typescript": "5.9.3",

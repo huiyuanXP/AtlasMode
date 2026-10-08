@@ -2,9 +2,15 @@
 
 用可编辑的代码关系图替代传统文字 Plan Mode。Agent 在实际修改代码之前，把规划叠加到现有项目图上；用户理解、调整并确认后，Agent 才实施。人通过图形理解项目，Agent 通过 MCP 查询同一份结构化模型。
 
-> 当前仓库已有本地 UI、真实 TS/JS/Python 索引、SQLite、stdio MCP、中文/英文、主题、功能集、目录约束及撤销重做。首轮 T01–T08 与整体审查通过，四项 Important 与两项 Minor 修复均独立复审通过；本轮精确检查结果见 [环境与验证](docs/environment.md)。固定目标的阶段、修订和统计见 [外部验证记录](docs/superpowers/validation-targets.md)，不将旧运行计数当作当前结果。基线86e6b12的原生 Linux/Windows/macOS CI及Linux Chromium已通过（[run37148507859](https://github.com/huiyuanXP/AtlasMode/actions/runs/37148507859)）；实际 Codex/Claude 客户端连接尚未验证。以下规格保留后续目标，完整组编辑/折叠、知识迁移/备份、workspace package/exports、完整 CommonJS 值流和 references 图等仍有缺口，详见 [要求覆盖表](docs/superpowers/readme-coverage.md)。
+> 当前仓库已有本地 UI、真实 TS/JS/Python 索引、SQLite、stdio MCP、中文/英文、主题、功能集、目录约束及撤销重做。首轮 T01–T08 与整体审查通过，四项 Important 与两项 Minor 修复均独立复审通过；本轮精确检查结果见 [环境与验证](docs/environment.md)。固定目标的阶段、修订和统计见 [外部验证记录](docs/superpowers/validation-targets.md)，不将旧运行计数当作当前结果。基线86e6b12的原生 Linux/Windows/macOS CI及Linux Chromium已通过（[run37148507859](https://github.com/huiyuanXP/AtlasMode/actions/runs/37148507859)）；该历史阶段的实际 Codex/Claude 客户端连接尚未验证；本轮 Codex Profile 真实接入见下方更新。以下规格保留后续目标，完整组编辑/折叠、知识迁移/备份、workspace package/exports、完整 CommonJS 值流和 references 图等仍有缺口，详见 [要求覆盖表](docs/superpowers/readme-coverage.md)。
 
-当前已审查的Task2 PARTIAL检查点与待办见 [交接记录](docs/superpowers/reviews/static-forwarding-task2/README.md)。
+
+本轮已完成自动聚焦、动画依赖漏斗、可点击路径、双侧Chat和既有Codex Profile复用。
+实际Mimo/API Profile已跑通原生模型→MCP→未批准规划，无需重新Device登录。
+本轮集成基线636项测试/12项Chromium通过，后续漏斗可读性修正有独立相关验证；
+当前精确结果见 [交付记录](docs/superpowers/reviews/focus-chat-2026-10-08/README.md)。
+
+历史已审查的Task2 PARTIAL检查点与待办见 [交接记录](docs/superpowers/reviews/static-forwarding-task2/README.md)。
 Task2的七包构建、类型检查、lint和541项/31文件测试通过，独立task/whole检查点评审已记录；
 唯一集中修复后根lint/541项31文件及forwarding browser1通过，限定复审已批准；
 完整Express入口仍FAIL，整票目标未完成。
@@ -17,7 +23,26 @@ npm run build
 npm start
 ```
 
-在本机浏览器打开 `http://127.0.0.1:4310`，输入要分析的本地目录。
+在本机浏览器打开 `http://127.0.0.1:4310`，点击「打开项目」并选择要分析的本地目录。
+
+当前交互使用左侧探索 Chat、中央图与可点击路径、右侧规划概述和规划 Chat。
+新增/修改规划会自动聚焦受影响卡片；双击函数或文件进入「依赖者在上、当前对象居中、依赖在下」的动画漏斗；Esc 返回原视角。点击路径中的项目、文件夹、文件可切换范围。
+源码通过「查看源码」展开，旧参数表单集中在显式打开的高级编辑中。直接函数搜索在 Agent 未连接时也可使用。
+
+网页 Chat 复用本机 Codex/Claude CLI。Codex 支持既有账户认证或本机 Profile 的 Provider API 环境，不要求有 API 配置的用户再次 Device 登录。例如使用已经配置好的 `mimo` Profile：
+
+```bash
+CODEMAP_AGENT_PROVIDER=codex CODEMAP_CODEX_PROFILE=mimo npm start
+```
+
+具体配置见 [本机 Agent Chat](docs/agent-chat.md)，真实接入测试见 [Test](docs/test/README.md)：
+
+```bash
+npm run test:mcp
+npm run test:agent -- codex mimo
+```
+
+网页独立配置直接 API Call 的适配器另列 [AG-05](docs/tickets/AG-05.md)。当前待办及认领状态见 [Tickets](docs/tickets/README.md)。
 首次浏览与规划操作见 [第一份规划](docs/first-plan.md)。开发模式使用
 `npm run dev`，网页端口5173。API 校验实际本地 Host 及同源 Origin；开发启动器显式允许本地5173代理，MCP 无 Origin 的本地请求仍可使用。Codex App/CLI 与 Claude Code 的 MCP 连接说明见
 [docs/mcp.md](docs/mcp.md)；外部客户端配置使用 Node 直接启动编译入口。
