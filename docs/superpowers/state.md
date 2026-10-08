@@ -1,5 +1,14 @@
 # AtlasMode 持续构建状态
 
+## 临时公网 UI 演示（2026-10-08 UTC）
+
+用户明确授权使用 Cloudflare 暴露公开中型代码库示例，供审核实际 UI/交互。
+已启动 Flask3.1.2 真实索引演示，独立临时数据库，仅允许打开该示例目录。
+七包新 build、公网 Chromium 搜索/源码/11节点调用图/新规划/深浅色及目录限制验证通过；
+临时网关编码路径绕过已修复并独立复审通过。没有产品代码变更或重跑全部测试。
+临时链接、真实统计、验证证据与生命周期限制见
+[演示记录](reviews/2026-10-08-cloudflare-demo.md)。原Express PARTIAL及其他剩余范围不变。
+
 ## Goal
 本机可运行的真实代码浏览与图上规划工具：TS/JS/Node/Python，Windows/macOS/Linux，
 本地浏览器 UI、SQLite、MCP，中文及英文。按用户问卷和 README 逐阶段推进。
