@@ -15,6 +15,21 @@ const title = z
   .string()
   .refine((text) => text.trim().length > 0, "Expected nonempty text");
 const project = { projectId: id };
+// These operations only inspect the shared service. Refresh/verification and
+// draft proposals remain writes even though they never modify target source.
+const readOnlyTools = new Set([
+  "list_projects",
+  "get_project_summary",
+  "search_functions",
+  "get_function_context",
+  "get_subgraph",
+  "get_routes",
+  "list_plans",
+  "get_plan",
+  "validate_plan",
+  "get_groups",
+  "get_folder_policies",
+]);
 const plan = { ...project, planId: id };
 const pagination = {
   offset: z.number().int().min(0).max(Number.MAX_SAFE_INTEGER).optional(),
@@ -73,7 +88,15 @@ export function createMcpServer(
     const schema = z.strictObject(fields);
     server.registerTool<z.ZodRawShape, typeof schema>(
       name,
-      { description, inputSchema: schema },
+      {
+        description,
+        inputSchema: schema,
+        annotations: {
+          readOnlyHint: readOnlyTools.has(name),
+          destructiveHint: false,
+          openWorldHint: false,
+        },
+      },
       async (args) => {
         try {
           const parsed = schema.parse(args);

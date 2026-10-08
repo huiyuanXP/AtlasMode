@@ -73,6 +73,21 @@ if (mode === "echo") {
   });
 } else if (mode === "claudeinvalid") {
   out({ type: "assistant", message: { content: [null] } });
+} else if (mode === "modelnotice" || mode === "itemerror") {
+  out({
+    type: "item.completed",
+    item: {
+      type: "error",
+      message:
+        mode === "modelnotice"
+          ? "Model metadata for `custom-model` not found. Defaulting to fallback metadata; this can degrade performance and cause issues."
+          : "SECRET fatal provider error",
+    },
+  });
+  out({
+    type: "item.completed",
+    item: { type: "agent_message", text: "Final answer." },
+  });
 } else if (mode === "invalid") process.stdout.write("not-json\n");
 else if (mode === "oversize") process.stdout.write("x".repeat(1024 * 1024 + 1));
 else if (mode === "auth") {

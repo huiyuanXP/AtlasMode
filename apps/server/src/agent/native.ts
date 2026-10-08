@@ -5,6 +5,11 @@ import { spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { startProcess, type ProcessInvocation } from "./process.js";
 import type { AgentContext, AgentRunner, AgentStatus } from "./types.js";
+import {
+  loadCodexSelection,
+  CodexConfigError,
+  type CodexSelection,
+} from "./profile.js";
 
 const disabledFeatures = [
   "shell_tool",
@@ -97,6 +102,7 @@ export function buildInvocation(
   context: AgentContext,
   cwd: string,
   env: NodeJS.ProcessEnv,
+  selection?: CodexSelection,
 ): ProcessInvocation {
   const mcpEntry = fileURLToPath(
     new URL("../../../mcp/dist/index.js", import.meta.url),
@@ -120,6 +126,7 @@ export function buildInvocation(
           "--color",
           "never",
           ...disabledFeatures.flatMap((feature) => ["--disable", feature]),
+          ...(selection?.overrides.flatMap((value) => ["-c", value]) ?? []),
           "-c",
           'web_search="disabled"',
           "-c",
@@ -131,7 +138,7 @@ export function buildInvocation(
             .map(([k, v]) => `${k}=${JSON.stringify(v)}`)
             .join(
               ",",
-            )}},required=true,enabled_tools=${JSON.stringify(context.tools)}}`,
+            )}},required=true,default_tools_approval_mode="auto",enabled_tools=${JSON.stringify(context.tools)}}`,
           ...(env.CODEMAP_AGENT_MODEL
             ? ["--model", env.CODEMAP_AGENT_MODEL]
             : []),
@@ -169,7 +176,7 @@ export function buildInvocation(
             : []),
         ];
   // Do not inherit ephemeral in-agent hooks, provider selection or arbitrary NODE preloads.
-  const runEnv = { ...env };
+  const runEnv = { ...env, ...selection?.environment };
   for (const key of Object.keys(runEnv))
     if (key.startsWith("CODEX_") && key !== "CODEX_HOME") delete runEnv[key];
   delete runEnv.NODE_OPTIONS;
@@ -182,7 +189,13 @@ export function createNativeRunner(
   const selected = env.CODEMAP_AGENT_PROVIDER;
   const provider =
     selected === "codex" || selected === "claude" ? selected : null;
-  let checked: Promise<{ status: AgentStatus; command?: string }> | undefined;
+  let checked:
+    | Promise<{
+        status: AgentStatus;
+        command?: string;
+        selection?: CodexSelection;
+      }>
+    | undefined;
   const inspect = () =>
     (checked ??= (async () => {
       const status: AgentStatus = {
@@ -192,7 +205,11 @@ export function createNativeRunner(
       };
       const unavailable = (
         reason: string,
-      ): { status: AgentStatus; command?: string } => ({
+      ): {
+        status: AgentStatus;
+        command?: string;
+        selection?: CodexSelection;
+      } => ({
         status: { ...status, reason },
       });
       if (!selected)
@@ -251,18 +268,48 @@ export function createNativeRunner(
             "CLI cannot verify required tool restrictions. Update the CLI before connecting.",
           );
       }
-      const login = await probe(
-        command,
-        provider === "codex" ? ["login", "status"] : ["auth", "status"],
-        env,
-      );
+      let selection: CodexSelection | undefined;
+      if (provider === "codex") {
+        try {
+          selection = await loadCodexSelection(env);
+          Object.assign(status, selection.metadata);
+        } catch (error) {
+          return unavailable(
+            error instanceof CodexConfigError
+              ? error.message
+              : "Unable to read selected Codex configuration.",
+          );
+        }
+      }
       if (
-        login.code !== 0 ||
-        /not logged in|"loggedIn"\s*:\s*false/i.test(login.text)
-      )
-        return unavailable(
-          "Agent CLI is not logged in. Sign in locally with the selected CLI and restart the service.",
+        provider === "claude" ||
+        selection?.metadata.authentication === "openai-account"
+      ) {
+        const login = await probe(
+          command,
+          provider === "codex"
+            ? [
+                "login",
+                "status",
+                ...(selection?.accountStore
+                  ? [
+                      "-c",
+                      "cli_auth_credentials_store=" +
+                        JSON.stringify(selection.accountStore),
+                    ]
+                  : []),
+              ]
+            : ["auth", "status"],
+          env,
         );
+        if (
+          login.code !== 0 ||
+          /not logged in|"loggedIn"\s*:\s*false/i.test(login.text)
+        )
+          return unavailable(
+            "Existing CLI account authentication is unavailable. Select an already authenticated account or an API-environment profile.",
+          );
+      }
       try {
         await stat(
           fileURLToPath(new URL("../../../mcp/dist/index.js", import.meta.url)),
@@ -272,7 +319,7 @@ export function createNativeRunner(
           "AtlasMode MCP build is unavailable. Build the MCP workspace before connecting.",
         );
       }
-      return { status: { ...status, available: true }, command };
+      return { status: { ...status, available: true }, command, selection };
     })());
   return {
     status: async () => (await inspect()).status,
@@ -285,7 +332,14 @@ export function createNativeRunner(
       const cwd = await mkdtemp(join(tmpdir(), "atlasmode-agent-"));
       try {
         const run = startProcess(
-          buildInvocation(provider, ready.command, context, cwd, env),
+          buildInvocation(
+            provider,
+            ready.command,
+            context,
+            cwd,
+            env,
+            ready.selection,
+          ),
           emit,
         );
         const done = run.done.finally(() =>

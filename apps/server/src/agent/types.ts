@@ -18,6 +18,10 @@ export interface AgentStatus {
   configured: boolean;
   available: boolean;
   reason?: string;
+  profile?: string;
+  model?: string;
+  modelProvider?: string;
+  authentication?: "api-environment" | "openai-account" | "none";
 }
 export interface ChatRun {
   runId: string;

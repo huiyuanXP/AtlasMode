@@ -5,6 +5,42 @@ import { createServer } from "node:http";
 import { createMcpServer } from "./server.js";
 import { mcpChannelTools } from "./scope.js";
 
+test("scoped SDK metadata separates local reads from nondestructive draft/index mutations", async () => {
+  const mcp = createMcpServer("http://127.0.0.1:1", {
+    projectId: "bound",
+    allowedTools: mcpChannelTools("plan"),
+  });
+  const client = new Client({ name: "annotation-test", version: "1" });
+  const [a, b] = InMemoryTransport.createLinkedPair();
+  try {
+    await mcp.connect(a);
+    await client.connect(b);
+    const tools = (await client.listTools()).tools;
+    expect(tools).toHaveLength(18);
+    for (const t of tools) {
+      expect(t.annotations?.destructiveHint).toBe(false);
+      expect(t.annotations?.openWorldHint).toBe(false);
+    }
+    expect(
+      tools.find((t) => t.name === "search_functions")?.annotations
+        ?.readOnlyHint,
+    ).toBe(true);
+    for (const name of [
+      "propose_plan",
+      "update_plan",
+      "refresh_index",
+      "get_approved_plan",
+      "verify_implementation",
+    ])
+      expect(
+        tools.find((t) => t.name === name)?.annotations?.readOnlyHint,
+      ).toBe(false);
+  } finally {
+    await client.close();
+    await mcp.close();
+  }
+});
+
 test("immutable project binding rejects valid foreign tuple and filters projects/tools", async () => {
   const api = createServer((req, res) => {
     res.setHeader("content-type", "application/json");

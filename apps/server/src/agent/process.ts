@@ -135,6 +135,21 @@ export function startProcess(
           fail("AGENT_PROTOCOL");
           return;
         }
+        if (item.type === "error") {
+          // Codex reports its local model-metadata fallback as an error item,
+          // but it is a startup notice; keep its text private. Other errors fail.
+          if (
+            event.type === "item.completed" &&
+            typeof item.message === "string" &&
+            /^Model metadata for `[^`\r\n]+` not found\. Defaulting to fallback metadata; this can degrade performance and cause issues\.$/.test(
+              item.message,
+            )
+          )
+            return;
+          sawError = true;
+          fail("AGENT_FAILED");
+          return;
+        }
         if (
           ![
             "agent_message",

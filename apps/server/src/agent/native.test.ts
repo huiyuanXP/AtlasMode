@@ -1,6 +1,7 @@
 import { expect, test } from "vitest";
 import { createNativeRunner, buildInvocation } from "./native.js";
 import type { AgentContext } from "./types.js";
+import { parse } from "smol-toml";
 const context: AgentContext = {
   projectId: "trusted-project",
   input: { channel: "plan", message: "$(unsafe)" },
@@ -8,6 +9,26 @@ const context: AgentContext = {
   apiUrl: "http://127.0.0.1:12345",
   tools: ["propose_plan", "get_project_summary"],
 };
+test("authorized scoped MCP runs automatically while global approvals still deny other actions", () => {
+  const run = buildInvocation(
+    "codex",
+    "/trusted/codex",
+    context,
+    "/tmp/trusted",
+    {},
+  );
+  const override = run.args.find((v) =>
+    v.startsWith("mcp_servers.atlasmode="),
+  )!;
+  const parsed = parse(override) as {
+    mcp_servers: { atlasmode: Record<string, unknown> };
+  };
+  expect(parsed.mcp_servers.atlasmode.default_tools_approval_mode).toBe("auto");
+  expect(parsed.mcp_servers.atlasmode.enabled_tools).toEqual([
+    ...context.tools,
+  ]);
+  expect(run.args).toContain('approval_policy="never"');
+});
 // This checks the actual spawn boundary consumed by the runner, rather than source/config text.
 test.skipIf(process.platform === "win32")(
   "Codex invocation disables native execution and uses required per-run scoped MCP in trusted cwd",

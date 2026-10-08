@@ -87,6 +87,17 @@ posixTest.each([
   expect(JSON.stringify(events)).not.toContain("SECRET");
   expect(JSON.stringify(events)).not.toContain("secret");
 });
+posixTest(
+  "native metadata fallback notice is private while actual item errors still fail",
+  async () => {
+    const notice = await start("modelnotice");
+    expect(await notice.run.done).toEqual({ ok: true });
+    expect(notice.events).toEqual([{ type: "message", text: "Final answer." }]);
+    const fatal = await start("itemerror");
+    expect(await fatal.run.done).toEqual({ ok: false, code: "AGENT_FAILED" });
+    expect(fatal.events).toEqual([]);
+  },
+);
 posixTest("missing executable and timeout return safe errors", async () => {
   const a = await start("echo", { command: "/definitely-not-atlas-agent" });
   expect(await a.run.done).toMatchObject({
