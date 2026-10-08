@@ -887,41 +887,58 @@ it.each(["node", "project", "plan"])(
     if (later === "node") expect(focus?.nodeIds).toEqual(["f"]);
   },
 );
-it("choosing an unloaded removed fact relation resolves and focuses its actual surviving endpoints", async () => {
-  const app = createWorkspace(
-    new HttpApi((async (input: RequestInfo | URL, init?: RequestInit) => {
-      if (String(input) === "/api/plans/p")
-        return reply(
-          planDetail([{ kind: "remove_relation", relationId: "actual-edge" }]),
-        );
-      if (
-        String(input).endsWith("/subgraph") &&
-        String(init?.body).includes("actual-edge")
-      )
-        return reply({
-          ...(fixture("/api/projects/a/subgraph") as object),
-          nodes: [
-            { id: "f", kind: "function", name: "fn" },
-            { id: "g", kind: "function", name: "g" },
-          ],
-          relations: [
-            {
-              id: "actual-edge",
-              sourceId: "f",
-              targetId: "g",
-              type: "calls",
-              resolution: "resolved",
-              evidence: { filePath: "a.ts", line: 1 },
-            },
-          ],
-        });
-      return reply(fixture(String(input)));
-    }) as typeof fetch),
-  );
-  await app.selectProject({ id: "a", name: "a", path: "/a" });
-  await app.choosePlan("p");
-  expect(app.store.getState().focusRequest?.nodeIds).toEqual(["f", "g"]);
-});
+it.each(["calls", "imports"] as const)(
+  "choosing an unloaded removed %s relation resolves and focuses its actual surviving endpoints",
+  async (type) => {
+    const app = createWorkspace(
+      new HttpApi((async (input: RequestInfo | URL, init?: RequestInit) => {
+        if (String(input) === "/api/plans/p")
+          return reply(
+            planDetail([
+              { kind: "remove_relation", relationId: "actual-edge" },
+            ]),
+          );
+        if (
+          String(input).endsWith("/subgraph") &&
+          String(init?.body).includes("actual-edge")
+        )
+          return reply({
+            ...(fixture("/api/projects/a/subgraph") as object),
+            nodes: [
+              {
+                id: "f",
+                kind: type === "imports" ? "file" : "function",
+                name: "fn",
+              },
+              {
+                id: "g",
+                kind: type === "imports" ? "file" : "function",
+                name: "g",
+              },
+            ],
+            relations: JSON.parse(String(init?.body)).relationTypes.includes(
+              type,
+            )
+              ? [
+                  {
+                    id: "actual-edge",
+                    sourceId: "f",
+                    targetId: "g",
+                    type,
+                    resolution: "resolved",
+                    evidence: { filePath: "a.ts", line: 1 },
+                  },
+                ]
+              : [],
+          });
+        return reply(fixture(String(input)));
+      }) as typeof fetch),
+    );
+    await app.selectProject({ id: "a", name: "a", path: "/a" });
+    await app.choosePlan("p");
+    expect(app.store.getState().focusRequest?.nodeIds).toEqual(["f", "g"]);
+  },
+);
 it("a successful semantic response after a newer node selection preserves its camera", async () => {
   let release!: (value: Response) => void;
   const app = createWorkspace(

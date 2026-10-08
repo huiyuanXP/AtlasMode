@@ -107,7 +107,9 @@ export class HttpApi {
         nodeIds,
         depth,
         budget,
-        relationTypes: ["calls", "contains"],
+        relationTypes: relationIds?.length
+          ? ["calls", "contains", "imports"]
+          : ["calls", "contains"],
         ...(relationIds?.length ? { relationIds } : {}),
       },
     );
