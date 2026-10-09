@@ -139,6 +139,17 @@ export function indexTypeScript(
           q,
           {
             name,
+            declarationKind: ts.isClassDeclaration(node)
+              ? "class"
+              : ts.isMethodDeclaration(node) ||
+                  ts.isConstructorDeclaration(node) ||
+                  ts.isGetAccessorDeclaration(node) ||
+                  ts.isSetAccessorDeclaration(node) ||
+                  ((ts.isArrowFunction(node) ||
+                    ts.isFunctionExpression(node)) &&
+                    ts.isPropertyDeclaration(node.parent))
+                ? "method"
+                : "function",
             parentId: ownerId,
             language: file.language,
             startLine: lineOf(node),

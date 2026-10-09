@@ -3,13 +3,14 @@ import { promisify } from "node:util";
 import { fileURLToPath } from "node:url";
 import type { SourceFile } from "./scan.js";
 import type { Graph } from "./graph.js";
-import type { CodeSnapshot } from "@codemap/core";
+import type { CodeNode, CodeSnapshot } from "@codemap/core";
 
 type PythonOutput = {
   nodes: {
     path: string;
     qualified: string;
     kind: string;
+    declarationKind: CodeNode["declarationKind"];
     name: string;
     parent: string;
     startLine: number;
@@ -143,6 +144,7 @@ export async function indexPython(files: SourceFile[], graph: Graph) {
       node.qualified,
       {
         name: node.name,
+        declarationKind: node.declarationKind,
         parentId,
         language: "python",
         startLine: node.startLine,

@@ -5,6 +5,7 @@ import type {
   DirectoryPolicy,
   CodeSnapshot,
   FunctionContextResult,
+  FileContextResult,
   FunctionSearchResult,
   Operation,
   PlanDetail,
@@ -149,6 +150,10 @@ export class HttpApi {
   context = (id: string, nodeId: string, offset = 0, limit = 50) =>
     this.request<FunctionContextResult>(
       `/projects/${encodeURIComponent(id)}/functions/${encodeURIComponent(nodeId)}?offset=${offset}&limit=${limit}`,
+    );
+  fileContext = (id: string, nodeId: string, offset = 0, limit = 50) =>
+    this.request<FileContextResult>(
+      `/projects/${encodeURIComponent(id)}/files/${encodeURIComponent(nodeId)}/context?offset=${offset}&limit=${limit}`,
     );
   source = (id: string, filePath: string) =>
     this.request<{ filePath: string; content: string }>(

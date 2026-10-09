@@ -1,0 +1,36 @@
+{
+  "date": "2026-10-09T09:22:47.207Z",
+  "projectId": "project:3da5e35f1d22eec876f149cb49f3176d",
+  "planId": "67c7b2bd-0ffd-40a4-b400-3f4135f2f21f",
+  "revision": 2,
+  "baselineSnapshotId": "snapshot:fcc9c8eaf26bae545dd3307b53c21126",
+  "valid": false,
+  "approved": false,
+  "target": {
+    "id": "function:ab4ccdf859bb5739a3019e83baf6aca6",
+    "kind": "function",
+    "declarationKind": "method",
+    "name": "full_dispatch_request",
+    "qualifiedName": "Flask.full_dispatch_request",
+    "filePath": "src/flask/app.py",
+    "parentId": "function:04b3645f41d5f2f47e5597aa3d973f54",
+    "language": "python",
+    "signature": "def full_dispatch_request(self)",
+    "startLine": 904,
+    "endLine": 920,
+    "exported": true
+  },
+  "counts": {
+    "files": 83,
+    "folders": 28,
+    "functions": 1575,
+    "relations": 6283,
+    "calls": {
+      "resolved": 714,
+      "unresolved": 2176,
+      "external": 1029
+    }
+  },
+  "dataDirectory": "/tmp/atlasmode-graph-inspection/data",
+  "port": 44320
+}

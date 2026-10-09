@@ -159,6 +159,15 @@ export function registerRoutes(
     contextQuery,
     functionParams,
   );
+  get(
+    "/api/projects/:id/files/:nodeId/context",
+    (request) => {
+      const { id, nodeId } = functionParams.parse(request.params);
+      return queries.fileContext(id, nodeId, contextQuery.parse(request.query));
+    },
+    contextQuery,
+    functionParams,
+  );
   write("POST", "/api/projects/:id/scope", scopeBody, (request) =>
     queries.scope(projectId(request), scopeBody.parse(request.body)),
   );

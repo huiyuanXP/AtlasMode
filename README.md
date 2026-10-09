@@ -5,9 +5,10 @@
 > 当前仓库已有本地 UI、真实 TS/JS/Python 索引、SQLite、stdio MCP、中文/英文、主题、功能集、目录约束及撤销重做。首轮 T01–T08 与整体审查通过，四项 Important 与两项 Minor 修复均独立复审通过；本轮精确检查结果见 [环境与验证](docs/environment.md)。固定目标的阶段、修订和统计见 [外部验证记录](docs/superpowers/validation-targets.md)，不将旧运行计数当作当前结果。基线86e6b12的原生 Linux/Windows/macOS CI及Linux Chromium已通过（[run37148507859](https://github.com/huiyuanXP/AtlasMode/actions/runs/37148507859)）；该历史阶段的实际 Codex/Claude 客户端连接尚未验证；本轮 Codex Profile 真实接入见下方更新。以下规格保留后续目标，完整组编辑/折叠、知识迁移/备份、workspace package/exports、完整 CommonJS 值流和 references 图等仍有缺口，详见 [要求覆盖表](docs/superpowers/readme-coverage.md)。
 
 
-本轮已完成自动聚焦、动画依赖漏斗、可点击路径、双侧Chat和既有Codex Profile复用。
+本轮已完成 UI-05～UI-10 图检查交互，实际未批准规划和精确验证见 [验收报告](docs/superpowers/reviews/graph-inspection-2026-10-09/README.md)。
+已有自动聚焦、动画依赖漏斗、可点击路径、双侧Chat和既有Codex Profile复用。
 实际Mimo/API Profile已跑通原生模型→MCP→未批准规划，无需重新Device登录。
-本轮集成基线636项测试/12项Chromium通过，后续漏斗可读性修正有独立相关验证；
+此前 Focus/Chat 集成基线636项测试/12项Chromium通过，后续漏斗可读性修正有独立相关验证；
 当前精确结果见 [交付记录](docs/superpowers/reviews/focus-chat-2026-10-08/README.md)。
 
 历史已审查的Task2 PARTIAL检查点与待办见 [交接记录](docs/superpowers/reviews/static-forwarding-task2/README.md)。
@@ -26,8 +27,12 @@ npm start
 在本机浏览器打开 `http://127.0.0.1:4310`，点击「打开项目」并选择要分析的本地目录。
 
 当前交互使用左侧探索 Chat、中央图与可点击路径、右侧规划概述和规划 Chat。
-新增/修改规划会自动聚焦受影响卡片；双击函数或文件进入「依赖者在上、当前对象居中、依赖在下」的动画漏斗；Esc 返回原视角。点击路径中的项目、文件夹、文件可切换范围。
-源码通过「查看源码」展开，旧参数表单集中在显式打开的高级编辑中。直接函数搜索在 Agent 未连接时也可使用。
+右侧固定「待你审查 · N」，打开「查看改动」阅读目的、变更与校验结果，逐项选择可聚焦对应节点/关系；「确认此规划」单独绑定当前版本与基线。
+悬停卡片预览一跳关联，单击保持高亮并打开引用详情，关系行按真实调用证据联动画布。函数详情显示调用方/目标与未知调用，文件详情提供分页声明、跨文件调用和导入。
+双击函数或文件进入「依赖者在上、当前对象居中、依赖在下」的动画漏斗；普通图与漏斗均可拖动。漏斗手动位移按项目和根节点隔离，「重新排列」恢复当前根的自动布局；普通布局独立保存。
+角落小地图可展开、定位、缩放和返回选择，表示当前已加载范围；空间受限时暂收详情，收起地图后恢复同一选择。Esc 依次收起地图、关闭详情、退出漏斗。点击路径中的项目、文件夹、文件可切换范围。
+类型标识来自 AST 声明信息，区分函数、方法、类、目录与文件；本地 Nerd 图标字体随网页分发，字体不可用时保留通用图标与类型文字。旧快照可继续读取，刷新索引后补齐声明类型。
+源码通过「查看源码」展开，精确参数表单集中在「高级编辑」。直接函数搜索在 Agent 未连接时也可使用。
 
 网页 Chat 复用本机 Codex/Claude CLI。Codex 支持既有账户认证或本机 Profile 的 Provider API 环境，不要求有 API 配置的用户再次 Device 登录。例如使用已经配置好的 `mimo` Profile：
 

@@ -1,9 +1,8 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import {
   ReactFlow,
   Background,
   Controls,
-  MiniMap,
   Handle,
   Position,
   applyNodeChanges,
@@ -20,6 +19,7 @@ import type {
   Operation,
   SubgraphResult,
   ViewState,
+  Relation,
 } from "@codemap/core";
 import { useStrings } from "../../i18n/index.js";
 import {
@@ -34,6 +34,14 @@ import { layoutFunnel, type FunnelState, type FunnelLane } from "./funnel.js";
 import type { FocusRequest } from "./focus.js";
 export type { FocusRequest } from "./focus.js";
 import "@xyflow/react/dist/style.css";
+import { NodeIdentity, nodeIdentity } from "./nodeIdentity.js";
+import {
+  inspectionHighlight,
+  FunnelOffsets,
+  inspectionPlacement,
+} from "./inspection.js";
+import { MapPanel } from "./MapPanel.js";
+import "./graph-inspection.css";
 function CodeCard({ data }: NodeProps<GraphNode>) {
   const zh = useStrings();
   const n = data.node,
@@ -41,8 +49,9 @@ function CodeCard({ data }: NodeProps<GraphNode>) {
     lane = data.funnelLane as FunnelLane | undefined;
   return (
     <div
-      className={`code-card ${data.layer} kind-${n.kind} ${lane ? `funnel-${lane}` : ""}`}
+      className={`code-card ${data.layer} kind-${n.kind} ${lane ? `funnel-${lane}` : ""} inspection-${data.highlight ?? "idle"}`}
       data-funnel-lane={lane}
+      data-highlight={String(data.highlight ?? "idle")}
     >
       {callable && (
         <Handle type="target" position={lane ? Position.Top : Position.Left} />
@@ -71,9 +80,11 @@ function CodeCard({ data }: NodeProps<GraphNode>) {
               ? zh.anchor
               : zh.code}
         </span>
-        <span>{zh[n.kind]}</span>
+        <span>{nodeIdentity(n, data.locale as "zh" | "en").typeLabel}</span>
       </div>
-      <strong title={n.qualifiedName ?? n.name}>{n.name}</strong>
+      <strong title={n.qualifiedName ?? n.name}>
+        <NodeIdentity node={n} locale={data.locale as "zh" | "en"} />
+      </strong>
       <code title={n.filePath}>{n.filePath ?? n.qualifiedName ?? n.id}</code>
       {n.signature && <small title={n.signature}>{n.signature}</small>}
       {data.changes.map((change, i) => (
@@ -97,11 +108,13 @@ function FocusViewport({
   targets,
   padding = 0.5,
   focusKey = "",
+  blocked = false,
 }: {
   request?: FocusRequest;
   targets: GraphNode[];
   padding?: number;
   focusKey?: string;
+  blocked?: boolean;
 }) {
   const { fitView, viewportInitialized } = useReactFlow<GraphNode, GraphEdge>();
   const initialized = useNodesInitialized();
@@ -109,6 +122,7 @@ function FocusViewport({
   const consumed = useRef<string | undefined>(undefined);
   useEffect(() => {
     if (
+      blocked ||
       !request ||
       !targets.length ||
       !initialized ||
@@ -125,7 +139,7 @@ function FocusViewport({
       ready.some(
         (node, i) =>
           !node ||
-          node.data !== targets[i]!.data ||
+          node.data.projectionData !== targets[i]!.data ||
           node.position.x !== targets[i]!.position.x ||
           node.position.y !== targets[i]!.position.y ||
           !node.measured?.width ||
@@ -154,6 +168,7 @@ function FocusViewport({
     fitView,
     padding,
     focusKey,
+    blocked,
   ]);
   return null;
 }
@@ -182,6 +197,15 @@ const nodeTypes = { code: CodeCard };
 const overviewFitOptions = { padding: 0.25, maxZoom: 1 };
 export function Canvas(props: {
   graph?: SubgraphResult;
+  projectId?: string;
+  selectedNodeId?: string;
+  relationPreviewId?: string;
+  fixedOperationRelationId?: string;
+  previewRelation?: Relation;
+  previewNodes?: CodeNode[];
+  inspection?: ReactNode;
+  onCloseInspection?: () => void;
+  onPreviewRelation?: (id?: string) => void;
   referenceNodes?: CodeNode[];
   operations: Operation[];
   view: ViewState;
@@ -207,6 +231,42 @@ export function Canvas(props: {
   const zh = useStrings();
   const canvas = useRef<HTMLDivElement>(null);
   const [pageSize, setPageSize] = useState(3);
+  const [size, setSize] = useState({ width: 800, height: 600 });
+  const [mapExpanded, setMapExpanded] = useState(false);
+  const [mapSelection, setMapSelection] = useState<{
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  }>();
+  const [hovered, setHovered] = useState<string>();
+  const hoverTimer = useRef<ReturnType<typeof setTimeout> | undefined>(
+    undefined,
+  );
+  const layoutFrame = useRef(0);
+  const dragging = useRef(false);
+  const offsets = useRef(new FunnelOffsets());
+  const [offsetVersion, setOffsetVersion] = useState(0);
+  const [cameraBlocked, setCameraBlocked] = useState(false);
+  const [cameraVersion, setCameraVersion] = useState(0);
+  const stopHover = () => {
+    clearTimeout(hoverTimer.current);
+    setHovered(undefined);
+  };
+  const previewNode = (id: string) => {
+    clearTimeout(hoverTimer.current);
+    hoverTimer.current = setTimeout(() => {
+      if (!dragging.current) setHovered(id);
+    }, 90);
+  };
+  useEffect(() => () => clearTimeout(hoverTimer.current), []);
+  useEffect(() => {
+    setCameraBlocked(false);
+    setMapExpanded(false);
+  }, [props.projectId, props.graph?.snapshotId]);
+  useEffect(() => {
+    setCameraBlocked(false);
+  }, [props.focusRequest?.sequence, props.funnel?.sequence]);
   const [pages, setPages] = useState({
     sequence: -1,
     dependents: 0,
@@ -220,7 +280,8 @@ export function Canvas(props: {
   useEffect(() => {
     if (!canvas.current) return;
     const update = () => {
-      const width = canvas.current!.getBoundingClientRect().width;
+      const { width, height } = canvas.current!.getBoundingClientRect();
+      setSize({ width, height });
       setPageSize(width < 500 ? 1 : width < 800 ? 2 : 3);
     };
     update();
@@ -265,7 +326,7 @@ export function Canvas(props: {
   const [measurements, setMeasurements] = useState<
     Record<string, { width?: number; height?: number }>
   >({});
-  const funnelProjection = useMemo(
+  const funnelBase = useMemo(
     () =>
       props.funnel
         ? layoutFunnel(
@@ -293,9 +354,24 @@ export function Canvas(props: {
       pageSize,
     ],
   );
+  const funnelProjection = useMemo(
+    () =>
+      funnelBase && props.funnel
+        ? {
+            ...funnelBase,
+            nodes: offsets.current.apply(
+              props.projectId ?? "",
+              props.funnel.root.id,
+              funnelBase.nodes,
+            ),
+          }
+        : funnelBase,
+    [funnelBase, props.projectId, props.funnel, offsetVersion],
+  );
   useEffect(() => {
+    if (dragging.current) return;
     const target = funnelProjection?.nodes ?? projection.nodes;
-    let frame = 0;
+    cancelAnimationFrame(layoutFrame.current);
     setSettled(undefined);
     const update = (next: GraphNode[]) => {
       currentNodes.current = next;
@@ -338,19 +414,37 @@ export function Canvas(props: {
           };
         }),
       );
-      frame = requestAnimationFrame(animate);
+      layoutFrame.current = requestAnimationFrame(animate);
     };
-    frame = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(frame);
+    layoutFrame.current = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(layoutFrame.current);
   }, [projection.nodes, funnelProjection, props.funnel]);
   useEffect(() => {
-    if (!props.funnel && !props.funnelPending) return;
     const exit = (event: KeyboardEvent) => {
-      if (event.key === "Escape") props.onExitFunnel();
+      if (event.key !== "Escape" || event.defaultPrevented) return;
+      clearTimeout(clickTimer.current);
+      if (mapExpanded) {
+        setMapExpanded(false);
+        event.preventDefault();
+      } else if (props.inspection) {
+        props.onCloseInspection?.();
+        event.preventDefault();
+      } else if (props.funnel || props.funnelPending) {
+        props.onExitFunnel();
+        event.preventDefault();
+      }
+      stopHover();
     };
     window.addEventListener("keydown", exit);
     return () => window.removeEventListener("keydown", exit);
-  }, [props.funnel, props.funnelPending, props.onExitFunnel]);
+  }, [
+    mapExpanded,
+    props.inspection,
+    props.funnel,
+    props.funnelPending,
+    props.onCloseInspection,
+    props.onExitFunnel,
+  ]);
   const domain = (id: string) =>
     projection.nodes.find((n) => n.id === id)?.data.node.id;
   const selectedFocus =
@@ -361,23 +455,115 @@ export function Canvas(props: {
       ? props.focusRequest
       : undefined;
   const editable = props.canEdit && props.funnel?.root.kind !== "file";
-  const edges = (funnelProjection?.edges ?? projection.edges).map((e) => ({
+  const rawEdges = [...(funnelProjection?.edges ?? projection.edges)];
+  if (
+    props.previewRelation &&
+    !rawEdges.some((e) => e.data?.domainId === props.previewRelation!.id)
+  ) {
+    const relation = props.previewRelation;
+    const related = new Map((props.previewNodes ?? []).map((n) => [n.id, n]));
+    const endpoint = (id: string | null) =>
+      id &&
+      (nodes.find((n) => n.data.node.id === id) ??
+        nodes.find(
+          (n) =>
+            n.data.node.kind === "file" &&
+            n.data.node.filePath === related.get(id)?.filePath,
+        ));
+    const source = endpoint(relation.sourceId),
+      target = endpoint(relation.targetId);
+    if (source && target)
+      rawEdges.push({
+        id: `evidence:${relation.id}`,
+        source: source.id,
+        target: target.id,
+        data: {
+          layer: "fact",
+          domainId: relation.id,
+          relationType: relation.type,
+        },
+        label: `${props.view.locale === "en" ? "Evidence preview" : "证据预览"} · ${relation.evidence.filePath}:${relation.evidence.line}`,
+        selectable: false,
+        reconnectable: false,
+      });
+  }
+  const highlighted = inspectionHighlight(
+    nodes,
+    rawEdges,
+    props.selectedNodeId,
+    props.relationPreviewId ?? props.fixedOperationRelationId,
+    hovered,
+  );
+  const edges = highlighted.edges.map((e) => ({
     ...e,
-    markerEnd: { type: MarkerType.ArrowClosed, width: 16, height: 16 },
+    markerEnd: {
+      type: MarkerType.ArrowClosed,
+      width: 16,
+      height: 16,
+      color: e.style?.stroke as string,
+    },
     reconnectable: editable && e.reconnectable,
   }));
+  const selectedCard = nodes.find(
+    (n) => n.data.node.id === props.selectedNodeId,
+  );
+  const viewport = instance.current?.getViewport() ?? { x: 0, y: 0, zoom: 1 };
+  const selectionRect = selectedCard
+    ? {
+        x: selectedCard.position.x * viewport.zoom + viewport.x,
+        y: selectedCard.position.y * viewport.zoom + viewport.y,
+        width: (selectedCard.measured?.width ?? 270) * viewport.zoom,
+        height: (selectedCard.measured?.height ?? 150) * viewport.zoom,
+      }
+    : undefined;
+  const detailPlacement = inspectionPlacement(
+    size.width,
+    size.height,
+    selectionRect,
+  );
+  const mapSelectionRect = mapExpanded ? mapSelection : selectionRect;
+  const mapDetailPlacement = inspectionPlacement(
+    size.width,
+    size.height,
+    mapSelectionRect,
+  );
+  const mapAbove = mapSelectionRect ? mapSelectionRect.y - 58 - 16 : 0;
+  const mapBelow = mapSelectionRect
+    ? size.height - mapSelectionRect.y - mapSelectionRect.height - 28
+    : size.height - 70;
+  const mapAtTop = mapExpanded && mapAbove > mapBelow;
+  const mapHeight = mapExpanded
+    ? Math.max(70, Math.min(168, (mapAtTop ? mapAbove : mapBelow) - 112))
+    : undefined;
+  const mapSide =
+    props.inspection &&
+    mapDetailPlacement.dock === "side" &&
+    mapDetailPlacement.left > 12
+      ? ("left" as const)
+      : ("right" as const);
+  const stopMotion = () => {
+    cancelAnimationFrame(layoutFrame.current);
+    clearTimeout(clickTimer.current);
+    stopHover();
+    setCameraBlocked(true);
+    const flow = instance.current;
+    if (flow) void flow.setViewport(flow.getViewport(), { duration: 0 });
+  };
   const pageControls = (lane: "dependents" | "dependencies") => {
     const range = funnelProjection?.windows[lane];
     if (!range || range.total <= pageSize) return null;
     const label =
       lane === "dependents" ? zh.funnelDependents : zh.funnelDependencies;
-    const choose = (page: number) =>
+    const choose = (page: number) => {
+      stopHover();
+      setCameraBlocked(false);
       setPages({
         ...activePages,
         sequence: props.funnel!.sequence,
         [lane]: page,
         focusSequence: props.focusRequest?.sequence ?? 0,
       });
+    };
     return (
       <span className="funnel-pages">
         <button
@@ -399,7 +585,20 @@ export function Canvas(props: {
     );
   };
   return (
-    <div className="canvas-shell" aria-label={zh.graph} ref={canvas}>
+    <div
+      className="canvas-shell"
+      aria-label={zh.graph}
+      ref={canvas}
+      data-camera-version={cameraVersion}
+      onFocusCapture={(event) => {
+        const id = (event.target as HTMLElement)
+          .closest(".react-flow__node")
+          ?.getAttribute("data-id");
+        const node = nodes.find((n) => n.id === id);
+        if (node) previewNode(node.data.node.id);
+      }}
+      onBlurCapture={stopHover}
+    >
       <ReactFlow<GraphNode, GraphEdge>
         onInit={(flow) => {
           instance.current = flow;
@@ -411,7 +610,10 @@ export function Canvas(props: {
           "controls.interactive.ariaLabel": zh.toggleInteraction,
           "minimap.ariaLabel": zh.minimap,
         }}
-        nodes={nodes}
+        nodes={highlighted.nodes.map((n) => ({
+          ...n,
+          data: { ...n.data, locale: props.view.locale },
+        }))}
         edges={edges}
         nodeTypes={nodeTypes}
         onNodesChange={(changes) => {
@@ -440,6 +642,25 @@ export function Canvas(props: {
               return changed ? next : previous;
             });
         }}
+        onPaneClick={() => {
+          clearTimeout(clickTimer.current);
+          stopHover();
+          props.onCloseInspection?.();
+          props.onPreviewRelation?.();
+        }}
+        onNodeMouseEnter={(_, node) => previewNode(node.data.node.id)}
+        onNodeMouseLeave={stopHover}
+        onEdgeMouseEnter={(_, edge) =>
+          props.onPreviewRelation?.(edge.data?.domainId)
+        }
+        onEdgeMouseLeave={() => props.onPreviewRelation?.()}
+        onMove={() => setCameraVersion((v) => v + 1)}
+        onMoveStart={(event) => {
+          if (event) {
+            stopHover();
+            clearTimeout(clickTimer.current);
+          }
+        }}
         onNodeClick={(event, node) => {
           if (!props.funnel && event.detail < 2)
             clickViewport.current = instance.current?.getViewport();
@@ -463,14 +684,32 @@ export function Canvas(props: {
             props.onFunnel(node.data.node);
           }
         }}
+        onNodeDragStart={() => {
+          dragging.current = true;
+          stopMotion();
+        }}
         onNodeDragStop={(_, node) => {
-          if (!props.funnel)
+          dragging.current = false;
+          if (props.funnel) {
+            const base = funnelBase?.nodes.find(
+              (n) => n.id === node.id,
+            )?.position;
+            if (base)
+              offsets.current.move(
+                props.projectId ?? "",
+                props.funnel.root.id,
+                node.id,
+                node.position,
+                base,
+              );
+            setOffsetVersion((v) => v + 1);
+          } else
             props.onLayout({
               ...props.view.positions,
               [node.id]: node.position,
             });
         }}
-        nodesDraggable={!props.funnel}
+        nodesDraggable
         zoomOnDoubleClick={false}
         onEdgeClick={(_, edge) => {
           if (props.funnel?.root.kind !== "file" && edge.data)
@@ -500,10 +739,11 @@ export function Canvas(props: {
       >
         <OverviewViewport active={!!props.funnel} saved={savedViewport} />
         <FocusViewport
+          blocked={cameraBlocked}
           padding={props.funnel && !selectedFocus ? 0.08 : 0.5}
           focusKey={
             props.funnel && !selectedFocus
-              ? `${pageSize}:${funnelProjection?.windows.dependents.page}:${funnelProjection?.windows.dependencies.page}`
+              ? `${pageSize}:${funnelProjection?.windows.dependents.page}:${funnelProjection?.windows.dependencies.page}:${offsetVersion}`
               : ""
           }
           request={
@@ -534,13 +774,63 @@ export function Canvas(props: {
         />
         <Background gap={22} size={1} />
         <Controls position="bottom-left" orientation="horizontal" />
-        <MiniMap
-          position="bottom-right"
-          pannable
-          zoomable
-          nodeColor={(n) => (n.data.layer === "plan" ? "#a687d4" : "#8195aa")}
+        <MapPanel
+          expanded={mapExpanded}
+          onExpanded={(expanded) => {
+            if (expanded) setMapSelection(selectionRect);
+            setMapExpanded(expanded);
+          }}
+          selectedNodeId={props.selectedNodeId}
+          locale={props.view.locale}
+          loaded={nodes.length}
+          side={mapSide}
+          top={mapAtTop ? 58 : undefined}
+          mapHeight={mapHeight}
+          mapWidth={Math.max(80, Math.min(420, size.width - 24))}
+          hiddenDetails={
+            !!props.inspection &&
+            mapExpanded &&
+            (size.width < 850 || mapDetailPlacement.dock !== "side")
+          }
+          bottom={
+            props.inspection &&
+            !mapExpanded &&
+            detailPlacement.dock === "bottom"
+              ? Math.min(
+                  size.height * 0.4 + 12,
+                  size.height - (mapExpanded ? 280 : 120) - 60,
+                )
+              : 12
+          }
         />
       </ReactFlow>
+      {(props.selectedNodeId || hovered) && (
+        <div className="inspection-legend">
+          <span>
+            ↑ {props.view.locale === "en" ? "Into selection" : "指向当前对象"}
+          </span>
+          <span>
+            ↓ {props.view.locale === "en" ? "From selection" : "当前对象指向"}
+          </span>
+        </div>
+      )}
+      {props.inspection &&
+        !(
+          mapExpanded &&
+          (size.width < 850 || mapDetailPlacement.dock !== "side")
+        ) && (
+          <div
+            className={`inspection-overlay dock-${detailPlacement.dock}`}
+            style={{
+              left: detailPlacement.left,
+              top: detailPlacement.top,
+              width: detailPlacement.width,
+              maxHeight: detailPlacement.maxHeight,
+            }}
+          >
+            {props.inspection}
+          </div>
+        )}
       {props.funnel && funnelProjection && (
         <div className="funnel-summary" role="status">
           <strong>{props.funnel.root.name}</strong>
@@ -562,6 +852,18 @@ export function Canvas(props: {
             {zh.funnelSide} {funnelProjection.counts.side} · {zh.funnelUnknown}{" "}
             {props.funnel.unknownCount}
           </span>
+          <button
+            onClick={() => {
+              offsets.current.clear(
+                props.projectId ?? "",
+                props.funnel!.root.id,
+              );
+              setOffsetVersion((v) => v + 1);
+              setCameraBlocked(false);
+            }}
+          >
+            {props.view.locale === "en" ? "Rearrange" : "重新排列"}
+          </button>
           <button onClick={props.onExitFunnel}>{zh.exitFunnel}</button>
         </div>
       )}

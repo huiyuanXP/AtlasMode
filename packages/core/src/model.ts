@@ -2,6 +2,7 @@ export type Language = "typescript" | "javascript" | "python" | "unknown";
 export type CodeNode = {
   id: string;
   kind: "function" | "file" | "folder" | "external";
+  declarationKind?: "function" | "method" | "class";
   name: string;
   qualifiedName?: string;
   filePath?: string;

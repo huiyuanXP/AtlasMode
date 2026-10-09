@@ -18,6 +18,7 @@ export type FunctionSearchResult = {
 };
 export type FunctionContextResult = {
   node: CodeNode;
+  relatedNodes?: CodeNode[];
   incoming: Relation[];
   outgoing: Relation[];
   totalIncoming: number;
@@ -25,6 +26,25 @@ export type FunctionContextResult = {
   truncated: boolean;
   offset: number;
   limit: number;
+  snapshotId: string;
+  dataSource: "code";
+};
+export type FileContextResult = {
+  node: CodeNode;
+  members: CodeNode[];
+  incoming: Relation[];
+  outgoing: Relation[];
+  imports: Relation[];
+  unknown: Relation[];
+  totalMembers: number;
+  totalIncoming: number;
+  totalOutgoing: number;
+  totalImports: number;
+  totalUnknown: number;
+  relatedNodes: CodeNode[];
+  offset: number;
+  limit: number;
+  truncated: boolean;
   snapshotId: string;
   dataSource: "code";
 };
@@ -79,6 +99,18 @@ function pagination(input: Pagination) {
     limit: bound(input.limit ?? 50, 1, 200),
   };
 }
+function pageNodes(
+  snapshot: CodeSnapshot,
+  relations: Relation[],
+  members: CodeNode[] = [],
+): CodeNode[] {
+  const ids = new Set(members.map((node) => node.id));
+  for (const relation of relations) {
+    ids.add(relation.sourceId);
+    if (relation.targetId !== null) ids.add(relation.targetId);
+  }
+  return snapshot.nodes.filter((node) => ids.has(node.id)).sort(compareNodes);
+}
 export function searchFunctions(
   snapshot: CodeSnapshot,
   input: FunctionSearchInput = {},
@@ -125,10 +157,13 @@ export function getFunctionContext(
     .sort(compareRelations);
   const incoming = calls.filter((r) => r.targetId === nodeId),
     outgoing = calls.filter((r) => r.sourceId === nodeId);
+  const incomingPage = incoming.slice(offset, offset + limit),
+    outgoingPage = outgoing.slice(offset, offset + limit);
   return {
     node,
-    incoming: incoming.slice(offset, offset + limit),
-    outgoing: outgoing.slice(offset, offset + limit),
+    incoming: incomingPage,
+    outgoing: outgoingPage,
+    relatedNodes: pageNodes(snapshot, [...incomingPage, ...outgoingPage]),
     totalIncoming: incoming.length,
     totalOutgoing: outgoing.length,
     truncated:
@@ -137,6 +172,109 @@ export function getFunctionContext(
       outgoing.length > offset + limit,
     offset,
     limit,
+    snapshotId: snapshot.id,
+    dataSource: "code",
+  };
+}
+/** 文件详情保持每条源码关系，各证据分组使用同一分页边界。 */
+export function getFileContext(
+  snapshot: CodeSnapshot,
+  nodeId: string,
+  input: Pagination = {},
+): FileContextResult {
+  const { offset, limit } = pagination(input);
+  const node = snapshot.nodes.find((n) => n.id === nodeId && n.kind === "file");
+  if (!node)
+    throw new DomainError(
+      "NOT_FOUND",
+      "File not found in this project snapshot.",
+    );
+  const byId = new Map(snapshot.nodes.map((n) => [n.id, n]));
+  const files = new Map(
+    snapshot.nodes
+      .filter((n) => n.kind === "file" && n.filePath)
+      .map((n) => [n.filePath!, n.id]),
+  );
+  const owners = new Map<string, string | undefined>();
+  const owningFile = (id: string): string | undefined => {
+    if (owners.has(id)) return owners.get(id);
+    const visited = new Set<string>();
+    let current = byId.get(id);
+    let owner: string | undefined;
+    while (current && !visited.has(current.id)) {
+      visited.add(current.id);
+      if (current.kind === "external") break;
+      owner =
+        current.kind === "file"
+          ? current.id
+          : files.get(current.filePath ?? "");
+      if (owner) break;
+      current = current.parentId ? byId.get(current.parentId) : undefined;
+    }
+    for (const visitedId of visited) owners.set(visitedId, owner);
+    return owner;
+  };
+  const members = snapshot.nodes
+    .filter((n) => n.kind === "function" && owningFile(n.id) === nodeId)
+    .sort(compareNodes);
+  const incoming: Relation[] = [],
+    outgoing: Relation[] = [],
+    imports: Relation[] = [],
+    unknown: Relation[] = [];
+  for (const relation of [...snapshot.relations].sort(compareRelations)) {
+    if (relation.type !== "calls" && relation.type !== "imports") continue;
+    const source = owningFile(relation.sourceId);
+    const target =
+      relation.targetId === null ? undefined : owningFile(relation.targetId);
+    if (relation.type === "imports") {
+      if (source === nodeId || target === nodeId) imports.push(relation);
+    } else if (source === nodeId && relation.resolution !== "resolved") {
+      unknown.push(relation);
+    } else if (
+      relation.resolution === "resolved" &&
+      source &&
+      target &&
+      source !== target
+    ) {
+      if (target === nodeId) incoming.push(relation);
+      if (source === nodeId) outgoing.push(relation);
+    }
+  }
+  const slice = <T>(items: T[]) => items.slice(offset, offset + limit);
+  const memberPage = slice(members),
+    incomingPage = slice(incoming),
+    outgoingPage = slice(outgoing),
+    importPage = slice(imports),
+    unknownPage = slice(unknown);
+  const totals = [
+    members.length,
+    incoming.length,
+    outgoing.length,
+    imports.length,
+    unknown.length,
+  ];
+  return {
+    node,
+    members: memberPage,
+    incoming: incomingPage,
+    outgoing: outgoingPage,
+    imports: importPage,
+    unknown: unknownPage,
+    totalMembers: members.length,
+    totalIncoming: incoming.length,
+    totalOutgoing: outgoing.length,
+    totalImports: imports.length,
+    totalUnknown: unknown.length,
+    relatedNodes: pageNodes(
+      snapshot,
+      [...incomingPage, ...outgoingPage, ...importPage, ...unknownPage],
+      memberPage,
+    ),
+    offset,
+    limit,
+    truncated: totals.some(
+      (total) => total > offset + limit || (offset > 0 && total > 0),
+    ),
     snapshotId: snapshot.id,
     dataSource: "code",
   };

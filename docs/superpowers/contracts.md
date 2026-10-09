@@ -210,7 +210,8 @@ Host 的 http origin。拒绝 foreign/null Origin、foreign Host，403
 | POST /api/projects/:id/refresh | CodeSnapshot |
 | GET /api/projects/:id/summary | `{project,snapshotId,contentHash,counts,entrypoints,entrypointTotal,entrypointsTruncated,diagnostics,coverage,dataSource:'code'}` |
 | GET /api/projects/:id/functions?q=&offset=&limit= | `{items:CodeNode[],total,offset,limit,snapshotId,dataSource:'code'}` |
-| GET /api/projects/:id/functions/:nodeId?offset=&limit= | `{node,incoming:Relation[],outgoing:Relation[],totalIncoming,totalOutgoing,truncated,offset,limit,snapshotId,dataSource:'code'}` |
+| GET /api/projects/:id/functions/:nodeId?offset=&limit= | `{node,incoming:Relation[],outgoing:Relation[],relatedNodes?:CodeNode[],totalIncoming,totalOutgoing,truncated,offset,limit,snapshotId,dataSource:'code'}` |
+| GET /api/projects/:id/files/:nodeId/context?offset=&limit= | `FileContextResult`：文件声明、跨文件 calls、imports、unknown 与分页总数 |
 | POST /api/projects/:id/subgraph | `{nodeIds,depth?,budget?,relationTypes?}` → `{nodes,relations,truncated,snapshotId,dataSource:'code'}` |
 | GET /api/projects/:id/source?filePath= | `{filePath,content}` |
 | GET /api/projects/:id/plans | PlanDetail[] |
@@ -229,6 +230,12 @@ Host 的 http origin。拒绝 foreign/null Origin、foreign Host，403
 默认 function limit=50，最大 200；subgraph 默认 depth=1、budget=80，最大 depth=5、budget=300。
 函数上下文只分页 calls 关系，incoming/outgoing 分别按同一 offset/limit 截取并给出
 各自总数；outgoing 保留 unresolved/external 关系及 reason，不能丢失不确定调用。
+函数上下文的可选 `relatedNodes` 提供当前页调用端点，旧消费者可继续省略该字段。
+文件上下文 `getFileContext(snapshot,nodeId,Pagination)` 返回 `node,members,incoming,outgoing,imports,unknown,relatedNodes`，
+及 `totalMembers,totalIncoming,totalOutgoing,totalImports,totalUnknown,offset,limit,truncated,snapshotId,dataSource`。
+各组按同一 offset/limit 独立分页（默认50、最大200）；incoming/outgoing 是跨文件已解析调用，
+imports 保留双向原始导入证据，unknown 是本文件外部/未解析调用；relatedNodes 仅返回本页成员与关系端点。
+`CodeNode.declarationKind` 为可选 `function|method|class` AST 元信息，旧快照继续可读；稳定 ID 保持原算法。
 summary counts 固定为 `{files,folders,functions,relations,calls:{resolved,unresolved,external}}`；
 entrypoints 为带 exported 事实的函数候选 CodeNode[]，最多50项，提供总数/截断提示，
 不把无入边函数说成确认入口。TS/JS 依据源码 export；Python 当前 exported 字段

@@ -1,0 +1,40 @@
+@font-face {
+  font-family: "AtlasMode Nerd Icons";
+  src: url("/fonts/atlasmode-nerd-icons.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  unicode-range: U+F07B, U+F08E, U+F0E8, U+F121, U+F15B, U+F1B2;
+}
+
+.node-identity {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.4em;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.node-identity-icon {
+  flex: 0 0 auto;
+  width: 1.2em;
+  text-align: center;
+  font-style: normal;
+  font-weight: 400;
+}
+
+.node-identity-icon[data-font-loaded="true"] {
+  font-family: "AtlasMode Nerd Icons", sans-serif;
+}
+
+.node-identity-label {
+  overflow-wrap: anywhere;
+  min-width: 0;
+}
+
+.node-identity-type {
+  flex: 0 0 auto;
+  font-size: 0.7em;
+  font-weight: 400;
+  opacity: 0.8;
+}

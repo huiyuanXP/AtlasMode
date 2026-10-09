@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { canApprovePlan } from "./pending.js";
 import type { CodeNode, PlanDetail, Operation } from "@codemap/core";
 import { useStrings } from "../../i18n/index.js";
 export interface PlanOverviewProps {
@@ -14,10 +16,17 @@ export interface PlanOverviewProps {
   onApprove: () => void;
   onExport: (format: "markdown" | "json") => void;
   onVerify: () => void;
+  onOperation?: (operation: Operation) => void;
 }
 export function PlanOverview(props: PlanOverviewProps) {
   const s = useStrings(),
     plan = props.detail?.plan;
+  const [chosen, setChosen] = useState<{
+    id: string;
+    revision: number;
+    index: number;
+  }>();
+  const chinese = s.planOverview === "规划概述" || s.choosePlan === "选择规划";
   const names = new Map(props.nodes.map((n) => [n.id, n.name]));
   for (const op of plan?.operations ?? [])
     if (op.kind === "add_function") names.set(op.tempId, op.name);
@@ -69,6 +78,22 @@ export function PlanOverview(props: PlanOverviewProps) {
           <p className={props.detail?.valid ? "success" : "muted"}>
             {props.detail?.valid ? s.valid : s.invalid}
           </p>
+          {plan.status === "stale" && (
+            <p className="warning">
+              {chinese
+                ? "基线已过期，请刷新并修订规划后重新确认。"
+                : "The baseline is stale. Refresh and revise the plan before confirming."}
+            </p>
+          )}
+          {!props.detail?.valid &&
+            props.detail?.approval &&
+            plan.status !== "stale" && (
+              <p className="warning">
+                {chinese
+                  ? "规划已修改，请确认当前版本。"
+                  : "The plan has changed. Confirm the current revision."}
+              </p>
+            )}
           {plan.description && (
             <p className="plan-description">{plan.description}</p>
           )}
@@ -81,7 +106,30 @@ export function PlanOverview(props: PlanOverviewProps) {
             ) : (
               <ol>
                 {plan.operations.map((op, index) => (
-                  <li key={index}>{describe(op)}</li>
+                  <li key={index}>
+                    {props.onOperation ? (
+                      <button
+                        className="plan-change-button"
+                        aria-pressed={
+                          chosen?.id === plan.id &&
+                          chosen.revision === plan.revision &&
+                          chosen.index === index
+                        }
+                        onClick={() => {
+                          setChosen({
+                            id: plan.id,
+                            revision: plan.revision,
+                            index,
+                          });
+                          props.onOperation?.(op);
+                        }}
+                      >
+                        {describe(op)}
+                      </button>
+                    ) : (
+                      describe(op)
+                    )}
+                  </li>
                 ))}
               </ol>
             )}
@@ -119,10 +167,10 @@ export function PlanOverview(props: PlanOverviewProps) {
             </button>
             <button
               className="primary"
-              disabled={props.busy}
+              disabled={props.busy || !canApprovePlan(props.detail)}
               onClick={props.onApprove}
             >
-              {s.approve}
+              {chinese ? "确认此规划" : "Confirm this plan"}
             </button>
           </div>
           <div className="button-row">

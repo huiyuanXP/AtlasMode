@@ -74,7 +74,8 @@ def main():
             parent.bind(node.name, ("node", scope), node, node in parent.direct_statements)
             parent.children[node.name] = scope
             signature = "class " + node.name if kind == "class" else ("async " if isinstance(node, ast.AsyncFunctionDef) else "") + "def " + node.name + "(" + ast.unparse(node.args) + ")"
-            nodes.append(dict(path=scope.path, qualified=qualified, kind=kind, name=node.name, parent=parent.qualified, startLine=node.lineno, endLine=node.end_lineno, signature=signature, exported=not node.name.startswith("_")))
+            declaration_kind = "class" if kind == "class" else "method" if parent.kind == "class" else "function"
+            nodes.append(dict(path=scope.path, qualified=qualified, kind=kind, declarationKind=declaration_kind, name=node.name, parent=parent.qualified, startLine=node.lineno, endLine=node.end_lineno, signature=signature, exported=not node.name.startswith("_")))
             for decorator in node.decorator_list:
                 self.visit(decorator)
             if kind == "class":

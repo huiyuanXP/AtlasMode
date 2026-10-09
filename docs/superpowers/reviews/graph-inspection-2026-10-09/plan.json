@@ -1,0 +1,46 @@
+{
+  "plan": {
+    "id": "67c7b2bd-0ffd-40a4-b400-3f4135f2f21f",
+    "projectId": "project:3da5e35f1d22eec876f149cb49f3176d",
+    "title": "演示规划：为 Flask 请求分发记录耗时",
+    "description": "在请求分发完成时记录耗时，新增独立观测函数并保留现有分发流程。此规划供审查，源码保持当前快照。",
+    "baselineSnapshotId": "snapshot:fcc9c8eaf26bae545dd3307b53c21126",
+    "baselineContentHash": "1286fb9911fbc493a217c8e5c3ba1ee399f0f9bffa5a81a9a5a873865139a7a0",
+    "revision": 2,
+    "operations": [
+      {
+        "kind": "add_function",
+        "tempId": "inspection-record-timing",
+        "name": "record_request_timing",
+        "filePath": "src/flask/observability.py",
+        "signature": "def record_request_timing(elapsed_ms: float) -> None",
+        "description": "接收请求分发耗时，由应用观测逻辑使用。",
+        "language": "python"
+      },
+      {
+        "kind": "add_relation",
+        "id": "inspection-timing-call",
+        "sourceId": "function:ab4ccdf859bb5739a3019e83baf6aca6",
+        "targetId": "inspection-record-timing",
+        "type": "calls"
+      },
+      {
+        "kind": "annotate",
+        "targetId": "function:ab4ccdf859bb5739a3019e83baf6aca6",
+        "text": "在请求分发结束后调用耗时记录函数；保留现有异常处理与返回结果。"
+      }
+    ],
+    "status": "draft",
+    "createdAt": "2026-10-09T09:22:47.039Z",
+    "updatedAt": "2026-10-09T09:22:47.132Z"
+  },
+  "valid": false,
+  "issues": [
+    {
+      "severity": "warning",
+      "code": "COMPATIBILITY_UNKNOWN",
+      "message": "Interface compatibility is unknown; arguments, return values, and possible adaptation require human review.",
+      "operationIndex": 1
+    }
+  ]
+}

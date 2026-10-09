@@ -10,6 +10,7 @@ import type {
   DirectoryPolicy,
   CodeNode,
   FunctionContextResult,
+  FileContextResult,
   FunctionSearchResult,
   Operation,
   PlanDetail,
@@ -59,6 +60,10 @@ export type WorkspaceState = {
   funnel?: FunnelState;
   navigationLocation?: NavigationLocation;
   context?: FunctionContextResult;
+  fileContext?: FileContextResult;
+  detailsOpen: boolean;
+  relationPreviewId?: string;
+  fixedOperationRelationId?: string;
   source?: { filePath: string; content: string };
   search?: FunctionSearchResult;
   query: string;
@@ -76,6 +81,14 @@ export type WorkspaceState = {
   errorMessageKey?: "snapshotChanged";
   notice: "" | "refreshNotice" | "validateNotice" | "scopeMissingNotice";
 };
+const emptyInspection = {
+  context: undefined,
+  fileContext: undefined,
+  source: undefined,
+  detailsOpen: false,
+  relationPreviewId: undefined,
+  fixedOperationRelationId: undefined,
+};
 const blank = (): Omit<WorkspaceState, "projects"> => ({
   history: undefined,
   groups: [],
@@ -89,6 +102,10 @@ const blank = (): Omit<WorkspaceState, "projects"> => ({
   funnel: undefined,
   navigationLocation: undefined,
   context: undefined,
+  fileContext: undefined,
+  detailsOpen: false,
+  relationPreviewId: undefined,
+  fixedOperationRelationId: undefined,
   source: undefined,
   search: undefined,
   query: "",
@@ -184,6 +201,7 @@ export function createWorkspace(
               selectedNode: {
                 id: replacement.tempId,
                 kind: "function" as const,
+                declarationKind: "function" as const,
                 name: replacement.name,
                 filePath: replacement.filePath,
                 signature: replacement.signature,
@@ -196,8 +214,7 @@ export function createWorkspace(
         ...(deleted
           ? {
               selectedNode: undefined,
-              context: undefined,
-              source: undefined,
+              ...emptyInspection,
               navigationLocation: undefined,
             }
           : {}),
@@ -252,10 +269,16 @@ export function createWorkspace(
       },
     );
   };
-  const selectNode = async (node: CodeNode, offset = 0) => {
-    const project = get().project;
+  const selectNode = async (
+    node: CodeNode,
+    offset = 0,
+    options: { focus?: boolean; source?: boolean } = {},
+  ) => {
+    const project = get().project,
+      snapshotId = get().summary?.snapshotId;
     if (!project) return;
     const sequence = ++focusGeneration;
+    scope.invalidate("source");
     scope.invalidate("graph");
     scope.invalidate("route");
     scope.invalidate("funnel");
@@ -263,7 +286,13 @@ export function createWorkspace(
     set((s) => ({
       selectedNode: node,
       navigationLocation: undefined,
-      focusRequest: { nodeId: node.id, nodeIds: [node.id], sequence },
+      ...(options.focus !== false
+        ? { focusRequest: { nodeId: node.id, nodeIds: [node.id], sequence } }
+        : {}),
+      detailsOpen: true,
+      relationPreviewId: undefined,
+      fixedOperationRelationId: undefined,
+      fileContext: undefined,
       context: undefined,
       source: undefined,
       busy: {
@@ -272,6 +301,7 @@ export function createWorkspace(
         route: false,
         funnel: false,
         navigation: false,
+        source: false,
       },
     }));
     const isFact =
@@ -281,10 +311,14 @@ export function createWorkspace(
     await run(
       "inspect",
       async () => {
-        const [context, source] = await Promise.all([
+        const [context, fileContext, source] = await Promise.all([
           isFact && node.kind === "function"
             ? api.context(project.id, node.id, offset)
             : undefined,
+          isFact && node.kind === "file"
+            ? api.fileContext(project.id, node.id, offset)
+            : undefined,
+          options.source !== false &&
           isFact &&
           node.filePath &&
           node.kind !== "folder" &&
@@ -292,9 +326,71 @@ export function createWorkspace(
             ? api.source(project.id, node.filePath)
             : undefined,
         ]);
-        return { context, source };
+        return { context, fileContext, source };
       },
-      (data) => set(data),
+      (data) => {
+        if (
+          get().summary?.snapshotId !== snapshotId ||
+          get().selectedNode?.id !== node.id ||
+          !get().detailsOpen
+        )
+          return;
+        if (
+          (data.context && data.context.snapshotId !== snapshotId) ||
+          (data.fileContext && data.fileContext.snapshotId !== snapshotId)
+        )
+          throw new SnapshotChangedError();
+        set({
+          ...data,
+          selectedNode: data.context?.node ?? data.fileContext?.node ?? node,
+        });
+      },
+    );
+  };
+  const inspectNode = (node: CodeNode, offset = 0) =>
+    selectNode(node, offset, { focus: false, source: false });
+  const closeInspection = () => {
+    focusGeneration++;
+    scope.invalidate("inspect");
+    scope.invalidate("source");
+    set((s) => ({
+      detailsOpen: false,
+      selectedNode: undefined,
+      context: undefined,
+      fileContext: undefined,
+      source: undefined,
+      relationPreviewId: undefined,
+      fixedOperationRelationId: undefined,
+      busy: { ...s.busy, inspect: false, source: false },
+    }));
+  };
+  const previewRelation = (id?: string) => set({ relationPreviewId: id });
+  const pageInspection = (offset: number) => {
+    const node = get().selectedNode;
+    return node ? inspectNode(node, offset) : Promise.resolve();
+  };
+  const loadSource = async () => {
+    const { project, selectedNode: node, summary } = get();
+    if (
+      !project ||
+      !node?.filePath ||
+      node.kind === "folder" ||
+      node.kind === "external" ||
+      get().plan?.plan.operations.some(
+        (o) => o.kind === "add_function" && o.tempId === node.id,
+      )
+    )
+      return;
+    await run(
+      "source",
+      () => api.source(project.id, node.filePath!),
+      (source) => {
+        if (
+          get().selectedNode?.id === node.id &&
+          get().summary?.snapshotId === summary?.snapshotId
+        )
+          set({ source });
+      },
     );
   };
   const restoreFunnel = () => {
@@ -497,8 +593,7 @@ export function createWorkspace(
           set({
             graph: result.graph,
             selectedNode: result.planned ? undefined : root,
-            source: undefined,
-            context: undefined,
+            ...emptyInspection,
             funnel: undefined,
             filter: "both",
             navigationLocation: { path, kind, planned: result.planned },
@@ -536,6 +631,115 @@ export function createWorkspace(
   };
   const focus = async (node: CodeNode) => {
     await Promise.all([selectNode(node), expand(node.id, 1)]);
+  };
+  const jumpToNode = async (id: string) => {
+    const state = get(),
+      project = state.project,
+      snapshotId = state.summary?.snapshotId;
+    if (!project || !snapshotId) return;
+    const known = [
+      ...(state.graph?.nodes ?? []),
+      ...(state.context?.relatedNodes ?? []),
+      ...(state.fileContext?.relatedNodes ?? []),
+      ...(state.summary?.entrypoints ?? []),
+      ...(state.search?.items ?? []),
+    ].find((n) => n.id === id);
+    const temporary = state.plan?.plan.operations.find(
+      (o) => o.kind === "add_function" && o.tempId === id,
+    );
+    if (temporary?.kind === "add_function") {
+      await selectNode(
+        {
+          id,
+          kind: "function",
+          declarationKind: "function",
+          name: temporary.name,
+          filePath: temporary.filePath,
+          signature: temporary.signature,
+        },
+        0,
+        { source: false },
+      );
+      return;
+    }
+    exitFunnel();
+    const sequence = ++focusGeneration;
+    scope.invalidate("inspect");
+    scope.invalidate("navigation");
+    await run(
+      "graph",
+      () => api.graph(project.id, [id], 1, 80),
+      (graph) => {
+        if (sequence !== focusGeneration) return;
+        if (
+          graph.snapshotId !== get().summary?.snapshotId ||
+          graph.snapshotId !== snapshotId
+        )
+          throw new SnapshotChangedError();
+        const node = graph.nodes.find((n) => n.id === id) ?? known;
+        set({ graph });
+        if (node) void selectNode(node, 0, { source: false });
+      },
+    );
+  };
+  const focusOperation = async (op: Operation) => {
+    const state = get(),
+      project = state.project,
+      snapshotId = state.summary?.snapshotId;
+    if (!project || !snapshotId) return;
+    exitFunnel();
+    const sequence = ++focusGeneration;
+    const ids = affectedNodeIds([op], undefined, state.graph?.relations);
+    const relationId =
+      op.kind === "add_relation"
+        ? op.id
+        : op.kind === "remove_relation"
+          ? op.relationId
+          : undefined;
+    const temporary = new Set(
+      state.plan?.plan.operations.flatMap((o) =>
+        o.kind === "add_function" ? [o.tempId] : [],
+      ) ?? [],
+    );
+    const facts = ids.filter((id) => !temporary.has(id));
+    scope.invalidate("inspect");
+    scope.invalidate("navigation");
+    const apply = (graph = get().graph) => {
+      if (sequence !== focusGeneration) return;
+      const endpoints = affectedNodeIds([op], undefined, graph?.relations);
+      set({
+        filter: "both",
+        detailsOpen: false,
+        selectedNode: undefined,
+        context: undefined,
+        fileContext: undefined,
+        relationPreviewId: undefined,
+        fixedOperationRelationId: relationId,
+        focusRequest: { nodeIds: endpoints, nodeId: endpoints[0], sequence },
+        graph,
+      });
+    };
+    if (facts.length || op.kind === "remove_relation")
+      await run(
+        "graph",
+        () =>
+          api.graph(
+            project.id,
+            facts.slice(0, 80),
+            0,
+            80,
+            op.kind === "remove_relation" ? [op.relationId] : [],
+          ),
+        (graph) => {
+          if (
+            graph.snapshotId !== snapshotId ||
+            graph.snapshotId !== get().summary?.snapshotId
+          )
+            throw new SnapshotChangedError();
+          apply(graph);
+        },
+      );
+    else apply();
   };
   const search = async (query: string, offset = 0) => {
     const project = get().project;
@@ -672,6 +876,7 @@ export function createWorkspace(
           ? {
               id: op.tempId,
               kind: "function",
+              declarationKind: "function",
               name: op.name,
               filePath: op.filePath,
               signature: op.signature,
@@ -695,7 +900,9 @@ export function createWorkspace(
           selectedNode?.filePath && (op || move)
             ? { path: selectedNode.filePath, kind: "file", planned: true }
             : undefined,
-        ...(!sameSelection ? { source: undefined, context: undefined } : {}),
+        ...(!sameSelection ? emptyInspection : {}),
+        relationPreviewId: undefined,
+        fixedOperationRelationId: undefined,
         busy: { ...s.busy, inspect: false, navigation: false },
         focusRequest: { nodeId: ids[0], nodeIds: ids, sequence },
         ...(hidden ? { filter: "both" as const } : {}),
@@ -873,8 +1080,7 @@ export function createWorkspace(
             navigationLocation: undefined,
             funnel: undefined,
             focusRequest: undefined,
-            source: undefined,
-            context: undefined,
+            ...emptyInspection,
             notice: "scopeMissingNotice",
             busy: {
               ...get().busy,
@@ -911,7 +1117,14 @@ export function createWorkspace(
         // Preserve the current projection when the snapshot has not changed.
         // Stale source/context is explicitly cleared; graph retains its old snapshot label.
         if (state.summary?.snapshotId !== data.summary.snapshotId)
-          set({ source: undefined, context: undefined, search: undefined });
+          set({
+            source: undefined,
+            context: undefined,
+            fileContext: undefined,
+            relationPreviewId: undefined,
+            fixedOperationRelationId: undefined,
+            search: undefined,
+          });
       },
     );
     await focusing;
@@ -987,11 +1200,17 @@ export function createWorkspace(
       report: undefined,
       focusRequest: undefined,
       navigationLocation: undefined,
+      ...emptyInspection,
       busy: { ...s.busy, plan: false, graph: false, route: false },
       ...(s.plan?.plan.operations.some(
         (o) => o.kind === "add_function" && o.tempId === s.selectedNode?.id,
       )
-        ? { selectedNode: undefined, context: undefined, source: undefined }
+        ? {
+            selectedNode: undefined,
+            context: undefined,
+            fileContext: undefined,
+            source: undefined,
+          }
         : {}),
     }));
     let anchors: Promise<void> | undefined;
@@ -1058,8 +1277,7 @@ export function createWorkspace(
           ...data,
           plan: current,
           graph: undefined,
-          context: undefined,
-          source: undefined,
+          ...emptyInspection,
           selectedNode: undefined,
         });
       },
@@ -1217,6 +1435,13 @@ export function createWorkspace(
     openProject,
     selectProject,
     selectNode,
+    inspectNode,
+    closeInspection,
+    previewRelation,
+    pageInspection,
+    loadSource,
+    jumpToNode,
+    focusOperation,
     navigateScope,
     enterFunnel,
     exitFunnel,

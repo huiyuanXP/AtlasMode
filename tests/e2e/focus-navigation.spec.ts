@@ -84,11 +84,11 @@ test("high-degree function and file funnels keep readable neighbor windows with 
       .fill("selected");
     await page.getByRole("button", { name: "Search", exact: true }).click();
     await page.getByRole("button", { name: /ƒ selected/ }).click();
-    const selected = page
-      .locator(".react-flow__node")
-      .filter({
-        has: page.locator(".code-card strong", { hasText: /^selected$/ }),
-      });
+    const selected = page.locator(".react-flow__node").filter({
+      has: page.locator(".code-card .node-identity-label", {
+        hasText: /^selected\(\)$/,
+      }),
+    });
     await selected.dblclick();
     const summary = page.locator(".funnel-summary");
     await expect(summary).toContainText("Dependents 8");
@@ -126,7 +126,7 @@ test("high-degree function and file funnels keep readable neighbor windows with 
     };
     await readable();
     const firstDown = await page
-      .locator('[data-funnel-lane="dependency"] strong')
+      .locator('[data-funnel-lane="dependency"] .node-identity-label')
       .allTextContents();
     await page
       .getByRole("button", {
@@ -138,7 +138,7 @@ test("high-degree function and file funnels keep readable neighbor windows with 
     await readable();
     expect(
       await page
-        .locator('[data-funnel-lane="dependency"] strong')
+        .locator('[data-funnel-lane="dependency"] .node-identity-label')
         .allTextContents(),
     ).not.toEqual(firstDown);
     await page
@@ -155,7 +155,7 @@ test("high-degree function and file funnels keep readable neighbor windows with 
       })
       .click();
     await expect(
-      page.locator('[data-funnel-lane="dependency"] strong'),
+      page.locator('[data-funnel-lane="dependency"] .node-identity-label'),
     ).toHaveText(firstDown);
     const out = resolve("artifacts/e2e/focus-navigation");
     await mkdir(out, { recursive: true });
@@ -164,10 +164,18 @@ test("high-degree function and file funnels keep readable neighbor windows with 
       fullPage: true,
     });
     await page.keyboard.press("Escape");
+    await expect(page.locator(".inspection-card")).toHaveCount(0);
+    await expect(summary).toBeVisible();
+    await page.keyboard.press("Escape");
     await expect(summary).toHaveCount(0);
     expect(
       (await http(server.url, `/api/projects/${project.id}/view`)).positions,
     ).toEqual({});
+    await page
+      .getByRole("textbox", { name: "Search functions", exact: true })
+      .fill("selected");
+    await page.getByRole("button", { name: "Search", exact: true }).click();
+    await page.getByRole("button", { name: /ƒ selected/ }).click();
     await page
       .getByRole("navigation", { name: "Location", exact: true })
       .getByRole("button", { name: "root.ts", exact: true })
@@ -593,6 +601,9 @@ test("double-click builds an animated directional funnel, restores overview and 
       path: join(out, "funnel-function-dark.png"),
       fullPage: true,
     });
+    await page.keyboard.press("Escape");
+    await expect(page.locator(".inspection-card")).toHaveCount(0);
+    await expect(page.locator(".funnel-summary")).toBeVisible();
     await page.keyboard.press("Escape");
     await expect(page.locator(".funnel-summary")).toHaveCount(0);
     await expect

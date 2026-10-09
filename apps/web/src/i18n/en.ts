@@ -66,7 +66,7 @@ export const en: Record<keyof typeof zh, string> = {
   layers: "Visible layers",
   relationType: "New/reconnected relation type",
   graphHelp:
-    "Select a node, then View source to inspect it. Double-click a function or file for its dependency funnel. Esc returns to overview.",
+    "Hover to preview links, click for references, double-click for the dependency funnel. Drag any card. Esc closes the map, then details, then the funnel.",
   graphEmpty: "Choose an entry, search result or route step to explore",
   bounded: "Expansion: up to 80 nodes / 240 relations; optionally 300 / 900.",
   expand: "Expand one level",

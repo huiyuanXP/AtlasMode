@@ -1,5 +1,6 @@
 import {
   getFunctionContext,
+  getFileContext,
   getProjectSummary,
   getSubgraph,
   DomainError,
@@ -126,6 +127,8 @@ export function projectQueries(service: WorkspaceService) {
       searchFunctions(service.getSnapshot(id), input),
     context: (id: string, nodeId: string, input: Pagination) =>
       getFunctionContext(service.getSnapshot(id), nodeId, input),
+    fileContext: (id: string, nodeId: string, input: Pagination) =>
+      getFileContext(service.getSnapshot(id), nodeId, input),
     subgraph: (
       id: string,
       input: SubgraphInput & { relationIds?: string[] },

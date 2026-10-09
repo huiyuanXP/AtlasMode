@@ -1,0 +1,226 @@
+.code-card.inspection-selected {
+  border-color: #6550db;
+  box-shadow: 0 0 0 2px #6550db44;
+}
+.code-card.inspection-neighbor {
+  border-color: #16818a;
+}
+.inspection-edge {
+  transition: opacity 90ms ease;
+}
+.inspection-legend {
+  position: absolute;
+  z-index: 5;
+  top: 8px;
+  left: 12px;
+  display: flex;
+  gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 5px 8px;
+  font-size: 10px;
+  pointer-events: none;
+}
+.inspection-legend span:first-child {
+  color: #16818a;
+}
+.inspection-legend span:last-child {
+  color: #bf681e;
+}
+.inspection-overlay {
+  position: absolute;
+  z-index: 12;
+  display: flex;
+  pointer-events: auto;
+}
+.inspection-card {
+  width: 100%;
+  min-width: 0;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 10px 32px #0003;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.inspection-card header {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.inspection-card header h2 {
+  margin: 0;
+  font-size: 15px;
+  flex: 1;
+  overflow-wrap: anywhere;
+}
+.inspection-card header button {
+  font-size: 20px;
+  line-height: 1;
+  padding: 4px 7px;
+}
+.inspection-body {
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: 12px;
+  font-size: 12px;
+  min-height: 0;
+}
+.inspection-layer {
+  font-size: 10px;
+  color: var(--muted);
+  margin: 0 0 4px;
+}
+.inspection-location {
+  display: block;
+  overflow-wrap: anywhere;
+}
+.inspection-group {
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+  margin-top: 12px;
+}
+.inspection-group h3 {
+  font-size: 12px;
+  margin: 0 0 8px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.inspection-group h3 span {
+  font-size: 10px;
+  color: var(--muted);
+}
+.inspection-group.incoming h3::before {
+  content: "↑";
+  color: #16818a;
+}
+.inspection-group.outgoing h3::before {
+  content: "↓";
+  color: #bf681e;
+}
+.inspection-relation {
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  margin: 6px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.inspection-relation.active {
+  border-color: #6550db;
+  background: var(--hover);
+}
+.inspection-jump,
+.inspection-member {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+  width: 100%;
+  text-align: left;
+  white-space: normal;
+  background: transparent;
+  padding: 4px;
+}
+.inspection-member {
+  margin: 5px 0;
+  border-color: var(--border);
+}
+.inspection-relation code,
+.inspection-relation small,
+.inspection-member code {
+  font-size: 10px;
+  overflow-wrap: anywhere;
+}
+.inspection-relation pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: 10px;
+  margin: 3px 0;
+}
+.inspection-note {
+  white-space: pre-wrap;
+  padding: 8px;
+  background: var(--hover);
+  border-radius: 5px;
+}
+.graph-map-panel {
+  position: absolute;
+  right: 12px;
+  z-index: 13;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 3px 15px #0002;
+  overflow: hidden;
+  max-width: calc(100% - 24px);
+}
+.graph-map-panel.collapsed {
+  width: 145px;
+}
+.graph-map-panel.expanded {
+  width: 420px;
+}
+.graph-map-panel .map-toggle {
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  border-radius: 0;
+  width: 100%;
+  font-size: 11px;
+}
+.graph-map-panel .react-flow__minimap.inspection-minimap {
+  position: relative;
+  right: auto;
+  bottom: auto;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  width: 100% !important;
+  height: 85px !important;
+  opacity: 1;
+  box-shadow: none;
+}
+.graph-map-panel.expanded .react-flow__minimap.inspection-minimap {
+  height: var(--inspection-map-height, 195px) !important;
+}
+.map-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 6px;
+}
+.map-actions button {
+  font-size: 10px;
+  padding: 4px 6px;
+}
+.graph-map-panel p {
+  font-size: 9px;
+  color: var(--muted);
+  padding: 0 8px 6px;
+  margin: 0;
+}
+.react-flow__minimap-mask {
+  stroke: #6550db;
+  stroke-width: 2px;
+  fill: #6550db19;
+}
+@media (prefers-reduced-motion: reduce) {
+  .inspection-edge {
+    transition: none;
+  }
+}
+@media (max-width: 700px) {
+  .inspection-overlay.dock-bottom {
+    border-radius: 10px 10px 0 0;
+  }
+  .graph-map-panel.expanded .react-flow__minimap.inspection-minimap {
+    height: var(--inspection-map-height, 150px) !important;
+  }
+}

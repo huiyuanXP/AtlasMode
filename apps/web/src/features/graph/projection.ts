@@ -85,6 +85,7 @@ export function projectGraph(
         {
           id: op.tempId,
           kind: "function",
+          declarationKind: "function",
           name: op.name,
           filePath: op.filePath,
           signature: op.signature,

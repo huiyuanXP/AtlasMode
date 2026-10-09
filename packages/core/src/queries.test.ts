@@ -102,6 +102,175 @@ test("context paginates calls independently while retaining unresolved reasons",
     snapshotId: "snapshot",
   });
 });
+test("function context supplies just the paged relation endpoints by stable ID", () => {
+  const snapshot = fixture();
+  snapshot.nodes.push({ id: "same-name", kind: "function", name: "Beta" });
+  expect(
+    queries
+      .getFunctionContext(snapshot, "a", { offset: 1, limit: 1 })
+      .relatedNodes?.map((node) => node.id),
+  ).toEqual(["a", "ext"]);
+});
+
+function fileFixture(): CodeSnapshot {
+  const snapshot = fixture();
+  snapshot.nodes.push(
+    {
+      id: "other-file",
+      kind: "file",
+      name: "other.ts",
+      filePath: "src/other.ts",
+    },
+    {
+      id: "other-a",
+      kind: "function",
+      name: "Alpha",
+      filePath: "src/other.ts",
+      parentId: "other-file",
+    },
+    {
+      id: "other-b",
+      kind: "function",
+      name: "Beta",
+      filePath: "src/other.ts",
+      parentId: "other-file",
+    },
+    { id: "nested", kind: "function", name: "method", parentId: "b" },
+    {
+      id: "unrelated-file",
+      kind: "file",
+      name: "unrelated.ts",
+      filePath: "unrelated.ts",
+    },
+    {
+      id: "unrelated-a",
+      kind: "function",
+      name: "Alpha",
+      filePath: "unrelated.ts",
+      parentId: "unrelated-file",
+    },
+  );
+  snapshot.relations.push(
+    {
+      ...call("in-1", "other-a", "a"),
+      evidence: { filePath: "src/other.ts", line: 12, text: "Alpha()" },
+    },
+    {
+      ...call("in-2", "other-a", "a"),
+      evidence: { filePath: "src/other.ts", line: 13, text: "Alpha()" },
+    },
+    call("out-1", "nested", "other-b"),
+    call("out-2", "b", "other-a"),
+    { ...call("import-out", "file", "other-file"), type: "imports" },
+    { ...call("import-in", "other-file", "file"), type: "imports" },
+    { ...call("import-unknown", "file", null, "unresolved"), type: "imports" },
+    call("unrelated", "unrelated-a", "other-a"),
+  );
+  return snapshot;
+}
+
+test("file context separates declarations, cross-file calls, imports and unknown evidence", () => {
+  const result = queries.getFileContext(fileFixture(), "file");
+  expect(result.members.map((node) => node.id)).toEqual(["a", "b", "nested"]);
+  expect(result.incoming).toEqual([
+    expect.objectContaining({
+      id: "in-1",
+      sourceId: "other-a",
+      targetId: "a",
+      evidence: { filePath: "src/other.ts", line: 12, text: "Alpha()" },
+    }),
+    expect.objectContaining({
+      id: "in-2",
+      sourceId: "other-a",
+      targetId: "a",
+      evidence: { filePath: "src/other.ts", line: 13, text: "Alpha()" },
+    }),
+  ]);
+  expect(result.outgoing.map((relation) => relation.id)).toEqual([
+    "out-1",
+    "out-2",
+  ]);
+  expect(result.imports.map((relation) => relation.id)).toEqual([
+    "import-in",
+    "import-out",
+    "import-unknown",
+  ]);
+  expect(result.unknown.map((relation) => relation.id)).toEqual(["r2", "r3"]);
+  expect(result.unknown[1]).toMatchObject({
+    targetId: null,
+    reason: "dynamic dispatch",
+  });
+  expect(result).toMatchObject({
+    node: { id: "file" },
+    totalMembers: 3,
+    totalIncoming: 2,
+    totalOutgoing: 2,
+    totalImports: 3,
+    totalUnknown: 2,
+    snapshotId: "snapshot",
+    dataSource: "code",
+    truncated: false,
+  });
+  expect(result.relatedNodes.some((node) => node.id === "unrelated-a")).toBe(
+    false,
+  );
+});
+
+test("file context pages every group independently and bounds endpoint names to current evidence", () => {
+  const snapshot = fileFixture();
+  const result = queries.getFileContext(snapshot, "file", {
+    offset: 1,
+    limit: 1,
+  });
+  expect(result.members.map((node) => node.id)).toEqual(["b"]);
+  expect(result.incoming.map((relation) => relation.id)).toEqual(["in-2"]);
+  expect(result.outgoing.map((relation) => relation.id)).toEqual(["out-2"]);
+  expect(result.imports.map((relation) => relation.id)).toEqual(["import-out"]);
+  expect(result.unknown.map((relation) => relation.id)).toEqual(["r3"]);
+  expect(result.relatedNodes.map((node) => node.id).sort()).toEqual([
+    "a",
+    "b",
+    "file",
+    "other-a",
+    "other-file",
+  ]);
+  expect(result).toMatchObject({ offset: 1, limit: 1, truncated: true });
+  expect(
+    queries.getFileContext(
+      {
+        ...snapshot,
+        nodes: [...snapshot.nodes].reverse(),
+        relations: [...snapshot.relations].reverse(),
+      },
+      "file",
+      { offset: 1, limit: 1 },
+    ),
+  ).toEqual(result);
+  const empty = queries.getFileContext(snapshot, "file", {
+    offset: 999,
+    limit: 1,
+  });
+  expect(empty.members).toEqual([]);
+  expect(empty.relatedNodes).toEqual([]);
+  expect(empty.totalIncoming).toBe(2);
+  expect(empty.truncated).toBe(true);
+});
+
+test("file context validates IDs and pagination before returning project facts", () => {
+  for (const id of ["other-project:file", "missing", "a", "folder"])
+    expect(() => queries.getFileContext(fileFixture(), id)).toThrowError(
+      expect.objectContaining({ code: "NOT_FOUND" }),
+    );
+  for (const page of [
+    { limit: 0 },
+    { limit: 201 },
+    { offset: -1 },
+    { offset: 1.5 },
+  ])
+    expect(() =>
+      queries.getFileContext(fileFixture(), "file", page),
+    ).toThrowError(expect.objectContaining({ code: "INVALID_INPUT" }));
+});
 test("subgraph traverses calls and includes actual physical context without inventing relations", () => {
   expect(queries.getSubgraph).toBeTypeOf("function");
   const result = queries.getSubgraph(fixture(), {

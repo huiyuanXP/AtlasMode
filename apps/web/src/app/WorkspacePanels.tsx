@@ -4,6 +4,7 @@ import { useStore } from "zustand";
 import { useStrings } from "../i18n/index.js";
 import { type Workspace, type WorkspaceState } from "./workspace.js";
 import { Canvas } from "../features/graph/Canvas.js";
+import { InspectionCard } from "../features/graph/InspectionCard.js";
 import { Inspector } from "../features/graph/Inspector.js";
 import { PlanningPanel } from "../features/planning/PlanningPanel.js";
 import {
@@ -18,6 +19,7 @@ import { Navigation } from "./Navigation.js";
 import { ChatPanel } from "../features/chat/ChatPanel.js";
 import type { ChatSessions } from "../features/chat/sessions.js";
 import type { ChatContext } from "../features/chat/types.js";
+import { PendingPlans } from "../features/planning/PendingPlans.js";
 import { PlanOverview } from "../features/planning/PlanOverview.js";
 import { Breadcrumbs } from "../features/navigation/Breadcrumbs.js";
 const emptyOperations: Operation[] = [];
@@ -242,6 +244,55 @@ export function WorkspacePanels({
         )}
         <Canvas
           graph={graph}
+          projectId={project.id}
+          selectedNodeId={state.selectedNode?.id}
+          relationPreviewId={state.relationPreviewId}
+          fixedOperationRelationId={state.fixedOperationRelationId}
+          previewRelation={[
+            ...(state.context?.incoming ?? []),
+            ...(state.context?.outgoing ?? []),
+            ...(state.fileContext?.incoming ?? []),
+            ...(state.fileContext?.outgoing ?? []),
+            ...(state.fileContext?.imports ?? []),
+            ...(state.fileContext?.unknown ?? []),
+            ...(graph?.relations ?? []),
+          ].find((r) => r.id === state.relationPreviewId)}
+          previewNodes={[
+            ...(graph?.nodes ?? []),
+            ...(state.context?.relatedNodes ?? []),
+            ...(state.fileContext?.relatedNodes ?? []),
+          ]}
+          onPreviewRelation={app.previewRelation}
+          onCloseInspection={app.closeInspection}
+          inspection={
+            state.detailsOpen && state.selectedNode ? (
+              <InspectionCard
+                key={state.selectedNode.id}
+                node={state.selectedNode}
+                locale={state.view.locale}
+                context={state.context}
+                fileContext={state.fileContext}
+                relatedNodes={candidates}
+                operations={plan?.plan.operations ?? emptyOperations}
+                planned={
+                  !!plan?.plan.operations.some(
+                    (o) =>
+                      o.kind === "add_function" &&
+                      o.tempId === state.selectedNode?.id,
+                  )
+                }
+                busy={!!state.busy.inspect || !!state.busy.source}
+                previewId={state.relationPreviewId}
+                source={state.source}
+                error={state.error}
+                onClose={app.closeInspection}
+                onPage={(offset) => void app.pageInspection(offset)}
+                onJump={(id) => void app.jumpToNode(id)}
+                onPreview={app.previewRelation}
+                onSource={() => void app.loadSource()}
+              />
+            ) : undefined
+          }
           referenceNodes={candidates}
           operations={plan?.plan.operations ?? emptyOperations}
           view={state.view}
@@ -257,9 +308,9 @@ export function WorkspacePanels({
           canEdit={!!plan && !planBusy}
           relationType={relationType}
           onSelect={(n) => {
-            if (n.kind === "folder" || n.kind === "file")
+            if (n.kind === "folder")
               void app.navigateScope(n.filePath ?? ".", n.kind);
-            else void app.selectNode(n);
+            else void app.inspectNode(n);
             setEdge(undefined);
           }}
           onExpand={(id) => void app.expand(id)}
@@ -276,6 +327,26 @@ export function WorkspacePanels({
         </footer>
       </section>
       <aside className="inspector" aria-label={zh.inspector}>
+        <PendingPlans
+          key={project.id}
+          plans={state.plans}
+          locale={state.view.locale}
+          busy={planBusy}
+          onChoose={(id) => {
+            setTab("chat");
+            setEdge(undefined);
+            app.closeInspection();
+            void app.choosePlan(id);
+          }}
+          onChat={() => {
+            setTab("chat");
+            requestAnimationFrame(() =>
+              document
+                .querySelector<HTMLTextAreaElement>(".planning-chat textarea")
+                ?.focus(),
+            );
+          }}
+        />
         <nav className="tabs">
           {tab !== "chat" && (
             <button onClick={() => setTab("chat")}>{zh.backToChat}</button>
@@ -283,7 +354,10 @@ export function WorkspacePanels({
           <button
             aria-pressed={tab === "source"}
             disabled={!state.selectedNode && !state.navigationLocation}
-            onClick={() => setTab("source")}
+            onClick={() => {
+              setTab("source");
+              void app.loadSource();
+            }}
           >
             {zh.viewSource}
           </button>
@@ -309,6 +383,10 @@ export function WorkspacePanels({
               onChoose={(id) => {
                 setEdge(undefined);
                 void app.choosePlan(id);
+              }}
+              onOperation={(operation) => {
+                setEdge(undefined);
+                void app.focusOperation(operation);
               }}
               onUndo={() => void app.undo()}
               onRedo={() => void app.redo()}
@@ -337,8 +415,7 @@ export function WorkspacePanels({
               context={state.context}
               busy={!!state.busy.inspect}
               onPage={(offset) => {
-                if (state.selectedNode)
-                  void app.selectNode(state.selectedNode, offset);
+                if (state.selectedNode) void app.pageInspection(offset);
               }}
               onExpand={(budget) => {
                 if (state.selectedNode)

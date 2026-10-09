@@ -1,15 +1,16 @@
 # AtlasMode 持续构建状态
 
-## 最新待审设计：archify参考交互（2026-10-09 UTC）
+## 当前交付：图检查交互 UI-05～UI-10（2026-10-09 UTC）
 
-用户反馈高亮/引用详情缺失、漏斗无法拖动、小地图过小、类型不清和待审规划入口不明显；
-双Chat明确留待以后调整，用户要求先审阅本轮规划。已建立UI-05–UI-10，状态WAITING_REVIEW。
-[本轮设计](specs/2026-10-09-graph-inspection-design.md) 与 [archify源码研究](research/2026-10-09-archify.md) 已保存；
-只读检查MIT独立SVG/HTML模板，推荐迁移交互规则保留ReactFlow。实际浏览器复现了漏斗
-无draggable类且拖动坐标不变，代码根因nodesDraggable={!funnel}及非漏斗专用保存逻辑。
-本轮尚无产品实现、构建或发布；等待用户审核设计后再实施，当前预览仍是上一版。
+用户批准的 [设计](specs/2026-10-09-graph-inspection-design.md) 已按 [实施计划](plans/2026-10-09-graph-inspection.md) 完成：普通/漏斗自由拖动、唯一关系高亮、函数/文件引用详情、可展开操作地图、AST类型与本地图标、显式待审入口。
+精确测试、独立审查、实际未批准规划和本地启动入口集中在 [验收报告](reviews/graph-inspection-2026-10-09/README.md)。
+后端29项、声明类型/图标59项、画布/Workspace相关74项、待审组件4项分别定向通过；5项相关浏览器场景已通过，保留各自运行阶段证据。
+core/indexer/server/web构建与相关lint通过，最终Vite分块建议及宿主颜色提示保留。
+实际Flask83文件/1575函数类；演示请求耗时规划r2已保存、批准为空，浅/深色与900px窄窗口截图已核对。
+本轮以gpt-6.1-sol high并行独立模块、共享文件顺序集成；双Chat保持现有结构，原mimo Profile/API配置显示就绪。
+用户已授权关闭旧Tunnel并已执行；新验收为独立本地服务。源码和文档保留在当前work工作区，已有AGENTS.md修改保留。
 
-## 当前交付：Focus / 漏斗 / 路径 / Agent Chat（2026-10-08 UTC）
+## 前一轮交付：Focus / 漏斗 / 路径 / Agent Chat（2026-10-08 UTC）
 
 UI-01/02/03/04、AG-01/04和QA-01已实现，用户可重新开启Tunnel验收；本轮没有重开Tunnel。
 剩余规格与新需求均登记在 [Tickets](../tickets/README.md)，独立API适配器AG-05为下一票，

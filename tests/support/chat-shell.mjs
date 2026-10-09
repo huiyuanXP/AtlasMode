@@ -5,7 +5,9 @@ export async function openCodeNavigation(page) {
     await details.locator(":scope > summary").click();
 }
 export async function openSourceDrawer(page) {
-  const button = page.getByRole("button", { name: /^(View source|查看源码)$/ });
+  const button = page
+    .locator(".inspector")
+    .getByRole("button", { name: /^(View source|查看源码)$/ });
   if ((await button.getAttribute("aria-pressed")) !== "true")
     await button.click();
 }

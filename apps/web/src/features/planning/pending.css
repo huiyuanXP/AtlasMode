@@ -1,0 +1,39 @@
+.pending-plans {
+  position: relative;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+}
+.pending-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: 700;
+  min-height: 40px;
+}
+.pending-plan-list {
+  max-height: 42vh;
+  overflow: auto;
+  padding-top: 8px;
+}
+.pending-plan-list[hidden] {
+  display: none;
+}
+.pending-plan-list article {
+  display: grid;
+  gap: 6px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.pending-plan-list p {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.plan-change-button {
+  text-align: left;
+  width: 100%;
+  padding: 7px 9px;
+}
+.plan-change-button[aria-pressed="true"] {
+  outline: 2px solid var(--accent);
+}

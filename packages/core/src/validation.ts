@@ -75,6 +75,7 @@ const revision = z.number().int().positive();
 const codeNodeSchema = z.strictObject({
   id,
   kind: z.enum(["function", "file", "folder", "external"]),
+  declarationKind: z.enum(["function", "method", "class"]).optional(),
   name: z.string().min(1),
   qualifiedName: z.string().optional(),
   filePath: path.optional(),

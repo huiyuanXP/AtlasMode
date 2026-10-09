@@ -156,6 +156,66 @@ test("unknown and foreign node IDs are rejected for context and subgraph, even u
     (await request("GET", "/api/projects/missing/snapshot")).statusCode,
   ).toBe(404);
 });
+test("file context exposes real indexed evidence through the selected project and validates pagination", async () => {
+  const { request, open, first, second } = await setup();
+  await writeFile(
+    join(first, "other.ts"),
+    "import { entry } from './main.js';\nexport function caller() { entry(); entry(); }\n",
+  );
+  const a = await open(first),
+    b = await open(second);
+  const snapshot: CodeSnapshot = (
+    await request("GET", `/api/projects/${a.id}/snapshot`)
+  ).json();
+  const file = snapshot.nodes.find(
+    (node) => node.kind === "file" && node.filePath === "main.ts",
+  )!;
+  const base = `/api/projects/${a.id}/files/${encodeURIComponent(file.id)}/context`;
+  const response = await request("GET", `${base}?offset=0&limit=1`);
+  expect(response.statusCode).toBe(200);
+  const result = response.json();
+  expect(result).toMatchObject({
+    node: { id: file.id },
+    totalMembers: 2,
+    totalIncoming: 2,
+    totalOutgoing: 0,
+    totalImports: 1,
+    totalUnknown: 1,
+    snapshotId: snapshot.id,
+    dataSource: "code",
+    truncated: true,
+    offset: 0,
+    limit: 1,
+  });
+  expect(result.incoming).toHaveLength(1);
+  expect(result.incoming[0].evidence).toMatchObject({
+    filePath: "other.ts",
+    line: 2,
+  });
+  expect(
+    result.relatedNodes.some(
+      (node: { name: string }) => node.name === "caller",
+    ),
+  ).toBe(true);
+  const page = (await request("GET", `${base}?offset=1&limit=1`)).json();
+  expect(page.incoming[0].id).not.toBe(result.incoming[0].id);
+  expect(page.unknown).toEqual([]);
+  for (const query of [
+    "limit=0",
+    "limit=201",
+    "offset=-1",
+    "limit=1.5",
+    "limit=1&limit=2",
+    "extra=1",
+  ])
+    expect((await request("GET", `${base}?${query}`)).statusCode).toBe(400);
+  for (const url of [
+    `/api/projects/${b.id}/files/${encodeURIComponent(file.id)}/context`,
+    `/api/projects/${a.id}/files/missing/context`,
+    `/api/projects/${a.id}/files/${encodeURIComponent(snapshot.nodes.find((node) => node.kind === "function")!.id)}/context`,
+  ])
+    expect((await request("GET", url)).statusCode).toBe(404);
+});
 test("relation anchors resolve actual endpoints in the selected snapshot and honor node budgets", async () => {
   const { request, open, first, second } = await setup();
   const a = await open(first),
