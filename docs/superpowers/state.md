@@ -1,5 +1,14 @@
 # AtlasMode 持续构建状态
 
+## 最新待审设计：archify参考交互（2026-10-09 UTC）
+
+用户反馈高亮/引用详情缺失、漏斗无法拖动、小地图过小、类型不清和待审规划入口不明显；
+双Chat明确留待以后调整，用户要求先审阅本轮规划。已建立UI-05–UI-10，状态WAITING_REVIEW。
+[本轮设计](specs/2026-10-09-graph-inspection-design.md) 与 [archify源码研究](research/2026-10-09-archify.md) 已保存；
+只读检查MIT独立SVG/HTML模板，推荐迁移交互规则保留ReactFlow。实际浏览器复现了漏斗
+无draggable类且拖动坐标不变，代码根因nodesDraggable={!funnel}及非漏斗专用保存逻辑。
+本轮尚无产品实现、构建或发布；等待用户审核设计后再实施，当前预览仍是上一版。
+
 ## 当前交付：Focus / 漏斗 / 路径 / Agent Chat（2026-10-08 UTC）
 
 UI-01/02/03/04、AG-01/04和QA-01已实现，用户可重新开启Tunnel验收；本轮没有重开Tunnel。

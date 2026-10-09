@@ -1,5 +1,7 @@
 # AtlasMode Tickets
 
+2026-10-09新增 UI-05–UI-10：archify交互参考、高亮/引用详情/可拖动/展开地图/类型图标/待审入口。**当前WAITING_REVIEW，用户明确先审阅设计，暂未进入实施。** [设计入口](../superpowers/specs/2026-10-09-graph-inspection-design.md)。双Chat暂缓调整。
+
 按依赖顺序逐票认领、实施、验证。先执行用户要求的 UI-01→UI-02→UI-03 与 AG-01（独立后端并行），再 UI-04→QA-01，再按优先级处理现有缺口。文档票据是当前来源，不自动发布 GitHub Issue。
 
 状态：TODO → CLAIMED → REVIEW → DONE；失败验收保持 PARTIAL，不用测试数量替代目标。所有剩余需求已登记，未来扩展仍需各自设计。
@@ -36,3 +38,9 @@
 | [AG-03](AG-03.md) | Windows 原生 Agent 所属 Job 清理 | P1 | AG-01、QA-02 | TODO |
 | [AG-04](AG-04.md) | 复用 Codex CLI / Profile 认证 | P0 | AG-01 | DONE |
 | [AG-05](AG-05.md) | 直接 API Call Agent 接入 | P1 下一票 | AG-04、QA-01 | TODO |
+| [UI-05](UI-05.md) | 普通与漏斗视图始终可拖动 | P0 | 无 | WAITING_REVIEW |
+| [UI-06](UI-06.md) | 节点邻域与关系高亮 | P0 | 无 | WAITING_REVIEW |
+| [UI-07](UI-07.md) | 函数与文件引用详情卡 | P0 | UI-06 | WAITING_REVIEW |
+| [UI-08](UI-08.md) | 小地图展开与精细导航 | P0 | UI-05、UI-06 | WAITING_REVIEW |
+| [UI-09](UI-09.md) | 声明类型和Nerd Font标识 | P0 | 无 | WAITING_REVIEW |
+| [UI-10](UI-10.md) | 显式待审规划入口 | P0 | UI-06、UI-07 | WAITING_REVIEW |
