@@ -1,0 +1,3083 @@
+{
+  "status": "passed",
+  "target": "/tmp/atlasmode-idx02-fixture-mnQdH1",
+  "otherTarget": "/tmp/atlasmode-idx02-isolated-B3EVvu",
+  "scope": "Actual built HTTP/MCP/Chromium; only captured source is analyzed; target modules and scripts never execute.",
+  "observedAt": "2026-10-10T15:15:33.641Z",
+  "project": {
+    "id": "project:a13e790d3070ee1bf8efd145ab7a8a51",
+    "path": "/tmp/atlasmode-idx02-fixture-mnQdH1",
+    "name": "atlasmode-idx02-fixture-mnQdH1",
+    "snapshotId": "snapshot:4c882fc142b7072f3ddaa1fb665dcdc3"
+  },
+  "summary": {
+    "project": {
+      "id": "project:a13e790d3070ee1bf8efd145ab7a8a51",
+      "path": "/tmp/atlasmode-idx02-fixture-mnQdH1",
+      "name": "atlasmode-idx02-fixture-mnQdH1",
+      "snapshotId": "snapshot:4c882fc142b7072f3ddaa1fb665dcdc3"
+    },
+    "snapshotId": "snapshot:4c882fc142b7072f3ddaa1fb665dcdc3",
+    "contentHash": "8fc1e7d06cf574c0bb889cbc89a29dac5a3c2778bdaf127272c4b7f27d938091",
+    "counts": {
+      "files": 10,
+      "folders": 5,
+      "functions": 9,
+      "relations": 39,
+      "calls": {
+        "resolved": 3,
+        "unresolved": 5,
+        "external": 1
+      }
+    },
+    "entrypoints": [
+      {
+        "id": "function:d861bb727d9dc784ccaf58aea09efdfd",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "blocked",
+        "qualifiedName": "blocked",
+        "filePath": "packages/app/blocked.ts",
+        "parentId": "file:c1f6b33c4e21c7a72429cd1cf1206912",
+        "language": "typescript",
+        "signature": "export function blocked()",
+        "startLine": 2,
+        "endLine": 2,
+        "exported": true
+      },
+      {
+        "id": "function:f275f88f56d9603cfc6ee472a6c39029",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "entry",
+        "qualifiedName": "entry",
+        "filePath": "packages/app/entry.ts",
+        "parentId": "file:382c4f6a6b9801c994ecfdf9e47e2dd6",
+        "language": "typescript",
+        "signature": "export function entry()",
+        "startLine": 2,
+        "endLine": 2,
+        "exported": true
+      },
+      {
+        "id": "function:564bc0226efa1eb0fd9c5902a9732d9a",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "helper",
+        "qualifiedName": "helper",
+        "filePath": "packages/lib/src/main.cjs",
+        "parentId": "file:2c5f0dbaf5cb7983de26a23358727212",
+        "language": "javascript",
+        "signature": "function helper()",
+        "startLine": 1,
+        "endLine": 1,
+        "exported": true
+      },
+      {
+        "id": "function:cf87d2e52504b744a91b1301ace49e21",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "helper",
+        "qualifiedName": "helper",
+        "filePath": "packages/lib/src/main.ts",
+        "parentId": "file:c04a32f6ef60a890f6d9d7a8deaebd28",
+        "language": "typescript",
+        "signature": "export function helper()",
+        "startLine": 1,
+        "endLine": 1,
+        "exported": true
+      },
+      {
+        "id": "function:dc7ec52a5c8886e824ee095ac355c246",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "helper",
+        "qualifiedName": "helper",
+        "filePath": "packages/lib/src/other.ts",
+        "parentId": "file:ed64150760d29b7045daaed7308505c2",
+        "language": "typescript",
+        "signature": "export function helper()",
+        "startLine": 1,
+        "endLine": 1,
+        "exported": true
+      },
+      {
+        "id": "function:0bc98f11081da756581bd0890970dc03",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "requireEntry",
+        "qualifiedName": "requireEntry",
+        "filePath": "packages/app/entry.cjs",
+        "parentId": "file:84a7d4e280cdd4f4dbe4fae1e06385c2",
+        "language": "javascript",
+        "signature": "function requireEntry()",
+        "startLine": 2,
+        "endLine": 2,
+        "exported": true
+      },
+      {
+        "id": "function:7836d4e11f9a7dcb64caed87d6111567",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "stable",
+        "qualifiedName": "stable",
+        "filePath": "packages/app/stable.ts",
+        "parentId": "file:87275fb84141227e62e25bc14df6beda",
+        "language": "typescript",
+        "signature": "export function stable()",
+        "startLine": 2,
+        "endLine": 2,
+        "exported": true
+      },
+      {
+        "id": "function:ecf35f8039d007bc3af05a046d45be5d",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "typeOnly",
+        "qualifiedName": "typeOnly",
+        "filePath": "packages/app/type.ts",
+        "parentId": "file:0c3c2f50998407c509a0ef7b236062d0",
+        "language": "typescript",
+        "signature": "export function typeOnly()",
+        "startLine": 2,
+        "endLine": 2,
+        "exported": true
+      },
+      {
+        "id": "function:d68fdd0dd695937930df571371cf0a1b",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "uncertain",
+        "qualifiedName": "uncertain",
+        "filePath": "packages/app/uncertain.ts",
+        "parentId": "file:fd3311ff2d6f980605fa5e598d96760a",
+        "language": "typescript",
+        "signature": "export function uncertain()",
+        "startLine": 2,
+        "endLine": 2,
+        "exported": true
+      }
+    ],
+    "entrypointTotal": 9,
+    "entrypointsTruncated": false,
+    "diagnostics": [
+      {
+        "filePath": "packages/app/blocked.ts",
+        "message": "WORKSPACE_MAPPING_UNAVAILABLE: @idx02/lib/blocked: exports blocked, invalid, unmatched or over the condition budget"
+      },
+      {
+        "filePath": "packages/app/uncertain.ts",
+        "message": "WORKSPACE_MAPPING_UNAVAILABLE: @idx02/lib/uncertain: conditional exports or request modes do not converge to one source"
+      }
+    ],
+    "coverage": {
+      "files": [
+        "never-execute.ts",
+        "packages/app/blocked.ts",
+        "packages/app/entry.cjs",
+        "packages/app/entry.ts",
+        "packages/app/stable.ts",
+        "packages/app/type.ts",
+        "packages/app/uncertain.ts",
+        "packages/lib/src/main.cjs",
+        "packages/lib/src/main.ts",
+        "packages/lib/src/other.ts"
+      ],
+      "configurationFiles": [],
+      "packageFiles": [
+        "package.json",
+        "packages/app/package.json",
+        "packages/lib/package.json"
+      ],
+      "excludedPatterns": [
+        "**/.git/**",
+        "**/node_modules/**",
+        "**/dist/**",
+        "**/build/**",
+        "**/coverage/**",
+        "**/__pycache__/**",
+        "**/.venv/**",
+        "**/venv/**",
+        "**/.agents/**",
+        "**/.superpowers/**",
+        "**/.next/**",
+        "**/.cache/**",
+        "**/vendor/**"
+      ],
+      "unresolvedCount": 7,
+      "availability": {
+        "complete": true,
+        "unavailablePaths": [],
+        "excludedPaths": []
+      }
+    },
+    "dataSource": "code"
+  },
+  "original": {
+    "id": "snapshot:4c882fc142b7072f3ddaa1fb665dcdc3",
+    "projectId": "project:a13e790d3070ee1bf8efd145ab7a8a51",
+    "createdAt": "2026-10-10T15:15:25.649Z",
+    "gitRevision": null,
+    "contentHash": "8fc1e7d06cf574c0bb889cbc89a29dac5a3c2778bdaf127272c4b7f27d938091",
+    "nodes": [
+      {
+        "id": "folder:e91eecf7cfdd439cdb659b1e43801f18",
+        "kind": "folder",
+        "name": ".",
+        "qualifiedName": "."
+      },
+      {
+        "id": "file:980398603f38e8de88bb32d88bb115ec",
+        "kind": "file",
+        "name": "never-execute.ts",
+        "qualifiedName": "never-execute.ts",
+        "filePath": "never-execute.ts",
+        "parentId": "folder:e91eecf7cfdd439cdb659b1e43801f18",
+        "language": "typescript"
+      },
+      {
+        "id": "folder:7c372c652e599d92cb1d329d6409744e",
+        "kind": "folder",
+        "name": "packages",
+        "qualifiedName": "packages",
+        "filePath": "packages",
+        "parentId": "folder:e91eecf7cfdd439cdb659b1e43801f18"
+      },
+      {
+        "id": "folder:3b1dc29af53c4c4d6f8ee3990ab341ca",
+        "kind": "folder",
+        "name": "app",
+        "qualifiedName": "packages/app",
+        "filePath": "packages/app",
+        "parentId": "folder:7c372c652e599d92cb1d329d6409744e"
+      },
+      {
+        "id": "file:c1f6b33c4e21c7a72429cd1cf1206912",
+        "kind": "file",
+        "name": "blocked.ts",
+        "qualifiedName": "packages/app/blocked.ts",
+        "filePath": "packages/app/blocked.ts",
+        "parentId": "folder:3b1dc29af53c4c4d6f8ee3990ab341ca",
+        "language": "typescript"
+      },
+      {
+        "id": "file:84a7d4e280cdd4f4dbe4fae1e06385c2",
+        "kind": "file",
+        "name": "entry.cjs",
+        "qualifiedName": "packages/app/entry.cjs",
+        "filePath": "packages/app/entry.cjs",
+        "parentId": "folder:3b1dc29af53c4c4d6f8ee3990ab341ca",
+        "language": "javascript"
+      },
+      {
+        "id": "file:382c4f6a6b9801c994ecfdf9e47e2dd6",
+        "kind": "file",
+        "name": "entry.ts",
+        "qualifiedName": "packages/app/entry.ts",
+        "filePath": "packages/app/entry.ts",
+        "parentId": "folder:3b1dc29af53c4c4d6f8ee3990ab341ca",
+        "language": "typescript"
+      },
+      {
+        "id": "file:87275fb84141227e62e25bc14df6beda",
+        "kind": "file",
+        "name": "stable.ts",
+        "qualifiedName": "packages/app/stable.ts",
+        "filePath": "packages/app/stable.ts",
+        "parentId": "folder:3b1dc29af53c4c4d6f8ee3990ab341ca",
+        "language": "typescript"
+      },
+      {
+        "id": "file:0c3c2f50998407c509a0ef7b236062d0",
+        "kind": "file",
+        "name": "type.ts",
+        "qualifiedName": "packages/app/type.ts",
+        "filePath": "packages/app/type.ts",
+        "parentId": "folder:3b1dc29af53c4c4d6f8ee3990ab341ca",
+        "language": "typescript"
+      },
+      {
+        "id": "file:fd3311ff2d6f980605fa5e598d96760a",
+        "kind": "file",
+        "name": "uncertain.ts",
+        "qualifiedName": "packages/app/uncertain.ts",
+        "filePath": "packages/app/uncertain.ts",
+        "parentId": "folder:3b1dc29af53c4c4d6f8ee3990ab341ca",
+        "language": "typescript"
+      },
+      {
+        "id": "folder:07295faafb299f872a4062b8e9c41e82",
+        "kind": "folder",
+        "name": "lib",
+        "qualifiedName": "packages/lib",
+        "filePath": "packages/lib",
+        "parentId": "folder:7c372c652e599d92cb1d329d6409744e"
+      },
+      {
+        "id": "folder:30fa797de78005d2c826a2b65e2c5be0",
+        "kind": "folder",
+        "name": "src",
+        "qualifiedName": "packages/lib/src",
+        "filePath": "packages/lib/src",
+        "parentId": "folder:07295faafb299f872a4062b8e9c41e82"
+      },
+      {
+        "id": "file:2c5f0dbaf5cb7983de26a23358727212",
+        "kind": "file",
+        "name": "main.cjs",
+        "qualifiedName": "packages/lib/src/main.cjs",
+        "filePath": "packages/lib/src/main.cjs",
+        "parentId": "folder:30fa797de78005d2c826a2b65e2c5be0",
+        "language": "javascript"
+      },
+      {
+        "id": "file:c04a32f6ef60a890f6d9d7a8deaebd28",
+        "kind": "file",
+        "name": "main.ts",
+        "qualifiedName": "packages/lib/src/main.ts",
+        "filePath": "packages/lib/src/main.ts",
+        "parentId": "folder:30fa797de78005d2c826a2b65e2c5be0",
+        "language": "typescript"
+      },
+      {
+        "id": "file:ed64150760d29b7045daaed7308505c2",
+        "kind": "file",
+        "name": "other.ts",
+        "qualifiedName": "packages/lib/src/other.ts",
+        "filePath": "packages/lib/src/other.ts",
+        "parentId": "folder:30fa797de78005d2c826a2b65e2c5be0",
+        "language": "typescript"
+      },
+      {
+        "id": "function:d861bb727d9dc784ccaf58aea09efdfd",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "blocked",
+        "qualifiedName": "blocked",
+        "filePath": "packages/app/blocked.ts",
+        "parentId": "file:c1f6b33c4e21c7a72429cd1cf1206912",
+        "language": "typescript",
+        "signature": "export function blocked()",
+        "startLine": 2,
+        "endLine": 2,
+        "exported": true
+      },
+      {
+        "id": "function:564bc0226efa1eb0fd9c5902a9732d9a",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "helper",
+        "qualifiedName": "helper",
+        "filePath": "packages/lib/src/main.cjs",
+        "parentId": "file:2c5f0dbaf5cb7983de26a23358727212",
+        "language": "javascript",
+        "signature": "function helper()",
+        "startLine": 1,
+        "endLine": 1,
+        "exported": true
+      },
+      {
+        "id": "function:0bc98f11081da756581bd0890970dc03",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "requireEntry",
+        "qualifiedName": "requireEntry",
+        "filePath": "packages/app/entry.cjs",
+        "parentId": "file:84a7d4e280cdd4f4dbe4fae1e06385c2",
+        "language": "javascript",
+        "signature": "function requireEntry()",
+        "startLine": 2,
+        "endLine": 2,
+        "exported": true
+      },
+      {
+        "id": "function:cf87d2e52504b744a91b1301ace49e21",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "helper",
+        "qualifiedName": "helper",
+        "filePath": "packages/lib/src/main.ts",
+        "parentId": "file:c04a32f6ef60a890f6d9d7a8deaebd28",
+        "language": "typescript",
+        "signature": "export function helper()",
+        "startLine": 1,
+        "endLine": 1,
+        "exported": true
+      },
+      {
+        "id": "function:f275f88f56d9603cfc6ee472a6c39029",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "entry",
+        "qualifiedName": "entry",
+        "filePath": "packages/app/entry.ts",
+        "parentId": "file:382c4f6a6b9801c994ecfdf9e47e2dd6",
+        "language": "typescript",
+        "signature": "export function entry()",
+        "startLine": 2,
+        "endLine": 2,
+        "exported": true
+      },
+      {
+        "id": "function:7836d4e11f9a7dcb64caed87d6111567",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "stable",
+        "qualifiedName": "stable",
+        "filePath": "packages/app/stable.ts",
+        "parentId": "file:87275fb84141227e62e25bc14df6beda",
+        "language": "typescript",
+        "signature": "export function stable()",
+        "startLine": 2,
+        "endLine": 2,
+        "exported": true
+      },
+      {
+        "id": "function:ecf35f8039d007bc3af05a046d45be5d",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "typeOnly",
+        "qualifiedName": "typeOnly",
+        "filePath": "packages/app/type.ts",
+        "parentId": "file:0c3c2f50998407c509a0ef7b236062d0",
+        "language": "typescript",
+        "signature": "export function typeOnly()",
+        "startLine": 2,
+        "endLine": 2,
+        "exported": true
+      },
+      {
+        "id": "function:d68fdd0dd695937930df571371cf0a1b",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "uncertain",
+        "qualifiedName": "uncertain",
+        "filePath": "packages/app/uncertain.ts",
+        "parentId": "file:fd3311ff2d6f980605fa5e598d96760a",
+        "language": "typescript",
+        "signature": "export function uncertain()",
+        "startLine": 2,
+        "endLine": 2,
+        "exported": true
+      },
+      {
+        "id": "function:dc7ec52a5c8886e824ee095ac355c246",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "helper",
+        "qualifiedName": "helper",
+        "filePath": "packages/lib/src/other.ts",
+        "parentId": "file:ed64150760d29b7045daaed7308505c2",
+        "language": "typescript",
+        "signature": "export function helper()",
+        "startLine": 1,
+        "endLine": 1,
+        "exported": true
+      },
+      {
+        "id": "external:ec6b78b04c9326e35d332b516c4d5a60",
+        "kind": "external",
+        "name": "node:fs",
+        "qualifiedName": "node:fs"
+      },
+      {
+        "id": "external:deb0b53de613d71970e1e34a1b50f2d0",
+        "kind": "external",
+        "name": "node:fs:writeFileSync:writeFileSync",
+        "qualifiedName": "node:fs:writeFileSync:writeFileSync"
+      }
+    ],
+    "relations": [
+      {
+        "id": "relation:cbc1071b15d586aed447046de9f57a8e",
+        "type": "contains",
+        "sourceId": "folder:e91eecf7cfdd439cdb659b1e43801f18",
+        "targetId": "file:980398603f38e8de88bb32d88bb115ec",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "never-execute.ts",
+          "line": 1
+        }
+      },
+      {
+        "id": "relation:df763a6f4fcec8612954cff9d5ece202",
+        "type": "contains",
+        "sourceId": "folder:e91eecf7cfdd439cdb659b1e43801f18",
+        "targetId": "folder:7c372c652e599d92cb1d329d6409744e",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages",
+          "line": 1
+        }
+      },
+      {
+        "id": "relation:220da96f38ad7573a3dfa2a5d2893e14",
+        "type": "contains",
+        "sourceId": "folder:7c372c652e599d92cb1d329d6409744e",
+        "targetId": "folder:3b1dc29af53c4c4d6f8ee3990ab341ca",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/app",
+          "line": 1
+        }
+      },
+      {
+        "id": "relation:71f1e2f7281df81e32ca71d5413addbd",
+        "type": "contains",
+        "sourceId": "folder:3b1dc29af53c4c4d6f8ee3990ab341ca",
+        "targetId": "file:c1f6b33c4e21c7a72429cd1cf1206912",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/app/blocked.ts",
+          "line": 1
+        }
+      },
+      {
+        "id": "relation:7bde8e3a5ee1f77705134a5443bd3e6f",
+        "type": "contains",
+        "sourceId": "folder:3b1dc29af53c4c4d6f8ee3990ab341ca",
+        "targetId": "file:84a7d4e280cdd4f4dbe4fae1e06385c2",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/app/entry.cjs",
+          "line": 1
+        }
+      },
+      {
+        "id": "relation:9386e7bbbab5dc361a7d6f2404cb75f5",
+        "type": "contains",
+        "sourceId": "folder:3b1dc29af53c4c4d6f8ee3990ab341ca",
+        "targetId": "file:382c4f6a6b9801c994ecfdf9e47e2dd6",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/app/entry.ts",
+          "line": 1
+        }
+      },
+      {
+        "id": "relation:2d6391346d534b04a02f09180eb6a70a",
+        "type": "contains",
+        "sourceId": "folder:3b1dc29af53c4c4d6f8ee3990ab341ca",
+        "targetId": "file:87275fb84141227e62e25bc14df6beda",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/app/stable.ts",
+          "line": 1
+        }
+      },
+      {
+        "id": "relation:cebe86d2d9789285534fd10f8ec9d173",
+        "type": "contains",
+        "sourceId": "folder:3b1dc29af53c4c4d6f8ee3990ab341ca",
+        "targetId": "file:0c3c2f50998407c509a0ef7b236062d0",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/app/type.ts",
+          "line": 1
+        }
+      },
+      {
+        "id": "relation:cac54bad25ead5cb8db78f568835109d",
+        "type": "contains",
+        "sourceId": "folder:3b1dc29af53c4c4d6f8ee3990ab341ca",
+        "targetId": "file:fd3311ff2d6f980605fa5e598d96760a",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/app/uncertain.ts",
+          "line": 1
+        }
+      },
+      {
+        "id": "relation:51b05605f6ba3548da505745db167bd0",
+        "type": "contains",
+        "sourceId": "folder:7c372c652e599d92cb1d329d6409744e",
+        "targetId": "folder:07295faafb299f872a4062b8e9c41e82",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/lib",
+          "line": 1
+        }
+      },
+      {
+        "id": "relation:305bac0e0a812811d34105e7da0549a0",
+        "type": "contains",
+        "sourceId": "folder:07295faafb299f872a4062b8e9c41e82",
+        "targetId": "folder:30fa797de78005d2c826a2b65e2c5be0",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/lib/src",
+          "line": 1
+        }
+      },
+      {
+        "id": "relation:e5119a63e79559dabed0bf747c7b01d7",
+        "type": "contains",
+        "sourceId": "folder:30fa797de78005d2c826a2b65e2c5be0",
+        "targetId": "file:2c5f0dbaf5cb7983de26a23358727212",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/lib/src/main.cjs",
+          "line": 1
+        }
+      },
+      {
+        "id": "relation:afaebee80b64427e7d2e50db3ec5313f",
+        "type": "contains",
+        "sourceId": "folder:30fa797de78005d2c826a2b65e2c5be0",
+        "targetId": "file:c04a32f6ef60a890f6d9d7a8deaebd28",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/lib/src/main.ts",
+          "line": 1
+        }
+      },
+      {
+        "id": "relation:f911b7b083a02d5d393d9ca19998c8ae",
+        "type": "contains",
+        "sourceId": "folder:30fa797de78005d2c826a2b65e2c5be0",
+        "targetId": "file:ed64150760d29b7045daaed7308505c2",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/lib/src/other.ts",
+          "line": 1
+        }
+      },
+      {
+        "id": "relation:26ba007f5bf846cabb253ef29a115326",
+        "type": "contains",
+        "sourceId": "file:c1f6b33c4e21c7a72429cd1cf1206912",
+        "targetId": "function:d861bb727d9dc784ccaf58aea09efdfd",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/app/blocked.ts",
+          "line": 2
+        }
+      },
+      {
+        "id": "relation:fc44d623a4d9dc510c83ff9c7c7bf856",
+        "type": "contains",
+        "sourceId": "file:2c5f0dbaf5cb7983de26a23358727212",
+        "targetId": "function:564bc0226efa1eb0fd9c5902a9732d9a",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/lib/src/main.cjs",
+          "line": 1
+        }
+      },
+      {
+        "id": "relation:79f916beb4090a77d5582315560a6569",
+        "type": "contains",
+        "sourceId": "file:84a7d4e280cdd4f4dbe4fae1e06385c2",
+        "targetId": "function:0bc98f11081da756581bd0890970dc03",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/app/entry.cjs",
+          "line": 2
+        }
+      },
+      {
+        "id": "relation:abca5291071272c71ec81c6e16983061",
+        "type": "contains",
+        "sourceId": "file:c04a32f6ef60a890f6d9d7a8deaebd28",
+        "targetId": "function:cf87d2e52504b744a91b1301ace49e21",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/lib/src/main.ts",
+          "line": 1
+        }
+      },
+      {
+        "id": "relation:3920adfa3ce0c6a5f4a3149cb33528e6",
+        "type": "contains",
+        "sourceId": "file:382c4f6a6b9801c994ecfdf9e47e2dd6",
+        "targetId": "function:f275f88f56d9603cfc6ee472a6c39029",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/app/entry.ts",
+          "line": 2
+        }
+      },
+      {
+        "id": "relation:0c7a36870a1a617f93b5650f8762ef38",
+        "type": "contains",
+        "sourceId": "file:87275fb84141227e62e25bc14df6beda",
+        "targetId": "function:7836d4e11f9a7dcb64caed87d6111567",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/app/stable.ts",
+          "line": 2
+        }
+      },
+      {
+        "id": "relation:8513fa878be20ab45afb9c29f489b215",
+        "type": "contains",
+        "sourceId": "file:0c3c2f50998407c509a0ef7b236062d0",
+        "targetId": "function:ecf35f8039d007bc3af05a046d45be5d",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/app/type.ts",
+          "line": 2
+        }
+      },
+      {
+        "id": "relation:ab9f681d34cefe19e20a5af3fb8cf356",
+        "type": "contains",
+        "sourceId": "file:fd3311ff2d6f980605fa5e598d96760a",
+        "targetId": "function:d68fdd0dd695937930df571371cf0a1b",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/app/uncertain.ts",
+          "line": 2
+        }
+      },
+      {
+        "id": "relation:a765827340202c08df1d1ecb383b4008",
+        "type": "contains",
+        "sourceId": "file:ed64150760d29b7045daaed7308505c2",
+        "targetId": "function:dc7ec52a5c8886e824ee095ac355c246",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/lib/src/other.ts",
+          "line": 1
+        }
+      },
+      {
+        "id": "relation:8d788c2491a0d27fe749d10116bf3110",
+        "type": "imports",
+        "sourceId": "file:84a7d4e280cdd4f4dbe4fae1e06385c2",
+        "targetId": "file:2c5f0dbaf5cb7983de26a23358727212",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/app/entry.cjs",
+          "line": 1,
+          "text": "require(\"@idx02/lib\")"
+        }
+      },
+      {
+        "id": "relation:5014410ddb86b4a6ebb5d5f2e374208a",
+        "type": "imports",
+        "sourceId": "file:980398603f38e8de88bb32d88bb115ec",
+        "targetId": "external:ec6b78b04c9326e35d332b516c4d5a60",
+        "resolution": "external",
+        "evidence": {
+          "filePath": "never-execute.ts",
+          "line": 1,
+          "text": "import {writeFileSync} from \"node:fs\";"
+        }
+      },
+      {
+        "id": "relation:ea90e66266ab567929ed61d2ba1261f1",
+        "type": "imports",
+        "sourceId": "file:c1f6b33c4e21c7a72429cd1cf1206912",
+        "targetId": null,
+        "resolution": "unresolved",
+        "evidence": {
+          "filePath": "packages/app/blocked.ts",
+          "line": 1,
+          "text": "import { helper } from \"@idx02/lib/blocked\";"
+        },
+        "reason": "Configured alias @idx02/lib/blocked has no target within captured sources; see configuration diagnostics for the owning scope and boundary"
+      },
+      {
+        "id": "relation:dd6168c55ed4215c0f79bd8e2b669dc6",
+        "type": "imports",
+        "sourceId": "file:382c4f6a6b9801c994ecfdf9e47e2dd6",
+        "targetId": "file:c04a32f6ef60a890f6d9d7a8deaebd28",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/app/entry.ts",
+          "line": 1,
+          "text": "import { helper } from \"@idx02/lib\";"
+        }
+      },
+      {
+        "id": "relation:3164e1638fa6ff19ff0e1b1f16e9d783",
+        "type": "imports",
+        "sourceId": "file:87275fb84141227e62e25bc14df6beda",
+        "targetId": "file:c04a32f6ef60a890f6d9d7a8deaebd28",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/app/stable.ts",
+          "line": 1,
+          "text": "import { helper } from \"@idx02/lib/stable\";"
+        }
+      },
+      {
+        "id": "relation:58477de249bcf00e1c7bb3273f2d66ac",
+        "type": "imports",
+        "sourceId": "file:0c3c2f50998407c509a0ef7b236062d0",
+        "targetId": "file:c04a32f6ef60a890f6d9d7a8deaebd28",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/app/type.ts",
+          "line": 1,
+          "text": "import type * as lib from \"@idx02/lib\";"
+        }
+      },
+      {
+        "id": "relation:e0ead6c703868d54cf7d065d565f620a",
+        "type": "imports",
+        "sourceId": "file:fd3311ff2d6f980605fa5e598d96760a",
+        "targetId": null,
+        "resolution": "unresolved",
+        "evidence": {
+          "filePath": "packages/app/uncertain.ts",
+          "line": 1,
+          "text": "import { helper } from \"@idx02/lib/uncertain\";"
+        },
+        "reason": "Configured alias @idx02/lib/uncertain has no target within captured sources; see configuration diagnostics for the owning scope and boundary"
+      },
+      {
+        "id": "relation:a32fc6de01e72c0405b1dfaa7058302e",
+        "type": "calls",
+        "sourceId": "file:980398603f38e8de88bb32d88bb115ec",
+        "targetId": "external:deb0b53de613d71970e1e34a1b50f2d0",
+        "resolution": "external",
+        "evidence": {
+          "filePath": "never-execute.ts",
+          "line": 2,
+          "text": "writeFileSync(\"/tmp/atlasmode-idx02-fixture-mnQdH1/TARGET_EXECUTED\", \"executed\")"
+        }
+      },
+      {
+        "id": "relation:f3389ba6c0607b996ad61b9f83295492",
+        "type": "calls",
+        "sourceId": "file:980398603f38e8de88bb32d88bb115ec",
+        "targetId": null,
+        "resolution": "unresolved",
+        "evidence": {
+          "filePath": "never-execute.ts",
+          "line": 3,
+          "text": "new Error(\"Target source must never execute\")"
+        },
+        "reason": "No unique indexed implementation for this call (dynamic, ambient, or excluded target)"
+      },
+      {
+        "id": "relation:7c877ff92b6d9933c452f57f83b9e026",
+        "type": "calls",
+        "sourceId": "function:d861bb727d9dc784ccaf58aea09efdfd",
+        "targetId": null,
+        "resolution": "unresolved",
+        "evidence": {
+          "filePath": "packages/app/blocked.ts",
+          "line": 2,
+          "text": "helper()"
+        },
+        "reason": "No unique indexed implementation for this call (dynamic, ambient, or excluded target)"
+      },
+      {
+        "id": "relation:335b6ac4005e1c458b559e7fed79ec3e",
+        "type": "calls",
+        "sourceId": "file:84a7d4e280cdd4f4dbe4fae1e06385c2",
+        "targetId": null,
+        "resolution": "unresolved",
+        "evidence": {
+          "filePath": "packages/app/entry.cjs",
+          "line": 1,
+          "text": "require(\"@idx02/lib\")"
+        },
+        "reason": "CommonJS loader is not an indexed implementation"
+      },
+      {
+        "id": "relation:1f7108c862485db399659ec56af886db",
+        "type": "calls",
+        "sourceId": "function:0bc98f11081da756581bd0890970dc03",
+        "targetId": "function:564bc0226efa1eb0fd9c5902a9732d9a",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/app/entry.cjs",
+          "line": 2,
+          "text": "helper()"
+        }
+      },
+      {
+        "id": "relation:2e7d52e8cfffd45d2f8e9e644ba4cf83",
+        "type": "calls",
+        "sourceId": "function:f275f88f56d9603cfc6ee472a6c39029",
+        "targetId": "function:cf87d2e52504b744a91b1301ace49e21",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/app/entry.ts",
+          "line": 2,
+          "text": "helper()"
+        }
+      },
+      {
+        "id": "relation:6b376fa499b25357dcd9de49aee76f90",
+        "type": "calls",
+        "sourceId": "function:7836d4e11f9a7dcb64caed87d6111567",
+        "targetId": "function:cf87d2e52504b744a91b1301ace49e21",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/app/stable.ts",
+          "line": 2,
+          "text": "helper()"
+        }
+      },
+      {
+        "id": "relation:20c33bff8ac9a32f4feceb5864c90f35",
+        "type": "calls",
+        "sourceId": "function:ecf35f8039d007bc3af05a046d45be5d",
+        "targetId": null,
+        "resolution": "unresolved",
+        "evidence": {
+          "filePath": "packages/app/type.ts",
+          "line": 2,
+          "text": "lib.helper()"
+        },
+        "reason": "No unique indexed implementation for this call (dynamic, ambient, or excluded target)"
+      },
+      {
+        "id": "relation:7d72569bc540f098ebabbd95276ddfca",
+        "type": "calls",
+        "sourceId": "function:d68fdd0dd695937930df571371cf0a1b",
+        "targetId": null,
+        "resolution": "unresolved",
+        "evidence": {
+          "filePath": "packages/app/uncertain.ts",
+          "line": 2,
+          "text": "helper()"
+        },
+        "reason": "No unique indexed implementation for this call (dynamic, ambient, or excluded target)"
+      }
+    ],
+    "diagnostics": [
+      {
+        "filePath": "packages/app/blocked.ts",
+        "message": "WORKSPACE_MAPPING_UNAVAILABLE: @idx02/lib/blocked: exports blocked, invalid, unmatched or over the condition budget"
+      },
+      {
+        "filePath": "packages/app/uncertain.ts",
+        "message": "WORKSPACE_MAPPING_UNAVAILABLE: @idx02/lib/uncertain: conditional exports or request modes do not converge to one source"
+      }
+    ],
+    "coverage": {
+      "files": [
+        "never-execute.ts",
+        "packages/app/blocked.ts",
+        "packages/app/entry.cjs",
+        "packages/app/entry.ts",
+        "packages/app/stable.ts",
+        "packages/app/type.ts",
+        "packages/app/uncertain.ts",
+        "packages/lib/src/main.cjs",
+        "packages/lib/src/main.ts",
+        "packages/lib/src/other.ts"
+      ],
+      "configurationFiles": [],
+      "packageFiles": [
+        "package.json",
+        "packages/app/package.json",
+        "packages/lib/package.json"
+      ],
+      "excludedPatterns": [
+        "**/.git/**",
+        "**/node_modules/**",
+        "**/dist/**",
+        "**/build/**",
+        "**/coverage/**",
+        "**/__pycache__/**",
+        "**/.venv/**",
+        "**/venv/**",
+        "**/.agents/**",
+        "**/.superpowers/**",
+        "**/.next/**",
+        "**/.cache/**",
+        "**/vendor/**"
+      ],
+      "unresolvedCount": 7,
+      "availability": {
+        "complete": true,
+        "unavailablePaths": [],
+        "excludedPaths": []
+      }
+    }
+  },
+  "afterExports": {
+    "id": "snapshot:182241100b065d9014529f8ae98cf8f8",
+    "projectId": "project:a13e790d3070ee1bf8efd145ab7a8a51",
+    "createdAt": "2026-10-10T15:15:27.058Z",
+    "gitRevision": null,
+    "contentHash": "4544912580e62fa93c36719bff0046e5bd5224cb3636ead5944a37868d5f015c",
+    "nodes": [
+      {
+        "id": "folder:e91eecf7cfdd439cdb659b1e43801f18",
+        "kind": "folder",
+        "name": ".",
+        "qualifiedName": "."
+      },
+      {
+        "id": "file:980398603f38e8de88bb32d88bb115ec",
+        "kind": "file",
+        "name": "never-execute.ts",
+        "qualifiedName": "never-execute.ts",
+        "filePath": "never-execute.ts",
+        "parentId": "folder:e91eecf7cfdd439cdb659b1e43801f18",
+        "language": "typescript"
+      },
+      {
+        "id": "folder:7c372c652e599d92cb1d329d6409744e",
+        "kind": "folder",
+        "name": "packages",
+        "qualifiedName": "packages",
+        "filePath": "packages",
+        "parentId": "folder:e91eecf7cfdd439cdb659b1e43801f18"
+      },
+      {
+        "id": "folder:3b1dc29af53c4c4d6f8ee3990ab341ca",
+        "kind": "folder",
+        "name": "app",
+        "qualifiedName": "packages/app",
+        "filePath": "packages/app",
+        "parentId": "folder:7c372c652e599d92cb1d329d6409744e"
+      },
+      {
+        "id": "file:c1f6b33c4e21c7a72429cd1cf1206912",
+        "kind": "file",
+        "name": "blocked.ts",
+        "qualifiedName": "packages/app/blocked.ts",
+        "filePath": "packages/app/blocked.ts",
+        "parentId": "folder:3b1dc29af53c4c4d6f8ee3990ab341ca",
+        "language": "typescript"
+      },
+      {
+        "id": "file:84a7d4e280cdd4f4dbe4fae1e06385c2",
+        "kind": "file",
+        "name": "entry.cjs",
+        "qualifiedName": "packages/app/entry.cjs",
+        "filePath": "packages/app/entry.cjs",
+        "parentId": "folder:3b1dc29af53c4c4d6f8ee3990ab341ca",
+        "language": "javascript"
+      },
+      {
+        "id": "file:382c4f6a6b9801c994ecfdf9e47e2dd6",
+        "kind": "file",
+        "name": "entry.ts",
+        "qualifiedName": "packages/app/entry.ts",
+        "filePath": "packages/app/entry.ts",
+        "parentId": "folder:3b1dc29af53c4c4d6f8ee3990ab341ca",
+        "language": "typescript"
+      },
+      {
+        "id": "file:87275fb84141227e62e25bc14df6beda",
+        "kind": "file",
+        "name": "stable.ts",
+        "qualifiedName": "packages/app/stable.ts",
+        "filePath": "packages/app/stable.ts",
+        "parentId": "folder:3b1dc29af53c4c4d6f8ee3990ab341ca",
+        "language": "typescript"
+      },
+      {
+        "id": "file:0c3c2f50998407c509a0ef7b236062d0",
+        "kind": "file",
+        "name": "type.ts",
+        "qualifiedName": "packages/app/type.ts",
+        "filePath": "packages/app/type.ts",
+        "parentId": "folder:3b1dc29af53c4c4d6f8ee3990ab341ca",
+        "language": "typescript"
+      },
+      {
+        "id": "file:fd3311ff2d6f980605fa5e598d96760a",
+        "kind": "file",
+        "name": "uncertain.ts",
+        "qualifiedName": "packages/app/uncertain.ts",
+        "filePath": "packages/app/uncertain.ts",
+        "parentId": "folder:3b1dc29af53c4c4d6f8ee3990ab341ca",
+        "language": "typescript"
+      },
+      {
+        "id": "folder:07295faafb299f872a4062b8e9c41e82",
+        "kind": "folder",
+        "name": "lib",
+        "qualifiedName": "packages/lib",
+        "filePath": "packages/lib",
+        "parentId": "folder:7c372c652e599d92cb1d329d6409744e"
+      },
+      {
+        "id": "folder:30fa797de78005d2c826a2b65e2c5be0",
+        "kind": "folder",
+        "name": "src",
+        "qualifiedName": "packages/lib/src",
+        "filePath": "packages/lib/src",
+        "parentId": "folder:07295faafb299f872a4062b8e9c41e82"
+      },
+      {
+        "id": "file:2c5f0dbaf5cb7983de26a23358727212",
+        "kind": "file",
+        "name": "main.cjs",
+        "qualifiedName": "packages/lib/src/main.cjs",
+        "filePath": "packages/lib/src/main.cjs",
+        "parentId": "folder:30fa797de78005d2c826a2b65e2c5be0",
+        "language": "javascript"
+      },
+      {
+        "id": "file:c04a32f6ef60a890f6d9d7a8deaebd28",
+        "kind": "file",
+        "name": "main.ts",
+        "qualifiedName": "packages/lib/src/main.ts",
+        "filePath": "packages/lib/src/main.ts",
+        "parentId": "folder:30fa797de78005d2c826a2b65e2c5be0",
+        "language": "typescript"
+      },
+      {
+        "id": "file:ed64150760d29b7045daaed7308505c2",
+        "kind": "file",
+        "name": "other.ts",
+        "qualifiedName": "packages/lib/src/other.ts",
+        "filePath": "packages/lib/src/other.ts",
+        "parentId": "folder:30fa797de78005d2c826a2b65e2c5be0",
+        "language": "typescript"
+      },
+      {
+        "id": "function:d861bb727d9dc784ccaf58aea09efdfd",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "blocked",
+        "qualifiedName": "blocked",
+        "filePath": "packages/app/blocked.ts",
+        "parentId": "file:c1f6b33c4e21c7a72429cd1cf1206912",
+        "language": "typescript",
+        "signature": "export function blocked()",
+        "startLine": 2,
+        "endLine": 2,
+        "exported": true
+      },
+      {
+        "id": "function:564bc0226efa1eb0fd9c5902a9732d9a",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "helper",
+        "qualifiedName": "helper",
+        "filePath": "packages/lib/src/main.cjs",
+        "parentId": "file:2c5f0dbaf5cb7983de26a23358727212",
+        "language": "javascript",
+        "signature": "function helper()",
+        "startLine": 1,
+        "endLine": 1,
+        "exported": true
+      },
+      {
+        "id": "function:0bc98f11081da756581bd0890970dc03",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "requireEntry",
+        "qualifiedName": "requireEntry",
+        "filePath": "packages/app/entry.cjs",
+        "parentId": "file:84a7d4e280cdd4f4dbe4fae1e06385c2",
+        "language": "javascript",
+        "signature": "function requireEntry()",
+        "startLine": 2,
+        "endLine": 2,
+        "exported": true
+      },
+      {
+        "id": "function:dc7ec52a5c8886e824ee095ac355c246",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "helper",
+        "qualifiedName": "helper",
+        "filePath": "packages/lib/src/other.ts",
+        "parentId": "file:ed64150760d29b7045daaed7308505c2",
+        "language": "typescript",
+        "signature": "export function helper()",
+        "startLine": 1,
+        "endLine": 1,
+        "exported": true
+      },
+      {
+        "id": "function:f275f88f56d9603cfc6ee472a6c39029",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "entry",
+        "qualifiedName": "entry",
+        "filePath": "packages/app/entry.ts",
+        "parentId": "file:382c4f6a6b9801c994ecfdf9e47e2dd6",
+        "language": "typescript",
+        "signature": "export function entry()",
+        "startLine": 2,
+        "endLine": 2,
+        "exported": true
+      },
+      {
+        "id": "function:cf87d2e52504b744a91b1301ace49e21",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "helper",
+        "qualifiedName": "helper",
+        "filePath": "packages/lib/src/main.ts",
+        "parentId": "file:c04a32f6ef60a890f6d9d7a8deaebd28",
+        "language": "typescript",
+        "signature": "export function helper()",
+        "startLine": 1,
+        "endLine": 1,
+        "exported": true
+      },
+      {
+        "id": "function:7836d4e11f9a7dcb64caed87d6111567",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "stable",
+        "qualifiedName": "stable",
+        "filePath": "packages/app/stable.ts",
+        "parentId": "file:87275fb84141227e62e25bc14df6beda",
+        "language": "typescript",
+        "signature": "export function stable()",
+        "startLine": 2,
+        "endLine": 2,
+        "exported": true
+      },
+      {
+        "id": "function:ecf35f8039d007bc3af05a046d45be5d",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "typeOnly",
+        "qualifiedName": "typeOnly",
+        "filePath": "packages/app/type.ts",
+        "parentId": "file:0c3c2f50998407c509a0ef7b236062d0",
+        "language": "typescript",
+        "signature": "export function typeOnly()",
+        "startLine": 2,
+        "endLine": 2,
+        "exported": true
+      },
+      {
+        "id": "function:d68fdd0dd695937930df571371cf0a1b",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "uncertain",
+        "qualifiedName": "uncertain",
+        "filePath": "packages/app/uncertain.ts",
+        "parentId": "file:fd3311ff2d6f980605fa5e598d96760a",
+        "language": "typescript",
+        "signature": "export function uncertain()",
+        "startLine": 2,
+        "endLine": 2,
+        "exported": true
+      },
+      {
+        "id": "external:ec6b78b04c9326e35d332b516c4d5a60",
+        "kind": "external",
+        "name": "node:fs",
+        "qualifiedName": "node:fs"
+      },
+      {
+        "id": "external:deb0b53de613d71970e1e34a1b50f2d0",
+        "kind": "external",
+        "name": "node:fs:writeFileSync:writeFileSync",
+        "qualifiedName": "node:fs:writeFileSync:writeFileSync"
+      }
+    ],
+    "relations": [
+      {
+        "id": "relation:cbc1071b15d586aed447046de9f57a8e",
+        "type": "contains",
+        "sourceId": "folder:e91eecf7cfdd439cdb659b1e43801f18",
+        "targetId": "file:980398603f38e8de88bb32d88bb115ec",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "never-execute.ts",
+          "line": 1
+        }
+      },
+      {
+        "id": "relation:df763a6f4fcec8612954cff9d5ece202",
+        "type": "contains",
+        "sourceId": "folder:e91eecf7cfdd439cdb659b1e43801f18",
+        "targetId": "folder:7c372c652e599d92cb1d329d6409744e",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages",
+          "line": 1
+        }
+      },
+      {
+        "id": "relation:220da96f38ad7573a3dfa2a5d2893e14",
+        "type": "contains",
+        "sourceId": "folder:7c372c652e599d92cb1d329d6409744e",
+        "targetId": "folder:3b1dc29af53c4c4d6f8ee3990ab341ca",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/app",
+          "line": 1
+        }
+      },
+      {
+        "id": "relation:71f1e2f7281df81e32ca71d5413addbd",
+        "type": "contains",
+        "sourceId": "folder:3b1dc29af53c4c4d6f8ee3990ab341ca",
+        "targetId": "file:c1f6b33c4e21c7a72429cd1cf1206912",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/app/blocked.ts",
+          "line": 1
+        }
+      },
+      {
+        "id": "relation:7bde8e3a5ee1f77705134a5443bd3e6f",
+        "type": "contains",
+        "sourceId": "folder:3b1dc29af53c4c4d6f8ee3990ab341ca",
+        "targetId": "file:84a7d4e280cdd4f4dbe4fae1e06385c2",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/app/entry.cjs",
+          "line": 1
+        }
+      },
+      {
+        "id": "relation:9386e7bbbab5dc361a7d6f2404cb75f5",
+        "type": "contains",
+        "sourceId": "folder:3b1dc29af53c4c4d6f8ee3990ab341ca",
+        "targetId": "file:382c4f6a6b9801c994ecfdf9e47e2dd6",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/app/entry.ts",
+          "line": 1
+        }
+      },
+      {
+        "id": "relation:2d6391346d534b04a02f09180eb6a70a",
+        "type": "contains",
+        "sourceId": "folder:3b1dc29af53c4c4d6f8ee3990ab341ca",
+        "targetId": "file:87275fb84141227e62e25bc14df6beda",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/app/stable.ts",
+          "line": 1
+        }
+      },
+      {
+        "id": "relation:cebe86d2d9789285534fd10f8ec9d173",
+        "type": "contains",
+        "sourceId": "folder:3b1dc29af53c4c4d6f8ee3990ab341ca",
+        "targetId": "file:0c3c2f50998407c509a0ef7b236062d0",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/app/type.ts",
+          "line": 1
+        }
+      },
+      {
+        "id": "relation:cac54bad25ead5cb8db78f568835109d",
+        "type": "contains",
+        "sourceId": "folder:3b1dc29af53c4c4d6f8ee3990ab341ca",
+        "targetId": "file:fd3311ff2d6f980605fa5e598d96760a",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/app/uncertain.ts",
+          "line": 1
+        }
+      },
+      {
+        "id": "relation:51b05605f6ba3548da505745db167bd0",
+        "type": "contains",
+        "sourceId": "folder:7c372c652e599d92cb1d329d6409744e",
+        "targetId": "folder:07295faafb299f872a4062b8e9c41e82",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/lib",
+          "line": 1
+        }
+      },
+      {
+        "id": "relation:305bac0e0a812811d34105e7da0549a0",
+        "type": "contains",
+        "sourceId": "folder:07295faafb299f872a4062b8e9c41e82",
+        "targetId": "folder:30fa797de78005d2c826a2b65e2c5be0",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/lib/src",
+          "line": 1
+        }
+      },
+      {
+        "id": "relation:e5119a63e79559dabed0bf747c7b01d7",
+        "type": "contains",
+        "sourceId": "folder:30fa797de78005d2c826a2b65e2c5be0",
+        "targetId": "file:2c5f0dbaf5cb7983de26a23358727212",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/lib/src/main.cjs",
+          "line": 1
+        }
+      },
+      {
+        "id": "relation:afaebee80b64427e7d2e50db3ec5313f",
+        "type": "contains",
+        "sourceId": "folder:30fa797de78005d2c826a2b65e2c5be0",
+        "targetId": "file:c04a32f6ef60a890f6d9d7a8deaebd28",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/lib/src/main.ts",
+          "line": 1
+        }
+      },
+      {
+        "id": "relation:f911b7b083a02d5d393d9ca19998c8ae",
+        "type": "contains",
+        "sourceId": "folder:30fa797de78005d2c826a2b65e2c5be0",
+        "targetId": "file:ed64150760d29b7045daaed7308505c2",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/lib/src/other.ts",
+          "line": 1
+        }
+      },
+      {
+        "id": "relation:26ba007f5bf846cabb253ef29a115326",
+        "type": "contains",
+        "sourceId": "file:c1f6b33c4e21c7a72429cd1cf1206912",
+        "targetId": "function:d861bb727d9dc784ccaf58aea09efdfd",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/app/blocked.ts",
+          "line": 2
+        }
+      },
+      {
+        "id": "relation:fc44d623a4d9dc510c83ff9c7c7bf856",
+        "type": "contains",
+        "sourceId": "file:2c5f0dbaf5cb7983de26a23358727212",
+        "targetId": "function:564bc0226efa1eb0fd9c5902a9732d9a",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/lib/src/main.cjs",
+          "line": 1
+        }
+      },
+      {
+        "id": "relation:79f916beb4090a77d5582315560a6569",
+        "type": "contains",
+        "sourceId": "file:84a7d4e280cdd4f4dbe4fae1e06385c2",
+        "targetId": "function:0bc98f11081da756581bd0890970dc03",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/app/entry.cjs",
+          "line": 2
+        }
+      },
+      {
+        "id": "relation:a750cdc043202c08df1d1ec504f61d04",
+        "type": "contains",
+        "sourceId": "file:ed64150760d29b7045daaed7308505c2",
+        "targetId": "function:dc7ec52a5c8886e824ee095ac355c246",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/lib/src/other.ts",
+          "line": 1
+        }
+      },
+      {
+        "id": "relation:3920adfa3ce0c6a5f4a3149cb33528e6",
+        "type": "contains",
+        "sourceId": "file:382c4f6a6b9801c994ecfdf9e47e2dd6",
+        "targetId": "function:f275f88f56d9603cfc6ee472a6c39029",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/app/entry.ts",
+          "line": 2
+        }
+      },
+      {
+        "id": "relation:abca4972111272c71ec81c6e12d8db1f",
+        "type": "contains",
+        "sourceId": "file:c04a32f6ef60a890f6d9d7a8deaebd28",
+        "targetId": "function:cf87d2e52504b744a91b1301ace49e21",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/lib/src/main.ts",
+          "line": 1
+        }
+      },
+      {
+        "id": "relation:0c7251e2531a617f93b5650d0e598734",
+        "type": "contains",
+        "sourceId": "file:87275fb84141227e62e25bc14df6beda",
+        "targetId": "function:7836d4e11f9a7dcb64caed87d6111567",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/app/stable.ts",
+          "line": 2
+        }
+      },
+      {
+        "id": "relation:8513ff07e4e20ab45afb9c29f65fd376",
+        "type": "contains",
+        "sourceId": "file:0c3c2f50998407c509a0ef7b236062d0",
+        "targetId": "function:ecf35f8039d007bc3af05a046d45be5d",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/app/type.ts",
+          "line": 2
+        }
+      },
+      {
+        "id": "relation:ab9f6ca889cefe19e20a5af3fd6a8a67",
+        "type": "contains",
+        "sourceId": "file:fd3311ff2d6f980605fa5e598d96760a",
+        "targetId": "function:d68fdd0dd695937930df571371cf0a1b",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/app/uncertain.ts",
+          "line": 2
+        }
+      },
+      {
+        "id": "relation:8d788c2491a0d27fe749d10116bf3110",
+        "type": "imports",
+        "sourceId": "file:84a7d4e280cdd4f4dbe4fae1e06385c2",
+        "targetId": "file:2c5f0dbaf5cb7983de26a23358727212",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/app/entry.cjs",
+          "line": 1,
+          "text": "require(\"@idx02/lib\")"
+        }
+      },
+      {
+        "id": "relation:5014410ddb86b4a6ebb5d5f2e374208a",
+        "type": "imports",
+        "sourceId": "file:980398603f38e8de88bb32d88bb115ec",
+        "targetId": "external:ec6b78b04c9326e35d332b516c4d5a60",
+        "resolution": "external",
+        "evidence": {
+          "filePath": "never-execute.ts",
+          "line": 1,
+          "text": "import {writeFileSync} from \"node:fs\";"
+        }
+      },
+      {
+        "id": "relation:ea90e66266ab567929ed61d2ba1261f1",
+        "type": "imports",
+        "sourceId": "file:c1f6b33c4e21c7a72429cd1cf1206912",
+        "targetId": null,
+        "resolution": "unresolved",
+        "evidence": {
+          "filePath": "packages/app/blocked.ts",
+          "line": 1,
+          "text": "import { helper } from \"@idx02/lib/blocked\";"
+        },
+        "reason": "Configured alias @idx02/lib/blocked has no target within captured sources; see configuration diagnostics for the owning scope and boundary"
+      },
+      {
+        "id": "relation:57bd60f066fce22bade1b4bfd3a7733b",
+        "type": "imports",
+        "sourceId": "file:382c4f6a6b9801c994ecfdf9e47e2dd6",
+        "targetId": "file:ed64150760d29b7045daaed7308505c2",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/app/entry.ts",
+          "line": 1,
+          "text": "import { helper } from \"@idx02/lib\";"
+        }
+      },
+      {
+        "id": "relation:3164e1638fa6ff19ff0e1b1f16e9d783",
+        "type": "imports",
+        "sourceId": "file:87275fb84141227e62e25bc14df6beda",
+        "targetId": "file:c04a32f6ef60a890f6d9d7a8deaebd28",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/app/stable.ts",
+          "line": 1,
+          "text": "import { helper } from \"@idx02/lib/stable\";"
+        }
+      },
+      {
+        "id": "relation:10dd8236dad348426fe445addc9bfab3",
+        "type": "imports",
+        "sourceId": "file:0c3c2f50998407c509a0ef7b236062d0",
+        "targetId": "file:ed64150760d29b7045daaed7308505c2",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/app/type.ts",
+          "line": 1,
+          "text": "import type * as lib from \"@idx02/lib\";"
+        }
+      },
+      {
+        "id": "relation:e0ead6c703868d54cf7d065d565f620a",
+        "type": "imports",
+        "sourceId": "file:fd3311ff2d6f980605fa5e598d96760a",
+        "targetId": null,
+        "resolution": "unresolved",
+        "evidence": {
+          "filePath": "packages/app/uncertain.ts",
+          "line": 1,
+          "text": "import { helper } from \"@idx02/lib/uncertain\";"
+        },
+        "reason": "Configured alias @idx02/lib/uncertain has no target within captured sources; see configuration diagnostics for the owning scope and boundary"
+      },
+      {
+        "id": "relation:a32fc6de01e72c0405b1dfaa7058302e",
+        "type": "calls",
+        "sourceId": "file:980398603f38e8de88bb32d88bb115ec",
+        "targetId": "external:deb0b53de613d71970e1e34a1b50f2d0",
+        "resolution": "external",
+        "evidence": {
+          "filePath": "never-execute.ts",
+          "line": 2,
+          "text": "writeFileSync(\"/tmp/atlasmode-idx02-fixture-mnQdH1/TARGET_EXECUTED\", \"executed\")"
+        }
+      },
+      {
+        "id": "relation:f3389ba6c0607b996ad61b9f83295492",
+        "type": "calls",
+        "sourceId": "file:980398603f38e8de88bb32d88bb115ec",
+        "targetId": null,
+        "resolution": "unresolved",
+        "evidence": {
+          "filePath": "never-execute.ts",
+          "line": 3,
+          "text": "new Error(\"Target source must never execute\")"
+        },
+        "reason": "No unique indexed implementation for this call (dynamic, ambient, or excluded target)"
+      },
+      {
+        "id": "relation:7c877ff92b6d9933c452f57f83b9e026",
+        "type": "calls",
+        "sourceId": "function:d861bb727d9dc784ccaf58aea09efdfd",
+        "targetId": null,
+        "resolution": "unresolved",
+        "evidence": {
+          "filePath": "packages/app/blocked.ts",
+          "line": 2,
+          "text": "helper()"
+        },
+        "reason": "No unique indexed implementation for this call (dynamic, ambient, or excluded target)"
+      },
+      {
+        "id": "relation:335b6ac4005e1c458b559e7fed79ec3e",
+        "type": "calls",
+        "sourceId": "file:84a7d4e280cdd4f4dbe4fae1e06385c2",
+        "targetId": null,
+        "resolution": "unresolved",
+        "evidence": {
+          "filePath": "packages/app/entry.cjs",
+          "line": 1,
+          "text": "require(\"@idx02/lib\")"
+        },
+        "reason": "CommonJS loader is not an indexed implementation"
+      },
+      {
+        "id": "relation:1f7108c862485db399659ec56af886db",
+        "type": "calls",
+        "sourceId": "function:0bc98f11081da756581bd0890970dc03",
+        "targetId": "function:564bc0226efa1eb0fd9c5902a9732d9a",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/app/entry.cjs",
+          "line": 2,
+          "text": "helper()"
+        }
+      },
+      {
+        "id": "relation:7c2453ab55965e3fcf1ca88a7ef36f92",
+        "type": "calls",
+        "sourceId": "function:f275f88f56d9603cfc6ee472a6c39029",
+        "targetId": "function:dc7ec52a5c8886e824ee095ac355c246",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/app/entry.ts",
+          "line": 2,
+          "text": "helper()"
+        }
+      },
+      {
+        "id": "relation:6b376fa499b25357dcd9de49aee76f90",
+        "type": "calls",
+        "sourceId": "function:7836d4e11f9a7dcb64caed87d6111567",
+        "targetId": "function:cf87d2e52504b744a91b1301ace49e21",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/app/stable.ts",
+          "line": 2,
+          "text": "helper()"
+        }
+      },
+      {
+        "id": "relation:20c33bff8ac9a32f4feceb5864c90f35",
+        "type": "calls",
+        "sourceId": "function:ecf35f8039d007bc3af05a046d45be5d",
+        "targetId": null,
+        "resolution": "unresolved",
+        "evidence": {
+          "filePath": "packages/app/type.ts",
+          "line": 2,
+          "text": "lib.helper()"
+        },
+        "reason": "No unique indexed implementation for this call (dynamic, ambient, or excluded target)"
+      },
+      {
+        "id": "relation:7d72569bc540f098ebabbd95276ddfca",
+        "type": "calls",
+        "sourceId": "function:d68fdd0dd695937930df571371cf0a1b",
+        "targetId": null,
+        "resolution": "unresolved",
+        "evidence": {
+          "filePath": "packages/app/uncertain.ts",
+          "line": 2,
+          "text": "helper()"
+        },
+        "reason": "No unique indexed implementation for this call (dynamic, ambient, or excluded target)"
+      }
+    ],
+    "diagnostics": [
+      {
+        "filePath": "packages/app/blocked.ts",
+        "message": "WORKSPACE_MAPPING_UNAVAILABLE: @idx02/lib/blocked: exports blocked, invalid, unmatched or over the condition budget"
+      },
+      {
+        "filePath": "packages/app/uncertain.ts",
+        "message": "WORKSPACE_MAPPING_UNAVAILABLE: @idx02/lib/uncertain: conditional exports or request modes do not converge to one source"
+      }
+    ],
+    "coverage": {
+      "files": [
+        "never-execute.ts",
+        "packages/app/blocked.ts",
+        "packages/app/entry.cjs",
+        "packages/app/entry.ts",
+        "packages/app/stable.ts",
+        "packages/app/type.ts",
+        "packages/app/uncertain.ts",
+        "packages/lib/src/main.cjs",
+        "packages/lib/src/main.ts",
+        "packages/lib/src/other.ts"
+      ],
+      "configurationFiles": [],
+      "packageFiles": [
+        "package.json",
+        "packages/app/package.json",
+        "packages/lib/package.json"
+      ],
+      "excludedPatterns": [
+        "**/.git/**",
+        "**/node_modules/**",
+        "**/dist/**",
+        "**/build/**",
+        "**/coverage/**",
+        "**/__pycache__/**",
+        "**/.venv/**",
+        "**/venv/**",
+        "**/.agents/**",
+        "**/.superpowers/**",
+        "**/.next/**",
+        "**/.cache/**",
+        "**/vendor/**"
+      ],
+      "unresolvedCount": 7,
+      "availability": {
+        "complete": true,
+        "unavailablePaths": [],
+        "excludedPaths": []
+      }
+    }
+  },
+  "afterWorkspaces": {
+    "id": "snapshot:ae778c99212a5ece81b98d1bc8a07c9f",
+    "projectId": "project:a13e790d3070ee1bf8efd145ab7a8a51",
+    "createdAt": "2026-10-10T15:15:27.749Z",
+    "gitRevision": null,
+    "contentHash": "4f4c79cdf8c9000ba47d79644878576ab4c7d1e20f83d0ec40b06d2403f88fef",
+    "nodes": [
+      {
+        "id": "folder:e91eecf7cfdd439cdb659b1e43801f18",
+        "kind": "folder",
+        "name": ".",
+        "qualifiedName": "."
+      },
+      {
+        "id": "file:980398603f38e8de88bb32d88bb115ec",
+        "kind": "file",
+        "name": "never-execute.ts",
+        "qualifiedName": "never-execute.ts",
+        "filePath": "never-execute.ts",
+        "parentId": "folder:e91eecf7cfdd439cdb659b1e43801f18",
+        "language": "typescript"
+      },
+      {
+        "id": "folder:7c372c652e599d92cb1d329d6409744e",
+        "kind": "folder",
+        "name": "packages",
+        "qualifiedName": "packages",
+        "filePath": "packages",
+        "parentId": "folder:e91eecf7cfdd439cdb659b1e43801f18"
+      },
+      {
+        "id": "folder:3b1dc29af53c4c4d6f8ee3990ab341ca",
+        "kind": "folder",
+        "name": "app",
+        "qualifiedName": "packages/app",
+        "filePath": "packages/app",
+        "parentId": "folder:7c372c652e599d92cb1d329d6409744e"
+      },
+      {
+        "id": "file:c1f6b33c4e21c7a72429cd1cf1206912",
+        "kind": "file",
+        "name": "blocked.ts",
+        "qualifiedName": "packages/app/blocked.ts",
+        "filePath": "packages/app/blocked.ts",
+        "parentId": "folder:3b1dc29af53c4c4d6f8ee3990ab341ca",
+        "language": "typescript"
+      },
+      {
+        "id": "file:84a7d4e280cdd4f4dbe4fae1e06385c2",
+        "kind": "file",
+        "name": "entry.cjs",
+        "qualifiedName": "packages/app/entry.cjs",
+        "filePath": "packages/app/entry.cjs",
+        "parentId": "folder:3b1dc29af53c4c4d6f8ee3990ab341ca",
+        "language": "javascript"
+      },
+      {
+        "id": "file:382c4f6a6b9801c994ecfdf9e47e2dd6",
+        "kind": "file",
+        "name": "entry.ts",
+        "qualifiedName": "packages/app/entry.ts",
+        "filePath": "packages/app/entry.ts",
+        "parentId": "folder:3b1dc29af53c4c4d6f8ee3990ab341ca",
+        "language": "typescript"
+      },
+      {
+        "id": "file:87275fb84141227e62e25bc14df6beda",
+        "kind": "file",
+        "name": "stable.ts",
+        "qualifiedName": "packages/app/stable.ts",
+        "filePath": "packages/app/stable.ts",
+        "parentId": "folder:3b1dc29af53c4c4d6f8ee3990ab341ca",
+        "language": "typescript"
+      },
+      {
+        "id": "file:0c3c2f50998407c509a0ef7b236062d0",
+        "kind": "file",
+        "name": "type.ts",
+        "qualifiedName": "packages/app/type.ts",
+        "filePath": "packages/app/type.ts",
+        "parentId": "folder:3b1dc29af53c4c4d6f8ee3990ab341ca",
+        "language": "typescript"
+      },
+      {
+        "id": "file:fd3311ff2d6f980605fa5e598d96760a",
+        "kind": "file",
+        "name": "uncertain.ts",
+        "qualifiedName": "packages/app/uncertain.ts",
+        "filePath": "packages/app/uncertain.ts",
+        "parentId": "folder:3b1dc29af53c4c4d6f8ee3990ab341ca",
+        "language": "typescript"
+      },
+      {
+        "id": "folder:07295faafb299f872a4062b8e9c41e82",
+        "kind": "folder",
+        "name": "lib",
+        "qualifiedName": "packages/lib",
+        "filePath": "packages/lib",
+        "parentId": "folder:7c372c652e599d92cb1d329d6409744e"
+      },
+      {
+        "id": "folder:30fa797de78005d2c826a2b65e2c5be0",
+        "kind": "folder",
+        "name": "src",
+        "qualifiedName": "packages/lib/src",
+        "filePath": "packages/lib/src",
+        "parentId": "folder:07295faafb299f872a4062b8e9c41e82"
+      },
+      {
+        "id": "file:2c5f0dbaf5cb7983de26a23358727212",
+        "kind": "file",
+        "name": "main.cjs",
+        "qualifiedName": "packages/lib/src/main.cjs",
+        "filePath": "packages/lib/src/main.cjs",
+        "parentId": "folder:30fa797de78005d2c826a2b65e2c5be0",
+        "language": "javascript"
+      },
+      {
+        "id": "file:c04a32f6ef60a890f6d9d7a8deaebd28",
+        "kind": "file",
+        "name": "main.ts",
+        "qualifiedName": "packages/lib/src/main.ts",
+        "filePath": "packages/lib/src/main.ts",
+        "parentId": "folder:30fa797de78005d2c826a2b65e2c5be0",
+        "language": "typescript"
+      },
+      {
+        "id": "file:ed64150760d29b7045daaed7308505c2",
+        "kind": "file",
+        "name": "other.ts",
+        "qualifiedName": "packages/lib/src/other.ts",
+        "filePath": "packages/lib/src/other.ts",
+        "parentId": "folder:30fa797de78005d2c826a2b65e2c5be0",
+        "language": "typescript"
+      },
+      {
+        "id": "function:d861bb727d9dc784ccaf58aea09efdfd",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "blocked",
+        "qualifiedName": "blocked",
+        "filePath": "packages/app/blocked.ts",
+        "parentId": "file:c1f6b33c4e21c7a72429cd1cf1206912",
+        "language": "typescript",
+        "signature": "export function blocked()",
+        "startLine": 2,
+        "endLine": 2,
+        "exported": true
+      },
+      {
+        "id": "function:0bc98f11081da756581bd0890970dc03",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "requireEntry",
+        "qualifiedName": "requireEntry",
+        "filePath": "packages/app/entry.cjs",
+        "parentId": "file:84a7d4e280cdd4f4dbe4fae1e06385c2",
+        "language": "javascript",
+        "signature": "function requireEntry()",
+        "startLine": 2,
+        "endLine": 2,
+        "exported": true
+      },
+      {
+        "id": "function:f275f88f56d9603cfc6ee472a6c39029",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "entry",
+        "qualifiedName": "entry",
+        "filePath": "packages/app/entry.ts",
+        "parentId": "file:382c4f6a6b9801c994ecfdf9e47e2dd6",
+        "language": "typescript",
+        "signature": "export function entry()",
+        "startLine": 2,
+        "endLine": 2,
+        "exported": true
+      },
+      {
+        "id": "function:7836d4e11f9a7dcb64caed87d6111567",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "stable",
+        "qualifiedName": "stable",
+        "filePath": "packages/app/stable.ts",
+        "parentId": "file:87275fb84141227e62e25bc14df6beda",
+        "language": "typescript",
+        "signature": "export function stable()",
+        "startLine": 2,
+        "endLine": 2,
+        "exported": true
+      },
+      {
+        "id": "function:ecf35f8039d007bc3af05a046d45be5d",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "typeOnly",
+        "qualifiedName": "typeOnly",
+        "filePath": "packages/app/type.ts",
+        "parentId": "file:0c3c2f50998407c509a0ef7b236062d0",
+        "language": "typescript",
+        "signature": "export function typeOnly()",
+        "startLine": 2,
+        "endLine": 2,
+        "exported": true
+      },
+      {
+        "id": "function:d68fdd0dd695937930df571371cf0a1b",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "uncertain",
+        "qualifiedName": "uncertain",
+        "filePath": "packages/app/uncertain.ts",
+        "parentId": "file:fd3311ff2d6f980605fa5e598d96760a",
+        "language": "typescript",
+        "signature": "export function uncertain()",
+        "startLine": 2,
+        "endLine": 2,
+        "exported": true
+      },
+      {
+        "id": "function:564bc0226efa1eb0fd9c5902a9732d9a",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "helper",
+        "qualifiedName": "helper",
+        "filePath": "packages/lib/src/main.cjs",
+        "parentId": "file:2c5f0dbaf5cb7983de26a23358727212",
+        "language": "javascript",
+        "signature": "function helper()",
+        "startLine": 1,
+        "endLine": 1,
+        "exported": true
+      },
+      {
+        "id": "function:cf87d2e52504b744a91b1301ace49e21",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "helper",
+        "qualifiedName": "helper",
+        "filePath": "packages/lib/src/main.ts",
+        "parentId": "file:c04a32f6ef60a890f6d9d7a8deaebd28",
+        "language": "typescript",
+        "signature": "export function helper()",
+        "startLine": 1,
+        "endLine": 1,
+        "exported": true
+      },
+      {
+        "id": "function:dc7ec52a5c8886e824ee095ac355c246",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "helper",
+        "qualifiedName": "helper",
+        "filePath": "packages/lib/src/other.ts",
+        "parentId": "file:ed64150760d29b7045daaed7308505c2",
+        "language": "typescript",
+        "signature": "export function helper()",
+        "startLine": 1,
+        "endLine": 1,
+        "exported": true
+      },
+      {
+        "id": "external:ec6b78b04c9326e35d332b516c4d5a60",
+        "kind": "external",
+        "name": "node:fs",
+        "qualifiedName": "node:fs"
+      },
+      {
+        "id": "external:deb0b53de613d71970e1e34a1b50f2d0",
+        "kind": "external",
+        "name": "node:fs:writeFileSync:writeFileSync",
+        "qualifiedName": "node:fs:writeFileSync:writeFileSync"
+      }
+    ],
+    "relations": [
+      {
+        "id": "relation:cbc1071b15d586aed447046de9f57a8e",
+        "type": "contains",
+        "sourceId": "folder:e91eecf7cfdd439cdb659b1e43801f18",
+        "targetId": "file:980398603f38e8de88bb32d88bb115ec",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "never-execute.ts",
+          "line": 1
+        }
+      },
+      {
+        "id": "relation:df763a6f4fcec8612954cff9d5ece202",
+        "type": "contains",
+        "sourceId": "folder:e91eecf7cfdd439cdb659b1e43801f18",
+        "targetId": "folder:7c372c652e599d92cb1d329d6409744e",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages",
+          "line": 1
+        }
+      },
+      {
+        "id": "relation:220da96f38ad7573a3dfa2a5d2893e14",
+        "type": "contains",
+        "sourceId": "folder:7c372c652e599d92cb1d329d6409744e",
+        "targetId": "folder:3b1dc29af53c4c4d6f8ee3990ab341ca",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/app",
+          "line": 1
+        }
+      },
+      {
+        "id": "relation:71f1e2f7281df81e32ca71d5413addbd",
+        "type": "contains",
+        "sourceId": "folder:3b1dc29af53c4c4d6f8ee3990ab341ca",
+        "targetId": "file:c1f6b33c4e21c7a72429cd1cf1206912",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/app/blocked.ts",
+          "line": 1
+        }
+      },
+      {
+        "id": "relation:7bde8e3a5ee1f77705134a5443bd3e6f",
+        "type": "contains",
+        "sourceId": "folder:3b1dc29af53c4c4d6f8ee3990ab341ca",
+        "targetId": "file:84a7d4e280cdd4f4dbe4fae1e06385c2",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/app/entry.cjs",
+          "line": 1
+        }
+      },
+      {
+        "id": "relation:9386e7bbbab5dc361a7d6f2404cb75f5",
+        "type": "contains",
+        "sourceId": "folder:3b1dc29af53c4c4d6f8ee3990ab341ca",
+        "targetId": "file:382c4f6a6b9801c994ecfdf9e47e2dd6",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/app/entry.ts",
+          "line": 1
+        }
+      },
+      {
+        "id": "relation:2d6391346d534b04a02f09180eb6a70a",
+        "type": "contains",
+        "sourceId": "folder:3b1dc29af53c4c4d6f8ee3990ab341ca",
+        "targetId": "file:87275fb84141227e62e25bc14df6beda",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/app/stable.ts",
+          "line": 1
+        }
+      },
+      {
+        "id": "relation:cebe86d2d9789285534fd10f8ec9d173",
+        "type": "contains",
+        "sourceId": "folder:3b1dc29af53c4c4d6f8ee3990ab341ca",
+        "targetId": "file:0c3c2f50998407c509a0ef7b236062d0",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/app/type.ts",
+          "line": 1
+        }
+      },
+      {
+        "id": "relation:cac54bad25ead5cb8db78f568835109d",
+        "type": "contains",
+        "sourceId": "folder:3b1dc29af53c4c4d6f8ee3990ab341ca",
+        "targetId": "file:fd3311ff2d6f980605fa5e598d96760a",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/app/uncertain.ts",
+          "line": 1
+        }
+      },
+      {
+        "id": "relation:51b05605f6ba3548da505745db167bd0",
+        "type": "contains",
+        "sourceId": "folder:7c372c652e599d92cb1d329d6409744e",
+        "targetId": "folder:07295faafb299f872a4062b8e9c41e82",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/lib",
+          "line": 1
+        }
+      },
+      {
+        "id": "relation:305bac0e0a812811d34105e7da0549a0",
+        "type": "contains",
+        "sourceId": "folder:07295faafb299f872a4062b8e9c41e82",
+        "targetId": "folder:30fa797de78005d2c826a2b65e2c5be0",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/lib/src",
+          "line": 1
+        }
+      },
+      {
+        "id": "relation:e5119a63e79559dabed0bf747c7b01d7",
+        "type": "contains",
+        "sourceId": "folder:30fa797de78005d2c826a2b65e2c5be0",
+        "targetId": "file:2c5f0dbaf5cb7983de26a23358727212",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/lib/src/main.cjs",
+          "line": 1
+        }
+      },
+      {
+        "id": "relation:afaebee80b64427e7d2e50db3ec5313f",
+        "type": "contains",
+        "sourceId": "folder:30fa797de78005d2c826a2b65e2c5be0",
+        "targetId": "file:c04a32f6ef60a890f6d9d7a8deaebd28",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/lib/src/main.ts",
+          "line": 1
+        }
+      },
+      {
+        "id": "relation:f911b7b083a02d5d393d9ca19998c8ae",
+        "type": "contains",
+        "sourceId": "folder:30fa797de78005d2c826a2b65e2c5be0",
+        "targetId": "file:ed64150760d29b7045daaed7308505c2",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/lib/src/other.ts",
+          "line": 1
+        }
+      },
+      {
+        "id": "relation:26ba007f5bf846cabb253ef29a115326",
+        "type": "contains",
+        "sourceId": "file:c1f6b33c4e21c7a72429cd1cf1206912",
+        "targetId": "function:d861bb727d9dc784ccaf58aea09efdfd",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/app/blocked.ts",
+          "line": 2
+        }
+      },
+      {
+        "id": "relation:79f924fd3b090a77d55823155c02dfb4",
+        "type": "contains",
+        "sourceId": "file:84a7d4e280cdd4f4dbe4fae1e06385c2",
+        "targetId": "function:0bc98f11081da756581bd0890970dc03",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/app/entry.cjs",
+          "line": 2
+        }
+      },
+      {
+        "id": "relation:392080983ee0c6a5f4a3149ca09a1034",
+        "type": "contains",
+        "sourceId": "file:382c4f6a6b9801c994ecfdf9e47e2dd6",
+        "targetId": "function:f275f88f56d9603cfc6ee472a6c39029",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/app/entry.ts",
+          "line": 2
+        }
+      },
+      {
+        "id": "relation:0c7a3f93401a617f93b5650f8b174f02",
+        "type": "contains",
+        "sourceId": "file:87275fb84141227e62e25bc14df6beda",
+        "targetId": "function:7836d4e11f9a7dcb64caed87d6111567",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/app/stable.ts",
+          "line": 2
+        }
+      },
+      {
+        "id": "relation:85287c9cf5e20ab45afb9c3012ea499e",
+        "type": "contains",
+        "sourceId": "file:0c3c2f50998407c509a0ef7b236062d0",
+        "targetId": "function:ecf35f8039d007bc3af05a046d45be5d",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/app/type.ts",
+          "line": 2
+        }
+      },
+      {
+        "id": "relation:abb627d1accefe19e20a5afb0578c9dd",
+        "type": "contains",
+        "sourceId": "file:fd3311ff2d6f980605fa5e598d96760a",
+        "targetId": "function:d68fdd0dd695937930df571371cf0a1b",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/app/uncertain.ts",
+          "line": 2
+        }
+      },
+      {
+        "id": "relation:fc5babe659d9dc510c83ffa38f5103f2",
+        "type": "contains",
+        "sourceId": "file:2c5f0dbaf5cb7983de26a23358727212",
+        "targetId": "function:564bc0226efa1eb0fd9c5902a9732d9a",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/lib/src/main.cjs",
+          "line": 1
+        }
+      },
+      {
+        "id": "relation:abd1eb3a511272c71ec81c7070b8efac",
+        "type": "contains",
+        "sourceId": "file:c04a32f6ef60a890f6d9d7a8deaebd28",
+        "targetId": "function:cf87d2e52504b744a91b1301ace49e21",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/lib/src/main.ts",
+          "line": 1
+        }
+      },
+      {
+        "id": "relation:a765827340202c08df1d1ecb383b4008",
+        "type": "contains",
+        "sourceId": "file:ed64150760d29b7045daaed7308505c2",
+        "targetId": "function:dc7ec52a5c8886e824ee095ac355c246",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "packages/lib/src/other.ts",
+          "line": 1
+        }
+      },
+      {
+        "id": "relation:b59d675a8ace874ea12138af56ec8306",
+        "type": "imports",
+        "sourceId": "file:84a7d4e280cdd4f4dbe4fae1e06385c2",
+        "targetId": null,
+        "resolution": "unresolved",
+        "evidence": {
+          "filePath": "packages/app/entry.cjs",
+          "line": 1,
+          "text": "require(\"@idx02/lib\")"
+        },
+        "reason": "CommonJS module @idx02/lib has no target within captured sources"
+      },
+      {
+        "id": "relation:5014410ddb86b4a6ebb5d5f2e374208a",
+        "type": "imports",
+        "sourceId": "file:980398603f38e8de88bb32d88bb115ec",
+        "targetId": "external:ec6b78b04c9326e35d332b516c4d5a60",
+        "resolution": "external",
+        "evidence": {
+          "filePath": "never-execute.ts",
+          "line": 1,
+          "text": "import {writeFileSync} from \"node:fs\";"
+        }
+      },
+      {
+        "id": "relation:ea90e66266ab567929ed61d2ba1261f1",
+        "type": "imports",
+        "sourceId": "file:c1f6b33c4e21c7a72429cd1cf1206912",
+        "targetId": null,
+        "resolution": "unresolved",
+        "evidence": {
+          "filePath": "packages/app/blocked.ts",
+          "line": 1,
+          "text": "import { helper } from \"@idx02/lib/blocked\";"
+        },
+        "reason": "Configured alias @idx02/lib/blocked has no target within captured sources; see configuration diagnostics for the owning scope and boundary"
+      },
+      {
+        "id": "relation:937373451eb3134306a5ae2dc5ead946",
+        "type": "imports",
+        "sourceId": "file:382c4f6a6b9801c994ecfdf9e47e2dd6",
+        "targetId": null,
+        "resolution": "unresolved",
+        "evidence": {
+          "filePath": "packages/app/entry.ts",
+          "line": 1,
+          "text": "import { helper } from \"@idx02/lib\";"
+        },
+        "reason": "Configured alias @idx02/lib has no target within captured sources; see configuration diagnostics for the owning scope and boundary"
+      },
+      {
+        "id": "relation:a33345d72dee37d5cd783b230604eae9",
+        "type": "imports",
+        "sourceId": "file:87275fb84141227e62e25bc14df6beda",
+        "targetId": null,
+        "resolution": "unresolved",
+        "evidence": {
+          "filePath": "packages/app/stable.ts",
+          "line": 1,
+          "text": "import { helper } from \"@idx02/lib/stable\";"
+        },
+        "reason": "Configured alias @idx02/lib/stable has no target within captured sources; see configuration diagnostics for the owning scope and boundary"
+      },
+      {
+        "id": "relation:ba18735a9620ac2102708428924a25e0",
+        "type": "imports",
+        "sourceId": "file:0c3c2f50998407c509a0ef7b236062d0",
+        "targetId": null,
+        "resolution": "unresolved",
+        "evidence": {
+          "filePath": "packages/app/type.ts",
+          "line": 1,
+          "text": "import type * as lib from \"@idx02/lib\";"
+        },
+        "reason": "Configured alias @idx02/lib has no target within captured sources; see configuration diagnostics for the owning scope and boundary"
+      },
+      {
+        "id": "relation:e0ead6c703868d54cf7d065d565f620a",
+        "type": "imports",
+        "sourceId": "file:fd3311ff2d6f980605fa5e598d96760a",
+        "targetId": null,
+        "resolution": "unresolved",
+        "evidence": {
+          "filePath": "packages/app/uncertain.ts",
+          "line": 1,
+          "text": "import { helper } from \"@idx02/lib/uncertain\";"
+        },
+        "reason": "Configured alias @idx02/lib/uncertain has no target within captured sources; see configuration diagnostics for the owning scope and boundary"
+      },
+      {
+        "id": "relation:a32fc6de01e72c0405b1dfaa7058302e",
+        "type": "calls",
+        "sourceId": "file:980398603f38e8de88bb32d88bb115ec",
+        "targetId": "external:deb0b53de613d71970e1e34a1b50f2d0",
+        "resolution": "external",
+        "evidence": {
+          "filePath": "never-execute.ts",
+          "line": 2,
+          "text": "writeFileSync(\"/tmp/atlasmode-idx02-fixture-mnQdH1/TARGET_EXECUTED\", \"executed\")"
+        }
+      },
+      {
+        "id": "relation:f3389ba6c0607b996ad61b9f83295492",
+        "type": "calls",
+        "sourceId": "file:980398603f38e8de88bb32d88bb115ec",
+        "targetId": null,
+        "resolution": "unresolved",
+        "evidence": {
+          "filePath": "never-execute.ts",
+          "line": 3,
+          "text": "new Error(\"Target source must never execute\")"
+        },
+        "reason": "No unique indexed implementation for this call (dynamic, ambient, or excluded target)"
+      },
+      {
+        "id": "relation:7c877ff92b6d9933c452f57f83b9e026",
+        "type": "calls",
+        "sourceId": "function:d861bb727d9dc784ccaf58aea09efdfd",
+        "targetId": null,
+        "resolution": "unresolved",
+        "evidence": {
+          "filePath": "packages/app/blocked.ts",
+          "line": 2,
+          "text": "helper()"
+        },
+        "reason": "No unique indexed implementation for this call (dynamic, ambient, or excluded target)"
+      },
+      {
+        "id": "relation:335b6ac4005e1c458b559e7fed79ec3e",
+        "type": "calls",
+        "sourceId": "file:84a7d4e280cdd4f4dbe4fae1e06385c2",
+        "targetId": null,
+        "resolution": "unresolved",
+        "evidence": {
+          "filePath": "packages/app/entry.cjs",
+          "line": 1,
+          "text": "require(\"@idx02/lib\")"
+        },
+        "reason": "CommonJS loader is not an indexed implementation"
+      },
+      {
+        "id": "relation:8e18219693b576b18a08957085c79d8b",
+        "type": "calls",
+        "sourceId": "function:0bc98f11081da756581bd0890970dc03",
+        "targetId": null,
+        "resolution": "unresolved",
+        "evidence": {
+          "filePath": "packages/app/entry.cjs",
+          "line": 2,
+          "text": "helper()"
+        },
+        "reason": "CommonJS module @idx02/lib has no target within captured sources"
+      },
+      {
+        "id": "relation:fea573bafe3457a7856a9244b7599809",
+        "type": "calls",
+        "sourceId": "function:f275f88f56d9603cfc6ee472a6c39029",
+        "targetId": null,
+        "resolution": "unresolved",
+        "evidence": {
+          "filePath": "packages/app/entry.ts",
+          "line": 2,
+          "text": "helper()"
+        },
+        "reason": "No unique indexed implementation for this call (dynamic, ambient, or excluded target)"
+      },
+      {
+        "id": "relation:e40d6432c1413e00af9e2bffcd14fe14",
+        "type": "calls",
+        "sourceId": "function:7836d4e11f9a7dcb64caed87d6111567",
+        "targetId": null,
+        "resolution": "unresolved",
+        "evidence": {
+          "filePath": "packages/app/stable.ts",
+          "line": 2,
+          "text": "helper()"
+        },
+        "reason": "No unique indexed implementation for this call (dynamic, ambient, or excluded target)"
+      },
+      {
+        "id": "relation:20c33bff8ac9a32f4feceb5864c90f35",
+        "type": "calls",
+        "sourceId": "function:ecf35f8039d007bc3af05a046d45be5d",
+        "targetId": null,
+        "resolution": "unresolved",
+        "evidence": {
+          "filePath": "packages/app/type.ts",
+          "line": 2,
+          "text": "lib.helper()"
+        },
+        "reason": "No unique indexed implementation for this call (dynamic, ambient, or excluded target)"
+      },
+      {
+        "id": "relation:7d72569bc540f098ebabbd95276ddfca",
+        "type": "calls",
+        "sourceId": "function:d68fdd0dd695937930df571371cf0a1b",
+        "targetId": null,
+        "resolution": "unresolved",
+        "evidence": {
+          "filePath": "packages/app/uncertain.ts",
+          "line": 2,
+          "text": "helper()"
+        },
+        "reason": "No unique indexed implementation for this call (dynamic, ambient, or excluded target)"
+      }
+    ],
+    "diagnostics": [
+      {
+        "filePath": "packages/app/blocked.ts",
+        "message": "WORKSPACE_MAPPING_UNAVAILABLE: @idx02/lib/blocked: consumer is outside the owner's registered package scope"
+      },
+      {
+        "filePath": "packages/app/entry.cjs",
+        "message": "WORKSPACE_MAPPING_UNAVAILABLE: @idx02/lib: consumer is outside the owner's registered package scope"
+      },
+      {
+        "filePath": "packages/app/entry.ts",
+        "message": "WORKSPACE_MAPPING_UNAVAILABLE: @idx02/lib: consumer is outside the owner's registered package scope"
+      },
+      {
+        "filePath": "packages/app/stable.ts",
+        "message": "WORKSPACE_MAPPING_UNAVAILABLE: @idx02/lib/stable: consumer is outside the owner's registered package scope"
+      },
+      {
+        "filePath": "packages/app/type.ts",
+        "message": "WORKSPACE_MAPPING_UNAVAILABLE: @idx02/lib: consumer is outside the owner's registered package scope"
+      },
+      {
+        "filePath": "packages/app/uncertain.ts",
+        "message": "WORKSPACE_MAPPING_UNAVAILABLE: @idx02/lib/uncertain: consumer is outside the owner's registered package scope"
+      }
+    ],
+    "coverage": {
+      "files": [
+        "never-execute.ts",
+        "packages/app/blocked.ts",
+        "packages/app/entry.cjs",
+        "packages/app/entry.ts",
+        "packages/app/stable.ts",
+        "packages/app/type.ts",
+        "packages/app/uncertain.ts",
+        "packages/lib/src/main.cjs",
+        "packages/lib/src/main.ts",
+        "packages/lib/src/other.ts"
+      ],
+      "configurationFiles": [],
+      "packageFiles": [
+        "package.json",
+        "packages/app/package.json",
+        "packages/lib/package.json"
+      ],
+      "excludedPatterns": [
+        "**/.git/**",
+        "**/node_modules/**",
+        "**/dist/**",
+        "**/build/**",
+        "**/coverage/**",
+        "**/__pycache__/**",
+        "**/.venv/**",
+        "**/venv/**",
+        "**/.agents/**",
+        "**/.superpowers/**",
+        "**/.next/**",
+        "**/.cache/**",
+        "**/vendor/**"
+      ],
+      "unresolvedCount": 14,
+      "availability": {
+        "complete": true,
+        "unavailablePaths": [],
+        "excludedPaths": []
+      }
+    }
+  },
+  "contexts": [
+    {
+      "node": {
+        "id": "function:f275f88f56d9603cfc6ee472a6c39029",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "entry",
+        "qualifiedName": "entry",
+        "filePath": "packages/app/entry.ts",
+        "parentId": "file:382c4f6a6b9801c994ecfdf9e47e2dd6",
+        "language": "typescript",
+        "signature": "export function entry()",
+        "startLine": 2,
+        "endLine": 2,
+        "exported": true
+      },
+      "incoming": [],
+      "outgoing": [
+        {
+          "id": "relation:2e7d52e8cfffd45d2f8e9e644ba4cf83",
+          "type": "calls",
+          "sourceId": "function:f275f88f56d9603cfc6ee472a6c39029",
+          "targetId": "function:cf87d2e52504b744a91b1301ace49e21",
+          "resolution": "resolved",
+          "evidence": {
+            "filePath": "packages/app/entry.ts",
+            "line": 2,
+            "text": "helper()"
+          }
+        }
+      ],
+      "relatedNodes": [
+        {
+          "id": "function:f275f88f56d9603cfc6ee472a6c39029",
+          "kind": "function",
+          "declarationKind": "function",
+          "name": "entry",
+          "qualifiedName": "entry",
+          "filePath": "packages/app/entry.ts",
+          "parentId": "file:382c4f6a6b9801c994ecfdf9e47e2dd6",
+          "language": "typescript",
+          "signature": "export function entry()",
+          "startLine": 2,
+          "endLine": 2,
+          "exported": true
+        },
+        {
+          "id": "function:cf87d2e52504b744a91b1301ace49e21",
+          "kind": "function",
+          "declarationKind": "function",
+          "name": "helper",
+          "qualifiedName": "helper",
+          "filePath": "packages/lib/src/main.ts",
+          "parentId": "file:c04a32f6ef60a890f6d9d7a8deaebd28",
+          "language": "typescript",
+          "signature": "export function helper()",
+          "startLine": 1,
+          "endLine": 1,
+          "exported": true
+        }
+      ],
+      "totalIncoming": 0,
+      "totalOutgoing": 1,
+      "truncated": false,
+      "offset": 0,
+      "limit": 50,
+      "snapshotId": "snapshot:4c882fc142b7072f3ddaa1fb665dcdc3",
+      "dataSource": "code"
+    },
+    {
+      "node": {
+        "id": "function:f275f88f56d9603cfc6ee472a6c39029",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "entry",
+        "qualifiedName": "entry",
+        "filePath": "packages/app/entry.ts",
+        "parentId": "file:382c4f6a6b9801c994ecfdf9e47e2dd6",
+        "language": "typescript",
+        "signature": "export function entry()",
+        "startLine": 2,
+        "endLine": 2,
+        "exported": true
+      },
+      "incoming": [],
+      "outgoing": [
+        {
+          "id": "relation:7c2453ab55965e3fcf1ca88a7ef36f92",
+          "type": "calls",
+          "sourceId": "function:f275f88f56d9603cfc6ee472a6c39029",
+          "targetId": "function:dc7ec52a5c8886e824ee095ac355c246",
+          "resolution": "resolved",
+          "evidence": {
+            "filePath": "packages/app/entry.ts",
+            "line": 2,
+            "text": "helper()"
+          }
+        }
+      ],
+      "relatedNodes": [
+        {
+          "id": "function:f275f88f56d9603cfc6ee472a6c39029",
+          "kind": "function",
+          "declarationKind": "function",
+          "name": "entry",
+          "qualifiedName": "entry",
+          "filePath": "packages/app/entry.ts",
+          "parentId": "file:382c4f6a6b9801c994ecfdf9e47e2dd6",
+          "language": "typescript",
+          "signature": "export function entry()",
+          "startLine": 2,
+          "endLine": 2,
+          "exported": true
+        },
+        {
+          "id": "function:dc7ec52a5c8886e824ee095ac355c246",
+          "kind": "function",
+          "declarationKind": "function",
+          "name": "helper",
+          "qualifiedName": "helper",
+          "filePath": "packages/lib/src/other.ts",
+          "parentId": "file:ed64150760d29b7045daaed7308505c2",
+          "language": "typescript",
+          "signature": "export function helper()",
+          "startLine": 1,
+          "endLine": 1,
+          "exported": true
+        }
+      ],
+      "totalIncoming": 0,
+      "totalOutgoing": 1,
+      "truncated": false,
+      "offset": 0,
+      "limit": 50,
+      "snapshotId": "snapshot:182241100b065d9014529f8ae98cf8f8",
+      "dataSource": "code"
+    },
+    {
+      "node": {
+        "id": "function:f275f88f56d9603cfc6ee472a6c39029",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "entry",
+        "qualifiedName": "entry",
+        "filePath": "packages/app/entry.ts",
+        "parentId": "file:382c4f6a6b9801c994ecfdf9e47e2dd6",
+        "language": "typescript",
+        "signature": "export function entry()",
+        "startLine": 2,
+        "endLine": 2,
+        "exported": true
+      },
+      "incoming": [],
+      "outgoing": [
+        {
+          "id": "relation:fea573bafe3457a7856a9244b7599809",
+          "type": "calls",
+          "sourceId": "function:f275f88f56d9603cfc6ee472a6c39029",
+          "targetId": null,
+          "resolution": "unresolved",
+          "evidence": {
+            "filePath": "packages/app/entry.ts",
+            "line": 2,
+            "text": "helper()"
+          },
+          "reason": "No unique indexed implementation for this call (dynamic, ambient, or excluded target)"
+        }
+      ],
+      "relatedNodes": [
+        {
+          "id": "function:f275f88f56d9603cfc6ee472a6c39029",
+          "kind": "function",
+          "declarationKind": "function",
+          "name": "entry",
+          "qualifiedName": "entry",
+          "filePath": "packages/app/entry.ts",
+          "parentId": "file:382c4f6a6b9801c994ecfdf9e47e2dd6",
+          "language": "typescript",
+          "signature": "export function entry()",
+          "startLine": 2,
+          "endLine": 2,
+          "exported": true
+        }
+      ],
+      "totalIncoming": 0,
+      "totalOutgoing": 1,
+      "truncated": false,
+      "offset": 0,
+      "limit": 50,
+      "snapshotId": "snapshot:ae778c99212a5ece81b98d1bc8a07c9f",
+      "dataSource": "code"
+    }
+  ],
+  "sources": {
+    "packages/app/entry.ts": {
+      "filePath": "packages/app/entry.ts",
+      "content": "import { helper } from \"@idx02/lib\";\nexport function entry() { return helper(); }\n"
+    },
+    "packages/app/stable.ts": {
+      "filePath": "packages/app/stable.ts",
+      "content": "import { helper } from \"@idx02/lib/stable\";\nexport function stable() { return helper(); }\n"
+    },
+    "packages/app/uncertain.ts": {
+      "filePath": "packages/app/uncertain.ts",
+      "content": "import { helper } from \"@idx02/lib/uncertain\";\nexport function uncertain() { return helper(); }\n"
+    },
+    "packages/app/blocked.ts": {
+      "filePath": "packages/app/blocked.ts",
+      "content": "import { helper } from \"@idx02/lib/blocked\";\nexport function blocked() { return helper(); }\n"
+    },
+    "packages/app/type.ts": {
+      "filePath": "packages/app/type.ts",
+      "content": "import type * as lib from \"@idx02/lib\";\nexport function typeOnly() { return lib.helper(); }\n"
+    },
+    "packages/app/entry.cjs": {
+      "filePath": "packages/app/entry.cjs",
+      "content": "const {helper} = require(\"@idx02/lib\");\nfunction requireEntry(){ return helper(); }\nexports.requireEntry = requireEntry;\n"
+    },
+    "packages/lib/src/main.ts": {
+      "filePath": "packages/lib/src/main.ts",
+      "content": "export function helper() { return \"main\"; }\n"
+    },
+    "packages/lib/src/other.ts": {
+      "filePath": "packages/lib/src/other.ts",
+      "content": "export function helper() { return \"other\"; }\n"
+    },
+    "packages/lib/src/main.cjs": {
+      "filePath": "packages/lib/src/main.cjs",
+      "content": "function helper() { return \"require\"; }\nexports.helper = helper;\n"
+    },
+    "never-execute.ts": {
+      "filePath": "never-execute.ts",
+      "content": "import {writeFileSync} from \"node:fs\";\nwriteFileSync(\"/tmp/atlasmode-idx02-fixture-mnQdH1/TARGET_EXECUTED\", \"executed\");\nthrow new Error(\"Target source must never execute\");\n"
+    }
+  },
+  "approved": {
+    "plan": {
+      "id": "2abeb392-cbf7-47a7-88e5-49c63a7ad4c2",
+      "projectId": "project:a13e790d3070ee1bf8efd145ab7a8a51",
+      "title": "IDX02 configured workspace reuse",
+      "description": "",
+      "baselineSnapshotId": "snapshot:4c882fc142b7072f3ddaa1fb665dcdc3",
+      "baselineContentHash": "8fc1e7d06cf574c0bb889cbc89a29dac5a3c2778bdaf127272c4b7f27d938091",
+      "revision": 2,
+      "operations": [
+        {
+          "kind": "add_relation",
+          "id": "reuse",
+          "sourceId": "function:f275f88f56d9603cfc6ee472a6c39029",
+          "targetId": "function:cf87d2e52504b744a91b1301ace49e21",
+          "type": "must_reuse"
+        }
+      ],
+      "status": "approved",
+      "createdAt": "2026-10-10T15:15:26.945Z",
+      "updatedAt": "2026-10-10T15:15:26.965Z"
+    },
+    "approval": {
+      "id": "faf41942-7a78-488a-a157-f899b23e7402",
+      "planId": "2abeb392-cbf7-47a7-88e5-49c63a7ad4c2",
+      "revision": 2,
+      "semanticHash": "5fcd296765aacf94cb4b4cc8fd8fa46604f35ed8f875f3d024b172bbd8a66321",
+      "baselineSnapshotId": "snapshot:4c882fc142b7072f3ddaa1fb665dcdc3",
+      "baselineContentHash": "8fc1e7d06cf574c0bb889cbc89a29dac5a3c2778bdaf127272c4b7f27d938091",
+      "approvedAt": "2026-10-10T15:15:27.018Z",
+      "actor": "user"
+    },
+    "valid": true,
+    "issues": [
+      {
+        "severity": "warning",
+        "code": "COMPATIBILITY_UNKNOWN",
+        "message": "Interface compatibility is unknown; arguments, return values, and possible adaptation require human review.",
+        "operationIndex": 0
+      }
+    ]
+  },
+  "stale": {
+    "plan": {
+      "id": "2abeb392-cbf7-47a7-88e5-49c63a7ad4c2",
+      "projectId": "project:a13e790d3070ee1bf8efd145ab7a8a51",
+      "title": "IDX02 configured workspace reuse",
+      "description": "",
+      "baselineSnapshotId": "snapshot:4c882fc142b7072f3ddaa1fb665dcdc3",
+      "baselineContentHash": "8fc1e7d06cf574c0bb889cbc89a29dac5a3c2778bdaf127272c4b7f27d938091",
+      "revision": 2,
+      "operations": [
+        {
+          "kind": "add_relation",
+          "id": "reuse",
+          "sourceId": "function:f275f88f56d9603cfc6ee472a6c39029",
+          "targetId": "function:cf87d2e52504b744a91b1301ace49e21",
+          "type": "must_reuse"
+        }
+      ],
+      "status": "stale",
+      "createdAt": "2026-10-10T15:15:26.945Z",
+      "updatedAt": "2026-10-10T15:15:26.965Z"
+    },
+    "approval": {
+      "id": "faf41942-7a78-488a-a157-f899b23e7402",
+      "planId": "2abeb392-cbf7-47a7-88e5-49c63a7ad4c2",
+      "revision": 2,
+      "semanticHash": "5fcd296765aacf94cb4b4cc8fd8fa46604f35ed8f875f3d024b172bbd8a66321",
+      "baselineSnapshotId": "snapshot:4c882fc142b7072f3ddaa1fb665dcdc3",
+      "baselineContentHash": "8fc1e7d06cf574c0bb889cbc89a29dac5a3c2778bdaf127272c4b7f27d938091",
+      "approvedAt": "2026-10-10T15:15:27.018Z",
+      "actor": "user"
+    },
+    "valid": false,
+    "issues": [
+      {
+        "severity": "error",
+        "code": "BASELINE_MISMATCH",
+        "message": "Plan baseline differs from the supplied snapshot."
+      },
+      {
+        "severity": "warning",
+        "code": "COMPATIBILITY_UNKNOWN",
+        "message": "Interface compatibility is unknown; arguments, return values, and possible adaptation require human review.",
+        "operationIndex": 0
+      }
+    ]
+  },
+  "route": {
+    "snapshotId": "snapshot:4c882fc142b7072f3ddaa1fb665dcdc3",
+    "title": "Workspace actual leaf",
+    "description": "IDX02 作者原文",
+    "source": "agent",
+    "kind": "call_chain",
+    "steps": [
+      {
+        "nodeId": "function:f275f88f56d9603cfc6ee472a6c39029",
+        "note": "entry"
+      },
+      {
+        "nodeId": "function:cf87d2e52504b744a91b1301ace49e21",
+        "note": "captured source",
+        "relationId": "relation:2e7d52e8cfffd45d2f8e9e644ba4cf83"
+      }
+    ],
+    "projectId": "project:a13e790d3070ee1bf8efd145ab7a8a51",
+    "id": "7434592c-2976-4cec-b07b-6d454f51fcbc",
+    "revision": 1,
+    "createdAt": "2026-10-10T15:15:27.026Z"
+  },
+  "history": {
+    "snapshotIds": [
+      "snapshot:4c882fc142b7072f3ddaa1fb665dcdc3",
+      "snapshot:182241100b065d9014529f8ae98cf8f8",
+      "snapshot:ae778c99212a5ece81b98d1bc8a07c9f"
+    ],
+    "immutableSnapshots": true,
+    "approvalUnchanged": true,
+    "routeUnchanged": true,
+    "restartConfirmed": true
+  },
+  "isolated": {
+    "project": {
+      "id": "project:75432e6f435b97d256222109a0eae0bd",
+      "path": "/tmp/atlasmode-idx02-isolated-B3EVvu",
+      "name": "atlasmode-idx02-isolated-B3EVvu",
+      "snapshotId": "snapshot:3ac0fcb5fd3f7df759fadf9ff199d2f0"
+    },
+    "entry": {
+      "id": "function:120b5f1ad47d1c5b9486dab112bf7d40",
+      "kind": "function",
+      "declarationKind": "function",
+      "name": "entry",
+      "qualifiedName": "entry",
+      "filePath": "packages/app/entry.ts",
+      "parentId": "file:2c65520304e5e4c13eb44d4735e61617",
+      "language": "typescript",
+      "signature": "export function entry()",
+      "startLine": 2,
+      "endLine": 2,
+      "exported": true
+    },
+    "leaf": {
+      "id": "function:5bc427f260b948fb475480e8e83a97bc",
+      "kind": "function",
+      "declarationKind": "function",
+      "name": "helper",
+      "qualifiedName": "helper",
+      "filePath": "packages/lib/src/main.ts",
+      "parentId": "file:71e9419c8b7dbfe3788b0f87d809569d",
+      "language": "typescript",
+      "signature": "export function helper()",
+      "startLine": 1,
+      "endLine": 1,
+      "exported": true
+    },
+    "context": {
+      "node": {
+        "id": "function:120b5f1ad47d1c5b9486dab112bf7d40",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "entry",
+        "qualifiedName": "entry",
+        "filePath": "packages/app/entry.ts",
+        "parentId": "file:2c65520304e5e4c13eb44d4735e61617",
+        "language": "typescript",
+        "signature": "export function entry()",
+        "startLine": 2,
+        "endLine": 2,
+        "exported": true
+      },
+      "incoming": [],
+      "outgoing": [
+        {
+          "id": "relation:054a78fd53694115ac9e8f7cd03d58e5",
+          "type": "calls",
+          "sourceId": "function:120b5f1ad47d1c5b9486dab112bf7d40",
+          "targetId": "function:5bc427f260b948fb475480e8e83a97bc",
+          "resolution": "resolved",
+          "evidence": {
+            "filePath": "packages/app/entry.ts",
+            "line": 2,
+            "text": "helper()"
+          }
+        }
+      ],
+      "relatedNodes": [
+        {
+          "id": "function:120b5f1ad47d1c5b9486dab112bf7d40",
+          "kind": "function",
+          "declarationKind": "function",
+          "name": "entry",
+          "qualifiedName": "entry",
+          "filePath": "packages/app/entry.ts",
+          "parentId": "file:2c65520304e5e4c13eb44d4735e61617",
+          "language": "typescript",
+          "signature": "export function entry()",
+          "startLine": 2,
+          "endLine": 2,
+          "exported": true
+        },
+        {
+          "id": "function:5bc427f260b948fb475480e8e83a97bc",
+          "kind": "function",
+          "declarationKind": "function",
+          "name": "helper",
+          "qualifiedName": "helper",
+          "filePath": "packages/lib/src/main.ts",
+          "parentId": "file:71e9419c8b7dbfe3788b0f87d809569d",
+          "language": "typescript",
+          "signature": "export function helper()",
+          "startLine": 1,
+          "endLine": 1,
+          "exported": true
+        }
+      ],
+      "totalIncoming": 0,
+      "totalOutgoing": 1,
+      "truncated": false,
+      "offset": 0,
+      "limit": 50,
+      "snapshotId": "snapshot:3ac0fcb5fd3f7df759fadf9ff199d2f0",
+      "dataSource": "code"
+    },
+    "crossProjectMcp": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"code\":\"NOT_FOUND\",\"message\":\"Function not found in this project snapshot.\",\"status\":404}"
+        }
+      ],
+      "isError": true
+    },
+    "httpStatus": 404
+  },
+  "changedManifests": {
+    "exports": {
+      "name": "@idx02/lib",
+      "type": "module",
+      "exports": {
+        ".": {
+          "import": "./src/other.ts",
+          "require": "./src/main.cjs"
+        },
+        "./stable": {
+          "custom": "./src/main.ts",
+          "default": "./src/main.ts"
+        },
+        "./uncertain": {
+          "custom": "./src/other.ts",
+          "default": "./src/main.ts"
+        },
+        "./blocked": null,
+        "./*": "./src/*.ts"
+      }
+    },
+    "workspaces": {
+      "private": true,
+      "type": "module",
+      "workspaces": [
+        "packages/lib"
+      ]
+    }
+  },
+  "targetNeverExecuted": true,
+  "errors": [],
+  "external": [],
+  "protocolErrors": []
+}

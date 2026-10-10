@@ -1,0 +1,65 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90m/home/agent/projects/AtlasMode[39m
+
+ [31m❯[39m packages/indexer/src/workspaceResolution.test.ts [2m([22m[2m35 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[33m 424[2mms[22m[39m
+     [32m✓[39m continues outer default after nested NO_MATCH but never after BLOCKED[32m 99[2mms[22m[39m
+     [32m✓[39m rejects numeric condition keys and over-budget condition trees[32m 30[2mms[22m[39m
+     [32m✓[39m maps root exports to the exact captured implementation[32m 8[2mms[22m[39m
+     [32m✓[39m maps exact subpaths and static single-star source patterns[32m 20[2mms[22m[39m
+     [32m✓[39m selects literal import and require conditions without merging identities[32m 15[2mms[22m[39m
+     [32m✓[39m accepts convergent custom conditions and rejects divergent alternatives[32m 18[2mms[22m[39m
+     [32m✓[39m honors ordered default and inactive branches[32m 15[2mms[22m[39m
+     [32m✓[39m rejects mixed request modes when their selected targets diverge[32m 9[2mms[22m[39m
+     [32m✓[39m keeps invalid/blocked/missing/guessed target unknown: null[32m 6[2mms[22m[39m
+     [32m✓[39m keeps invalid/blocked/missing/guessed target unknown: "./src/main.ts"[32m 8[2mms[22m[39m
+     [32m✓[39m keeps invalid/blocked/missing/guessed target unknown: {".":"./src/main.ts","import":"./src/main.ts"}[32m 7[2mms[22m[39m
+     [32m✓[39m keeps invalid/blocked/missing/guessed target unknown: "./src/missing.ts"[32m 7[2mms[22m[39m
+     [32m✓[39m keeps invalid/blocked/missing/guessed target unknown: "../app/entry.ts"[32m 6[2mms[22m[39m
+     [32m✓[39m keeps invalid/blocked/missing/guessed target unknown: "./src/../src/main.ts"[32m 6[2mms[22m[39m
+     [32m✓[39m keeps invalid/blocked/missing/guessed target unknown: "./node_modules/main.ts"[32m 6[2mms[22m[39m
+     [32m✓[39m keeps invalid/blocked/missing/guessed target unknown: "./src/%2e/main.ts"[32m 5[2mms[22m[39m
+     [32m✓[39m keeps invalid/blocked/missing/guessed target unknown: "./src/main.ts?x"[32m 7[2mms[22m[39m
+     [32m✓[39m keeps invalid/blocked/missing/guessed target unknown: "./src/main.js"[32m 6[2mms[22m[39m
+     [32m✓[39m does not infer private subpaths when exports lacks the requested key[32m 9[2mms[22m[39m
+     [32m✓[39m rejects duplicate workspace names without affecting unrelated names[32m 4[2mms[22m[39m
+     [32m✓[39m rejects unregistered consumers and package targets crossing a nested package boundary[32m 8[2mms[22m[39m
+     [32m✓[39m supports object packages syntax and explicit workspace directories[32m 4[2mms[22m[39m
+     [32m✓[39m does not apply unsupported workspace globs[32m 4[2mms[22m[39m
+     [32m✓[39m preserves explicit paths precedence and refuses failed paths fallback[32m 23[2mms[22m[39m
+     [32m✓[39m isolates nested workspace owners with identical package names[32m 9[2mms[22m[39m
+     [32m✓[39m does not turn type-only workspace imports into callable runtime identity[32m 5[2mms[22m[39m
+     [32m✓[39m rejects opaque consumer/target package manifests[32m 17[2mms[22m[39m
+     [32m✓[39m rejects unsafe requested subpath even with a fixed pattern target: ../private[32m 6[2mms[22m[39m
+     [32m✓[39m rejects unsafe requested subpath even with a fixed pattern target: %2e[32m 6[2mms[22m[39m
+     [32m✓[39m rejects unsafe requested subpath even with a fixed pattern target: folder//x[32m 5[2mms[22m[39m
+     [32m✓[39m rejects unsafe requested subpath even with a fixed pattern target: node_modules/x[32m 9[2mms[22m[39m
+     [32m✓[39m rejects unsafe requested subpath even with a fixed pattern target: feature?x[32m 4[2mms[22m[39m
+     [32m✓[39m does not infer runtime targets from type-only namespace and re-export chains[32m 17[2mms[22m[39m
+[31m     [31m×[31m ignores shadowed require when selecting a separate static import request[39m[32m 10[2mms[22m[39m
+     [32m✓[39m supports explicit own-package exports self-reference without a workspace[32m 4[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m packages/indexer/src/workspaceResolution.test.ts[2m > [22mIDX02 captured workspace exports[2m > [22mignores shadowed require when selecting a separate static import request
+[31m[1mAssertionError[22m: expected 'unresolved' to be 'resolved' // Object.is equality[39m
+
+Expected: [32m"resolved"[39m
+Received: [31m"[7mun[27mresolved"[39m
+
+[36m [2m❯[22m target packages/indexer/src/workspaceResolution.test.ts:[2m35:31[22m[39m
+    [90m 33|[39m  expect(graph.nodes.get(call.targetId!)).toMatchObject({kind:"function…
+    [90m 34|[39m  const imported=graph.relations.find(r=>r.type==="imports"&&r.evidence…
+    [90m 35|[39m  [34mexpect[39m(imported[33m?.[39mresolution)[33m.[39m[34mtoBe[39m([32m"resolved"[39m)[33m;[39m
+    [90m   |[39m                               [31m^[39m
+    [90m 36|[39m }
+    [90m 37|[39m [35mfunction[39m [34munknown[39m(graph[33m:[39m[33mGraph[39m[33m,[39mfile[33m=[39m[32m"packages/app/entry.ts"[39m) {
+[90m [2m❯[22m packages/indexer/src/workspaceResolution.test.ts:[2m133:3[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m34 passed[39m[22m[90m (35)[39m
+[2m   Start at [22m 15:06:23
+[2m   Duration [22m 1.50s[2m (transform 289ms, setup 0ms, import 859ms, tests 424ms, environment 0ms)[22m
+

@@ -1,0 +1,164 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
++ actual - expected
+
+  {
+    dataSource: 'code',
+    incoming: [],
++   limit: 200,
+-   limit: 50,
+    node: {
+      declarationKind: 'function',
+      endLine: 2,
+      exported: true,
+      filePath: 'packages/app/entry.ts',
+
+    at functionContext (file:///home/agent/projects/AtlasMode/tests/support/idx02-validate.mjs:72:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async file:///home/agent/projects/AtlasMode/tests/support/idx02-validate.mjs:75:18 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: {
+    node: {
+      id: 'function:ba8dbb6d448f2d96675865b91be49809',
+      kind: 'function',
+      declarationKind: 'function',
+      name: 'entry',
+      qualifiedName: 'entry',
+      filePath: 'packages/app/entry.ts',
+      parentId: 'file:028be36dcb24fb528f7411911b3d5d7a',
+      language: 'typescript',
+      signature: 'export function entry()',
+      startLine: 2,
+      endLine: 2,
+      exported: true
+    },
+    incoming: [],
+    outgoing: [
+      {
+        id: 'relation:6f533afc23db61431fdeaeefc11341eb',
+        type: 'calls',
+        sourceId: 'function:ba8dbb6d448f2d96675865b91be49809',
+        targetId: 'function:009a2361a57aaa1c7b860c1492b34981',
+        resolution: 'resolved',
+        evidence: {
+          filePath: 'packages/app/entry.ts',
+          line: 2,
+          text: 'helper()'
+        }
+      }
+    ],
+    relatedNodes: [
+      {
+        id: 'function:ba8dbb6d448f2d96675865b91be49809',
+        kind: 'function',
+        declarationKind: 'function',
+        name: 'entry',
+        qualifiedName: 'entry',
+        filePath: 'packages/app/entry.ts',
+        parentId: 'file:028be36dcb24fb528f7411911b3d5d7a',
+        language: 'typescript',
+        signature: 'export function entry()',
+        startLine: 2,
+        endLine: 2,
+        exported: true
+      },
+      {
+        id: 'function:009a2361a57aaa1c7b860c1492b34981',
+        kind: 'function',
+        declarationKind: 'function',
+        name: 'helper',
+        qualifiedName: 'helper',
+        filePath: 'packages/lib/src/main.ts',
+        parentId: 'file:c7a29e7bd583c8811ca2256179360c9c',
+        language: 'typescript',
+        signature: 'export function helper()',
+        startLine: 1,
+        endLine: 1,
+        exported: true
+      }
+    ],
+    totalIncoming: 0,
+    totalOutgoing: 1,
+    truncated: false,
+    offset: 0,
+    limit: 200,
+    snapshotId: 'snapshot:60cc3dd95e0ea28206309772742f5db5',
+    dataSource: 'code'
+  },
+  expected: {
+    node: {
+      id: 'function:ba8dbb6d448f2d96675865b91be49809',
+      kind: 'function',
+      declarationKind: 'function',
+      name: 'entry',
+      qualifiedName: 'entry',
+      filePath: 'packages/app/entry.ts',
+      parentId: 'file:028be36dcb24fb528f7411911b3d5d7a',
+      language: 'typescript',
+      signature: 'export function entry()',
+      startLine: 2,
+      endLine: 2,
+      exported: true
+    },
+    incoming: [],
+    outgoing: [
+      {
+        id: 'relation:6f533afc23db61431fdeaeefc11341eb',
+        type: 'calls',
+        sourceId: 'function:ba8dbb6d448f2d96675865b91be49809',
+        targetId: 'function:009a2361a57aaa1c7b860c1492b34981',
+        resolution: 'resolved',
+        evidence: {
+          filePath: 'packages/app/entry.ts',
+          line: 2,
+          text: 'helper()'
+        }
+      }
+    ],
+    relatedNodes: [
+      {
+        id: 'function:ba8dbb6d448f2d96675865b91be49809',
+        kind: 'function',
+        declarationKind: 'function',
+        name: 'entry',
+        qualifiedName: 'entry',
+        filePath: 'packages/app/entry.ts',
+        parentId: 'file:028be36dcb24fb528f7411911b3d5d7a',
+        language: 'typescript',
+        signature: 'export function entry()',
+        startLine: 2,
+        endLine: 2,
+        exported: true
+      },
+      {
+        id: 'function:009a2361a57aaa1c7b860c1492b34981',
+        kind: 'function',
+        declarationKind: 'function',
+        name: 'helper',
+        qualifiedName: 'helper',
+        filePath: 'packages/lib/src/main.ts',
+        parentId: 'file:c7a29e7bd583c8811ca2256179360c9c',
+        language: 'typescript',
+        signature: 'export function helper()',
+        startLine: 1,
+        endLine: 1,
+        exported: true
+      }
+    ],
+    totalIncoming: 0,
+    totalOutgoing: 1,
+    truncated: false,
+    offset: 0,
+    limit: 50,
+    snapshotId: 'snapshot:60cc3dd95e0ea28206309772742f5db5',
+    dataSource: 'code'
+  },
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.19.0

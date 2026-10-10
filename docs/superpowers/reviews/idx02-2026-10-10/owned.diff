@@ -1,0 +1,2221 @@
+diff --git a/packages/indexer/src/configResolution.ts b/packages/indexer/src/configResolution.ts
+index 86fb8ac..673dc0b 100644
+--- a/packages/indexer/src/configResolution.ts
++++ b/packages/indexer/src/configResolution.ts
+@@ -8,6 +8,7 @@ import {
+ } from "ts-morph";
+ import { normalizeRepoPath, type CodeSnapshot } from "@codemap/core";
+ import type { SourceFile } from "./scan.js";
++import type { WorkspaceResolver } from "./workspaceResolution.js";
+ 
+ const virtualRoot = "/__codemap_captured__";
+ const virtualPath = (path: string) => virtualRoot + "/" + path;
+@@ -23,6 +24,7 @@ export function createConfigurationResolver(
+   sources: readonly SourceFile[],
+   configurations: readonly SourceFile[],
+   captureDiagnostics: readonly CodeSnapshot["diagnostics"][number][] = [],
++  workspace?: WorkspaceResolver,
+ ): {
+   resolutionHost: ResolutionHostFactory;
+   diagnostics: CodeSnapshot["diagnostics"];
+@@ -171,7 +173,7 @@ export function createConfigurationResolver(
+       directory = posix.dirname(directory);
+     }
+   }
+-  function configuredAlias(sourcePath: string, specifier: string): boolean {
++  function configurationAlias(sourcePath: string, specifier: string): boolean {
+     const scope = bySource.get(
+       sourcePath.startsWith("/") ? sourcePath : "/" + sourcePath,
+     );
+@@ -239,6 +241,28 @@ export function createConfigurationResolver(
+           caches.set(key, cache);
+         }
+         return names.map((name) => {
++          if (!configurationAlias(containingFile, name)) {
++            const mapping = workspace?.resolve(containingFile, name);
++            if (mapping?.known) {
++              if (!mapping.targetPath) return undefined;
++              const suffix = posix.extname(mapping.targetPath);
++              const extension = {
++                ".ts": ts.Extension.Ts,
++                ".tsx": ts.Extension.Tsx,
++                ".js": ts.Extension.Js,
++                ".jsx": ts.Extension.Jsx,
++                ".cts": ts.Extension.Cts,
++                ".mts": ts.Extension.Mts,
++                ".cjs": ts.Extension.Cjs,
++                ".mjs": ts.Extension.Mjs,
++              }[suffix]!;
++              return {
++                resolvedFileName: "/" + mapping.targetPath,
++                extension,
++                isExternalLibraryImport: false,
++              };
++            }
++          }
+           const resolved = ts.resolveModuleName(
+             name,
+             virtualRoot + containingFile,
+@@ -253,7 +277,7 @@ export function createConfigurationResolver(
+                 virtualRoot.length,
+               ),
+             };
+-          if (scope && configuredAlias(containingFile, name))
++          if (scope && configurationAlias(containingFile, name))
+             diagnose(
+               scope.path,
+               "Configured alias target is unavailable in captured sources (missing, excluded, ignored, symlinked or outside the repository)",
+@@ -263,5 +287,10 @@ export function createConfigurationResolver(
+       },
+     };
+   };
+-  return { resolutionHost, diagnostics, configuredAlias };
++  return {
++    resolutionHost,
++    diagnostics,
++    configuredAlias: (path, specifier) =>
++      configurationAlias(path, specifier) || !!workspace?.recognizes(specifier),
++  };
+ }
+diff --git a/packages/indexer/src/index.ts b/packages/indexer/src/index.ts
+index d3d8ae8..43bfc98 100644
+--- a/packages/indexer/src/index.ts
++++ b/packages/indexer/src/index.ts
+@@ -31,6 +31,7 @@ export class SourceIndexer implements IndexerPort {
+       capture.configurations,
+       capture.diagnostics,
+       createPackageModeProvider(capture.manifests, capture.diagnostics),
++      capture.manifests,
+     );
+     await indexPython(
+       capture.files.filter((f) => f.path.endsWith(".py")),
+diff --git a/packages/indexer/src/typescript.ts b/packages/indexer/src/typescript.ts
+index 2f95f48..78776d4 100644
+--- a/packages/indexer/src/typescript.ts
++++ b/packages/indexer/src/typescript.ts
+@@ -2,6 +2,7 @@ import { Project, ts } from "ts-morph";
+ import type { CodeSnapshot } from "@codemap/core";
+ import { createCommonJsAnalyzer, type ModuleModeProvider } from "./commonjs.js";
+ import { createConfigurationResolver } from "./configResolution.js";
++import { createWorkspaceResolver } from "./workspaceResolution.js";
+ import type { SourceFile } from "./scan.js";
+ import type { Graph } from "./graph.js";
+ 
+@@ -19,12 +20,19 @@ export function indexTypeScript(
+   configurations: readonly SourceFile[] = [],
+   captureDiagnostics: readonly CodeSnapshot["diagnostics"][number][] = [],
+   modeForPath?: ModuleModeProvider,
++  manifests: readonly SourceFile[] = [],
+ ) {
+   if (!files.length) return;
++  const workspace = createWorkspaceResolver(
++    files,
++    manifests,
++    captureDiagnostics,
++  );
+   const configuration = createConfigurationResolver(
+     files,
+     configurations,
+     captureDiagnostics,
++    workspace,
+   );
+   const project = new Project({
+     resolutionHost: configuration.resolutionHost,
+@@ -270,8 +278,136 @@ export function indexTypeScript(
+       }
+     }
+   }
++  function typeOnlySymbol(symbol: ts.Symbol | undefined): boolean {
++    const visited = new Set<ts.Symbol>();
++    for (
++      let current = symbol;
++      current;
++      current =
++        current.flags & ts.SymbolFlags.Alias &&
++        current.declarations?.some(
++          (d) =>
++            ts.isImportSpecifier(d) ||
++            ts.isImportClause(d) ||
++            ts.isNamespaceImport(d) ||
++            ts.isImportEqualsDeclaration(d) ||
++            ts.isExportSpecifier(d),
++        )
++          ? checker.getImmediateAliasedSymbol(current)
++          : undefined
++    ) {
++      if (visited.has(current) || visited.size >= 16) return true;
++      visited.add(current);
++      for (const declaration of current.declarations ?? []) {
++        for (
++          let node: ts.Node | undefined = declaration;
++          node && !ts.isSourceFile(node);
++          node = node.parent
++        ) {
++          if (
++            (ts.isImportSpecifier(node) ||
++              ts.isImportClause(node) ||
++              ts.isImportEqualsDeclaration(node) ||
++              ts.isExportSpecifier(node) ||
++              ts.isExportDeclaration(node)) &&
++            node.isTypeOnly
++          )
++            return true;
++        }
++      }
++    }
++    return false;
++  }
++  function typeOnlyExport(
++    source: ts.SourceFile,
++    name: string,
++    seen = new Set<string>(),
++  ): boolean {
++    const key = JSON.stringify([source.fileName, name]);
++    if (seen.has(key) || seen.size >= 16) return true;
++    seen = new Set(seen).add(key);
++    for (const declaration of source.statements) {
++      if (!ts.isExportDeclaration(declaration) || !declaration.moduleSpecifier)
++        continue;
++      const module = checker.getSymbolAtLocation(declaration.moduleSpecifier);
++      const target = module?.declarations?.find(ts.isSourceFile);
++      if (!target || !filePaths.has(target.fileName)) continue;
++      const clause = declaration.exportClause;
++      if (clause && ts.isNamedExports(clause)) {
++        for (const element of clause.elements) {
++          if (element.name.text !== name) continue;
++          if (
++            declaration.isTypeOnly ||
++            element.isTypeOnly ||
++            typeOnlyExport(
++              target,
++              element.propertyName?.text ?? element.name.text,
++              seen,
++            )
++          )
++            return true;
++        }
++      } else if (!clause) {
++        // TypeScript may collapse export-star aliases directly to a leaf symbol.
++        if (
++          declaration.isTypeOnly &&
++          module &&
++          checker.getExportsOfModule(module).some((s) => s.name === name)
++        )
++          return true;
++        if (!declaration.isTypeOnly && typeOnlyExport(target, name, seen))
++          return true;
++      } else if (clause.name.text === name && declaration.isTypeOnly)
++        return true;
++    }
++    return false;
++  }
++  function typeOnlyCall(
++    expression: ts.Expression,
++    symbol: ts.Symbol | undefined,
++  ): boolean {
++    if (typeOnlySymbol(symbol)) return true;
++    let root = expression;
++    let member: string | undefined;
++    while (
++      ts.isPropertyAccessExpression(root) ||
++      ts.isElementAccessExpression(root)
++    ) {
++      member = ts.isPropertyAccessExpression(root)
++        ? root.name.text
++        : root.argumentExpression &&
++            ts.isStringLiteralLike(root.argumentExpression)
++          ? root.argumentExpression.text
++          : undefined;
++      root = root.expression;
++    }
++    const rootSymbol = checker.getSymbolAtLocation(root);
++    if (typeOnlySymbol(rootSymbol)) return true;
++    for (const declaration of rootSymbol?.declarations ?? []) {
++      let importedName: string | undefined;
++      if (ts.isImportSpecifier(declaration))
++        importedName = declaration.propertyName?.text ?? declaration.name.text;
++      else if (ts.isNamespaceImport(declaration)) importedName = member;
++      else if (ts.isImportClause(declaration)) importedName = "default";
++      if (!importedName) continue;
++      let importNode: ts.Node | undefined = declaration;
++      while (importNode && !ts.isImportDeclaration(importNode))
++        importNode = importNode.parent;
++      if (!importNode || !ts.isImportDeclaration(importNode)) continue;
++      const module = checker.getSymbolAtLocation(importNode.moduleSpecifier);
++      const source = module?.declarations?.find(ts.isSourceFile);
++      if (
++        source &&
++        filePaths.has(source.fileName) &&
++        typeOnlyExport(source, importedName)
++      )
++        return true;
++    }
++    return false;
++  }
+   function targetFromSymbol(symbol: ts.Symbol | undefined): string | undefined {
+     if (!symbol) return undefined;
++    if (typeOnlySymbol(symbol)) return;
+     if (symbol.flags & ts.SymbolFlags.Alias)
+       symbol = checker.getAliasedSymbol(symbol);
+     for (const declaration of symbol.declarations ?? []) {
+@@ -314,9 +450,11 @@ export function indexTypeScript(
+             : expression,
+         );
+         const classification = commonjs.classifyCall(expression);
+-        const target = classification
+-          ? classification.targetId
+-          : targetFromSymbol(symbol);
++        const target = typeOnlyCall(expression, symbol)
++          ? undefined
++          : classification
++            ? classification.targetId
++            : targetFromSymbol(symbol);
+         let root: ts.Expression = expression;
+         while (
+           ts.isPropertyAccessExpression(root) ||
+@@ -349,5 +487,8 @@ export function indexTypeScript(
+     }
+     visit(source, graph.file(path).id);
+   }
+-  graph.diagnostics.push(...configuration.diagnostics);
++  graph.diagnostics.push(
++    ...configuration.diagnostics,
++    ...workspace.diagnostics,
++  );
+ }
+diff --git a/packages/indexer/src/workspaceResolution.ts b/packages/indexer/src/workspaceResolution.ts
+new file mode 100644
+index 0000000..671b3f1
+--- /dev/null
++++ b/packages/indexer/src/workspaceResolution.ts
+@@ -0,0 +1,523 @@
++import { posix } from "node:path";
++import { ts } from "ts-morph";
++import type { CodeSnapshot } from "@codemap/core";
++import type { SourceFile } from "./scan.js";
++
++type Manifest = {
++  path: string;
++  directory: string;
++  value?: Record<string, unknown>;
++  name?: string;
++};
++type Owner = {
++  manifest: Manifest;
++  patterns?: string[];
++  members: Set<string>;
++  names: Map<string, Manifest[]>;
++};
++export type WorkspaceMapping = {
++  known: boolean;
++  targetPath?: string;
++  reason?: string;
++};
++export type WorkspaceResolver = {
++  resolve(sourcePath: string, specifier: string): WorkspaceMapping;
++  recognizes(specifier: string): boolean;
++  diagnostics: CodeSnapshot["diagnostics"];
++};
++const record = (value: unknown): value is Record<string, unknown> =>
++  !!value && typeof value === "object" && !Array.isArray(value);
++const validName = (name: unknown): name is string =>
++  typeof name === "string" &&
++  /^(?:@[a-zA-Z0-9._-]+\/)?[a-zA-Z0-9._-]+$/.test(name) &&
++  name !== "." &&
++  name !== "..";
++const INVALID_REQUEST = Symbol("invalid request");
++function request(specifier: string) {
++  if (
++    specifier.startsWith(".") ||
++    specifier.startsWith("/") ||
++    specifier.includes("\\")
++  )
++    return;
++  const parts = specifier.split("/");
++  const count = specifier.startsWith("@") ? 2 : 1;
++  const name = parts.slice(0, count).join("/");
++  if (!validName(name)) return;
++  const subpath = parts.slice(count);
++  if (
++    subpath.some(
++      (part) =>
++        !part ||
++        part === "." ||
++        part === ".." ||
++        part.toLowerCase() === "node_modules" ||
++        /[\\%?#:*]/.test(part),
++    )
++  )
++    return { name, subpath: INVALID_REQUEST };
++  return {
++    name,
++    subpath: parts.length === count ? "." : "./" + parts.slice(count).join("/"),
++  };
++}
++const NO_MATCH = Symbol("no condition matched"),
++  BLOCKED = Symbol("blocked"),
++  INVALID = Symbol("invalid");
++type Outcome = string | typeof NO_MATCH | typeof BLOCKED | typeof INVALID;
++
++/** Reads only the immutable scan capture. It never synthesizes installation or dist-to-src mappings. */
++export function createWorkspaceResolver(
++  sources: readonly SourceFile[],
++  manifests: readonly SourceFile[],
++  captureDiagnostics: readonly CodeSnapshot["diagnostics"][number][] = [],
++): WorkspaceResolver {
++  const diagnostics: CodeSnapshot["diagnostics"] = [];
++  const reported = new Set<string>();
++  const scopes = new Map<string, Manifest>();
++  for (const file of manifests) {
++    const manifest: Manifest = {
++      path: file.path,
++      directory: posix.dirname(file.path),
++    };
++    try {
++      const value: unknown = JSON.parse(file.bytes.toString("utf8"));
++      if (record(value)) {
++        if (validName(value.name)) manifest.name = value.name;
++        if (
++          value.type === undefined ||
++          value.type === "module" ||
++          value.type === "commonjs"
++        )
++          manifest.value = value;
++      }
++    } catch {
++      /* An opaque manifest still forms a package boundary. */
++    }
++    scopes.set(manifest.directory, manifest);
++  }
++  for (const diagnostic of captureDiagnostics) {
++    if (!diagnostic.message.startsWith("PACKAGE_MANIFEST_UNAVAILABLE:"))
++      continue;
++    const directory = posix.dirname(diagnostic.filePath);
++    if (!scopes.has(directory))
++      scopes.set(directory, { path: diagnostic.filePath, directory });
++  }
++  const knownNames = new Set(
++    [...scopes.values()].flatMap((m) => (m.name ? [m.name] : [])),
++  );
++  function nearestPackage(path: string): Manifest | undefined {
++    let directory = posix.dirname(path);
++    while (true) {
++      const found = scopes.get(directory);
++      if (found) return found;
++      if (directory === ".") return;
++      directory = posix.dirname(directory);
++    }
++  }
++  const owners = new Map<string, Owner>();
++  for (const manifest of scopes.values()) {
++    const configured = manifest.value?.workspaces;
++    if (configured === undefined) continue;
++    const value = record(configured) ? configured.packages : configured;
++    const patterns =
++      Array.isArray(value) &&
++      value.every(
++        (p) =>
++          typeof p === "string" &&
++          p.length > 0 &&
++          p
++            .split("/")
++            .every(
++              (segment) =>
++                segment === "*" ||
++                (/^[a-zA-Z0-9._-]+$/.test(segment) &&
++                  segment !== "." &&
++                  segment !== ".."),
++            ),
++      )
++        ? (value as string[])
++        : undefined;
++    const owner: Owner = {
++      manifest,
++      patterns,
++      members: new Set(),
++      names: new Map(),
++    };
++    if (patterns) {
++      for (const candidate of scopes.values()) {
++        const relative = posix.relative(
++          manifest.directory,
++          candidate.directory,
++        );
++        if (!relative || relative.startsWith("../")) continue;
++        const segments = relative.split("/");
++        if (
++          !patterns.some((p) => {
++            const parts = p.split("/");
++            return (
++              parts.length === segments.length &&
++              parts.every((part, i) => part === "*" || part === segments[i])
++            );
++          })
++        )
++          continue;
++        owner.members.add(candidate.directory);
++        if (candidate.name) {
++          const named = owner.names.get(candidate.name) ?? [];
++          named.push(candidate);
++          owner.names.set(candidate.name, named);
++        }
++      }
++    }
++    owners.set(manifest.directory, owner);
++  }
++  function nearestOwner(path: string): Owner | undefined {
++    let directory = posix.dirname(path);
++    while (true) {
++      const found = owners.get(directory);
++      if (found) return found;
++      if (directory === ".") return;
++      directory = posix.dirname(directory);
++    }
++  }
++  const sourcePaths = new Set(sources.map((f) => f.path));
++  const modes = new Map<string, Map<string, Set<"import" | "require">>>();
++  for (const file of sources) {
++    const source = ts.createSourceFile(
++      file.path,
++      file.bytes.toString("utf8"),
++      ts.ScriptTarget.Latest,
++      true,
++    );
++    const requests = new Map<string, Set<"import" | "require">>();
++    function add(value: ts.Expression | undefined, mode: "import" | "require") {
++      if (!value || !ts.isStringLiteralLike(value)) return;
++      const selected = requests.get(value.text) ?? new Set();
++      selected.add(mode);
++      requests.set(value.text, selected);
++    }
++    function bindsRequire(name: ts.BindingName): boolean {
++      return ts.isIdentifier(name)
++        ? name.text === "require"
++        : name.elements.some(
++            (e) => ts.isBindingElement(e) && bindsRequire(e.name),
++          );
++    }
++    function declarationsRequire(scope: ts.Node, varOnly: boolean): boolean {
++      let found = false;
++      function walk(node: ts.Node) {
++        if (node !== scope && ts.isFunctionLike(node)) {
++          if (
++            !varOnly &&
++            ts.isFunctionDeclaration(node) &&
++            node.name?.text === "require"
++          )
++            found = true;
++          return;
++        }
++        if (
++          ts.isVariableDeclaration(node) &&
++          bindsRequire(node.name) &&
++          ts.isVariableDeclarationList(node.parent) &&
++          (!varOnly || !(node.parent.flags & ts.NodeFlags.BlockScoped))
++        )
++          found = true;
++        if (
++          !varOnly &&
++          node !== scope &&
++          (ts.isFunctionDeclaration(node) || ts.isClassDeclaration(node)) &&
++          node.name?.text === "require"
++        )
++          found = true;
++        if (
++          !varOnly &&
++          ts.isImportClause(node) &&
++          node.name?.text === "require"
++        )
++          found = true;
++        if (
++          !varOnly &&
++          (ts.isImportSpecifier(node) ||
++            ts.isNamespaceImport(node) ||
++            ts.isImportEqualsDeclaration(node)) &&
++          node.name.text === "require"
++        )
++          found = true;
++        // Block-scoped bindings only belong to this block, not nested blocks.
++        if (
++          !varOnly &&
++          node !== scope &&
++          (ts.isBlock(node) || ts.isCaseBlock(node))
++        )
++          return;
++        if (!found) ts.forEachChild(node, walk);
++      }
++      walk(scope);
++      return found;
++    }
++    function shadowedRequire(call: ts.Node): boolean {
++      for (
++        let node: ts.Node | undefined = call.parent;
++        node;
++        node = node.parent
++      ) {
++        if (ts.isFunctionLike(node)) {
++          if (
++            node.parameters.some((p) => bindsRequire(p.name)) ||
++            (ts.isFunctionExpression(node) && node.name?.text === "require") ||
++            declarationsRequire(node, true)
++          )
++            return true;
++        }
++        if (
++          (ts.isSourceFile(node) || ts.isBlock(node) || ts.isCaseBlock(node)) &&
++          declarationsRequire(node, false)
++        )
++          return true;
++        if (ts.isSourceFile(node) && declarationsRequire(node, true))
++          return true;
++        if (
++          ts.isCatchClause(node) &&
++          node.variableDeclaration &&
++          bindsRequire(node.variableDeclaration.name)
++        )
++          return true;
++        if (
++          (ts.isForStatement(node) ||
++            ts.isForInStatement(node) ||
++            ts.isForOfStatement(node)) &&
++          node.initializer &&
++          ts.isVariableDeclarationList(node.initializer) &&
++          node.initializer.declarations.some((d) => bindsRequire(d.name))
++        )
++          return true;
++      }
++      return false;
++    }
++    function visit(node: ts.Node) {
++      if (ts.isImportDeclaration(node) || ts.isExportDeclaration(node))
++        add(node.moduleSpecifier, "import");
++      else if (
++        ts.isImportEqualsDeclaration(node) &&
++        ts.isExternalModuleReference(node.moduleReference)
++      )
++        add(node.moduleReference.expression, "require");
++      else if (ts.isCallExpression(node)) {
++        if (
++          ts.isIdentifier(node.expression) &&
++          node.expression.text === "require" &&
++          !shadowedRequire(node)
++        )
++          add(node.arguments[0], "require");
++        else if (node.expression.kind === ts.SyntaxKind.ImportKeyword)
++          add(node.arguments[0], "import");
++      }
++      ts.forEachChild(node, visit);
++    }
++    visit(source);
++    modes.set(file.path, requests);
++  }
++  function select(exports: unknown, subpath: string): unknown {
++    if (!record(exports)) return subpath === "." ? exports : NO_MATCH;
++    const keys = Object.keys(exports);
++    if (!keys.some((key) => key.startsWith(".")))
++      return subpath === "." ? exports : NO_MATCH;
++    if (
++      !keys.every(
++        (key) =>
++          key === "." ||
++          (/^\.\//.test(key) &&
++            !/[\\%?#]/.test(key) &&
++            key
++              .split("/")
++              .slice(1)
++              .every(
++                (s) =>
++                  s &&
++                  s !== "." &&
++                  s !== ".." &&
++                  s.toLowerCase() !== "node_modules",
++              ) &&
++            (key.match(/\*/g)?.length ?? 0) <= 1),
++      )
++    )
++      return INVALID;
++    if (Object.hasOwn(exports, subpath)) return exports[subpath];
++    const patterns = keys.filter(
++      (key) =>
++        key.includes("*") &&
++        subpath.startsWith(key.slice(0, key.indexOf("*"))) &&
++        subpath.endsWith(key.slice(key.indexOf("*") + 1)) &&
++        subpath.length >= key.length,
++    );
++    patterns.sort(
++      (a, b) => b.indexOf("*") - a.indexOf("*") || b.length - a.length,
++    );
++    const pattern = patterns[0];
++    if (!pattern) return NO_MATCH;
++    const star = pattern.indexOf("*");
++    const matched = subpath.slice(
++      star,
++      subpath.length - (pattern.length - star - 1),
++    );
++    const substitutionBudget = { remaining: 2048 };
++    function substitute(value: unknown, depth = 0): unknown {
++      if (--substitutionBudget.remaining < 0 || depth > 16) return INVALID;
++      if (typeof value === "string") return value.replaceAll("*", matched);
++      if (record(value)) {
++        const result: Record<string, unknown> = Object.create(null);
++        for (const [key, branch] of Object.entries(value)) {
++          result[key] = substitute(branch, depth + 1);
++          if (substitutionBudget.remaining < 0) return INVALID;
++        }
++        return result;
++      }
++      return value;
++    }
++    return substitute(exports[pattern]);
++  }
++  function outcomes(
++    value: unknown,
++    mode: "import" | "require",
++    budget: { remaining: number },
++    depth = 0,
++  ): Set<Outcome> {
++    if (--budget.remaining < 0 || depth > 16) return new Set([INVALID]);
++    if (typeof value === "string") return new Set([value]);
++    if (value === NO_MATCH) return new Set([NO_MATCH]);
++    if (value === null) return new Set([BLOCKED]);
++    if (!record(value)) return new Set([INVALID]);
++    const entries = Object.entries(value);
++    if (
++      entries.some(
++        ([key]) => key.startsWith(".") || /^(?:0|[1-9]\d*)$/.test(key),
++      )
++    )
++      return new Set([INVALID]);
++    const result = new Set<Outcome>();
++    let reachable = true;
++    for (const [condition, branch] of entries) {
++      if (!reachable) break;
++      if (--budget.remaining < 0) return new Set([INVALID]);
++      if (condition === (mode === "import" ? "require" : "import")) continue;
++      const possible = outcomes(branch, mode, budget, depth + 1);
++      for (const candidate of possible)
++        if (candidate !== NO_MATCH) result.add(candidate);
++      if (condition === "default" || condition === mode)
++        reachable = possible.has(NO_MATCH);
++      // Other conditions may be enabled or disabled. NO_MATCH continues in the parent.
++    }
++    if (reachable) result.add(NO_MATCH);
++    return result;
++  }
++  function validateTarget(
++    value: string,
++    manifest: Manifest,
++  ): string | undefined {
++    if (!value.startsWith("./") || /[\\%?#:*]/.test(value)) return;
++    const segments = value.slice(2).split("/");
++    if (
++      segments.some(
++        (s) =>
++          !s || s === "." || s === ".." || s.toLowerCase() === "node_modules",
++      )
++    )
++      return;
++    const target = posix.join(manifest.directory, value);
++    if (
++      !/\.(?:[cm]?[jt]s|[jt]sx)$/.test(target) ||
++      /\.d\.[cm]?ts$/.test(target)
++    )
++      return;
++    if (!sourcePaths.has(target) || nearestPackage(target) !== manifest) return;
++    return target;
++  }
++  const cache = new Map<string, WorkspaceMapping>();
++  function resolve(sourcePath: string, specifier: string): WorkspaceMapping {
++    const path = sourcePath.replace(/^\//, "");
++    const key = JSON.stringify([path, specifier]);
++    const cached = cache.get(key);
++    if (cached) return cached;
++    const parsed = request(specifier);
++    if (!parsed || !knownNames.has(parsed.name)) return { known: false };
++    function reject(reason: string): WorkspaceMapping {
++      const result = { known: true, reason };
++      cache.set(key, result);
++      if (!reported.has(key)) {
++        reported.add(key);
++        diagnostics.push({
++          filePath: path,
++          message: `WORKSPACE_MAPPING_UNAVAILABLE: ${specifier}: ${reason}`,
++        });
++      }
++      return result;
++    }
++    if (typeof parsed.subpath !== "string")
++      return reject("invalid requested package subpath");
++    const consumer = nearestPackage(path);
++    if (!consumer?.value)
++      return reject(
++        "nearest consumer package manifest is unavailable or invalid",
++      );
++    let target: Manifest | undefined;
++    if (consumer?.name === parsed.name) target = consumer;
++    else {
++      const owner = nearestOwner(path);
++      if (!owner || !owner.patterns)
++        return reject("no supported captured workspace owner");
++      if (
++        !consumer ||
++        (consumer !== owner.manifest && !owner.members.has(consumer.directory))
++      )
++        return reject(
++          "consumer is outside the owner's registered package scope",
++        );
++      const candidates = owner.names.get(parsed.name) ?? [];
++      if (candidates.length !== 1)
++        return reject(
++          candidates.length
++            ? "duplicate package name in workspace"
++            : "package is not registered in this workspace",
++        );
++      target = candidates[0];
++    }
++    if (!target?.value)
++      return reject("target package manifest is unavailable or invalid");
++    const requestedModes = modes.get(path)?.get(specifier);
++    if (!requestedModes?.size)
++      return reject("request mode is not statically captured");
++    const selected = select(target.value?.exports, parsed.subpath);
++    const paths = new Set<string>();
++    const budget = { remaining: 2048 };
++    for (const mode of requestedModes) {
++      for (const outcome of outcomes(selected, mode, budget)) {
++        if (typeof outcome !== "string")
++          return reject(
++            "exports blocked, invalid, unmatched or over the condition budget",
++          );
++        const candidate = validateTarget(outcome, target);
++        if (!candidate)
++          return reject(
++            "exports target is not an exact captured implementation within its package",
++          );
++        paths.add(candidate);
++      }
++    }
++    if (paths.size !== 1)
++      return reject(
++        "conditional exports or request modes do not converge to one source",
++      );
++    const result = { known: true, targetPath: [...paths][0] };
++    cache.set(key, result);
++    return result;
++  }
++  return {
++    resolve,
++    recognizes: (specifier) => {
++      const parsed = request(specifier);
++      return !!parsed && knownNames.has(parsed.name);
++    },
++    diagnostics,
++  };
++}
+diff --git a/packages/indexer/src/workspaceResolution.test.ts b/packages/indexer/src/workspaceResolution.test.ts
+new file mode 100644
+index 0000000..7ed8003
+--- /dev/null
++++ b/packages/indexer/src/workspaceResolution.test.ts
+@@ -0,0 +1,461 @@
++import { describe, expect, it } from "vitest";
++import { Graph } from "./graph.js";
++import { indexTypeScript } from "./typescript.js";
++import type { SourceFile } from "./scan.js";
++
++const capture = (inputs: Record<string, unknown>): SourceFile[] =>
++  Object.entries(inputs).map(([path, value]) => ({
++    path,
++    bytes: Buffer.from(
++      typeof value === "string" ? value : JSON.stringify(value),
++    ),
++  }));
++function analyze(
++  exports: unknown,
++  entry = 'import { helper } from "@demo/lib"; export function entry() { helper(); }',
++  extraPackages: Record<string, unknown> = {},
++  extraSources: Record<string, string> = {},
++  workspaces: unknown = ["packages/*"],
++  configs: Record<string, unknown> = {},
++  captureDiagnostics: Parameters<typeof indexTypeScript>[3] = [],
++) {
++  const graph = new Graph("workspace");
++  const files = {
++    "packages/app/entry.ts": entry,
++    "packages/lib/src/main.ts": "export function helper() { return 1; }",
++    "packages/lib/src/other.ts": "export function helper() { return 2; }",
++    "packages/lib/src/feature.ts": "export function helper() { return 3; }",
++    "packages/lib/src/main.cjs": "function helper(){} exports.helper = helper;",
++    ...extraSources,
++  };
++  indexTypeScript(
++    capture(files),
++    graph,
++    capture(configs),
++    captureDiagnostics,
++    undefined,
++    capture({
++      "package.json": { private: true, workspaces },
++      "packages/app/package.json": { name: "@demo/app" },
++      "packages/lib/package.json": { name: "@demo/lib", exports },
++      ...extraPackages,
++    }),
++  );
++  return graph;
++}
++function edge(graph: Graph, file = "packages/app/entry.ts", text = "helper()") {
++  const result = graph.relations.find(
++    (r) =>
++      r.type === "calls" &&
++      r.evidence.filePath === file &&
++      r.evidence.text === text,
++  );
++  expect(result).toBeDefined();
++  return result!;
++}
++function target(
++  graph: Graph,
++  path = "packages/lib/src/main.ts",
++  file = "packages/app/entry.ts",
++) {
++  const call = edge(graph, file);
++  expect(call).toMatchObject({ resolution: "resolved" });
++  expect(graph.nodes.get(call.targetId!)).toMatchObject({
++    kind: "function",
++    filePath: path,
++    name: "helper",
++  });
++  const imported = graph.relations.find(
++    (r) =>
++      r.type === "imports" &&
++      r.evidence.filePath === file &&
++      r.resolution === "resolved",
++  );
++  expect(imported?.resolution).toBe("resolved");
++}
++function unknown(graph: Graph, file = "packages/app/entry.ts") {
++  expect(edge(graph, file)).toMatchObject({
++    resolution: "unresolved",
++    targetId: null,
++  });
++  expect(
++    graph.relations.find(
++      (r) => r.type === "imports" && r.evidence.filePath === file,
++    ),
++  ).toMatchObject({ resolution: "unresolved", targetId: null });
++}
++describe("IDX02 captured workspace exports", () => {
++  it("continues outer default after nested NO_MATCH but never after BLOCKED", () => {
++    target(
++      analyze({
++        import: { custom: "./src/main.ts" },
++        default: "./src/main.ts",
++      }),
++    );
++    unknown(analyze({ import: { custom: null }, default: "./src/main.ts" }));
++    unknown(
++      analyze({
++        import: { custom: "./src/missing.ts" },
++        default: "./src/main.ts",
++      }),
++    );
++  });
++  it("rejects numeric condition keys and over-budget condition trees", () => {
++    unknown(analyze({ "0": "./src/main.ts", default: "./src/main.ts" }));
++    let nested: unknown = "./src/main.ts";
++    for (let i = 0; i < 17; i++) nested = { default: nested };
++    unknown(analyze(nested));
++    const broad: Record<string, string> = {};
++    for (let i = 0; i < 2049; i++) broad["custom" + i] = "./src/main.ts";
++    broad.default = "./src/main.ts";
++    unknown(analyze(broad));
++  });
++  it("maps root exports to the exact captured implementation", () =>
++    target(analyze("./src/main.ts")));
++  it("maps exact subpaths and static single-star source patterns", () => {
++    target(
++      analyze(
++        { "./extra": "./src/other.ts", "./*": "./src/*.ts" },
++        'import {helper} from "@demo/lib/extra"; function entry(){helper();}',
++      ),
++      "packages/lib/src/other.ts",
++    );
++    target(
++      analyze(
++        { "./*": "./src/*.ts" },
++        'import {helper} from "@demo/lib/feature"; function entry(){helper();}',
++      ),
++      "packages/lib/src/feature.ts",
++    );
++  });
++  it("selects literal import and require conditions without merging identities", () => {
++    const exports = { import: "./src/main.ts", require: "./src/main.cjs" };
++    target(analyze(exports));
++    const graph = analyze(
++      exports,
++      "",
++      {},
++      {
++        "packages/app/entry.cjs":
++          'const {helper}=require("@demo/lib"); function entry(){helper();}',
++      },
++    );
++    target(graph, "packages/lib/src/main.cjs", "packages/app/entry.cjs");
++  });
++  it("accepts convergent custom conditions and rejects divergent alternatives", () => {
++    target(analyze({ custom: "./src/main.ts", default: "./src/main.ts" }));
++    unknown(analyze({ custom: "./src/other.ts", default: "./src/main.ts" }));
++    unknown(analyze({ custom: "./src/main.ts" }));
++  });
++  it("honors ordered default and inactive branches", () => {
++    target(analyze({ default: "./src/main.ts", import: "./src/other.ts" }));
++    target(analyze({ require: "./src/other.ts", import: "./src/main.ts" }));
++  });
++  it("rejects mixed request modes when their selected targets diverge", () => {
++    unknown(
++      analyze(
++        { import: "./src/main.ts", require: "./src/main.cjs" },
++        'import {helper} from "@demo/lib"; const lib = require("@demo/lib"); function entry(){helper();}',
++      ),
++    );
++  });
++  it.each([
++    null,
++    ["./src/main.ts"],
++    { ".": "./src/main.ts", import: "./src/main.ts" },
++    "./src/missing.ts",
++    "../app/entry.ts",
++    "./src/../src/main.ts",
++    "./node_modules/main.ts",
++    "./src/%2e/main.ts",
++    "./src/main.ts?x",
++    "./src/main.js",
++  ])("keeps invalid/blocked/missing/guessed target unknown: %j", (exports) =>
++    unknown(analyze(exports)),
++  );
++  it("does not infer private subpaths when exports lacks the requested key", () =>
++    unknown(
++      analyze(
++        { ".": "./src/main.ts" },
++        'import {helper} from "@demo/lib/src/main"; function entry(){helper();}',
++      ),
++    ));
++  it("rejects duplicate workspace names without affecting unrelated names", () => {
++    unknown(
++      analyze(
++        "./src/main.ts",
++        undefined,
++        {
++          "packages/duplicate/package.json": {
++            name: "@demo/lib",
++            exports: "./src/main.ts",
++          },
++        },
++        { "packages/duplicate/src/main.ts": "export function helper(){}" },
++      ),
++    );
++  });
++  it("rejects unregistered consumers and package targets crossing a nested package boundary", () => {
++    unknown(analyze("./src/main.ts", undefined, {}, {}, ["packages/lib"]));
++    unknown(
++      analyze("./src/main.ts", undefined, {
++        "packages/lib/src/package.json": { name: "nested" },
++      }),
++    );
++  });
++  it("supports object packages syntax and explicit workspace directories", () =>
++    target(
++      analyze(
++        "./src/main.ts",
++        undefined,
++        {},
++        {},
++        { packages: ["packages/app", "packages/lib"] },
++      ),
++    ));
++  it("does not apply unsupported workspace globs", () =>
++    unknown(analyze("./src/main.ts", undefined, {}, {}, ["packages/**"])));
++  it("preserves explicit paths precedence and refuses failed paths fallback", () => {
++    const entry =
++      'import {helper} from "@demo/lib"; function entry(){helper();}';
++    const configs = {
++      "packages/app/tsconfig.json": {
++        compilerOptions: {
++          baseUrl: ".",
++          paths: { "@demo/lib": ["../lib/src/other.ts"] },
++        },
++        include: ["entry.ts"],
++      },
++    };
++    target(
++      analyze("./src/main.ts", entry, {}, {}, ["packages/*"], configs),
++      "packages/lib/src/other.ts",
++    );
++    const bad = {
++      "packages/app/tsconfig.json": {
++        compilerOptions: {
++          baseUrl: ".",
++          paths: { "@demo/lib": ["missing.ts"] },
++        },
++        include: ["entry.ts"],
++      },
++    };
++    unknown(analyze("./src/main.ts", entry, {}, {}, ["packages/*"], bad));
++  });
++  it("isolates nested workspace owners with identical package names", () => {
++    const graph = analyze(
++      "./src/main.ts",
++      "",
++      {
++        "one/package.json": { workspaces: ["*"] },
++        "one/app/package.json": { name: "one-app" },
++        "one/lib/package.json": { name: "@same/lib", exports: "./main.ts" },
++        "two/package.json": { workspaces: ["*"] },
++        "two/app/package.json": { name: "two-app" },
++        "two/lib/package.json": { name: "@same/lib", exports: "./main.ts" },
++      },
++      {
++        "one/app/entry.ts":
++          'import {helper} from "@same/lib"; function entry(){helper();}',
++        "two/app/entry.ts":
++          'import {helper} from "@same/lib"; function entry(){helper();}',
++        "one/lib/main.ts": "export function helper(){}",
++        "two/lib/main.ts": "export function helper(){}",
++      },
++    );
++    target(graph, "one/lib/main.ts", "one/app/entry.ts");
++    target(graph, "two/lib/main.ts", "two/app/entry.ts");
++  });
++  it("does not turn type-only workspace imports into callable runtime identity", () => {
++    const graph = analyze(
++      "./src/main.ts",
++      'import type {helper} from "@demo/lib"; function entry(){helper();}',
++    );
++    expect(edge(graph)).toMatchObject({
++      resolution: "unresolved",
++      targetId: null,
++    });
++    expect(
++      graph.relations.find(
++        (r) =>
++          r.type === "imports" &&
++          r.evidence.filePath === "packages/app/entry.ts",
++      )?.resolution,
++    ).toBe("resolved");
++  });
++
++  it("rejects opaque consumer/target package manifests", () => {
++    unknown(
++      analyze("./src/main.ts", undefined, { "packages/app/package.json": "{" }),
++    );
++    unknown(
++      analyze("./src/main.ts", undefined, {
++        "packages/app/package.json": { name: "@demo/app", type: false },
++      }),
++    );
++    unknown(
++      analyze("./src/main.ts", undefined, {
++        "packages/lib/package.json": {
++          name: "@demo/lib",
++          type: false,
++          exports: "./src/main.ts",
++        },
++      }),
++    );
++  });
++  it.each(["../private", "%2e", "folder//x", "node_modules/x", "feature?x"])(
++    "rejects unsafe requested subpath even with a fixed pattern target: %s",
++    (subpath) =>
++      unknown(
++        analyze(
++          { "./*": "./src/main.ts" },
++          `import {helper} from "@demo/lib/${subpath}"; function entry(){helper();}`,
++        ),
++      ),
++  );
++  it("does not infer runtime targets from type-only namespace and re-export chains", () => {
++    const namespace = analyze(
++      "./src/main.ts",
++      'import type * as lib from "@demo/lib"; function entry(){lib.helper();}',
++    );
++    expect(edge(namespace, undefined, "lib.helper()")).toMatchObject({
++      resolution: "unresolved",
++      targetId: null,
++    });
++    const named = analyze(
++      "./src/main.ts",
++      'import {type helper} from "@demo/lib"; function entry(){helper();}',
++    );
++    expect(edge(named)).toMatchObject({
++      resolution: "unresolved",
++      targetId: null,
++    });
++    const barrel = analyze(
++      "./src/main.ts",
++      'import {helper} from "./barrel"; function entry(){helper();}',
++      {},
++      { "packages/app/barrel.ts": 'export type {helper} from "@demo/lib";' },
++    );
++    expect(edge(barrel)).toMatchObject({
++      resolution: "unresolved",
++      targetId: null,
++    });
++  });
++  it("ignores shadowed require when selecting a separate static import request", () => {
++    target(
++      analyze(
++        { import: "./src/main.ts", require: "./src/main.cjs" },
++        'import {helper} from "@demo/lib"; function local(require:any){require("@demo/lib");} function entry(){helper();}',
++      ),
++    );
++  });
++  it("supports explicit own-package exports self-reference without a workspace", () => {
++    target(
++      analyze(
++        "./src/main.ts",
++        "",
++        { "package.json": {} },
++        {
++          "packages/lib/entry.ts":
++            'import {helper} from "@demo/lib"; function entry(){helper();}',
++        },
++      ),
++      undefined,
++      "packages/lib/entry.ts",
++    );
++  });
++
++  it("requires nonempty wildcard matches and validates export-star type-only chains", () => {
++    unknown(
++      analyze(
++        { "./foo*bar": "./src/main.ts" },
++        'import {helper} from "@demo/lib/foobar"; function entry(){helper();}',
++      ),
++    );
++    target(
++      analyze(
++        { "./foo*bar": "./src/main.ts" },
++        'import {helper} from "@demo/lib/fooxbar"; function entry(){helper();}',
++      ),
++    );
++    const graph = analyze(
++      "./src/main.ts",
++      'import {helper} from "./barrel"; function entry(){helper();}',
++      {},
++      { "packages/app/barrel.ts": 'export type * from "@demo/lib";' },
++    );
++    expect(edge(graph)).toMatchObject({
++      resolution: "unresolved",
++      targetId: null,
++    });
++  });
++  it("rejects unavailable registered consumers and opaque nested target boundaries", () => {
++    unknown(
++      analyze(
++        "./src/main.ts",
++        undefined,
++        { "packages/app/package.json": null },
++        {},
++        undefined,
++        {},
++        [
++          {
++            filePath: "packages/app/package.json",
++            message: "PACKAGE_MANIFEST_UNAVAILABLE: ignored",
++          },
++        ],
++      ),
++    );
++    unknown(
++      analyze("./src/main.ts", undefined, {
++        "packages/lib/src/package.json": "{",
++      }),
++    );
++  });
++  it.each([
++    'function local(){var require:any; require("@demo/lib");}',
++    'function local(){const require=(x:any)=>x; require("@demo/lib");}',
++    'function local(){function require(x:any){} require("@demo/lib");}',
++    'function local(){try{}catch(require){require("@demo/lib");}}',
++    'function local(){for(const require of []){require("@demo/lib");}}',
++  ])(
++    "does not mix shadowed require binding with a static import: %s",
++    (local) => {
++      target(
++        analyze(
++          { import: "./src/main.ts", require: "./src/main.cjs" },
++          'import {helper} from "@demo/lib"; ' +
++            local +
++            " function entry(){helper();}",
++        ),
++      );
++    },
++  );
++
++  it("retains own __proto__ condition keys through wildcard substitution", () => {
++    unknown(
++      analyze(
++        JSON.parse(
++          '{"./*":{"__proto__":"./src/other.ts","default":"./src/main.ts"}}',
++        ),
++        'import {helper} from "@demo/lib/feature"; function entry(){helper();}',
++      ),
++    );
++  });
++  it("rejects case variants of forbidden node_modules segments", () => {
++    unknown(
++      analyze(
++        "./NODE_MODULES/main.ts",
++        undefined,
++        {},
++        { "packages/lib/NODE_MODULES/main.ts": "export function helper(){}" },
++      ),
++    );
++    unknown(
++      analyze(
++        { "./*": "./src/main.ts" },
++        'import {helper} from "@demo/lib/NODE_MODULES/file"; function entry(){helper();}',
++      ),
++    );
++  });
++});
+diff --git a/tests/support/idx02-validate.mjs b/tests/support/idx02-validate.mjs
+new file mode 100644
+index 0000000..7f3ecbb
+--- /dev/null
++++ b/tests/support/idx02-validate.mjs
+@@ -0,0 +1,468 @@
++import assert from "node:assert/strict";
++import {
++  mkdtemp,
++  mkdir,
++  writeFile,
++  readFile,
++  access,
++  rm,
++} from "node:fs/promises";
++import { tmpdir } from "node:os";
++import { join, resolve } from "node:path";
++import { createHash } from "node:crypto";
++import { chromium, expect } from "@playwright/test";
++import { SqliteStorage } from "@codemap/storage";
++import { SourceIndexer } from "@codemap/indexer";
++import {
++  startProduction,
++  connectMcp,
++  http,
++  denyExternalRequests,
++} from "./production.mjs";
++
++const out = resolve("docs/superpowers/reviews/idx02-2026-10-10");
++await mkdir(out, { recursive: true });
++const target = await mkdtemp(join(tmpdir(), "atlasmode-idx02-fixture-"));
++const otherTarget = await mkdtemp(join(tmpdir(), "atlasmode-idx02-isolated-"));
++const runtime = await mkdtemp(join(tmpdir(), "atlasmode-idx02-runtime-"));
++const marker = join(target, "TARGET_EXECUTED");
++const rootPackage = {
++  private: true,
++  type: "module",
++  workspaces: ["packages/*"],
++};
++const libPackage = {
++  name: "@idx02/lib",
++  type: "module",
++  exports: {
++    ".": { import: "./src/main.ts", require: "./src/main.cjs" },
++    "./stable": { custom: "./src/main.ts", default: "./src/main.ts" },
++    "./uncertain": { custom: "./src/other.ts", default: "./src/main.ts" },
++    "./blocked": null,
++    "./*": "./src/*.ts",
++  },
++};
++const inputs = {
++  "package.json": JSON.stringify(rootPackage, null, 2),
++  "packages/app/package.json": JSON.stringify({
++    name: "@idx02/app",
++    type: "module",
++  }),
++  "packages/lib/package.json": JSON.stringify(libPackage, null, 2),
++  "packages/app/entry.ts":
++    'import { helper } from "@idx02/lib";\nexport function entry() { return helper(); }\n',
++  "packages/app/stable.ts":
++    'import { helper } from "@idx02/lib/stable";\nexport function stable() { return helper(); }\n',
++  "packages/app/uncertain.ts":
++    'import { helper } from "@idx02/lib/uncertain";\nexport function uncertain() { return helper(); }\n',
++  "packages/app/blocked.ts":
++    'import { helper } from "@idx02/lib/blocked";\nexport function blocked() { return helper(); }\n',
++  "packages/app/type.ts":
++    'import type * as lib from "@idx02/lib";\nexport function typeOnly() { return lib.helper(); }\n',
++  "packages/app/entry.cjs":
++    'const {helper} = require("@idx02/lib");\nfunction requireEntry(){ return helper(); }\nexports.requireEntry = requireEntry;\n',
++  "packages/lib/src/main.ts": 'export function helper() { return "main"; }\n',
++  "packages/lib/src/other.ts": 'export function helper() { return "other"; }\n',
++  "packages/lib/src/main.cjs":
++    'function helper() { return "require"; }\nexports.helper = helper;\n',
++  "never-execute.ts":
++    'import {writeFileSync} from "node:fs";\nwriteFileSync(' +
++    JSON.stringify(marker) +
++    ', "executed");\nthrow new Error("Target source must never execute");\n',
++};
++for (const dir of [target, otherTarget])
++  for (const [file, bytes] of Object.entries(inputs)) {
++    await mkdir(join(dir, file, ".."), { recursive: true });
++    await writeFile(join(dir, file), bytes);
++  }
++const hash = (bytes) => createHash("sha256").update(bytes).digest("hex");
++const save = (file, value) =>
++  writeFile(join(out, file), JSON.stringify(value, null, 2));
++await save("fixture-source.json", {
++  target,
++  otherTarget,
++  inputs,
++  sha256: Object.fromEntries(
++    Object.entries(inputs).map(([f, b]) => [f, hash(b)]),
++  ),
++});
++let server, mcp, browser, page;
++const errors = [],
++  external = [],
++  protocolErrors = [];
++const observations = {
++  status: "pending",
++  target,
++  otherTarget,
++  scope:
++    "Actual built HTTP/MCP/Chromium; only captured source is analyzed; target modules and scripts never execute.",
++};
++try {
++  server = await startProduction(join(runtime, "data"));
++  const api = (path, method = "GET", body) =>
++    http(server.url, path, method, body);
++  mcp = await connectMcp(server.url);
++  mcp.client.onerror = (e) => protocolErrors.push(String(e));
++  browser = await chromium.launch();
++  const context = await browser.newContext({
++    viewport: { width: 1600, height: 1000 },
++  });
++  await denyExternalRequests(context, external);
++  page = await context.newPage();
++  page.on("pageerror", (e) => errors.push(String(e)));
++  page.on("console", (m) => {
++    if (m.type() === "error") errors.push(m.text());
++  });
++  await page.goto(server.url);
++  if (await page.locator(".welcome").count())
++    await page
++      .locator(".welcome")
++      .getByRole("button", { name: "选择本地项目", exact: true })
++      .click();
++  await page.getByRole("textbox", { name: "本地项目路径" }).fill(target);
++  const opened = page.waitForResponse(
++    (r) => r.url().endsWith("/api/projects") && r.request().method() === "POST",
++  );
++  await page.getByRole("button", { name: "打开并索引", exact: true }).click();
++  const response = await opened;
++  assert.equal(response.ok(), true);
++  const project = await response.json(),
++    base = "/api/projects/" + project.id,
++    args = { projectId: project.id };
++  await page.getByRole("combobox", { name: "界面语言" }).selectOption("en");
++  const original = await api(base + "/snapshot");
++  const node = (snapshot, name, file) => {
++    const found = snapshot.nodes.find(
++      (n) => n.kind === "function" && n.name === name && n.filePath === file,
++    );
++    assert.ok(found, file + ":" + name);
++    return found;
++  };
++  const entry = node(original, "entry", "packages/app/entry.ts"),
++    leaf = node(original, "helper", "packages/lib/src/main.ts"),
++    alternate = node(original, "helper", "packages/lib/src/other.ts");
++  const functionContext = async (n) => {
++    const value = await api(base + "/functions/" + n.id);
++    assert.deepEqual(
++      await mcp.call("get_function_context", {
++        ...args,
++        nodeId: n.id,
++        limit: 50,
++      }),
++      value,
++    );
++    return value;
++  };
++  const context0 = await functionContext(entry);
++  assert.equal(context0.totalOutgoing, 1);
++  assert.equal(context0.outgoing[0].targetId, leaf.id);
++  assert.equal(context0.outgoing[0].resolution, "resolved");
++  assert.equal(
++    (await functionContext(node(original, "stable", "packages/app/stable.ts")))
++      .outgoing[0].targetId,
++    leaf.id,
++  );
++  const requireLeaf = node(original, "helper", "packages/lib/src/main.cjs");
++  assert.equal(
++    (
++      await functionContext(
++        node(original, "requireEntry", "packages/app/entry.cjs"),
++      )
++    ).outgoing[0].targetId,
++    requireLeaf.id,
++  );
++  for (const [name, file] of [
++    ["uncertain", "packages/app/uncertain.ts"],
++    ["blocked", "packages/app/blocked.ts"],
++    ["typeOnly", "packages/app/type.ts"],
++  ]) {
++    const ctx = await functionContext(node(original, name, file));
++    assert.equal(ctx.outgoing[0].targetId, null);
++    assert.equal(ctx.outgoing[0].resolution, "unresolved");
++  }
++  const sources = {};
++  for (const [file, bytes] of Object.entries(inputs))
++    if (/\.(?:ts|cjs)$/.test(file)) {
++      const source = await api(
++        base + "/source?filePath=" + encodeURIComponent(file),
++      );
++      assert.equal(source.content, bytes);
++      sources[file] = source;
++    }
++  const summary = await api(base + "/summary");
++  assert.deepEqual(await mcp.call("get_project_summary", args), summary);
++  async function show(name, file) {
++    await page.getByRole("textbox", { name: "Search functions" }).fill(name);
++    const searched = page.waitForResponse((r) =>
++      r.url().includes("/functions?"),
++    );
++    await page.getByRole("button", { name: "Search", exact: true }).click();
++    await searched;
++    const selected = page
++      .locator(".navigation .compact-search .node-list button")
++      .filter({ has: page.getByText("ƒ " + name, { exact: true }) })
++      .filter({ has: page.getByText(file, { exact: true }) });
++    await selected.last().click();
++    const tab = page
++      .locator(".inspector .tabs")
++      .getByRole("button", { name: "View source", exact: true });
++    if (await tab.count()) await tab.click();
++    await expect(page.getByTestId("source-snippet")).toContainText(name);
++  }
++  await show("entry", "packages/app/entry.ts");
++  await page
++    .getByRole("button", { name: "Expand one level", exact: true })
++    .click();
++  await expect(
++    page.locator('.react-flow__node[data-id="fact:' + leaf.id + '"]'),
++  ).toBeVisible();
++  await page.screenshot({
++    path: join(out, "workspace-before.png"),
++    fullPage: true,
++  });
++  const plan = await mcp.call("propose_plan", {
++    ...args,
++    baselineSnapshotId: original.id,
++    title: "IDX02 configured workspace reuse",
++    operations: [
++      {
++        kind: "add_relation",
++        id: "reuse",
++        sourceId: entry.id,
++        targetId: leaf.id,
++        type: "must_reuse",
++      },
++    ],
++  });
++  const approved = await api(
++    "/api/plans/" + plan.plan.id + "/approve",
++    "POST",
++    { expectedRevision: plan.plan.revision },
++  );
++  assert.equal(approved.valid, true);
++  const route = await mcp.call("propose_route", {
++    ...args,
++    snapshotId: original.id,
++    title: "Workspace actual leaf",
++    description: "IDX02 作者原文",
++    kind: "call_chain",
++    steps: [
++      { nodeId: entry.id, note: "entry" },
++      {
++        nodeId: leaf.id,
++        note: "captured source",
++        relationId: context0.outgoing[0].id,
++      },
++    ],
++  });
++  assert.equal((await mcp.call("get_routes", args)).items[0].stale, false);
++  const changedLib = {
++    ...libPackage,
++    exports: {
++      ...libPackage.exports,
++      ".": { import: "./src/other.ts", require: "./src/main.cjs" },
++    },
++  };
++  await writeFile(
++    join(target, "packages/lib/package.json"),
++    JSON.stringify(changedLib, null, 2),
++  );
++  await mcp.call("refresh_index", args);
++  const afterExports = await api(base + "/snapshot");
++  assert.notEqual(afterExports.id, original.id);
++  assert.notEqual(afterExports.contentHash, original.contentHash);
++  const context1 = await functionContext(entry);
++  assert.equal(context1.outgoing[0].targetId, alternate.id);
++  assert.deepEqual(
++    afterExports.nodes
++      .filter((n) => n.kind === "function")
++      .map((n) => n.id)
++      .sort(),
++    original.nodes
++      .filter((n) => n.kind === "function")
++      .map((n) => n.id)
++      .sort(),
++  );
++  const stale = await api("/api/plans/" + plan.plan.id);
++  assert.deepEqual(
++    await mcp.call("get_approved_plan", { ...args, planId: plan.plan.id }),
++    stale,
++  );
++  assert.equal(stale.valid, false);
++  assert.equal(stale.plan.status, "stale");
++  assert.deepEqual(stale.approval, approved.approval);
++  assert.deepEqual(stale.plan.operations, approved.plan.operations);
++  assert.deepEqual(await api(base + "/routes"), [route]);
++  assert.equal((await mcp.call("get_routes", args)).items[0].stale, true);
++  await page.reload();
++  await show("helper", "packages/lib/src/other.ts");
++  await expect(page.getByTestId("source-snippet")).toContainText('"other"');
++  await page.screenshot({
++    path: join(out, "workspace-after-exports.png"),
++    fullPage: true,
++  });
++  const changedRoot = { ...rootPackage, workspaces: ["packages/lib"] };
++  await writeFile(
++    join(target, "package.json"),
++    JSON.stringify(changedRoot, null, 2),
++  );
++  await mcp.call("refresh_index", args);
++  const afterWorkspaces = await api(base + "/snapshot"),
++    context2 = await functionContext(entry);
++  assert.notEqual(afterWorkspaces.id, afterExports.id);
++  assert.notEqual(afterWorkspaces.contentHash, afterExports.contentHash);
++  assert.equal(context2.outgoing[0].targetId, null);
++  assert.equal(context2.outgoing[0].resolution, "unresolved");
++  for (const [file, bytes] of Object.entries(inputs))
++    if (file !== "package.json" && file !== "packages/lib/package.json")
++      assert.equal(await readFile(join(target, file), "utf8"), bytes);
++  const isolated = await api("/api/projects", "POST", { path: otherTarget }),
++    isolatedBase = "/api/projects/" + isolated.id;
++  const isolatedSnapshot = await api(isolatedBase + "/snapshot");
++  const isolatedEntry = node(
++      isolatedSnapshot,
++      "entry",
++      "packages/app/entry.ts",
++    ),
++    isolatedLeaf = node(isolatedSnapshot, "helper", "packages/lib/src/main.ts");
++  assert.notEqual(isolatedEntry.id, entry.id);
++  assert.notEqual(isolatedLeaf.id, leaf.id);
++  const isolatedContext = await mcp.call("get_function_context", {
++    projectId: isolated.id,
++    nodeId: isolatedEntry.id,
++  });
++  assert.equal(isolatedContext.outgoing[0].targetId, isolatedLeaf.id);
++  const cross = await mcp.client.callTool({
++    name: "get_function_context",
++    arguments: { projectId: isolated.id, nodeId: entry.id },
++  });
++  assert.equal(cross.isError, true);
++  const wrong = await fetch(
++    server.url + isolatedBase + "/functions/" + entry.id,
++  );
++  assert.equal(wrong.status, 404);
++  await assert.rejects(access(marker));
++  await mcp.client.close();
++  await server.stop();
++  const store = new SqliteStorage(join(runtime, "data", "atlasmode.sqlite"));
++  let history;
++  try {
++    for (const snap of [original, afterExports, afterWorkspaces])
++      assert.deepEqual(store.get("snapshots", snap.id), snap);
++    assert.deepEqual(store.list("approvals"), [approved.approval]);
++    assert.deepEqual(store.get("routes", route.id), route);
++    history = {
++      snapshotIds: [original.id, afterExports.id, afterWorkspaces.id],
++      immutableSnapshots: true,
++      approvalUnchanged: true,
++      routeUnchanged: true,
++    };
++  } finally {
++    store.close();
++  }
++  server = await startProduction(join(runtime, "data"));
++  mcp = await connectMcp(server.url);
++  mcp.client.onerror = (e) => protocolErrors.push(String(e));
++  assert.deepEqual(await api(base + "/snapshot"), afterWorkspaces);
++  assert.deepEqual(
++    await mcp.call("get_function_context", {
++      ...args,
++      nodeId: entry.id,
++      limit: 50,
++    }),
++    context2,
++  );
++  assert.deepEqual(
++    await mcp.call("get_approved_plan", { ...args, planId: plan.plan.id }),
++    stale,
++  );
++  assert.equal((await mcp.call("get_routes", args)).items[0].stale, true);
++  history.restartConfirmed = true;
++  const actual = await new SourceIndexer().index(
++    resolve("."),
++    "idx02-readonly-atlasmode",
++  );
++  const workspaceDiagnostics = actual.diagnostics.filter(
++    (d) =>
++      d.message.startsWith("WORKSPACE_MAPPING_UNAVAILABLE:") &&
++      d.message.includes("@codemap/"),
++  );
++  assert.ok(workspaceDiagnostics.length > 0);
++  assert.ok(
++    workspaceDiagnostics.some((d) =>
++      d.message.includes("exact captured implementation"),
++    ),
++  );
++  await save("atlasmode-readonly.json", {
++    status: "captured",
++    path: resolve("."),
++    id: actual.id,
++    contentHash: actual.contentHash,
++    coverage: actual.coverage,
++    workspaceDiagnostics,
++    scope:
++      "No dist-to-src inference: existing package exports name excluded dist. This remains unknown, not a successful source mapping.",
++  });
++  assert.deepEqual(errors, []);
++  assert.deepEqual(external, []);
++  assert.deepEqual(protocolErrors, []);
++  assert.equal(mcp.stderr(), "");
++  await assert.rejects(access(marker));
++  Object.assign(observations, {
++    status: "passed",
++    observedAt: new Date().toISOString(),
++    project,
++    summary,
++    original,
++    afterExports,
++    afterWorkspaces,
++    contexts: [context0, context1, context2],
++    sources,
++    approved,
++    stale,
++    route,
++    history,
++    isolated: {
++      project: isolated,
++      entry: isolatedEntry,
++      leaf: isolatedLeaf,
++      context: isolatedContext,
++      crossProjectMcp: cross,
++      httpStatus: wrong.status,
++    },
++    changedManifests: { exports: changedLib, workspaces: changedRoot },
++    targetNeverExecuted: true,
++    errors,
++    external,
++    protocolErrors,
++  });
++  await save("workspace-product.json", observations);
++  console.log(
++    JSON.stringify({
++      status: observations.status,
++      counts: summary.counts,
++      snapshots: history.snapshotIds,
++      history,
++      sourceFiles: Object.keys(sources).length,
++      atlasmodeWorkspaceUnknowns: workspaceDiagnostics.length,
++      errors,
++      external,
++      protocolErrors,
++    }),
++  );
++} catch (error) {
++  Object.assign(observations, {
++    status: "failed",
++    error: String(error),
++    errors,
++    external,
++    protocolErrors,
++  });
++  await save("workspace-product-fail.json", observations);
++  throw error;
++} finally {
++  await browser?.close();
++  await mcp?.client.close();
++  await server?.stop();
++  await rm(runtime, { recursive: true, force: true });
++}
+diff --git a/tests/support/idx02-express-validate.mjs b/tests/support/idx02-express-validate.mjs
+new file mode 100644
+index 0000000..eca65a2
+--- /dev/null
++++ b/tests/support/idx02-express-validate.mjs
+@@ -0,0 +1,400 @@
++// Read-only product acceptance for an already checked out, fixed public target.
++import assert from "node:assert/strict";
++import { repositoryProvenance } from "../../scripts/repository-provenance.mjs";
++import { mkdtemp, mkdir, writeFile, rm, access } from "node:fs/promises";
++import { tmpdir } from "node:os";
++import { join, resolve } from "node:path";
++import { parseArgs } from "node:util";
++import { chromium, expect } from "@playwright/test";
++import {
++  startProduction,
++  connectMcp,
++  http,
++  denyExternalRequests,
++} from "./production.mjs";
++const { values } = parseArgs({
++  options: {
++    ...Object.fromEntries(
++      ["path", "commit", "symbol", "file", "label"].map((key) => [
++        key,
++        { type: "string" },
++      ]),
++    ),
++    "require-entry": { type: "boolean", default: false },
++  },
++});
++for (const key of ["path", "commit", "symbol", "file", "label"])
++  assert.ok(values[key], `Required --${key}`);
++assert.match(values.label, /^[a-z0-9-]+$/);
++const beforeCapture = repositoryProvenance(values.path, values.commit);
++const { gitRevision } = beforeCapture;
++const root = await mkdtemp(join(tmpdir(), "atlas-target-")),
++  out = resolve("docs/superpowers/reviews/idx02-2026-10-10");
++await mkdir(out, { recursive: true });
++let server, mcp, browser, page, failureCapture;
++let entryCriterion = {
++  requested: values["require-entry"],
++  status: values["require-entry"] ? "pending" : "not-requested",
++};
++const errors = [],
++  external = [],
++  protocolErrors = [];
++try {
++  server = await startProduction(join(root, "data"));
++  mcp = await connectMcp(server.url);
++  mcp.client.onerror = (error) => protocolErrors.push(String(error));
++  browser = await chromium.launch({
++    ...(process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE
++      ? { executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE }
++      : {}),
++  });
++  const context = await browser.newContext({
++    viewport: { width: 1600, height: 1000 },
++  });
++  page = await context.newPage();
++  page.on("pageerror", (e) => errors.push(`pageerror: ${e.message}`));
++  page.on("console", (m) => {
++    if (m.type() === "error") errors.push(`console: ${m.text()}`);
++  });
++  await denyExternalRequests(context, external);
++  await page.goto(server.url);
++  if (await page.locator(".welcome").count())
++    await page
++      .locator(".welcome")
++      .getByRole("button", { name: "选择本地项目", exact: true })
++      .click();
++  await page.getByRole("textbox", { name: "本地项目路径" }).fill(values.path);
++  const start = performance.now();
++  const opened = page.waitForResponse(
++    (r) => r.url().endsWith("/api/projects") && r.request().method() === "POST",
++  );
++  await page.getByRole("button", { name: "打开并索引", exact: true }).click();
++  const response = await opened;
++  assert.equal(response.ok(), true);
++  const project = await response.json();
++  const openMilliseconds = Math.round(performance.now() - start);
++  await page.getByRole("combobox", { name: "界面语言" }).selectOption("en");
++  const args = { projectId: project.id };
++  const summary = await mcp.call("get_project_summary", args);
++  const httpSummary = await http(
++    server.url,
++    `/api/projects/${project.id}/summary`,
++  );
++  assert.deepEqual(summary, httpSummary);
++  const search = await mcp.call("search_functions", {
++    ...args,
++    q: values.symbol,
++    limit: 200,
++  });
++  const node = search.items.find(
++    (n) => n.name === values.symbol && n.filePath === values.file,
++  );
++  assert.ok(node, "Expected real source sample");
++  const contextResult = await mcp.call("get_function_context", {
++    ...args,
++    nodeId: node.id,
++    limit: 200,
++  });
++  const contextPages = [contextResult];
++  for (
++    let offset = 200;
++    offset < Math.max(contextResult.totalIncoming, contextResult.totalOutgoing);
++    offset += 200
++  )
++    contextPages.push(
++      await mcp.call("get_function_context", {
++        ...args,
++        nodeId: node.id,
++        offset,
++        limit: 200,
++      }),
++    );
++  const allIncoming = contextPages.flatMap((p) => p.incoming);
++  const allOutgoing = contextPages.flatMap((p) => p.outgoing);
++  assert.equal(allIncoming.length, contextResult.totalIncoming);
++  assert.equal(allOutgoing.length, contextResult.totalOutgoing);
++  const completeContext = {
++    pages: contextPages,
++    incoming: allIncoming,
++    outgoing: allOutgoing,
++  };
++  const bounded = await mcp.call("get_subgraph", {
++    ...args,
++    nodeIds: [node.id],
++    budget: 1,
++    depth: 2,
++  });
++  assert.equal(bounded.truncated, true);
++  assert.equal(bounded.nodes.length, 1);
++  const graph = await mcp.call("get_subgraph", {
++    ...args,
++    nodeIds: [node.id],
++    budget: 80,
++    depth: 1,
++  });
++  assert.ok(graph.nodes.length <= 80);
++  assert.ok(graph.relations.length <= 240);
++  const source = await http(
++    server.url,
++    `/api/projects/${project.id}/source?filePath=${encodeURIComponent(values.file)}`,
++  );
++  assert.ok(source.content.includes(values.symbol));
++  for (const relation of [...allIncoming, ...allOutgoing]) {
++    const text = (
++      await http(
++        server.url,
++        `/api/projects/${project.id}/source?filePath=${encodeURIComponent(relation.evidence.filePath)}`,
++      )
++    ).content;
++    assert.ok(
++      text.split(/\r?\n/)[relation.evidence.line - 1]?.trim(),
++      "Evidence resolves to an actual source line",
++    );
++  }
++  failureCapture = {
++    summary,
++    sample: { node, context: contextResult, completeContext, source },
++    bounded,
++  };
++  await page
++    .getByRole("textbox", { name: "Search functions" })
++    .fill(values.symbol);
++  const initialSearch = page.waitForResponse((r) =>
++    r.url().includes("/functions?"),
++  );
++  await page.getByRole("button", { name: "Search", exact: true }).click();
++  await initialSearch;
++  await expect(
++    page.getByRole("button", { name: "Search", exact: true }),
++  ).toBeEnabled();
++  const result = page
++    .locator(".navigation .compact-search .node-list button")
++    .filter({ has: page.getByText(`ƒ ${values.symbol}`, { exact: true }) })
++    .filter({ has: page.getByText(values.file, { exact: true }) });
++  for (
++    let pageNumber = 0;
++    !(await result.count()) && pageNumber < 20;
++    pageNumber++
++  ) {
++    const next = page.getByRole("button", { name: "Next page", exact: true });
++    await expect(next).toBeEnabled();
++    const searched = page.waitForResponse((r) =>
++      r.url().includes("/functions?"),
++    );
++    await next.click();
++    await searched;
++    await expect(
++      page.getByRole("button", { name: "Search", exact: true }),
++    ).toBeEnabled();
++  }
++  await result.last().click();
++  const viewSource = page
++    .locator(".inspector .tabs")
++    .getByRole("button", { name: "View source", exact: true });
++  if (await viewSource.count()) await viewSource.click();
++  await expect(page.getByTestId("source-snippet")).toContainText(values.symbol);
++  await page
++    .getByRole("button", { name: "Expand one level", exact: true })
++    .click();
++  await expect(
++    page.locator(`.react-flow__node[data-id="fact:${node.id}"]`),
++  ).toBeVisible();
++  // Keep the selected source readable instead of shrinking all 80 nodes into one viewport.
++  const focused = page.locator(`.react-flow__node[data-id="fact:${node.id}"]`);
++  await expect(focused).toBeInViewport();
++  await expect
++    .poll(async () => (await focused.boundingBox())?.width ?? 0)
++    .toBeGreaterThan(200);
++  await expect(page.locator(".graph-area footer")).not.toContainText(
++    "Working…",
++  );
++  await page.screenshot({
++    path: join(out, `${values.label}-product.png`),
++    fullPage: true,
++  });
++  failureCapture = {
++    summary,
++    sample: {
++      node,
++      context: contextResult,
++      completeContext,
++      source,
++      sourceExcerpt: source.content
++        .split(/\r?\n/)
++        .slice(node.startLine - 1, Math.min(node.endLine, node.startLine + 20))
++        .join("\n"),
++    },
++    bounded,
++    expansion: {
++      nodes: graph.nodes.length,
++      relations: graph.relations.length,
++      truncated: graph.truncated,
++    },
++  };
++  if (values["require-entry"]) {
++    const returnedEntryIds = summary.entrypoints.map((entry) => entry.id);
++    entryCriterion = {
++      requested: true,
++      status: "failed",
++      sampleId: node.id,
++      sampleExported: node.exported,
++      returnedEntryIds,
++      sampleInReturnedEntries: returnedEntryIds.includes(node.id),
++      entrypointTotal: summary.entrypointTotal,
++      returnedCount: returnedEntryIds.length,
++      entrypointsTruncated: summary.entrypointsTruncated,
++    };
++    assert.equal(
++      node.exported,
++      true,
++      "Required sample must be an exported entry",
++    );
++    assert.ok(
++      returnedEntryIds.length <= 50,
++      "Entry response respects its 50-node cap",
++    );
++    assert.ok(
++      summary.entrypointTotal >= returnedEntryIds.length,
++      "Entry total accounts for returned nodes",
++    );
++    assert.equal(
++      summary.entrypointsTruncated,
++      summary.entrypointTotal > returnedEntryIds.length,
++      "Entry truncation agrees with total and returned count",
++    );
++    assert.ok(
++      returnedEntryIds.includes(node.id),
++      "Required sample ID must occur in the actual returned entry list (truncated lists do not waive acceptance)",
++    );
++    entryCriterion.status = "passed";
++  }
++  assert.deepEqual(errors, []);
++  assert.deepEqual(external, []);
++  assert.deepEqual(protocolErrors, []);
++  assert.equal(mcp.stderr(), "");
++  const afterCapture = repositoryProvenance(values.path, gitRevision);
++  const evidence = {
++    provenance: { beforeCapture, afterCapture },
++    target: {
++      path: values.path,
++      gitRevision,
++      symbol: values.symbol,
++      file: values.file,
++    },
++    observedAt: new Date().toISOString(),
++    status: "passed",
++    entryCriterion,
++    openMilliseconds,
++    summary,
++    search: { total: search.total, limit: search.limit },
++    sample: {
++      node,
++      context: contextResult,
++      completeContext,
++      source,
++      sourceExcerpt: source.content
++        .split(/\r?\n/)
++        .slice(node.startLine - 1, Math.min(node.endLine, node.startLine + 20))
++        .join("\n"),
++    },
++    bounded,
++    expansion: {
++      nodes: graph.nodes.length,
++      relations: graph.relations.length,
++      truncated: graph.truncated,
++    },
++    errors,
++    external,
++    protocolErrors,
++    scope:
++      "Actual compiled API/web + Chromium open/search/source/expand + SDK stdio summary/search/context/subgraph. Source endpoint is HTTP; MCP supplies source locations/call evidence, no read_source tool. Whole supported checkout indexed; target code and upstream tests never executed.",
++  };
++  await writeFile(
++    join(out, `${values.label}-product.json`),
++    JSON.stringify(evidence, null, 2),
++  );
++  console.log(
++    JSON.stringify({
++      label: values.label,
++      gitRevision,
++      openMilliseconds,
++      counts: summary.counts,
++      diagnostics: summary.diagnostics.length,
++      entrypointTotal: summary.entrypointTotal,
++      entrypointsTruncated: summary.entrypointsTruncated,
++      entryCriterion,
++      expansion: evidence.expansion,
++      errors,
++      external,
++    }),
++  );
++} catch (error) {
++  try {
++    if (page && !page.isClosed())
++      await page.screenshot({
++        path: join(out, `${values.label}-product.png`),
++        fullPage: true,
++      });
++  } catch (captureError) {
++    errors.push(`Failure screenshot: ${captureError}`);
++  }
++  let afterCapture;
++  try {
++    afterCapture = repositoryProvenance(values.path, gitRevision);
++  } catch (captureError) {
++    afterCapture = { error: String(captureError) };
++  }
++  try {
++    await writeFile(
++      join(out, `${values.label}-product.json`),
++      JSON.stringify(
++        {
++          status: "failed",
++          observedAt: new Date().toISOString(),
++          target: {
++            path: values.path,
++            gitRevision,
++            symbol: values.symbol,
++            file: values.file,
++          },
++          provenance: {
++            beforeCapture,
++            afterCapture,
++          },
++          entryCriterion,
++          ...failureCapture,
++          error: String(error),
++          errors,
++          external,
++          protocolErrors,
++          scope:
++            "Actual compiled read-only product validation; target code and upstream tests never executed.",
++        },
++        null,
++        2,
++      ),
++    );
++  } catch (captureError) {
++    console.error(`Failure evidence: ${captureError}`);
++  }
++  throw error;
++} finally {
++  const mcpPid = mcp?.transport.pid;
++  try {
++    await browser?.close();
++  } finally {
++    try {
++      await mcp?.client.close();
++    } finally {
++      try {
++        await server?.stop();
++      } finally {
++        await rm(root, { recursive: true, force: true });
++      }
++    }
++  }
++  if (mcpPid) assert.throws(() => process.kill(mcpPid, 0), { code: "ESRCH" });
++  if (server)
++    assert.throws(() => process.kill(server.child.pid, 0), { code: "ESRCH" });
++  await assert.rejects(access(root));
++}
+diff --git a/docs/superpowers/specs/2026-10-10-idx02-design.md b/docs/superpowers/specs/2026-10-10-idx02-design.md
+new file mode 100644
+index 0000000..3d29343
+--- /dev/null
++++ b/docs/superpowers/specs/2026-10-10-idx02-design.md
+@@ -0,0 +1,16 @@
++# IDX-02 captured workspace package source mapping
++Authority: docs/tickets/IDX-02.md; current AGENTS autonomous execution exception. No new external dependency, runtime loader, target execution, project references, or core/service API.
++
++Alternatives: expose all captured names globally (rejected: sibling workspace leakage); synthesize node_modules with TypeScript resolution (rejected: conditions/type declarations/fallback can silently cross evidence boundaries); use a small captured registry before existing configuration resolution (selected: deterministic and reviewable).
++
++Captured inputs: scanner already captures eligible package.json under 512 files/256KiB single/4MiB total budgets and hashes exact bytes in v3. Reuse these inputs and unavailable-manifest boundaries, including workspaces/exports bytes; no extra disk reads.
++Workspace authorization: workspaces arrays (or object packages array) support literal directory patterns and * matching one directory segment. Reject unsupported glob syntax/traversal. Membership is from captured manifest directory, unique package names only. The nearest workspace owner applies; consumer's nearest package must be owner or a registered member. Unlisted/nested packages cannot borrow an ancestor registry. Package self-reference uses its own nearest manifest and explicit exports.
++Exports: explicit root strings, exact subpath strings, and deterministic single-star subpaths. Exact key wins; pattern selection uses longest prefix then longest suffix. Targets must start ./, stay within package directory and its own nearest captured package boundary, contain no traversal/node_modules/URL/encoded segments, and name a captured implementation source exactly. No main/index fallback and no guessed dist-to-src or extension substitution.
++Conditions: literal import/export syntax establishes import; literal unshadowed require or import-equals establishes require (existing CommonJS semantic guard still decides call identity). For a specifier with mixed request syntax, compute both environments and require convergence. Ordered import/require/default branches follow known activity; all other conditions are unknown, so evaluate enabled and disabled alternatives including blocked/invalid/missing-target outcomes. Nested NO_MATCH continues the parent next key; it is distinct from BLOCKED/INVALID, which must never fall back. Reject integer conditional keys. Bound evaluation to 16 object levels and 2048 work units per request; overflow is unknown with diagnostic. Accept only when every possible outcome is the same authorized source. Arrays, null, invalid mixed export shapes and divergent/uncertain conditions stay unknown. This supports deterministic conditions, not arbitrary Node flags or loader execution.
++Unknown classification: known captured package names with missing/unauthorized mapping remain unresolved with package diagnostics, rather than external. Truly uncaptured bare imports retain existing external classification. Invalid nearest manifests stay opaque. Explicit configured tsconfig paths take precedence and do not fall back to workspace on failure.
++Implementation: new workspaceResolution.ts consumes captured SourceFile[] and returns resolve(sourcePath,specifier) {known,targetPath?,reason?}, recognizes(specifier), diagnostics. Add optional final manifests parameter to indexTypeScript; SourceIndexer passes existing scan.manifests. createConfigurationResolver takes optional registry and returns captured mappings through existing ts-morph resolutionHost. Existing CommonJS configuredAlias callback receives combined configured/workspace recognition. Preserve declaration IDs, physical target file imports and all IDX01 guard semantics.
++Evidence: test root/subpath/pattern, conditional request split/convergence/divergence/order, duplicate names, nested/unregistered consumers, missing/excluded/symlink/invalid targets and no checker fallback. Real compiled HTTP/MCP/UI fixture proves source identity, package-only exports/workspaces changes stale approvals/routes and immutable SQLite history, cross-project isolation. Real AtlasMode readonly capture confirms dist/conditional limitations explicitly. IDX01 349 baseline plus new tests and fresh Express strict gate if resolution changes affect it.
++Self-review: package bytes already included in freshness; no schema or hash format needed. Registry must run before normal TS package lookup, but after explicit paths precedence. Known rejected mappings cannot leak via external/checker fallback. Conditions no longer blanket-rejected; support bounded static selection/convergence. Runtime compatibility remains a documented non-goal.
++Primary semantics: https://nodejs.org/docs/latest-v24.x/api/packages.html and https://docs.npmjs.com/cli/v11/using-npm/workspaces/ .
++
++Final review amendments: requested subpaths and forbidden node_modules segments are validated before fixed wildcard target selection; wildcard matches require at least one character. Opaque invalid/unavailable manifests retain their boundaries and known package names but confer no source mapping authority. Type-only namespace and re-export chains cannot establish runtime callable identity. Unshadowed require mode selection excludes captured lexical bindings. Wildcard substitution preserves own __proto__ keys via null-prototype records and has its own bounded traversal. Final evidence and explicit limitations: ../reviews/idx02-2026-10-10/README.md.
+diff --git a/docs/superpowers/plans/2026-10-10-idx02.md b/docs/superpowers/plans/2026-10-10-idx02.md
+new file mode 100644
+index 0000000..076f2e1
+--- /dev/null
++++ b/docs/superpowers/plans/2026-10-10-idx02.md
+@@ -0,0 +1,32 @@
++# IDX-02 Implementation Plan
++> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans inline with independent review.
++**Goal:** Capture and conservatively map workspace exports to authorized implementation source, with freshness/history/isolation evidence.
++**Architecture:** A captured-only package registry supplies guarded module mappings; existing TS checker establishes actual function identities.
++**Tech Stack:** Node24, TypeScript AST, Vitest, Playwright; no new dependencies.
++**Spec:** docs/superpowers/specs/2026-10-10-idx02-design.md
++
++## Global Constraints
++Preserve SEC lock f26ef3a7cf494becb903226ef01d86dfa7ca1e014c271e284bb0db1b9cee49c4 and IDX01. No target execution/install or references expansion. Own indexer/new IDX02 helpers/docs only; controller owns commits/shared docs/root checks.
++
++## Review Focus
++Condition branch priority and missing alternatives; duplicate/nested package scope; path/URL/encoded target escapes; explicit TS paths fallback; package-only freshness while source IDs/history remain stable.
++
++### Task 1: Captured workspace resolver
++Files: create packages/indexer/src/workspaceResolution.ts and workspaceResolution.test.ts; modify configResolution.ts/typescript.ts/index.ts.
++Consumes: captured SourceFile[] and capture diagnostics. Produces: pure resolve(sourcePath,specifier) {known:boolean,targetPath?:string,reason?:string}, recognizes(...), diagnostics; indexTypeScript optional final manifest inputs; no external package API/schema changes.
++- [x] Write behavioral ESM/CJS root/subpath/pattern/condition/import-v-require/convergence tests; unknown/escape/duplicate/isolation/paths-precedence negatives.
++- [x] Run focused tests, retain RED with missing mappings.
++- [x] Implement registry and resolution host composition, source capture/hash unchanged.
++- [x] Run focused and all indexer tests, lint/typecheck/build in coordinated slot. Expected existing349 plus new PASS.
++- [x] Independent review checks rule boundaries and fixes only demonstrated failures.
++
++### Task 2: Actual product freshness/history/isolation
++Files: new tests/support/idx02-validate.mjs and idx02-express-validate.mjs (one consolidated independent acceptance harness) and docs/superpowers/reviews/idx02-2026-10-10/.
++Consumes: compiled API/MCP/SQLite/Chromium and public indexer. Produces: complete fixture source/context/package evidence, real unchanged-source hash change, stale approval/route and immutable history/restart, cross-project/nested-workspace unknown evidence.
++- [x] Create independent target fixture with source-execution sentinel and package-only update functions.
++- [x] Validate HTTP equals MCP actual source/calls; approve test plan, mutate exports/workspaces only, refresh and prove stale but immutable prior approval/snapshot.
++- [x] Run real browser open/search/source/relations and capture inspected PNG; readonly actual AtlasMode source capture reports its conditional dist mappings as unknown.
++- [x] Re-run pinned Express strict entry after indexer resolver change, without target edits/execution.
++- [x] Preserve raw receipts and source/evidence hashes, record boundaries, hand off integration/commit to controller.
++
++Self-review: ticket maps to both tasks; no service contract changes; all uncertain conditions exercised; simple literal subset is insufficient alone, deterministic condition selection and convergence required. No whole-repo/root/CI claims from scoped checks.

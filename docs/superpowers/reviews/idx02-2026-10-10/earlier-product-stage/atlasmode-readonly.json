@@ -1,0 +1,788 @@
+{
+  "status": "captured",
+  "path": "/home/agent/projects/AtlasMode",
+  "id": "snapshot:9b84143c8e0a68f3db4ffdeebcbac7c6",
+  "contentHash": "26b39b0dd274cdb10dfca5b2ea00baf6eab0012e49612c945dec165710185bcd",
+  "coverage": {
+    "files": [
+      "apps/mcp/src/client.test.ts",
+      "apps/mcp/src/client.ts",
+      "apps/mcp/src/index.ts",
+      "apps/mcp/src/scope.test.ts",
+      "apps/mcp/src/scope.ts",
+      "apps/mcp/src/server.ts",
+      "apps/server/src/agent/bridge.test.ts",
+      "apps/server/src/agent/bridge.ts",
+      "apps/server/src/agent/configured.ts",
+      "apps/server/src/agent/direct-loop.test.ts",
+      "apps/server/src/agent/direct.test.ts",
+      "apps/server/src/agent/direct.ts",
+      "apps/server/src/agent/gateway.ts",
+      "apps/server/src/agent/native.test.ts",
+      "apps/server/src/agent/native.ts",
+      "apps/server/src/agent/platform-refusal.test.ts",
+      "apps/server/src/agent/process.test.ts",
+      "apps/server/src/agent/process.ts",
+      "apps/server/src/agent/profile.test.ts",
+      "apps/server/src/agent/profile.ts",
+      "apps/server/src/agent/responses-stream.test.ts",
+      "apps/server/src/agent/responses-stream.ts",
+      "apps/server/src/agent/routes.test.ts",
+      "apps/server/src/agent/routes.ts",
+      "apps/server/src/agent/test-fixtures/cli.mjs",
+      "apps/server/src/agent/types.ts",
+      "apps/server/src/dev.test.ts",
+      "apps/server/src/funnel-query.test.ts",
+      "apps/server/src/index.test.ts",
+      "apps/server/src/index.ts",
+      "apps/server/src/navigation-query.test.ts",
+      "apps/server/src/navigation-query.ts",
+      "apps/server/src/queries.ts",
+      "apps/server/src/routes.ts",
+      "apps/server/src/server.test.ts",
+      "apps/server/src/server.ts",
+      "apps/web/src/api/client.test.ts",
+      "apps/web/src/api/client.ts",
+      "apps/web/src/api/scope.test.ts",
+      "apps/web/src/api/scope.ts",
+      "apps/web/src/app/App.tsx",
+      "apps/web/src/app/Navigation.tsx",
+      "apps/web/src/app/WorkspacePanels.test.tsx",
+      "apps/web/src/app/WorkspacePanels.tsx",
+      "apps/web/src/app/funnel-workspace.test.ts",
+      "apps/web/src/app/group-collapse-workspace.test.ts",
+      "apps/web/src/app/groups-workspace.test.ts",
+      "apps/web/src/app/inspection-workspace.test.ts",
+      "apps/web/src/app/main.tsx",
+      "apps/web/src/app/workspace.test.ts",
+      "apps/web/src/app/workspace.ts",
+      "apps/web/src/features/chat/ChatPanel.tsx",
+      "apps/web/src/features/chat/controller.test.ts",
+      "apps/web/src/features/chat/controller.ts",
+      "apps/web/src/features/chat/direct-panel.test.tsx",
+      "apps/web/src/features/chat/panels.test.tsx",
+      "apps/web/src/features/chat/sessions.test.ts",
+      "apps/web/src/features/chat/sessions.ts",
+      "apps/web/src/features/chat/shell.test.tsx",
+      "apps/web/src/features/chat/strings.ts",
+      "apps/web/src/features/chat/transport.test.ts",
+      "apps/web/src/features/chat/transport.ts",
+      "apps/web/src/features/chat/types.ts",
+      "apps/web/src/features/chat/workspace-sync.test.ts",
+      "apps/web/src/features/graph/Canvas.tsx",
+      "apps/web/src/features/graph/InspectionCard.test.tsx",
+      "apps/web/src/features/graph/InspectionCard.tsx",
+      "apps/web/src/features/graph/Inspector.tsx",
+      "apps/web/src/features/graph/MapPanel.tsx",
+      "apps/web/src/features/graph/focus.ts",
+      "apps/web/src/features/graph/funnel.test.ts",
+      "apps/web/src/features/graph/funnel.ts",
+      "apps/web/src/features/graph/inspection.test.ts",
+      "apps/web/src/features/graph/inspection.ts",
+      "apps/web/src/features/graph/nodeIdentity.test.tsx",
+      "apps/web/src/features/graph/nodeIdentity.tsx",
+      "apps/web/src/features/graph/projection.test.ts",
+      "apps/web/src/features/graph/projection.ts",
+      "apps/web/src/features/groups/GroupCard.test.tsx",
+      "apps/web/src/features/groups/GroupCard.tsx",
+      "apps/web/src/features/groups/GroupsPanel.test.tsx",
+      "apps/web/src/features/groups/GroupsPanel.tsx",
+      "apps/web/src/features/groups/inspection.test.ts",
+      "apps/web/src/features/groups/memberBindings.test.ts",
+      "apps/web/src/features/groups/memberBindings.ts",
+      "apps/web/src/features/groups/projection.test.ts",
+      "apps/web/src/features/groups/projection.ts",
+      "apps/web/src/features/groups/selection.test.ts",
+      "apps/web/src/features/groups/selection.ts",
+      "apps/web/src/features/navigation/Breadcrumbs.tsx",
+      "apps/web/src/features/navigation/path.test.ts",
+      "apps/web/src/features/navigation/path.ts",
+      "apps/web/src/features/navigation/workspace-navigation.test.ts",
+      "apps/web/src/features/planning/FunctionForm.tsx",
+      "apps/web/src/features/planning/PendingPlans.tsx",
+      "apps/web/src/features/planning/PlanEditor.tsx",
+      "apps/web/src/features/planning/PlanOverview.tsx",
+      "apps/web/src/features/planning/PlanningPanel.tsx",
+      "apps/web/src/features/planning/RelationEditor.tsx",
+      "apps/web/src/features/planning/history.test.ts",
+      "apps/web/src/features/planning/history.ts",
+      "apps/web/src/features/planning/operations.test.ts",
+      "apps/web/src/features/planning/operations.ts",
+      "apps/web/src/features/planning/pending.test.tsx",
+      "apps/web/src/features/planning/pending.ts",
+      "apps/web/src/features/routes/RoutePanel.tsx",
+      "apps/web/src/features/structure/PoliciesPanel.tsx",
+      "apps/web/src/features/verification/VerificationPanel.tsx",
+      "apps/web/src/i18n/en.ts",
+      "apps/web/src/i18n/index.tsx",
+      "apps/web/src/i18n/locale.test.tsx",
+      "apps/web/src/i18n/zh.ts",
+      "apps/web/vite.config.ts",
+      "eslint.config.mjs",
+      "fixtures/python/pkg/__init__.py",
+      "fixtures/python/pkg/helpers.py",
+      "fixtures/python/pkg/main.py",
+      "fixtures/typescript/barrel.ts",
+      "fixtures/typescript/lib.ts",
+      "fixtures/typescript/main.ts",
+      "fixtures/typescript/plain.js",
+      "fixtures/typescript/view.jsx",
+      "fixtures/typescript/view.tsx",
+      "packages/core/src/index.ts",
+      "packages/core/src/model.ts",
+      "packages/core/src/queries.test.ts",
+      "packages/core/src/queries.ts",
+      "packages/core/src/validation.test.ts",
+      "packages/core/src/validation.ts",
+      "packages/indexer/python/index.py",
+      "packages/indexer/src/commonjs.test.ts",
+      "packages/indexer/src/commonjs.ts",
+      "packages/indexer/src/configCapture.test.ts",
+      "packages/indexer/src/configCapture.ts",
+      "packages/indexer/src/configResolution.test.ts",
+      "packages/indexer/src/configResolution.ts",
+      "packages/indexer/src/declarations.test.ts",
+      "packages/indexer/src/graph.ts",
+      "packages/indexer/src/idx01.test.ts",
+      "packages/indexer/src/index.test.ts",
+      "packages/indexer/src/index.ts",
+      "packages/indexer/src/metadataRead.ts",
+      "packages/indexer/src/packageCapture.test.ts",
+      "packages/indexer/src/packageCapture.ts",
+      "packages/indexer/src/packageMode.test.ts",
+      "packages/indexer/src/packageMode.ts",
+      "packages/indexer/src/python.ts",
+      "packages/indexer/src/scan.ts",
+      "packages/indexer/src/source.ts",
+      "packages/indexer/src/typescript.ts",
+      "packages/indexer/src/workspaceResolution.test.ts",
+      "packages/indexer/src/workspaceResolution.ts",
+      "packages/service/src/group-view.test.ts",
+      "packages/service/src/index.ts",
+      "packages/service/src/knowledge.ts",
+      "packages/service/src/planning.ts",
+      "packages/service/src/verification.ts",
+      "packages/service/src/workspace.test.ts",
+      "packages/service/src/workspace.ts",
+      "packages/storage/src/index.ts",
+      "packages/storage/src/sqlite.test.ts",
+      "packages/storage/src/sqlite.ts",
+      "playwright.config.ts",
+      "scripts/dev.mjs",
+      "scripts/repository-provenance.mjs",
+      "scripts/smoke.mjs",
+      "scripts/test-agent-connection.mjs",
+      "scripts/test-mcp-connection.mjs",
+      "scripts/validate-repository.mjs",
+      "scripts/workspaces.mjs",
+      "tests/e2e/agent-chat.spec.ts",
+      "tests/e2e/breadcrumb-navigation.spec.ts",
+      "tests/e2e/commonjs.spec.ts",
+      "tests/e2e/direct-api.spec.ts",
+      "tests/e2e/first-use.spec.ts",
+      "tests/e2e/focus-navigation.spec.ts",
+      "tests/e2e/forwarding.spec.ts",
+      "tests/e2e/graph-inspection.spec.ts",
+      "tests/e2e/groups.spec.ts",
+      "tests/e2e/pending-plans.spec.ts",
+      "tests/e2e/planning.spec.mjs",
+      "tests/e2e/tsconfig.spec.ts",
+      "tests/integration/commonjs-resolution.test.ts",
+      "tests/integration/forwarding-resolution.test.ts",
+      "tests/integration/mcp-stdio.test.ts",
+      "tests/integration/preload-loader.test.ts",
+      "tests/integration/repository-provenance.test.ts",
+      "tests/integration/server-shutdown.test.ts",
+      "tests/integration/tsconfig-resolution.test.ts",
+      "tests/integration/workspace-lifecycle.test.ts",
+      "tests/support/chat-shell.mjs",
+      "tests/support/commonjs.mjs",
+      "tests/support/forwarding.mjs",
+      "tests/support/graceful-preload.mjs",
+      "tests/support/idx01-audit.mjs",
+      "tests/support/idx01-validate.mjs",
+      "tests/support/idx02-validate.mjs",
+      "tests/support/production.mjs",
+      "tests/support/tsconfig.mjs",
+      "vitest.config.ts"
+    ],
+    "configurationFiles": [
+      "apps/mcp/tsconfig.json",
+      "apps/server/tsconfig.json",
+      "apps/web/tsconfig.json",
+      "packages/core/tsconfig.json",
+      "packages/indexer/tsconfig.json",
+      "packages/service/tsconfig.json",
+      "packages/storage/tsconfig.json",
+      "tsconfig.base.json"
+    ],
+    "packageFiles": [
+      "apps/mcp/package.json",
+      "apps/server/package.json",
+      "apps/web/package.json",
+      "package.json",
+      "packages/core/package.json",
+      "packages/indexer/package.json",
+      "packages/service/package.json",
+      "packages/storage/package.json"
+    ],
+    "excludedPatterns": [
+      "**/.git/**",
+      "**/node_modules/**",
+      "**/dist/**",
+      "**/build/**",
+      "**/coverage/**",
+      "**/__pycache__/**",
+      "**/.venv/**",
+      "**/venv/**",
+      "**/.agents/**",
+      "**/.superpowers/**",
+      "**/.next/**",
+      "**/.cache/**",
+      "**/vendor/**",
+      ".gitignore: node_modules/\ndist/\ncoverage/\nartifacts/\nplaywright-report/\ntest-results/\n.codemap/cache/\n*.sqlite\n*.sqlite-*\n*.db\n*.db-*\n.env\n.env.*\n!.env.example\n*.tsbuildinfo"
+    ],
+    "availability": {
+      "complete": true,
+      "unavailablePaths": [
+        ".codemap/cache",
+        "artifacts",
+        "artifacts/archify-review",
+        "artifacts/e2e",
+        "artifacts/e2e-data",
+        "artifacts/e2e-workspace",
+        "artifacts/e2e-workspace/.codemap",
+        "artifacts/e2e-workspace/src",
+        "artifacts/e2e-workspace/src/request.ts",
+        "artifacts/e2e-workspace/src/services",
+        "artifacts/e2e-workspace/src/services/notes.ts",
+        "artifacts/e2e/agent-chat",
+        "artifacts/e2e/breadcrumb-navigation",
+        "artifacts/e2e/commonjs",
+        "artifacts/e2e/first-use",
+        "artifacts/e2e/focus-navigation",
+        "artifacts/e2e/forwarding",
+        "artifacts/e2e/funnel-readable",
+        "artifacts/e2e/funnel-readable/focus-navigation-double-cl-16769-otion-for-file-dependencies",
+        "artifacts/e2e/funnel-readable/focus-navigation-semantic--18c75-ce-fit-their-affected-cards",
+        "artifacts/e2e/grp01-final",
+        "artifacts/e2e/grp01-green",
+        "artifacts/e2e/grp01-red",
+        "artifacts/e2e/grp01-red/groups-circle-groups-edit--bd5c2-art-without-changing-source",
+        "artifacts/e2e/results",
+        "artifacts/e2e/tsconfig",
+        "artifacts/e2e/ui04-final",
+        "artifacts/e2e/ui04-final/agent-chat-actual-disconne-a670a-dvanced-controls-are-opt-in",
+        "artifacts/e2e/ui04-final/agent-chat-labeled-trusted-2e012--work-and-isolates-projects",
+        "artifacts/e2e/ui04-final/planning-production-UI-and-0ffc9-d-verification-flow-offline",
+        "artifacts/e2e/ui04-planning-final",
+        "artifacts/e2e/ui04-planning-final/planning-production-UI-and-0ffc9-d-verification-flow-offline",
+        "artifacts/final-2026-10-08",
+        "artifacts/graph-inspection",
+        "artifacts/graph-inspection/inspect-browser.mjs",
+        "artifacts/playwright",
+        "artifacts/playwright-report",
+        "artifacts/public-demo"
+      ],
+      "excludedPaths": [
+        ".agents",
+        ".git",
+        ".superpowers",
+        "apps/mcp/dist",
+        "apps/server/dist",
+        "apps/web/dist",
+        "apps/web/node_modules",
+        "node_modules",
+        "packages/core/dist",
+        "packages/indexer/dist",
+        "packages/indexer/node_modules",
+        "packages/service/dist",
+        "packages/storage/dist"
+      ]
+    },
+    "unresolvedCount": 9969
+  },
+  "workspaceDiagnostics": [
+    {
+      "filePath": "apps/mcp/src/server.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/server/src/agent/bridge.test.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/indexer: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/server/src/agent/bridge.test.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/storage: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/server/src/agent/bridge.test.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/service: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/server/src/server.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/server/src/server.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/service: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/server/src/routes.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/server/src/routes.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/service: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/server/src/queries.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/server/src/queries.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/service: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/server/src/navigation-query.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/server/src/agent/routes.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/service: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/server/src/agent/bridge.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/server/src/agent/bridge.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/service: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/server/src/agent/gateway.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/service: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/server/src/agent/direct.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/mcp: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/server/src/agent/direct-loop.test.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/indexer: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/server/src/agent/direct-loop.test.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/storage: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/server/src/agent/direct-loop.test.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/service: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/server/src/agent/routes.test.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/indexer: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/server/src/agent/routes.test.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/storage: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/server/src/agent/routes.test.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/service: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/server/src/funnel-query.test.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/server/src/funnel-query.test.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/service: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/server/src/index.test.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/storage: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/server/src/index.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/indexer: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/server/src/index.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/storage: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/server/src/index.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/service: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/server/src/navigation-query.test.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/server/src/server.test.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/indexer: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/server/src/server.test.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/storage: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/server/src/server.test.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/service: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/server/src/server.test.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/web/src/api/client.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/web/src/app/workspace.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/web/src/features/groups/memberBindings.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/web/src/features/graph/funnel.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/web/src/features/graph/projection.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/web/src/features/graph/focus.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/web/src/features/navigation/path.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/web/src/features/planning/history.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/web/src/app/WorkspacePanels.tsx",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/web/src/features/graph/Canvas.tsx",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/web/src/features/planning/operations.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/web/src/features/graph/nodeIdentity.tsx",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/web/src/features/groups/selection.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/web/src/features/groups/projection.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/web/src/features/groups/GroupCard.tsx",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/web/src/features/graph/InspectionCard.tsx",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/web/src/features/graph/Inspector.tsx",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/web/src/features/planning/PlanningPanel.tsx",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/web/src/features/planning/PlanEditor.tsx",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/web/src/features/planning/FunctionForm.tsx",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/web/src/features/planning/RelationEditor.tsx",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/web/src/features/verification/VerificationPanel.tsx",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/web/src/features/structure/PoliciesPanel.tsx",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/web/src/features/routes/RoutePanel.tsx",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/web/src/features/planning/PendingPlans.tsx",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/web/src/features/planning/pending.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/web/src/features/planning/PlanOverview.tsx",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/web/src/features/navigation/Breadcrumbs.tsx",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/web/src/app/funnel-workspace.test.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/web/src/app/groups-workspace.test.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/web/src/app/inspection-workspace.test.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/web/src/app/workspace.test.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/web/src/features/chat/workspace-sync.test.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/web/src/features/graph/funnel.test.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/web/src/features/graph/nodeIdentity.test.tsx",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/web/src/features/graph/projection.test.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/web/src/features/groups/projection.test.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/web/src/features/navigation/workspace-navigation.test.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/web/src/features/planning/history.test.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/web/src/features/planning/operations.test.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "apps/web/src/features/planning/pending.test.tsx",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "packages/indexer/src/commonjs.test.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "packages/indexer/src/graph.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "packages/indexer/src/typescript.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "packages/indexer/src/configResolution.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "packages/indexer/src/scan.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "packages/indexer/src/configCapture.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "packages/indexer/src/metadataRead.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "packages/indexer/src/packageCapture.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "packages/indexer/src/packageMode.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "packages/indexer/src/workspaceResolution.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "packages/indexer/src/configResolution.test.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "packages/indexer/src/declarations.test.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "packages/indexer/src/index.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "packages/indexer/src/python.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "packages/indexer/src/source.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "packages/indexer/src/idx01.test.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "packages/indexer/src/index.test.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "packages/service/src/group-view.test.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "packages/service/src/group-view.test.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/storage: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "packages/service/src/knowledge.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "packages/service/src/planning.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "packages/service/src/workspace.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "packages/service/src/verification.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "packages/service/src/workspace.test.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "packages/storage/src/sqlite.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "tests/e2e/agent-chat.spec.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/indexer: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "tests/e2e/agent-chat.spec.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/storage: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "tests/e2e/agent-chat.spec.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/service: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "tests/e2e/agent-chat.spec.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/server: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "tests/support/commonjs.mjs",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/storage: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "tests/support/tsconfig.mjs",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/storage: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "tests/integration/commonjs-resolution.test.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "tests/integration/commonjs-resolution.test.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/storage: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "tests/integration/forwarding-resolution.test.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "tests/integration/forwarding-resolution.test.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/storage: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "tests/integration/mcp-stdio.test.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "tests/integration/server-shutdown.test.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "tests/integration/server-shutdown.test.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/server: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "tests/integration/server-shutdown.test.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/service: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "tests/integration/server-shutdown.test.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/indexer: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "tests/integration/server-shutdown.test.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/storage: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "tests/integration/tsconfig-resolution.test.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "tests/integration/tsconfig-resolution.test.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/storage: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "tests/integration/workspace-lifecycle.test.ts",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/core: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "tests/support/idx02-validate.mjs",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/storage: exports target is not an exact captured implementation within its package"
+    },
+    {
+      "filePath": "tests/support/idx02-validate.mjs",
+      "message": "WORKSPACE_MAPPING_UNAVAILABLE: @codemap/indexer: exports target is not an exact captured implementation within its package"
+    }
+  ],
+  "scope": "No dist-to-src inference: existing package exports name excluded dist. This remains unknown, not a successful source mapping."
+}

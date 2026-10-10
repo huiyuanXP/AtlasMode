@@ -1,0 +1,2172 @@
+{
+  "provenance": {
+    "beforeCapture": {
+      "gitRevision": "dbac741a49a5a64336b70c06e85c2e2706e36336",
+      "clean": true,
+      "status": "",
+      "checkedAt": "2026-10-10T15:15:19.961Z"
+    },
+    "afterCapture": {
+      "gitRevision": "dbac741a49a5a64336b70c06e85c2e2706e36336",
+      "clean": true,
+      "status": "",
+      "checkedAt": "2026-10-10T15:15:28.795Z"
+    }
+  },
+  "target": {
+    "path": "/tmp/atlasmode-idx01-express",
+    "gitRevision": "dbac741a49a5a64336b70c06e85c2e2706e36336",
+    "symbol": "createApplication",
+    "file": "lib/express.js"
+  },
+  "observedAt": "2026-10-10T15:15:28.795Z",
+  "status": "passed",
+  "entryCriterion": {
+    "requested": true,
+    "status": "passed",
+    "sampleId": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+    "sampleExported": true,
+    "returnedEntryIds": [
+      "function:08e83ac4c397af69c59f95e3ae27db89",
+      "function:ef9cf6d73c46cb378b24eead8c1a9b0c",
+      "function:f13a1aa4b83cc3ec577833327863c95e",
+      "function:6026bfb048aeb16f35f4db8d3112c7d7",
+      "function:05cceb34e6cc041d9cca249e13367fab",
+      "function:3de4b2033ffef7b211cb32c4497bb40c",
+      "function:572ff5f0c74fdbe44c45d9fa6b88f489",
+      "function:ea3e015af6ebac1b9c124daa754043ea",
+      "function:55ab115466d7867d82cc5603445f537d",
+      "function:28e929d9fb9708bdbfcf6a48dfef4659",
+      "function:3731bfd032e92ca82e9cc9d2e715b13a",
+      "function:9a724881bfaa14b358f775c8ea62a0dc",
+      "function:a3403625ead4bc36c3c5d9ea5aa9646f",
+      "function:b1254a4dbb6f61e50d98544bf9f5c039",
+      "function:b53c27884ee90c2bcc05a93bc5d5979f",
+      "function:676416bb48ec7d619fde38f76c1d8c07",
+      "function:308af4d919bbccc31eabfed40c76200a",
+      "function:16390d6ddcf80d9b093b587c90e6e986",
+      "function:1f5a5dc74ef9d306132b972b8c615f14",
+      "function:3dbe41691ae93bbd07d8c50fd0504e87",
+      "function:89ae09269b417ed4e9a0748b6d095b31",
+      "function:96617642bc4a793a4b5b0b336e5dc4f2",
+      "function:1059d905ccca013b29d1e4851c43472a",
+      "function:4b21d359e6b7dcca65389889109c744c",
+      "function:b81011c72d321d2ada6e168bee0c7beb",
+      "function:f20c20c65692950e886e56653b1b58c9",
+      "function:077078ebddda24d600e3c7f9b4d3ef8a",
+      "function:33648b3ca8551794e603656a1935aeae",
+      "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+      "function:3260e6074cd0aab34d5983700788b812",
+      "function:600a5df98f691202d0c6f249bc085aee",
+      "function:15ad6bb5010ecbd1cd2b5cb28d236de3",
+      "function:97480d5c75ddbf77de15323c5bc08599",
+      "function:c308ca06dabd66218a07fd10259d2dd4",
+      "function:2c5a9cdb7e078796ae4f2ff62d6e0cef"
+    ],
+    "sampleInReturnedEntries": true,
+    "entrypointTotal": 35,
+    "returnedCount": 35,
+    "entrypointsTruncated": false
+  },
+  "openMilliseconds": 3093,
+  "summary": {
+    "project": {
+      "id": "project:5239b8ddfc196569ab40a17cf7927fdb",
+      "path": "/tmp/atlasmode-idx01-express",
+      "name": "atlasmode-idx01-express",
+      "snapshotId": "snapshot:47ffbe836a25e200e66217c078006237"
+    },
+    "snapshotId": "snapshot:47ffbe836a25e200e66217c078006237",
+    "contentHash": "2008eb699bd465fc56b8681250637bcd3ba2b58617698b78b3f1b83f04ff748d",
+    "counts": {
+      "files": 142,
+      "folders": 42,
+      "functions": 3070,
+      "relations": 15216,
+      "calls": {
+        "resolved": 320,
+        "unresolved": 11218,
+        "external": 22
+      }
+    },
+    "entrypoints": [
+      {
+        "id": "function:08e83ac4c397af69c59f95e3ae27db89",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "<anonymous>",
+        "qualifiedName": "<anonymous>#2",
+        "filePath": "examples/content-negotiation/users.js",
+        "parentId": "file:411bf30261cecacb81f5cd58dfe2f706",
+        "language": "javascript",
+        "signature": "function(req, res)",
+        "startLine": 11,
+        "endLine": 15,
+        "exported": true
+      },
+      {
+        "id": "function:ef9cf6d73c46cb378b24eead8c1a9b0c",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "<anonymous>",
+        "qualifiedName": "<anonymous>#3",
+        "filePath": "examples/content-negotiation/users.js",
+        "parentId": "file:411bf30261cecacb81f5cd58dfe2f706",
+        "language": "javascript",
+        "signature": "function(req, res)",
+        "startLine": 17,
+        "endLine": 19,
+        "exported": true
+      },
+      {
+        "id": "function:f13a1aa4b83cc3ec577833327863c95e",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "<anonymous>",
+        "qualifiedName": "<anonymous>",
+        "filePath": "examples/content-negotiation/users.js",
+        "parentId": "file:411bf30261cecacb81f5cd58dfe2f706",
+        "language": "javascript",
+        "signature": "function(req, res)",
+        "startLine": 5,
+        "endLine": 9,
+        "exported": true
+      },
+      {
+        "id": "function:6026bfb048aeb16f35f4db8d3112c7d7",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "<anonymous>",
+        "qualifiedName": "<anonymous>",
+        "filePath": "examples/mvc/controllers/main/index.js",
+        "parentId": "file:e016afd66e046bbc87a9dbca837245e6",
+        "language": "javascript",
+        "signature": "function(req, res)",
+        "startLine": 3,
+        "endLine": 5,
+        "exported": true
+      },
+      {
+        "id": "function:05cceb34e6cc041d9cca249e13367fab",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "<anonymous>",
+        "qualifiedName": "<anonymous>",
+        "filePath": "examples/mvc/controllers/pet/index.js",
+        "parentId": "file:28953a06253803dba72d87e5a891d26e",
+        "language": "javascript",
+        "signature": "function(req, res, next)",
+        "startLine": 11,
+        "endLine": 16,
+        "exported": true
+      },
+      {
+        "id": "function:3de4b2033ffef7b211cb32c4497bb40c",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "<anonymous>",
+        "qualifiedName": "<anonymous>#2",
+        "filePath": "examples/mvc/controllers/pet/index.js",
+        "parentId": "file:28953a06253803dba72d87e5a891d26e",
+        "language": "javascript",
+        "signature": "function(req, res, next)",
+        "startLine": 18,
+        "endLine": 20,
+        "exported": true
+      },
+      {
+        "id": "function:572ff5f0c74fdbe44c45d9fa6b88f489",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "<anonymous>",
+        "qualifiedName": "<anonymous>#3",
+        "filePath": "examples/mvc/controllers/pet/index.js",
+        "parentId": "file:28953a06253803dba72d87e5a891d26e",
+        "language": "javascript",
+        "signature": "function(req, res, next)",
+        "startLine": 22,
+        "endLine": 24,
+        "exported": true
+      },
+      {
+        "id": "function:ea3e015af6ebac1b9c124daa754043ea",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "<anonymous>",
+        "qualifiedName": "<anonymous>#4",
+        "filePath": "examples/mvc/controllers/pet/index.js",
+        "parentId": "file:28953a06253803dba72d87e5a891d26e",
+        "language": "javascript",
+        "signature": "function(req, res, next)",
+        "startLine": 26,
+        "endLine": 31,
+        "exported": true
+      },
+      {
+        "id": "function:55ab115466d7867d82cc5603445f537d",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "<anonymous>",
+        "qualifiedName": "<anonymous>",
+        "filePath": "examples/mvc/controllers/user-pet/index.js",
+        "parentId": "file:907eb01fe9aeda6eb57ac7a3b8e95486",
+        "language": "javascript",
+        "signature": "function(req, res, next)",
+        "startLine": 12,
+        "endLine": 22,
+        "exported": true
+      },
+      {
+        "id": "function:28e929d9fb9708bdbfcf6a48dfef4659",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "<anonymous>",
+        "qualifiedName": "<anonymous>#5",
+        "filePath": "examples/mvc/controllers/user/index.js",
+        "parentId": "file:c5cccf3b550806f5c1ed0687b6510706",
+        "language": "javascript",
+        "signature": "function(req, res, next)",
+        "startLine": 36,
+        "endLine": 41,
+        "exported": true
+      },
+      {
+        "id": "function:3731bfd032e92ca82e9cc9d2e715b13a",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "<anonymous>",
+        "qualifiedName": "<anonymous>#2",
+        "filePath": "examples/mvc/controllers/user/index.js",
+        "parentId": "file:c5cccf3b550806f5c1ed0687b6510706",
+        "language": "javascript",
+        "signature": "function(req, res, next)",
+        "startLine": 24,
+        "endLine": 26,
+        "exported": true
+      },
+      {
+        "id": "function:9a724881bfaa14b358f775c8ea62a0dc",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "<anonymous>",
+        "qualifiedName": "<anonymous>#4",
+        "filePath": "examples/mvc/controllers/user/index.js",
+        "parentId": "file:c5cccf3b550806f5c1ed0687b6510706",
+        "language": "javascript",
+        "signature": "function(req, res, next)",
+        "startLine": 32,
+        "endLine": 34,
+        "exported": true
+      },
+      {
+        "id": "function:a3403625ead4bc36c3c5d9ea5aa9646f",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "<anonymous>",
+        "qualifiedName": "<anonymous>#3",
+        "filePath": "examples/mvc/controllers/user/index.js",
+        "parentId": "file:c5cccf3b550806f5c1ed0687b6510706",
+        "language": "javascript",
+        "signature": "function(req, res, next)",
+        "startLine": 28,
+        "endLine": 30,
+        "exported": true
+      },
+      {
+        "id": "function:b1254a4dbb6f61e50d98544bf9f5c039",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "<anonymous>",
+        "qualifiedName": "<anonymous>",
+        "filePath": "examples/mvc/controllers/user/index.js",
+        "parentId": "file:c5cccf3b550806f5c1ed0687b6510706",
+        "language": "javascript",
+        "signature": "function(req, res, next)",
+        "startLine": 11,
+        "endLine": 22,
+        "exported": true
+      },
+      {
+        "id": "function:b53c27884ee90c2bcc05a93bc5d5979f",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "<anonymous>",
+        "qualifiedName": "<anonymous>",
+        "filePath": "examples/mvc/lib/boot.js",
+        "parentId": "file:5e3bf08c79535344706ef4fa4bafd786",
+        "language": "javascript",
+        "signature": "function(parent, options)",
+        "startLine": 11,
+        "endLine": 83,
+        "exported": true
+      },
+      {
+        "id": "function:676416bb48ec7d619fde38f76c1d8c07",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "<anonymous>",
+        "qualifiedName": "<anonymous>",
+        "filePath": "examples/route-separation/post.js",
+        "parentId": "file:d4e1538cd1b52c18404d47e4559374e6",
+        "language": "javascript",
+        "signature": "function(req, res)",
+        "startLine": 11,
+        "endLine": 13,
+        "exported": true
+      },
+      {
+        "id": "function:308af4d919bbccc31eabfed40c76200a",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "<anonymous>",
+        "qualifiedName": "<anonymous>",
+        "filePath": "examples/route-separation/site.js",
+        "parentId": "file:8bdd50e71fa90e842a7cce0914a69a4e",
+        "language": "javascript",
+        "signature": "function(req, res)",
+        "startLine": 3,
+        "endLine": 5,
+        "exported": true
+      },
+      {
+        "id": "function:16390d6ddcf80d9b093b587c90e6e986",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "<anonymous>",
+        "qualifiedName": "<anonymous>",
+        "filePath": "examples/route-separation/user.js",
+        "parentId": "file:ab6e75f16da7abc30d24bf64d66eabf2",
+        "language": "javascript",
+        "signature": "function(req, res)",
+        "startLine": 10,
+        "endLine": 12,
+        "exported": true
+      },
+      {
+        "id": "function:1f5a5dc74ef9d306132b972b8c615f14",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "<anonymous>",
+        "qualifiedName": "<anonymous>#3",
+        "filePath": "examples/route-separation/user.js",
+        "parentId": "file:ab6e75f16da7abc30d24bf64d66eabf2",
+        "language": "javascript",
+        "signature": "function(req, res)",
+        "startLine": 26,
+        "endLine": 31,
+        "exported": true
+      },
+      {
+        "id": "function:3dbe41691ae93bbd07d8c50fd0504e87",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "<anonymous>",
+        "qualifiedName": "<anonymous>#4",
+        "filePath": "examples/route-separation/user.js",
+        "parentId": "file:ab6e75f16da7abc30d24bf64d66eabf2",
+        "language": "javascript",
+        "signature": "function(req, res)",
+        "startLine": 33,
+        "endLine": 38,
+        "exported": true
+      },
+      {
+        "id": "function:89ae09269b417ed4e9a0748b6d095b31",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "<anonymous>",
+        "qualifiedName": "<anonymous>#2",
+        "filePath": "examples/route-separation/user.js",
+        "parentId": "file:ab6e75f16da7abc30d24bf64d66eabf2",
+        "language": "javascript",
+        "signature": "function(req, res, next)",
+        "startLine": 14,
+        "endLine": 24,
+        "exported": true
+      },
+      {
+        "id": "function:96617642bc4a793a4b5b0b336e5dc4f2",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "<anonymous>",
+        "qualifiedName": "<anonymous>#5",
+        "filePath": "examples/route-separation/user.js",
+        "parentId": "file:ab6e75f16da7abc30d24bf64d66eabf2",
+        "language": "javascript",
+        "signature": "function(req, res)",
+        "startLine": 40,
+        "endLine": 47,
+        "exported": true
+      },
+      {
+        "id": "function:1059d905ccca013b29d1e4851c43472a",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "<anonymous>",
+        "qualifiedName": "<anonymous>#4",
+        "filePath": "lib/utils.js",
+        "parentId": "file:fecd74598e04f0479cd26fc114dbf486",
+        "language": "javascript",
+        "signature": "function(val)",
+        "startLine": 194,
+        "endLine": 214,
+        "exported": true
+      },
+      {
+        "id": "function:4b21d359e6b7dcca65389889109c744c",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "<anonymous>",
+        "qualifiedName": "<anonymous>#2",
+        "filePath": "lib/utils.js",
+        "parentId": "file:fecd74598e04f0479cd26fc114dbf486",
+        "language": "javascript",
+        "signature": "function(types)",
+        "startLine": 75,
+        "endLine": 77,
+        "exported": true
+      },
+      {
+        "id": "function:b81011c72d321d2ada6e168bee0c7beb",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "<anonymous>",
+        "qualifiedName": "<anonymous>",
+        "filePath": "lib/utils.js",
+        "parentId": "file:fecd74598e04f0479cd26fc114dbf486",
+        "language": "javascript",
+        "signature": "function(type)",
+        "startLine": 61,
+        "endLine": 65,
+        "exported": true
+      },
+      {
+        "id": "function:f20c20c65692950e886e56653b1b58c9",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "<anonymous>",
+        "qualifiedName": "<anonymous>#3",
+        "filePath": "lib/utils.js",
+        "parentId": "file:fecd74598e04f0479cd26fc114dbf486",
+        "language": "javascript",
+        "signature": "function(val)",
+        "startLine": 130,
+        "endLine": 152,
+        "exported": true
+      },
+      {
+        "id": "function:077078ebddda24d600e3c7f9b4d3ef8a",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "User",
+        "qualifiedName": "User",
+        "filePath": "examples/view-locals/user.js",
+        "parentId": "file:7fa7c12186671191b3093296f232cb84",
+        "language": "javascript",
+        "signature": "function User(name, age, species)",
+        "startLine": 7,
+        "endLine": 11,
+        "exported": true
+      },
+      {
+        "id": "function:33648b3ca8551794e603656a1935aeae",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "compileQueryParser",
+        "qualifiedName": "compileQueryParser",
+        "filePath": "lib/utils.js",
+        "parentId": "file:fecd74598e04f0479cd26fc114dbf486",
+        "language": "javascript",
+        "signature": "function compileQueryParser(val)",
+        "startLine": 162,
+        "endLine": 184,
+        "exported": true
+      },
+      {
+        "id": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "createApplication",
+        "qualifiedName": "createApplication",
+        "filePath": "lib/express.js",
+        "parentId": "file:3aad2cb7958fa8afdc8c9b5f108468a4",
+        "language": "javascript",
+        "signature": "function createApplication()",
+        "startLine": 36,
+        "endLine": 56,
+        "exported": true
+      },
+      {
+        "id": "function:3260e6074cd0aab34d5983700788b812",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "setCharset",
+        "qualifiedName": "setCharset",
+        "filePath": "lib/utils.js",
+        "parentId": "file:fecd74598e04f0479cd26fc114dbf486",
+        "language": "javascript",
+        "signature": "function setCharset(type, charset)",
+        "startLine": 225,
+        "endLine": 238,
+        "exported": true
+      },
+      {
+        "id": "function:600a5df98f691202d0c6f249bc085aee",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "shouldHaveBody",
+        "qualifiedName": "shouldHaveBody",
+        "filePath": "test/support/utils.js",
+        "parentId": "file:82c723ac07f88898fbe6d9ba1b33838e",
+        "language": "javascript",
+        "signature": "function shouldHaveBody (buf)",
+        "startLine": 28,
+        "endLine": 36,
+        "exported": true
+      },
+      {
+        "id": "function:15ad6bb5010ecbd1cd2b5cb28d236de3",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "shouldHaveHeader",
+        "qualifiedName": "shouldHaveHeader",
+        "filePath": "test/support/utils.js",
+        "parentId": "file:82c723ac07f88898fbe6d9ba1b33838e",
+        "language": "javascript",
+        "signature": "function shouldHaveHeader (header)",
+        "startLine": 45,
+        "endLine": 49,
+        "exported": true
+      },
+      {
+        "id": "function:97480d5c75ddbf77de15323c5bc08599",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "shouldNotHaveBody",
+        "qualifiedName": "shouldNotHaveBody",
+        "filePath": "test/support/utils.js",
+        "parentId": "file:82c723ac07f88898fbe6d9ba1b33838e",
+        "language": "javascript",
+        "signature": "function shouldNotHaveBody ()",
+        "startLine": 57,
+        "endLine": 61,
+        "exported": true
+      },
+      {
+        "id": "function:c308ca06dabd66218a07fd10259d2dd4",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "shouldNotHaveHeader",
+        "qualifiedName": "shouldNotHaveHeader",
+        "filePath": "test/support/utils.js",
+        "parentId": "file:82c723ac07f88898fbe6d9ba1b33838e",
+        "language": "javascript",
+        "signature": "function shouldNotHaveHeader(header)",
+        "startLine": 69,
+        "endLine": 73,
+        "exported": true
+      },
+      {
+        "id": "function:2c5a9cdb7e078796ae4f2ff62d6e0cef",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "shouldSkipQuery",
+        "qualifiedName": "shouldSkipQuery",
+        "filePath": "test/support/utils.js",
+        "parentId": "file:82c723ac07f88898fbe6d9ba1b33838e",
+        "language": "javascript",
+        "signature": "function shouldSkipQuery(versionString)",
+        "startLine": 79,
+        "endLine": 85,
+        "exported": true
+      }
+    ],
+    "entrypointTotal": 35,
+    "entrypointsTruncated": false,
+    "diagnostics": [],
+    "coverage": {
+      "files": [
+        "benchmarks/middleware.js",
+        "examples/auth/index.js",
+        "examples/content-negotiation/db.js",
+        "examples/content-negotiation/index.js",
+        "examples/content-negotiation/users.js",
+        "examples/cookie-sessions/index.js",
+        "examples/cookies/index.js",
+        "examples/downloads/index.js",
+        "examples/ejs/index.js",
+        "examples/error-pages/index.js",
+        "examples/error/index.js",
+        "examples/hello-world/index.js",
+        "examples/markdown/index.js",
+        "examples/multi-router/controllers/api_v1.js",
+        "examples/multi-router/controllers/api_v2.js",
+        "examples/multi-router/index.js",
+        "examples/mvc/controllers/main/index.js",
+        "examples/mvc/controllers/pet/index.js",
+        "examples/mvc/controllers/user-pet/index.js",
+        "examples/mvc/controllers/user/index.js",
+        "examples/mvc/db.js",
+        "examples/mvc/index.js",
+        "examples/mvc/lib/boot.js",
+        "examples/online/index.js",
+        "examples/params/index.js",
+        "examples/resource/index.js",
+        "examples/route-map/index.js",
+        "examples/route-middleware/index.js",
+        "examples/route-separation/index.js",
+        "examples/route-separation/post.js",
+        "examples/route-separation/site.js",
+        "examples/route-separation/user.js",
+        "examples/search/index.js",
+        "examples/search/public/client.js",
+        "examples/session/index.js",
+        "examples/session/redis.js",
+        "examples/static-files/index.js",
+        "examples/static-files/public/js/app.js",
+        "examples/vhost/index.js",
+        "examples/view-constructor/github-view.js",
+        "examples/view-constructor/index.js",
+        "examples/view-locals/index.js",
+        "examples/view-locals/user.js",
+        "examples/web-service/index.js",
+        "index.js",
+        "lib/application.js",
+        "lib/express.js",
+        "lib/request.js",
+        "lib/response.js",
+        "lib/utils.js",
+        "lib/view.js",
+        "test/Route.js",
+        "test/Router.js",
+        "test/acceptance/auth.js",
+        "test/acceptance/content-negotiation.js",
+        "test/acceptance/cookie-sessions.js",
+        "test/acceptance/cookies.js",
+        "test/acceptance/downloads.js",
+        "test/acceptance/ejs.js",
+        "test/acceptance/error-pages.js",
+        "test/acceptance/error.js",
+        "test/acceptance/hello-world.js",
+        "test/acceptance/markdown.js",
+        "test/acceptance/multi-router.js",
+        "test/acceptance/mvc.js",
+        "test/acceptance/params.js",
+        "test/acceptance/resource.js",
+        "test/acceptance/route-map.js",
+        "test/acceptance/route-separation.js",
+        "test/acceptance/vhost.js",
+        "test/acceptance/web-service.js",
+        "test/app.all.js",
+        "test/app.engine.js",
+        "test/app.head.js",
+        "test/app.js",
+        "test/app.listen.js",
+        "test/app.locals.js",
+        "test/app.options.js",
+        "test/app.param.js",
+        "test/app.render.js",
+        "test/app.request.js",
+        "test/app.response.js",
+        "test/app.route.js",
+        "test/app.router.js",
+        "test/app.routes.error.js",
+        "test/app.use.js",
+        "test/config.js",
+        "test/exports.js",
+        "test/express.json.js",
+        "test/express.raw.js",
+        "test/express.static.js",
+        "test/express.text.js",
+        "test/express.urlencoded.js",
+        "test/middleware.basic.js",
+        "test/regression.js",
+        "test/req.accepts.js",
+        "test/req.acceptsCharsets.js",
+        "test/req.acceptsEncodings.js",
+        "test/req.acceptsLanguages.js",
+        "test/req.baseUrl.js",
+        "test/req.fresh.js",
+        "test/req.get.js",
+        "test/req.host.js",
+        "test/req.hostname.js",
+        "test/req.ip.js",
+        "test/req.ips.js",
+        "test/req.is.js",
+        "test/req.path.js",
+        "test/req.protocol.js",
+        "test/req.query.js",
+        "test/req.range.js",
+        "test/req.route.js",
+        "test/req.secure.js",
+        "test/req.signedCookies.js",
+        "test/req.stale.js",
+        "test/req.subdomains.js",
+        "test/req.xhr.js",
+        "test/res.append.js",
+        "test/res.attachment.js",
+        "test/res.clearCookie.js",
+        "test/res.cookie.js",
+        "test/res.download.js",
+        "test/res.format.js",
+        "test/res.get.js",
+        "test/res.json.js",
+        "test/res.jsonp.js",
+        "test/res.links.js",
+        "test/res.locals.js",
+        "test/res.location.js",
+        "test/res.redirect.js",
+        "test/res.render.js",
+        "test/res.send.js",
+        "test/res.sendFile.js",
+        "test/res.sendStatus.js",
+        "test/res.set.js",
+        "test/res.status.js",
+        "test/res.type.js",
+        "test/res.vary.js",
+        "test/support/env.js",
+        "test/support/tmpl.js",
+        "test/support/utils.js",
+        "test/utils.js"
+      ],
+      "configurationFiles": [],
+      "packageFiles": [
+        "package.json"
+      ],
+      "excludedPatterns": [
+        "**/.git/**",
+        "**/node_modules/**",
+        "**/dist/**",
+        "**/build/**",
+        "**/coverage/**",
+        "**/__pycache__/**",
+        "**/.venv/**",
+        "**/venv/**",
+        "**/.agents/**",
+        "**/.superpowers/**",
+        "**/.next/**",
+        "**/.cache/**",
+        "**/vendor/**",
+        ".gitignore: # npm\nnode_modules\npackage-lock.json\nnpm-shrinkwrap.json\n*.log\n*.gz\n\n# Yarn\nyarn-error.log\nyarn.lock\n\n# Coveralls\n.nyc_output\ncoverage\n\n# Benchmarking\nbenchmarks/graphs\n\n# ignore additional files using core.excludesFile\n# https://git-scm.com/docs/gitignore"
+      ],
+      "unresolvedCount": 11221,
+      "availability": {
+        "complete": true,
+        "unavailablePaths": [],
+        "excludedPaths": [
+          ".git"
+        ]
+      }
+    },
+    "dataSource": "code"
+  },
+  "search": {
+    "total": 2,
+    "limit": 200
+  },
+  "sample": {
+    "node": {
+      "id": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+      "kind": "function",
+      "declarationKind": "function",
+      "name": "createApplication",
+      "qualifiedName": "createApplication",
+      "filePath": "lib/express.js",
+      "parentId": "file:3aad2cb7958fa8afdc8c9b5f108468a4",
+      "language": "javascript",
+      "signature": "function createApplication()",
+      "startLine": 36,
+      "endLine": 56,
+      "exported": true
+    },
+    "context": {
+      "node": {
+        "id": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "createApplication",
+        "qualifiedName": "createApplication",
+        "filePath": "lib/express.js",
+        "parentId": "file:3aad2cb7958fa8afdc8c9b5f108468a4",
+        "language": "javascript",
+        "signature": "function createApplication()",
+        "startLine": 36,
+        "endLine": 56,
+        "exported": true
+      },
+      "incoming": [
+        {
+          "id": "relation:044eb65594e6aa4804f0d1c79e16ba31",
+          "type": "calls",
+          "sourceId": "function:60588bd30ca56fac8aa5a45d35f80a4a",
+          "targetId": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+          "resolution": "resolved",
+          "evidence": {
+            "filePath": "test/res.status.js",
+            "line": 47,
+            "text": "express()"
+          }
+        },
+        {
+          "id": "relation:4f6b28a2915c8a5f264c654d48b1a8dc",
+          "type": "calls",
+          "sourceId": "function:28ffff0a091c8fd5cd227402f491711c",
+          "targetId": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+          "resolution": "resolved",
+          "evidence": {
+            "filePath": "test/res.status.js",
+            "line": 23,
+            "text": "express()"
+          }
+        },
+        {
+          "id": "relation:62bc8ef64d09f20d823d0640034f44c3",
+          "type": "calls",
+          "sourceId": "function:66f95c0b4795bfabb993de3828f5a369",
+          "targetId": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+          "resolution": "resolved",
+          "evidence": {
+            "filePath": "test/res.status.js",
+            "line": 59,
+            "text": "express()"
+          }
+        },
+        {
+          "id": "relation:78810cdd4ef8ca91f542066c6034ca54",
+          "type": "calls",
+          "sourceId": "function:f75c582c3940989194df1ccb4f792fec",
+          "targetId": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+          "resolution": "resolved",
+          "evidence": {
+            "filePath": "test/res.status.js",
+            "line": 71,
+            "text": "express()"
+          }
+        },
+        {
+          "id": "relation:7a6a272246104533ec112dbdf61dec16",
+          "type": "calls",
+          "sourceId": "function:0dfce7d320f675ef80ac679b6373f622",
+          "targetId": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+          "resolution": "resolved",
+          "evidence": {
+            "filePath": "test/res.status.js",
+            "line": 133,
+            "text": "express()"
+          }
+        },
+        {
+          "id": "relation:afb2c915a4862fdcdc265f917a4a8d3f",
+          "type": "calls",
+          "sourceId": "function:4fd73af72b71bc02c30c635d9884e7ee",
+          "targetId": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+          "resolution": "resolved",
+          "evidence": {
+            "filePath": "test/res.status.js",
+            "line": 181,
+            "text": "express()"
+          }
+        },
+        {
+          "id": "relation:b3226832a0058fb9895ee0b06df672e1",
+          "type": "calls",
+          "sourceId": "function:51f08f29f0095a43d598ce8b84f040f7",
+          "targetId": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+          "resolution": "resolved",
+          "evidence": {
+            "filePath": "test/res.status.js",
+            "line": 145,
+            "text": "express()"
+          }
+        },
+        {
+          "id": "relation:be77d0d0e8a32d2c70e0cf728ab281a2",
+          "type": "calls",
+          "sourceId": "function:16f6a7f4ed72fc67c85e052bfe6c30c1",
+          "targetId": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+          "resolution": "resolved",
+          "evidence": {
+            "filePath": "test/res.status.js",
+            "line": 121,
+            "text": "express()"
+          }
+        },
+        {
+          "id": "relation:d55777cf8a79f35556b1908280e04d63",
+          "type": "calls",
+          "sourceId": "function:52f24cb629ffe385848c017bbe3522a5",
+          "targetId": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+          "resolution": "resolved",
+          "evidence": {
+            "filePath": "test/res.status.js",
+            "line": 9,
+            "text": "express()"
+          }
+        },
+        {
+          "id": "relation:da54aa831dd3780c66899232bb26771b",
+          "type": "calls",
+          "sourceId": "function:bfe36e7a4f986a5ad42faafb079cc723",
+          "targetId": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+          "resolution": "resolved",
+          "evidence": {
+            "filePath": "test/res.status.js",
+            "line": 193,
+            "text": "express()"
+          }
+        },
+        {
+          "id": "relation:e0d54333cff1c5930545a2fb987970cc",
+          "type": "calls",
+          "sourceId": "function:39352a0dda1c6717a381e798a7a7f84b",
+          "targetId": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+          "resolution": "resolved",
+          "evidence": {
+            "filePath": "test/res.status.js",
+            "line": 83,
+            "text": "express()"
+          }
+        },
+        {
+          "id": "relation:e148ac190f24bf23665dc4d014386e76",
+          "type": "calls",
+          "sourceId": "function:3fce7ce0a5b0455c23f3cac2db507dc4",
+          "targetId": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+          "resolution": "resolved",
+          "evidence": {
+            "filePath": "test/res.status.js",
+            "line": 157,
+            "text": "express()"
+          }
+        },
+        {
+          "id": "relation:e4c18fbe967ca69888b649eb10a6efda",
+          "type": "calls",
+          "sourceId": "function:ee6655d7d3dfdfd43c298e41513235c5",
+          "targetId": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+          "resolution": "resolved",
+          "evidence": {
+            "filePath": "test/res.status.js",
+            "line": 107,
+            "text": "express()"
+          }
+        },
+        {
+          "id": "relation:efa78d2203d686372694c3fa4cc845bb",
+          "type": "calls",
+          "sourceId": "function:3fba34c4f2256c7d5b5a3c5bbd362de1",
+          "targetId": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+          "resolution": "resolved",
+          "evidence": {
+            "filePath": "test/res.status.js",
+            "line": 169,
+            "text": "express()"
+          }
+        },
+        {
+          "id": "relation:f729318e0eca91e14e941b0346e32615",
+          "type": "calls",
+          "sourceId": "function:fdd266be1689488e30309e704ff5d4b6",
+          "targetId": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+          "resolution": "resolved",
+          "evidence": {
+            "filePath": "test/res.status.js",
+            "line": 95,
+            "text": "express()"
+          }
+        },
+        {
+          "id": "relation:fafafea308d2365ae6f887e4486afa63",
+          "type": "calls",
+          "sourceId": "function:7405089ba48655cc47eaf1336d85b23f",
+          "targetId": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+          "resolution": "resolved",
+          "evidence": {
+            "filePath": "test/res.status.js",
+            "line": 35,
+            "text": "express()"
+          }
+        }
+      ],
+      "outgoing": [
+        {
+          "id": "relation:14155626ea8641833c77cce93961e834",
+          "type": "calls",
+          "sourceId": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+          "targetId": null,
+          "resolution": "unresolved",
+          "evidence": {
+            "filePath": "lib/express.js",
+            "line": 50,
+            "text": "Object.create(res, {\n    app: { configurable: true, enumerable: true, writable: true, value: app }\n  })"
+          },
+          "reason": "No unique indexed implementation for this call (dynamic, ambient, or excluded target)"
+        },
+        {
+          "id": "relation:2c5959e67347348db0f24784fa9204df",
+          "type": "calls",
+          "sourceId": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+          "targetId": null,
+          "resolution": "unresolved",
+          "evidence": {
+            "filePath": "lib/express.js",
+            "line": 41,
+            "text": "mixin(app, EventEmitter.prototype, false)"
+          },
+          "reason": "CommonJS importer binding is mutable or rewritten"
+        },
+        {
+          "id": "relation:858a0311105f126cd6a5c268a7b28abb",
+          "type": "calls",
+          "sourceId": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+          "targetId": null,
+          "resolution": "unresolved",
+          "evidence": {
+            "filePath": "lib/express.js",
+            "line": 42,
+            "text": "mixin(app, proto, false)"
+          },
+          "reason": "CommonJS importer binding is mutable or rewritten"
+        },
+        {
+          "id": "relation:a3c0d6f37fa6152971fdc2f295504d21",
+          "type": "calls",
+          "sourceId": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+          "targetId": null,
+          "resolution": "unresolved",
+          "evidence": {
+            "filePath": "lib/express.js",
+            "line": 54,
+            "text": "app.init()"
+          },
+          "reason": "No unique indexed implementation for this call (dynamic, ambient, or excluded target)"
+        },
+        {
+          "id": "relation:dc15058a4d25c46715f6084ffb394d49",
+          "type": "calls",
+          "sourceId": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+          "targetId": null,
+          "resolution": "unresolved",
+          "evidence": {
+            "filePath": "lib/express.js",
+            "line": 45,
+            "text": "Object.create(req, {\n    app: { configurable: true, enumerable: true, writable: true, value: app }\n  })"
+          },
+          "reason": "No unique indexed implementation for this call (dynamic, ambient, or excluded target)"
+        }
+      ],
+      "relatedNodes": [
+        {
+          "id": "function:0dfce7d320f675ef80ac679b6373f622",
+          "kind": "function",
+          "declarationKind": "function",
+          "name": "<callback:[[80,\"it\"]]:1>",
+          "qualifiedName": "<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"describe\"]]:1>#2.<callback:[[80,\"it\"]]:1>#2",
+          "filePath": "test/res.status.js",
+          "parentId": "function:b2067e9aa6b32f76e685305192dab6b2",
+          "language": "javascript",
+          "signature": "function (done)",
+          "startLine": 132,
+          "endLine": 142,
+          "exported": false
+        },
+        {
+          "id": "function:16f6a7f4ed72fc67c85e052bfe6c30c1",
+          "kind": "function",
+          "declarationKind": "function",
+          "name": "<callback:[[80,\"it\"]]:1>",
+          "qualifiedName": "<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"describe\"]]:1>#2.<callback:[[80,\"it\"]]:1>",
+          "filePath": "test/res.status.js",
+          "parentId": "function:b2067e9aa6b32f76e685305192dab6b2",
+          "language": "javascript",
+          "signature": "function (done)",
+          "startLine": 120,
+          "endLine": 130,
+          "exported": false
+        },
+        {
+          "id": "function:28ffff0a091c8fd5cd227402f491711c",
+          "kind": "function",
+          "declarationKind": "function",
+          "name": "<callback:[[80,\"it\"]]:1>",
+          "qualifiedName": "<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"it\"]]:1>",
+          "filePath": "test/res.status.js",
+          "parentId": "function:bff60f0535cdbf68c74fd839510e9bb1",
+          "language": "javascript",
+          "signature": "function (done)",
+          "startLine": 22,
+          "endLine": 32,
+          "exported": false
+        },
+        {
+          "id": "function:39352a0dda1c6717a381e798a7a7f84b",
+          "kind": "function",
+          "declarationKind": "function",
+          "name": "<callback:[[80,\"it\"]]:1>",
+          "qualifiedName": "<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"it\"]]:1>#6",
+          "filePath": "test/res.status.js",
+          "parentId": "function:bff60f0535cdbf68c74fd839510e9bb1",
+          "language": "javascript",
+          "signature": "function (done)",
+          "startLine": 82,
+          "endLine": 92,
+          "exported": false
+        },
+        {
+          "id": "function:3fba34c4f2256c7d5b5a3c5bbd362de1",
+          "kind": "function",
+          "declarationKind": "function",
+          "name": "<callback:[[80,\"it\"]]:1>",
+          "qualifiedName": "<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"describe\"]]:1>#2.<callback:[[80,\"it\"]]:1>#5",
+          "filePath": "test/res.status.js",
+          "parentId": "function:b2067e9aa6b32f76e685305192dab6b2",
+          "language": "javascript",
+          "signature": "function (done)",
+          "startLine": 168,
+          "endLine": 178,
+          "exported": false
+        },
+        {
+          "id": "function:3fce7ce0a5b0455c23f3cac2db507dc4",
+          "kind": "function",
+          "declarationKind": "function",
+          "name": "<callback:[[80,\"it\"]]:1>",
+          "qualifiedName": "<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"describe\"]]:1>#2.<callback:[[80,\"it\"]]:1>#4",
+          "filePath": "test/res.status.js",
+          "parentId": "function:b2067e9aa6b32f76e685305192dab6b2",
+          "language": "javascript",
+          "signature": "function (done)",
+          "startLine": 156,
+          "endLine": 166,
+          "exported": false
+        },
+        {
+          "id": "function:4fd73af72b71bc02c30c635d9884e7ee",
+          "kind": "function",
+          "declarationKind": "function",
+          "name": "<callback:[[80,\"it\"]]:1>",
+          "qualifiedName": "<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"describe\"]]:1>#2.<callback:[[80,\"it\"]]:1>#6",
+          "filePath": "test/res.status.js",
+          "parentId": "function:b2067e9aa6b32f76e685305192dab6b2",
+          "language": "javascript",
+          "signature": "function (done)",
+          "startLine": 180,
+          "endLine": 190,
+          "exported": false
+        },
+        {
+          "id": "function:51f08f29f0095a43d598ce8b84f040f7",
+          "kind": "function",
+          "declarationKind": "function",
+          "name": "<callback:[[80,\"it\"]]:1>",
+          "qualifiedName": "<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"describe\"]]:1>#2.<callback:[[80,\"it\"]]:1>#3",
+          "filePath": "test/res.status.js",
+          "parentId": "function:b2067e9aa6b32f76e685305192dab6b2",
+          "language": "javascript",
+          "signature": "function (done)",
+          "startLine": 144,
+          "endLine": 154,
+          "exported": false
+        },
+        {
+          "id": "function:52f24cb629ffe385848c017bbe3522a5",
+          "kind": "function",
+          "declarationKind": "function",
+          "name": "<callback:[[80,\"it\"]]:1>",
+          "qualifiedName": "<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"it\"]]:1>",
+          "filePath": "test/res.status.js",
+          "parentId": "function:ac1adaa5d4dca6d20df71b5c3c266146",
+          "language": "javascript",
+          "signature": "function (done)",
+          "startLine": 8,
+          "endLine": 18,
+          "exported": false
+        },
+        {
+          "id": "function:60588bd30ca56fac8aa5a45d35f80a4a",
+          "kind": "function",
+          "declarationKind": "function",
+          "name": "<callback:[[80,\"it\"]]:1>",
+          "qualifiedName": "<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"it\"]]:1>#3",
+          "filePath": "test/res.status.js",
+          "parentId": "function:bff60f0535cdbf68c74fd839510e9bb1",
+          "language": "javascript",
+          "signature": "function (done)",
+          "startLine": 46,
+          "endLine": 56,
+          "exported": false
+        },
+        {
+          "id": "function:66f95c0b4795bfabb993de3828f5a369",
+          "kind": "function",
+          "declarationKind": "function",
+          "name": "<callback:[[80,\"it\"]]:1>",
+          "qualifiedName": "<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"it\"]]:1>#4",
+          "filePath": "test/res.status.js",
+          "parentId": "function:bff60f0535cdbf68c74fd839510e9bb1",
+          "language": "javascript",
+          "signature": "function (done)",
+          "startLine": 58,
+          "endLine": 68,
+          "exported": false
+        },
+        {
+          "id": "function:7405089ba48655cc47eaf1336d85b23f",
+          "kind": "function",
+          "declarationKind": "function",
+          "name": "<callback:[[80,\"it\"]]:1>",
+          "qualifiedName": "<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"it\"]]:1>#2",
+          "filePath": "test/res.status.js",
+          "parentId": "function:bff60f0535cdbf68c74fd839510e9bb1",
+          "language": "javascript",
+          "signature": "function (done)",
+          "startLine": 34,
+          "endLine": 44,
+          "exported": false
+        },
+        {
+          "id": "function:bfe36e7a4f986a5ad42faafb079cc723",
+          "kind": "function",
+          "declarationKind": "function",
+          "name": "<callback:[[80,\"it\"]]:1>",
+          "qualifiedName": "<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"describe\"]]:1>#2.<callback:[[80,\"it\"]]:1>#7",
+          "filePath": "test/res.status.js",
+          "parentId": "function:b2067e9aa6b32f76e685305192dab6b2",
+          "language": "javascript",
+          "signature": "function (done)",
+          "startLine": 192,
+          "endLine": 202,
+          "exported": false
+        },
+        {
+          "id": "function:ee6655d7d3dfdfd43c298e41513235c5",
+          "kind": "function",
+          "declarationKind": "function",
+          "name": "<callback:[[80,\"it\"]]:1>",
+          "qualifiedName": "<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"it\"]]:1>#8",
+          "filePath": "test/res.status.js",
+          "parentId": "function:bff60f0535cdbf68c74fd839510e9bb1",
+          "language": "javascript",
+          "signature": "function (done)",
+          "startLine": 106,
+          "endLine": 116,
+          "exported": false
+        },
+        {
+          "id": "function:f75c582c3940989194df1ccb4f792fec",
+          "kind": "function",
+          "declarationKind": "function",
+          "name": "<callback:[[80,\"it\"]]:1>",
+          "qualifiedName": "<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"it\"]]:1>#5",
+          "filePath": "test/res.status.js",
+          "parentId": "function:bff60f0535cdbf68c74fd839510e9bb1",
+          "language": "javascript",
+          "signature": "function (done)",
+          "startLine": 70,
+          "endLine": 80,
+          "exported": false
+        },
+        {
+          "id": "function:fdd266be1689488e30309e704ff5d4b6",
+          "kind": "function",
+          "declarationKind": "function",
+          "name": "<callback:[[80,\"it\"]]:1>",
+          "qualifiedName": "<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"it\"]]:1>#7",
+          "filePath": "test/res.status.js",
+          "parentId": "function:bff60f0535cdbf68c74fd839510e9bb1",
+          "language": "javascript",
+          "signature": "function (done)",
+          "startLine": 94,
+          "endLine": 104,
+          "exported": false
+        },
+        {
+          "id": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+          "kind": "function",
+          "declarationKind": "function",
+          "name": "createApplication",
+          "qualifiedName": "createApplication",
+          "filePath": "lib/express.js",
+          "parentId": "file:3aad2cb7958fa8afdc8c9b5f108468a4",
+          "language": "javascript",
+          "signature": "function createApplication()",
+          "startLine": 36,
+          "endLine": 56,
+          "exported": true
+        }
+      ],
+      "totalIncoming": 16,
+      "totalOutgoing": 5,
+      "truncated": false,
+      "offset": 0,
+      "limit": 200,
+      "snapshotId": "snapshot:47ffbe836a25e200e66217c078006237",
+      "dataSource": "code"
+    },
+    "completeContext": {
+      "pages": [
+        {
+          "node": {
+            "id": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+            "kind": "function",
+            "declarationKind": "function",
+            "name": "createApplication",
+            "qualifiedName": "createApplication",
+            "filePath": "lib/express.js",
+            "parentId": "file:3aad2cb7958fa8afdc8c9b5f108468a4",
+            "language": "javascript",
+            "signature": "function createApplication()",
+            "startLine": 36,
+            "endLine": 56,
+            "exported": true
+          },
+          "incoming": [
+            {
+              "id": "relation:044eb65594e6aa4804f0d1c79e16ba31",
+              "type": "calls",
+              "sourceId": "function:60588bd30ca56fac8aa5a45d35f80a4a",
+              "targetId": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+              "resolution": "resolved",
+              "evidence": {
+                "filePath": "test/res.status.js",
+                "line": 47,
+                "text": "express()"
+              }
+            },
+            {
+              "id": "relation:4f6b28a2915c8a5f264c654d48b1a8dc",
+              "type": "calls",
+              "sourceId": "function:28ffff0a091c8fd5cd227402f491711c",
+              "targetId": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+              "resolution": "resolved",
+              "evidence": {
+                "filePath": "test/res.status.js",
+                "line": 23,
+                "text": "express()"
+              }
+            },
+            {
+              "id": "relation:62bc8ef64d09f20d823d0640034f44c3",
+              "type": "calls",
+              "sourceId": "function:66f95c0b4795bfabb993de3828f5a369",
+              "targetId": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+              "resolution": "resolved",
+              "evidence": {
+                "filePath": "test/res.status.js",
+                "line": 59,
+                "text": "express()"
+              }
+            },
+            {
+              "id": "relation:78810cdd4ef8ca91f542066c6034ca54",
+              "type": "calls",
+              "sourceId": "function:f75c582c3940989194df1ccb4f792fec",
+              "targetId": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+              "resolution": "resolved",
+              "evidence": {
+                "filePath": "test/res.status.js",
+                "line": 71,
+                "text": "express()"
+              }
+            },
+            {
+              "id": "relation:7a6a272246104533ec112dbdf61dec16",
+              "type": "calls",
+              "sourceId": "function:0dfce7d320f675ef80ac679b6373f622",
+              "targetId": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+              "resolution": "resolved",
+              "evidence": {
+                "filePath": "test/res.status.js",
+                "line": 133,
+                "text": "express()"
+              }
+            },
+            {
+              "id": "relation:afb2c915a4862fdcdc265f917a4a8d3f",
+              "type": "calls",
+              "sourceId": "function:4fd73af72b71bc02c30c635d9884e7ee",
+              "targetId": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+              "resolution": "resolved",
+              "evidence": {
+                "filePath": "test/res.status.js",
+                "line": 181,
+                "text": "express()"
+              }
+            },
+            {
+              "id": "relation:b3226832a0058fb9895ee0b06df672e1",
+              "type": "calls",
+              "sourceId": "function:51f08f29f0095a43d598ce8b84f040f7",
+              "targetId": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+              "resolution": "resolved",
+              "evidence": {
+                "filePath": "test/res.status.js",
+                "line": 145,
+                "text": "express()"
+              }
+            },
+            {
+              "id": "relation:be77d0d0e8a32d2c70e0cf728ab281a2",
+              "type": "calls",
+              "sourceId": "function:16f6a7f4ed72fc67c85e052bfe6c30c1",
+              "targetId": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+              "resolution": "resolved",
+              "evidence": {
+                "filePath": "test/res.status.js",
+                "line": 121,
+                "text": "express()"
+              }
+            },
+            {
+              "id": "relation:d55777cf8a79f35556b1908280e04d63",
+              "type": "calls",
+              "sourceId": "function:52f24cb629ffe385848c017bbe3522a5",
+              "targetId": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+              "resolution": "resolved",
+              "evidence": {
+                "filePath": "test/res.status.js",
+                "line": 9,
+                "text": "express()"
+              }
+            },
+            {
+              "id": "relation:da54aa831dd3780c66899232bb26771b",
+              "type": "calls",
+              "sourceId": "function:bfe36e7a4f986a5ad42faafb079cc723",
+              "targetId": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+              "resolution": "resolved",
+              "evidence": {
+                "filePath": "test/res.status.js",
+                "line": 193,
+                "text": "express()"
+              }
+            },
+            {
+              "id": "relation:e0d54333cff1c5930545a2fb987970cc",
+              "type": "calls",
+              "sourceId": "function:39352a0dda1c6717a381e798a7a7f84b",
+              "targetId": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+              "resolution": "resolved",
+              "evidence": {
+                "filePath": "test/res.status.js",
+                "line": 83,
+                "text": "express()"
+              }
+            },
+            {
+              "id": "relation:e148ac190f24bf23665dc4d014386e76",
+              "type": "calls",
+              "sourceId": "function:3fce7ce0a5b0455c23f3cac2db507dc4",
+              "targetId": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+              "resolution": "resolved",
+              "evidence": {
+                "filePath": "test/res.status.js",
+                "line": 157,
+                "text": "express()"
+              }
+            },
+            {
+              "id": "relation:e4c18fbe967ca69888b649eb10a6efda",
+              "type": "calls",
+              "sourceId": "function:ee6655d7d3dfdfd43c298e41513235c5",
+              "targetId": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+              "resolution": "resolved",
+              "evidence": {
+                "filePath": "test/res.status.js",
+                "line": 107,
+                "text": "express()"
+              }
+            },
+            {
+              "id": "relation:efa78d2203d686372694c3fa4cc845bb",
+              "type": "calls",
+              "sourceId": "function:3fba34c4f2256c7d5b5a3c5bbd362de1",
+              "targetId": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+              "resolution": "resolved",
+              "evidence": {
+                "filePath": "test/res.status.js",
+                "line": 169,
+                "text": "express()"
+              }
+            },
+            {
+              "id": "relation:f729318e0eca91e14e941b0346e32615",
+              "type": "calls",
+              "sourceId": "function:fdd266be1689488e30309e704ff5d4b6",
+              "targetId": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+              "resolution": "resolved",
+              "evidence": {
+                "filePath": "test/res.status.js",
+                "line": 95,
+                "text": "express()"
+              }
+            },
+            {
+              "id": "relation:fafafea308d2365ae6f887e4486afa63",
+              "type": "calls",
+              "sourceId": "function:7405089ba48655cc47eaf1336d85b23f",
+              "targetId": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+              "resolution": "resolved",
+              "evidence": {
+                "filePath": "test/res.status.js",
+                "line": 35,
+                "text": "express()"
+              }
+            }
+          ],
+          "outgoing": [
+            {
+              "id": "relation:14155626ea8641833c77cce93961e834",
+              "type": "calls",
+              "sourceId": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+              "targetId": null,
+              "resolution": "unresolved",
+              "evidence": {
+                "filePath": "lib/express.js",
+                "line": 50,
+                "text": "Object.create(res, {\n    app: { configurable: true, enumerable: true, writable: true, value: app }\n  })"
+              },
+              "reason": "No unique indexed implementation for this call (dynamic, ambient, or excluded target)"
+            },
+            {
+              "id": "relation:2c5959e67347348db0f24784fa9204df",
+              "type": "calls",
+              "sourceId": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+              "targetId": null,
+              "resolution": "unresolved",
+              "evidence": {
+                "filePath": "lib/express.js",
+                "line": 41,
+                "text": "mixin(app, EventEmitter.prototype, false)"
+              },
+              "reason": "CommonJS importer binding is mutable or rewritten"
+            },
+            {
+              "id": "relation:858a0311105f126cd6a5c268a7b28abb",
+              "type": "calls",
+              "sourceId": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+              "targetId": null,
+              "resolution": "unresolved",
+              "evidence": {
+                "filePath": "lib/express.js",
+                "line": 42,
+                "text": "mixin(app, proto, false)"
+              },
+              "reason": "CommonJS importer binding is mutable or rewritten"
+            },
+            {
+              "id": "relation:a3c0d6f37fa6152971fdc2f295504d21",
+              "type": "calls",
+              "sourceId": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+              "targetId": null,
+              "resolution": "unresolved",
+              "evidence": {
+                "filePath": "lib/express.js",
+                "line": 54,
+                "text": "app.init()"
+              },
+              "reason": "No unique indexed implementation for this call (dynamic, ambient, or excluded target)"
+            },
+            {
+              "id": "relation:dc15058a4d25c46715f6084ffb394d49",
+              "type": "calls",
+              "sourceId": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+              "targetId": null,
+              "resolution": "unresolved",
+              "evidence": {
+                "filePath": "lib/express.js",
+                "line": 45,
+                "text": "Object.create(req, {\n    app: { configurable: true, enumerable: true, writable: true, value: app }\n  })"
+              },
+              "reason": "No unique indexed implementation for this call (dynamic, ambient, or excluded target)"
+            }
+          ],
+          "relatedNodes": [
+            {
+              "id": "function:0dfce7d320f675ef80ac679b6373f622",
+              "kind": "function",
+              "declarationKind": "function",
+              "name": "<callback:[[80,\"it\"]]:1>",
+              "qualifiedName": "<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"describe\"]]:1>#2.<callback:[[80,\"it\"]]:1>#2",
+              "filePath": "test/res.status.js",
+              "parentId": "function:b2067e9aa6b32f76e685305192dab6b2",
+              "language": "javascript",
+              "signature": "function (done)",
+              "startLine": 132,
+              "endLine": 142,
+              "exported": false
+            },
+            {
+              "id": "function:16f6a7f4ed72fc67c85e052bfe6c30c1",
+              "kind": "function",
+              "declarationKind": "function",
+              "name": "<callback:[[80,\"it\"]]:1>",
+              "qualifiedName": "<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"describe\"]]:1>#2.<callback:[[80,\"it\"]]:1>",
+              "filePath": "test/res.status.js",
+              "parentId": "function:b2067e9aa6b32f76e685305192dab6b2",
+              "language": "javascript",
+              "signature": "function (done)",
+              "startLine": 120,
+              "endLine": 130,
+              "exported": false
+            },
+            {
+              "id": "function:28ffff0a091c8fd5cd227402f491711c",
+              "kind": "function",
+              "declarationKind": "function",
+              "name": "<callback:[[80,\"it\"]]:1>",
+              "qualifiedName": "<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"it\"]]:1>",
+              "filePath": "test/res.status.js",
+              "parentId": "function:bff60f0535cdbf68c74fd839510e9bb1",
+              "language": "javascript",
+              "signature": "function (done)",
+              "startLine": 22,
+              "endLine": 32,
+              "exported": false
+            },
+            {
+              "id": "function:39352a0dda1c6717a381e798a7a7f84b",
+              "kind": "function",
+              "declarationKind": "function",
+              "name": "<callback:[[80,\"it\"]]:1>",
+              "qualifiedName": "<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"it\"]]:1>#6",
+              "filePath": "test/res.status.js",
+              "parentId": "function:bff60f0535cdbf68c74fd839510e9bb1",
+              "language": "javascript",
+              "signature": "function (done)",
+              "startLine": 82,
+              "endLine": 92,
+              "exported": false
+            },
+            {
+              "id": "function:3fba34c4f2256c7d5b5a3c5bbd362de1",
+              "kind": "function",
+              "declarationKind": "function",
+              "name": "<callback:[[80,\"it\"]]:1>",
+              "qualifiedName": "<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"describe\"]]:1>#2.<callback:[[80,\"it\"]]:1>#5",
+              "filePath": "test/res.status.js",
+              "parentId": "function:b2067e9aa6b32f76e685305192dab6b2",
+              "language": "javascript",
+              "signature": "function (done)",
+              "startLine": 168,
+              "endLine": 178,
+              "exported": false
+            },
+            {
+              "id": "function:3fce7ce0a5b0455c23f3cac2db507dc4",
+              "kind": "function",
+              "declarationKind": "function",
+              "name": "<callback:[[80,\"it\"]]:1>",
+              "qualifiedName": "<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"describe\"]]:1>#2.<callback:[[80,\"it\"]]:1>#4",
+              "filePath": "test/res.status.js",
+              "parentId": "function:b2067e9aa6b32f76e685305192dab6b2",
+              "language": "javascript",
+              "signature": "function (done)",
+              "startLine": 156,
+              "endLine": 166,
+              "exported": false
+            },
+            {
+              "id": "function:4fd73af72b71bc02c30c635d9884e7ee",
+              "kind": "function",
+              "declarationKind": "function",
+              "name": "<callback:[[80,\"it\"]]:1>",
+              "qualifiedName": "<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"describe\"]]:1>#2.<callback:[[80,\"it\"]]:1>#6",
+              "filePath": "test/res.status.js",
+              "parentId": "function:b2067e9aa6b32f76e685305192dab6b2",
+              "language": "javascript",
+              "signature": "function (done)",
+              "startLine": 180,
+              "endLine": 190,
+              "exported": false
+            },
+            {
+              "id": "function:51f08f29f0095a43d598ce8b84f040f7",
+              "kind": "function",
+              "declarationKind": "function",
+              "name": "<callback:[[80,\"it\"]]:1>",
+              "qualifiedName": "<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"describe\"]]:1>#2.<callback:[[80,\"it\"]]:1>#3",
+              "filePath": "test/res.status.js",
+              "parentId": "function:b2067e9aa6b32f76e685305192dab6b2",
+              "language": "javascript",
+              "signature": "function (done)",
+              "startLine": 144,
+              "endLine": 154,
+              "exported": false
+            },
+            {
+              "id": "function:52f24cb629ffe385848c017bbe3522a5",
+              "kind": "function",
+              "declarationKind": "function",
+              "name": "<callback:[[80,\"it\"]]:1>",
+              "qualifiedName": "<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"it\"]]:1>",
+              "filePath": "test/res.status.js",
+              "parentId": "function:ac1adaa5d4dca6d20df71b5c3c266146",
+              "language": "javascript",
+              "signature": "function (done)",
+              "startLine": 8,
+              "endLine": 18,
+              "exported": false
+            },
+            {
+              "id": "function:60588bd30ca56fac8aa5a45d35f80a4a",
+              "kind": "function",
+              "declarationKind": "function",
+              "name": "<callback:[[80,\"it\"]]:1>",
+              "qualifiedName": "<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"it\"]]:1>#3",
+              "filePath": "test/res.status.js",
+              "parentId": "function:bff60f0535cdbf68c74fd839510e9bb1",
+              "language": "javascript",
+              "signature": "function (done)",
+              "startLine": 46,
+              "endLine": 56,
+              "exported": false
+            },
+            {
+              "id": "function:66f95c0b4795bfabb993de3828f5a369",
+              "kind": "function",
+              "declarationKind": "function",
+              "name": "<callback:[[80,\"it\"]]:1>",
+              "qualifiedName": "<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"it\"]]:1>#4",
+              "filePath": "test/res.status.js",
+              "parentId": "function:bff60f0535cdbf68c74fd839510e9bb1",
+              "language": "javascript",
+              "signature": "function (done)",
+              "startLine": 58,
+              "endLine": 68,
+              "exported": false
+            },
+            {
+              "id": "function:7405089ba48655cc47eaf1336d85b23f",
+              "kind": "function",
+              "declarationKind": "function",
+              "name": "<callback:[[80,\"it\"]]:1>",
+              "qualifiedName": "<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"it\"]]:1>#2",
+              "filePath": "test/res.status.js",
+              "parentId": "function:bff60f0535cdbf68c74fd839510e9bb1",
+              "language": "javascript",
+              "signature": "function (done)",
+              "startLine": 34,
+              "endLine": 44,
+              "exported": false
+            },
+            {
+              "id": "function:bfe36e7a4f986a5ad42faafb079cc723",
+              "kind": "function",
+              "declarationKind": "function",
+              "name": "<callback:[[80,\"it\"]]:1>",
+              "qualifiedName": "<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"describe\"]]:1>#2.<callback:[[80,\"it\"]]:1>#7",
+              "filePath": "test/res.status.js",
+              "parentId": "function:b2067e9aa6b32f76e685305192dab6b2",
+              "language": "javascript",
+              "signature": "function (done)",
+              "startLine": 192,
+              "endLine": 202,
+              "exported": false
+            },
+            {
+              "id": "function:ee6655d7d3dfdfd43c298e41513235c5",
+              "kind": "function",
+              "declarationKind": "function",
+              "name": "<callback:[[80,\"it\"]]:1>",
+              "qualifiedName": "<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"it\"]]:1>#8",
+              "filePath": "test/res.status.js",
+              "parentId": "function:bff60f0535cdbf68c74fd839510e9bb1",
+              "language": "javascript",
+              "signature": "function (done)",
+              "startLine": 106,
+              "endLine": 116,
+              "exported": false
+            },
+            {
+              "id": "function:f75c582c3940989194df1ccb4f792fec",
+              "kind": "function",
+              "declarationKind": "function",
+              "name": "<callback:[[80,\"it\"]]:1>",
+              "qualifiedName": "<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"it\"]]:1>#5",
+              "filePath": "test/res.status.js",
+              "parentId": "function:bff60f0535cdbf68c74fd839510e9bb1",
+              "language": "javascript",
+              "signature": "function (done)",
+              "startLine": 70,
+              "endLine": 80,
+              "exported": false
+            },
+            {
+              "id": "function:fdd266be1689488e30309e704ff5d4b6",
+              "kind": "function",
+              "declarationKind": "function",
+              "name": "<callback:[[80,\"it\"]]:1>",
+              "qualifiedName": "<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"describe\"]]:1>.<callback:[[80,\"it\"]]:1>#7",
+              "filePath": "test/res.status.js",
+              "parentId": "function:bff60f0535cdbf68c74fd839510e9bb1",
+              "language": "javascript",
+              "signature": "function (done)",
+              "startLine": 94,
+              "endLine": 104,
+              "exported": false
+            },
+            {
+              "id": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+              "kind": "function",
+              "declarationKind": "function",
+              "name": "createApplication",
+              "qualifiedName": "createApplication",
+              "filePath": "lib/express.js",
+              "parentId": "file:3aad2cb7958fa8afdc8c9b5f108468a4",
+              "language": "javascript",
+              "signature": "function createApplication()",
+              "startLine": 36,
+              "endLine": 56,
+              "exported": true
+            }
+          ],
+          "totalIncoming": 16,
+          "totalOutgoing": 5,
+          "truncated": false,
+          "offset": 0,
+          "limit": 200,
+          "snapshotId": "snapshot:47ffbe836a25e200e66217c078006237",
+          "dataSource": "code"
+        }
+      ],
+      "incoming": [
+        {
+          "id": "relation:044eb65594e6aa4804f0d1c79e16ba31",
+          "type": "calls",
+          "sourceId": "function:60588bd30ca56fac8aa5a45d35f80a4a",
+          "targetId": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+          "resolution": "resolved",
+          "evidence": {
+            "filePath": "test/res.status.js",
+            "line": 47,
+            "text": "express()"
+          }
+        },
+        {
+          "id": "relation:4f6b28a2915c8a5f264c654d48b1a8dc",
+          "type": "calls",
+          "sourceId": "function:28ffff0a091c8fd5cd227402f491711c",
+          "targetId": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+          "resolution": "resolved",
+          "evidence": {
+            "filePath": "test/res.status.js",
+            "line": 23,
+            "text": "express()"
+          }
+        },
+        {
+          "id": "relation:62bc8ef64d09f20d823d0640034f44c3",
+          "type": "calls",
+          "sourceId": "function:66f95c0b4795bfabb993de3828f5a369",
+          "targetId": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+          "resolution": "resolved",
+          "evidence": {
+            "filePath": "test/res.status.js",
+            "line": 59,
+            "text": "express()"
+          }
+        },
+        {
+          "id": "relation:78810cdd4ef8ca91f542066c6034ca54",
+          "type": "calls",
+          "sourceId": "function:f75c582c3940989194df1ccb4f792fec",
+          "targetId": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+          "resolution": "resolved",
+          "evidence": {
+            "filePath": "test/res.status.js",
+            "line": 71,
+            "text": "express()"
+          }
+        },
+        {
+          "id": "relation:7a6a272246104533ec112dbdf61dec16",
+          "type": "calls",
+          "sourceId": "function:0dfce7d320f675ef80ac679b6373f622",
+          "targetId": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+          "resolution": "resolved",
+          "evidence": {
+            "filePath": "test/res.status.js",
+            "line": 133,
+            "text": "express()"
+          }
+        },
+        {
+          "id": "relation:afb2c915a4862fdcdc265f917a4a8d3f",
+          "type": "calls",
+          "sourceId": "function:4fd73af72b71bc02c30c635d9884e7ee",
+          "targetId": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+          "resolution": "resolved",
+          "evidence": {
+            "filePath": "test/res.status.js",
+            "line": 181,
+            "text": "express()"
+          }
+        },
+        {
+          "id": "relation:b3226832a0058fb9895ee0b06df672e1",
+          "type": "calls",
+          "sourceId": "function:51f08f29f0095a43d598ce8b84f040f7",
+          "targetId": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+          "resolution": "resolved",
+          "evidence": {
+            "filePath": "test/res.status.js",
+            "line": 145,
+            "text": "express()"
+          }
+        },
+        {
+          "id": "relation:be77d0d0e8a32d2c70e0cf728ab281a2",
+          "type": "calls",
+          "sourceId": "function:16f6a7f4ed72fc67c85e052bfe6c30c1",
+          "targetId": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+          "resolution": "resolved",
+          "evidence": {
+            "filePath": "test/res.status.js",
+            "line": 121,
+            "text": "express()"
+          }
+        },
+        {
+          "id": "relation:d55777cf8a79f35556b1908280e04d63",
+          "type": "calls",
+          "sourceId": "function:52f24cb629ffe385848c017bbe3522a5",
+          "targetId": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+          "resolution": "resolved",
+          "evidence": {
+            "filePath": "test/res.status.js",
+            "line": 9,
+            "text": "express()"
+          }
+        },
+        {
+          "id": "relation:da54aa831dd3780c66899232bb26771b",
+          "type": "calls",
+          "sourceId": "function:bfe36e7a4f986a5ad42faafb079cc723",
+          "targetId": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+          "resolution": "resolved",
+          "evidence": {
+            "filePath": "test/res.status.js",
+            "line": 193,
+            "text": "express()"
+          }
+        },
+        {
+          "id": "relation:e0d54333cff1c5930545a2fb987970cc",
+          "type": "calls",
+          "sourceId": "function:39352a0dda1c6717a381e798a7a7f84b",
+          "targetId": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+          "resolution": "resolved",
+          "evidence": {
+            "filePath": "test/res.status.js",
+            "line": 83,
+            "text": "express()"
+          }
+        },
+        {
+          "id": "relation:e148ac190f24bf23665dc4d014386e76",
+          "type": "calls",
+          "sourceId": "function:3fce7ce0a5b0455c23f3cac2db507dc4",
+          "targetId": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+          "resolution": "resolved",
+          "evidence": {
+            "filePath": "test/res.status.js",
+            "line": 157,
+            "text": "express()"
+          }
+        },
+        {
+          "id": "relation:e4c18fbe967ca69888b649eb10a6efda",
+          "type": "calls",
+          "sourceId": "function:ee6655d7d3dfdfd43c298e41513235c5",
+          "targetId": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+          "resolution": "resolved",
+          "evidence": {
+            "filePath": "test/res.status.js",
+            "line": 107,
+            "text": "express()"
+          }
+        },
+        {
+          "id": "relation:efa78d2203d686372694c3fa4cc845bb",
+          "type": "calls",
+          "sourceId": "function:3fba34c4f2256c7d5b5a3c5bbd362de1",
+          "targetId": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+          "resolution": "resolved",
+          "evidence": {
+            "filePath": "test/res.status.js",
+            "line": 169,
+            "text": "express()"
+          }
+        },
+        {
+          "id": "relation:f729318e0eca91e14e941b0346e32615",
+          "type": "calls",
+          "sourceId": "function:fdd266be1689488e30309e704ff5d4b6",
+          "targetId": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+          "resolution": "resolved",
+          "evidence": {
+            "filePath": "test/res.status.js",
+            "line": 95,
+            "text": "express()"
+          }
+        },
+        {
+          "id": "relation:fafafea308d2365ae6f887e4486afa63",
+          "type": "calls",
+          "sourceId": "function:7405089ba48655cc47eaf1336d85b23f",
+          "targetId": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+          "resolution": "resolved",
+          "evidence": {
+            "filePath": "test/res.status.js",
+            "line": 35,
+            "text": "express()"
+          }
+        }
+      ],
+      "outgoing": [
+        {
+          "id": "relation:14155626ea8641833c77cce93961e834",
+          "type": "calls",
+          "sourceId": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+          "targetId": null,
+          "resolution": "unresolved",
+          "evidence": {
+            "filePath": "lib/express.js",
+            "line": 50,
+            "text": "Object.create(res, {\n    app: { configurable: true, enumerable: true, writable: true, value: app }\n  })"
+          },
+          "reason": "No unique indexed implementation for this call (dynamic, ambient, or excluded target)"
+        },
+        {
+          "id": "relation:2c5959e67347348db0f24784fa9204df",
+          "type": "calls",
+          "sourceId": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+          "targetId": null,
+          "resolution": "unresolved",
+          "evidence": {
+            "filePath": "lib/express.js",
+            "line": 41,
+            "text": "mixin(app, EventEmitter.prototype, false)"
+          },
+          "reason": "CommonJS importer binding is mutable or rewritten"
+        },
+        {
+          "id": "relation:858a0311105f126cd6a5c268a7b28abb",
+          "type": "calls",
+          "sourceId": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+          "targetId": null,
+          "resolution": "unresolved",
+          "evidence": {
+            "filePath": "lib/express.js",
+            "line": 42,
+            "text": "mixin(app, proto, false)"
+          },
+          "reason": "CommonJS importer binding is mutable or rewritten"
+        },
+        {
+          "id": "relation:a3c0d6f37fa6152971fdc2f295504d21",
+          "type": "calls",
+          "sourceId": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+          "targetId": null,
+          "resolution": "unresolved",
+          "evidence": {
+            "filePath": "lib/express.js",
+            "line": 54,
+            "text": "app.init()"
+          },
+          "reason": "No unique indexed implementation for this call (dynamic, ambient, or excluded target)"
+        },
+        {
+          "id": "relation:dc15058a4d25c46715f6084ffb394d49",
+          "type": "calls",
+          "sourceId": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+          "targetId": null,
+          "resolution": "unresolved",
+          "evidence": {
+            "filePath": "lib/express.js",
+            "line": 45,
+            "text": "Object.create(req, {\n    app: { configurable: true, enumerable: true, writable: true, value: app }\n  })"
+          },
+          "reason": "No unique indexed implementation for this call (dynamic, ambient, or excluded target)"
+        }
+      ]
+    },
+    "source": {
+      "filePath": "lib/express.js",
+      "content": "/*!\n * express\n * Copyright(c) 2009-2013 TJ Holowaychuk\n * Copyright(c) 2013 Roman Shtylman\n * Copyright(c) 2014-2015 Douglas Christopher Wilson\n * MIT Licensed\n */\n\n'use strict';\n\n/**\n * Module dependencies.\n */\n\nvar bodyParser = require('body-parser')\nvar EventEmitter = require('node:events').EventEmitter;\nvar mixin = require('merge-descriptors');\nvar proto = require('./application');\nvar Router = require('router');\nvar req = require('./request');\nvar res = require('./response');\n\n/**\n * Expose `createApplication()`.\n */\n\nexports = module.exports = createApplication;\n\n/**\n * Create an express application.\n *\n * @return {Function}\n * @api public\n */\n\nfunction createApplication() {\n  var app = function(req, res, next) {\n    app.handle(req, res, next);\n  };\n\n  mixin(app, EventEmitter.prototype, false);\n  mixin(app, proto, false);\n\n  // expose the prototype that will get set on requests\n  app.request = Object.create(req, {\n    app: { configurable: true, enumerable: true, writable: true, value: app }\n  })\n\n  // expose the prototype that will get set on responses\n  app.response = Object.create(res, {\n    app: { configurable: true, enumerable: true, writable: true, value: app }\n  })\n\n  app.init();\n  return app;\n}\n\n/**\n * Expose the prototypes.\n */\n\nexports.application = proto;\nexports.request = req;\nexports.response = res;\n\n/**\n * Expose constructors.\n */\n\nexports.Route = Router.Route;\nexports.Router = Router;\n\n/**\n * Expose middleware\n */\n\nexports.json = bodyParser.json\nexports.raw = bodyParser.raw\nexports.static = require('serve-static');\nexports.text = bodyParser.text\nexports.urlencoded = bodyParser.urlencoded\n"
+    },
+    "sourceExcerpt": "function createApplication() {\n  var app = function(req, res, next) {\n    app.handle(req, res, next);\n  };\n\n  mixin(app, EventEmitter.prototype, false);\n  mixin(app, proto, false);\n\n  // expose the prototype that will get set on requests\n  app.request = Object.create(req, {\n    app: { configurable: true, enumerable: true, writable: true, value: app }\n  })\n\n  // expose the prototype that will get set on responses\n  app.response = Object.create(res, {\n    app: { configurable: true, enumerable: true, writable: true, value: app }\n  })\n\n  app.init();\n  return app;\n}"
+  },
+  "bounded": {
+    "nodes": [
+      {
+        "id": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "createApplication",
+        "qualifiedName": "createApplication",
+        "filePath": "lib/express.js",
+        "parentId": "file:3aad2cb7958fa8afdc8c9b5f108468a4",
+        "language": "javascript",
+        "signature": "function createApplication()",
+        "startLine": 36,
+        "endLine": 56,
+        "exported": true
+      }
+    ],
+    "relations": [
+      {
+        "id": "relation:14155626ea8641833c77cce93961e834",
+        "type": "calls",
+        "sourceId": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+        "targetId": null,
+        "resolution": "unresolved",
+        "evidence": {
+          "filePath": "lib/express.js",
+          "line": 50,
+          "text": "Object.create(res, {\n    app: { configurable: true, enumerable: true, writable: true, value: app }\n  })"
+        },
+        "reason": "No unique indexed implementation for this call (dynamic, ambient, or excluded target)"
+      },
+      {
+        "id": "relation:2c5959e67347348db0f24784fa9204df",
+        "type": "calls",
+        "sourceId": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+        "targetId": null,
+        "resolution": "unresolved",
+        "evidence": {
+          "filePath": "lib/express.js",
+          "line": 41,
+          "text": "mixin(app, EventEmitter.prototype, false)"
+        },
+        "reason": "CommonJS importer binding is mutable or rewritten"
+      },
+      {
+        "id": "relation:858a0311105f126cd6a5c268a7b28abb",
+        "type": "calls",
+        "sourceId": "function:3d1a060bd9c0b997d9e662d94a1e07f9",
+        "targetId": null,
+        "resolution": "unresolved",
+        "evidence": {
+          "filePath": "lib/express.js",
+          "line": 42,
+          "text": "mixin(app, proto, false)"
+        },
+        "reason": "CommonJS importer binding is mutable or rewritten"
+      }
+    ],
+    "truncated": true,
+    "snapshotId": "snapshot:47ffbe836a25e200e66217c078006237",
+    "dataSource": "code"
+  },
+  "expansion": {
+    "nodes": 26,
+    "relations": 99,
+    "truncated": false
+  },
+  "errors": [],
+  "external": [],
+  "protocolErrors": [],
+  "scope": "Actual compiled API/web + Chromium open/search/source/expand + SDK stdio summary/search/context/subgraph. Source endpoint is HTTP; MCP supplies source locations/call evidence, no read_source tool. Whole supported checkout indexed; target code and upstream tests never executed."
+}

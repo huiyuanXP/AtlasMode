@@ -3,7 +3,7 @@
 ## 当前工作（2026-10-10 UTC）
 
 首用离线路径、AI渐进披露、可读初始图与手动规划入口已实现并独立审查通过；精确证据见 [验收](reviews/first-use-2026-10-10/README.md)。
-GitHub真实7个Issue均open；本地36票15DONE/21未完成；SEC-01、AG-05、IDX-02、GRP-02已认领，其余17TODO。不能用本地状态代替远端结案。IDX-01完整Express入口已通过，见 [证据](reviews/idx01-2026-10-10/README.md)，保留历史FAIL。
+GitHub真实7个Issue均open；本地36票16DONE/20未完成；SEC-01与AG-05为PARTIAL，GRP-02实施中；IDX-03、POL-01与AG-02先盘点/设计，其余待办按依赖推进。不能用本地状态代替远端结案。IDX-02静态workspace/exports映射已通过393/9、真实HTTP/MCP/浏览器与freshness/history/restart/crossproject，独立复审APPROVE，见 [验收](reviews/idx02-2026-10-10/README.md)。IDX-01完整Express入口已通过，见 [证据](reviews/idx01-2026-10-10/README.md)，保留历史FAIL。
 首用commit078fa84已推送；实际CI Linux/Windows通过，macOS路径身份与浏览器源码/真实拖动helper已修复，独立只读审查通过，本地process11/11、相关browser7/7与强化拖动1/1通过，见 [报告](reviews/ci-repair-2026-10-10/README.md)；4071012远端CI38061633736三原生OS全部通过；browser14/17通过，旧分组入口测试与地图/详情实际遮挡正在修复，不能称整CI通过。GRP-01实际圈选与完整成员编辑已通过，独立审查及竞态限定复审APPROVE，见 [报告](reviews/grp01-2026-10-10/README.md)。AG-05实现本地HTTP/SDK/SQLite/浏览器协议闭环、独立复审APPROVE，仍PARTIAL：当前启动环境缺Responses配置，真实Provider gate未执行。SEC依赖整改锁定安装审计0，仍PARTIAL：与AG05联合clean集成及新CI待验收。隔离staged tree d63a61a4f8cf787fce5ba55756fa0f268482d78f 已完成737测试/64文件、七包build/typecheck、rootlint和生产smoke；整套浏览器正在验证，此证据不包含正在实施的IDX02/GRP02。
 当前分支fix/first-use-20261010，保留已有AGENTS修改。用户最新授权按阶段同步文档后commit/push；不授权merge、生产部署或权限修改。下面旧阶段“不push”仅记录当时状态。
 neat-freak v3.0.0已配置并应用；生成记忆未写，临时预览已关闭，工作区与证据保留。
@@ -434,3 +434,7 @@ Windows/macOS和Linux Chromium全部通过。精确SHA/jobID与结论见Task2的
 ## Main/work integration (2026-10-05 UTC)
 
 The latest human request explicitly authorizes merging main's VM2 work into work and pushing work. Inputs main b87644f and work 69be14b independently built incompatible implementations from 944b48c. The merge retains the reviewed work product tree, contract, lock/runtime pins, vendor skills and planned/residual work. Main history remains reachable; issues #1–#7 and historical reports are preserved under docs/issues and docs/history/vm2-first-release. This is integration/handoff only, not new product functionality or resolution of Express/PARTIAL limits. Fresh check and review results: reviews/main-work-merge.md.
+
+## 2026-10-10 API/依赖阶段检查点
+
+77e4554 已推送，直接 Responses adapter 与依赖清理的精确隔离证据在 [AG05报告](reviews/ag05-2026-10-10/README.md)。真实CI38062761771三nativeOS build/typecheck/lint/test/smoke通过，browser失败待地图遮挡与旧分组入口修复；不称整CI通过。IDX02新增44索引行为在此前737整根快照之外，独立定向393/9和最终真实gate已通过，后续提交会触发新CI。

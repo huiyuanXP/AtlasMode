@@ -8,6 +8,7 @@ import {
 } from "ts-morph";
 import { normalizeRepoPath, type CodeSnapshot } from "@codemap/core";
 import type { SourceFile } from "./scan.js";
+import type { WorkspaceResolver } from "./workspaceResolution.js";
 
 const virtualRoot = "/__codemap_captured__";
 const virtualPath = (path: string) => virtualRoot + "/" + path;
@@ -23,6 +24,7 @@ export function createConfigurationResolver(
   sources: readonly SourceFile[],
   configurations: readonly SourceFile[],
   captureDiagnostics: readonly CodeSnapshot["diagnostics"][number][] = [],
+  workspace?: WorkspaceResolver,
 ): {
   resolutionHost: ResolutionHostFactory;
   diagnostics: CodeSnapshot["diagnostics"];
@@ -171,7 +173,7 @@ export function createConfigurationResolver(
       directory = posix.dirname(directory);
     }
   }
-  function configuredAlias(sourcePath: string, specifier: string): boolean {
+  function configurationAlias(sourcePath: string, specifier: string): boolean {
     const scope = bySource.get(
       sourcePath.startsWith("/") ? sourcePath : "/" + sourcePath,
     );
@@ -239,6 +241,28 @@ export function createConfigurationResolver(
           caches.set(key, cache);
         }
         return names.map((name) => {
+          if (!configurationAlias(containingFile, name)) {
+            const mapping = workspace?.resolve(containingFile, name);
+            if (mapping?.known) {
+              if (!mapping.targetPath) return undefined;
+              const suffix = posix.extname(mapping.targetPath);
+              const extension = {
+                ".ts": ts.Extension.Ts,
+                ".tsx": ts.Extension.Tsx,
+                ".js": ts.Extension.Js,
+                ".jsx": ts.Extension.Jsx,
+                ".cts": ts.Extension.Cts,
+                ".mts": ts.Extension.Mts,
+                ".cjs": ts.Extension.Cjs,
+                ".mjs": ts.Extension.Mjs,
+              }[suffix]!;
+              return {
+                resolvedFileName: "/" + mapping.targetPath,
+                extension,
+                isExternalLibraryImport: false,
+              };
+            }
+          }
           const resolved = ts.resolveModuleName(
             name,
             virtualRoot + containingFile,
@@ -253,7 +277,7 @@ export function createConfigurationResolver(
                 virtualRoot.length,
               ),
             };
-          if (scope && configuredAlias(containingFile, name))
+          if (scope && configurationAlias(containingFile, name))
             diagnose(
               scope.path,
               "Configured alias target is unavailable in captured sources (missing, excluded, ignored, symlinked or outside the repository)",
@@ -263,5 +287,10 @@ export function createConfigurationResolver(
       },
     };
   };
-  return { resolutionHost, diagnostics, configuredAlias };
+  return {
+    resolutionHost,
+    diagnostics,
+    configuredAlias: (path, specifier) =>
+      configurationAlias(path, specifier) || !!workspace?.recognizes(specifier),
+  };
 }

@@ -1,0 +1,34 @@
+{
+  "target": "/tmp/atlasmode-idx02-fixture-mnQdH1",
+  "otherTarget": "/tmp/atlasmode-idx02-isolated-B3EVvu",
+  "inputs": {
+    "package.json": "{\n  \"private\": true,\n  \"type\": \"module\",\n  \"workspaces\": [\n    \"packages/*\"\n  ]\n}",
+    "packages/app/package.json": "{\"name\":\"@idx02/app\",\"type\":\"module\"}",
+    "packages/lib/package.json": "{\n  \"name\": \"@idx02/lib\",\n  \"type\": \"module\",\n  \"exports\": {\n    \".\": {\n      \"import\": \"./src/main.ts\",\n      \"require\": \"./src/main.cjs\"\n    },\n    \"./stable\": {\n      \"custom\": \"./src/main.ts\",\n      \"default\": \"./src/main.ts\"\n    },\n    \"./uncertain\": {\n      \"custom\": \"./src/other.ts\",\n      \"default\": \"./src/main.ts\"\n    },\n    \"./blocked\": null,\n    \"./*\": \"./src/*.ts\"\n  }\n}",
+    "packages/app/entry.ts": "import { helper } from \"@idx02/lib\";\nexport function entry() { return helper(); }\n",
+    "packages/app/stable.ts": "import { helper } from \"@idx02/lib/stable\";\nexport function stable() { return helper(); }\n",
+    "packages/app/uncertain.ts": "import { helper } from \"@idx02/lib/uncertain\";\nexport function uncertain() { return helper(); }\n",
+    "packages/app/blocked.ts": "import { helper } from \"@idx02/lib/blocked\";\nexport function blocked() { return helper(); }\n",
+    "packages/app/type.ts": "import type * as lib from \"@idx02/lib\";\nexport function typeOnly() { return lib.helper(); }\n",
+    "packages/app/entry.cjs": "const {helper} = require(\"@idx02/lib\");\nfunction requireEntry(){ return helper(); }\nexports.requireEntry = requireEntry;\n",
+    "packages/lib/src/main.ts": "export function helper() { return \"main\"; }\n",
+    "packages/lib/src/other.ts": "export function helper() { return \"other\"; }\n",
+    "packages/lib/src/main.cjs": "function helper() { return \"require\"; }\nexports.helper = helper;\n",
+    "never-execute.ts": "import {writeFileSync} from \"node:fs\";\nwriteFileSync(\"/tmp/atlasmode-idx02-fixture-mnQdH1/TARGET_EXECUTED\", \"executed\");\nthrow new Error(\"Target source must never execute\");\n"
+  },
+  "sha256": {
+    "package.json": "bc2391210732f03f5f31c5607fe961bdb70c6cda983e97cc4b5558cbf85afca6",
+    "packages/app/package.json": "4c41990c759b1ed16105ae4460b8537bdb320eb07bad1289d45498930013d7b7",
+    "packages/lib/package.json": "d40844dcb54fe7675a65cabc185afb843a78305972b7ee4622c889a291de9606",
+    "packages/app/entry.ts": "c01ddf8b27d1f2ef4c1d800a9fa6e85b11fefc142f583eb3981b28ebcaa1e70a",
+    "packages/app/stable.ts": "de78da06b320823779bbab4c3367f4e9e29b72afc07183756ffa3ce4b206e240",
+    "packages/app/uncertain.ts": "c552f3fba7d1d86bafd93bf8713328411ff224e99ba5cb9e6e8478e0dbf04557",
+    "packages/app/blocked.ts": "bae3aba6cf5ba37094e0999017a570619eaac47564eba67e0323b0c3fc409999",
+    "packages/app/type.ts": "59aef97ac8dcc57c828b2a17a098c3dd16c684eaade592fa55be888cd45582ae",
+    "packages/app/entry.cjs": "f219e3a740eb7175617dd2eece05112e51093c25278eeec98b9be25846014459",
+    "packages/lib/src/main.ts": "705443886324d72b8f8d91655215fef7106cdbb9c36ce8acd68cd3508feb5f1c",
+    "packages/lib/src/other.ts": "01bd51e95760cc5d73cd40949756643737ea6ad4796a61eb127694dec31a8bf3",
+    "packages/lib/src/main.cjs": "a8b1f1d456f98992687d6369a84c28b77de6ed4aa67cdf12feeab381d8fd1ede",
+    "never-execute.ts": "ae36cde152456dda74f13c3ced0a5fae1f98b21fa666830205039c0a78bf119d"
+  }
+}

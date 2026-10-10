@@ -1,0 +1,431 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90m/home/agent/projects/AtlasMode[39m
+
+ [31m❯[39m packages/indexer/src/workspaceResolution.test.ts [2m([22m[2m26 tests[22m[2m | [22m[31m25 failed[39m[2m)[22m[33m 492[2mms[22m[39m
+[31m     [31m×[31m continues outer default after nested NO_MATCH but never after BLOCKED[39m[32m 141[2mms[22m[39m
+[31m     [31m×[31m rejects numeric condition keys and over-budget condition trees[39m[32m 32[2mms[22m[39m
+[31m     [31m×[31m maps root exports to the exact captured implementation[39m[32m 26[2mms[22m[39m
+[31m     [31m×[31m maps exact subpaths and static single-star source patterns[39m[32m 27[2mms[22m[39m
+[31m     [31m×[31m selects literal import and require conditions without merging identities[39m[32m 12[2mms[22m[39m
+[31m     [31m×[31m accepts convergent custom conditions and rejects divergent alternatives[39m[32m 11[2mms[22m[39m
+[31m     [31m×[31m honors ordered default and inactive branches[39m[32m 10[2mms[22m[39m
+[31m     [31m×[31m rejects mixed request modes when their selected targets diverge[39m[32m 13[2mms[22m[39m
+[31m     [31m×[31m keeps invalid/blocked/missing/guessed target unknown: null[39m[32m 21[2mms[22m[39m
+[31m     [31m×[31m keeps invalid/blocked/missing/guessed target unknown: "./src/main.ts"[39m[32m 12[2mms[22m[39m
+[31m     [31m×[31m keeps invalid/blocked/missing/guessed target unknown: {".":"./src/main.ts","import":"./src/main.ts"}[39m[32m 10[2mms[22m[39m
+[31m     [31m×[31m keeps invalid/blocked/missing/guessed target unknown: "./src/missing.ts"[39m[32m 9[2mms[22m[39m
+[31m     [31m×[31m keeps invalid/blocked/missing/guessed target unknown: "../app/entry.ts"[39m[32m 9[2mms[22m[39m
+[31m     [31m×[31m keeps invalid/blocked/missing/guessed target unknown: "./src/../src/main.ts"[39m[32m 9[2mms[22m[39m
+[31m     [31m×[31m keeps invalid/blocked/missing/guessed target unknown: "./node_modules/main.ts"[39m[32m 9[2mms[22m[39m
+[31m     [31m×[31m keeps invalid/blocked/missing/guessed target unknown: "./src/%2e/main.ts"[39m[32m 10[2mms[22m[39m
+[31m     [31m×[31m keeps invalid/blocked/missing/guessed target unknown: "./src/main.ts?x"[39m[32m 9[2mms[22m[39m
+[31m     [31m×[31m keeps invalid/blocked/missing/guessed target unknown: "./src/main.js"[39m[32m 9[2mms[22m[39m
+[31m     [31m×[31m does not infer private subpaths when exports lacks the requested key[39m[32m 19[2mms[22m[39m
+[31m     [31m×[31m rejects duplicate workspace names without affecting unrelated names[39m[32m 9[2mms[22m[39m
+[31m     [31m×[31m rejects unregistered consumers and package targets crossing a nested package boundary[39m[32m 7[2mms[22m[39m
+[31m     [31m×[31m supports object packages syntax and explicit workspace directories[39m[32m 7[2mms[22m[39m
+[31m     [31m×[31m does not apply unsupported workspace globs[39m[32m 7[2mms[22m[39m
+     [32m✓[39m preserves explicit paths precedence and refuses failed paths fallback[32m 31[2mms[22m[39m
+[31m     [31m×[31m isolates nested workspace owners with identical package names[39m[32m 14[2mms[22m[39m
+[31m     [31m×[31m does not turn type-only workspace imports into callable runtime identity[39m[32m 16[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 25 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m packages/indexer/src/workspaceResolution.test.ts[2m > [22mIDX02 captured workspace exports[2m > [22mcontinues outer default after nested NO_MATCH but never after BLOCKED
+[31m[1mAssertionError[22m: expected { …(6) } to match object { resolution: 'resolved' }
+(8 matching properties omitted from actual)[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[32m-   "resolution": "resolved",[39m
+[31m+   "resolution": "external",[39m
+[2m  }[22m
+
+[36m [2m❯[22m target packages/indexer/src/workspaceResolution.test.ts:[2m32:15[22m[39m
+    [90m 30|[39m function target(graph: Graph,path="packages/lib/src/main.ts",file="pac…
+    [90m 31|[39m  [35mconst[39m call[33m=[39m[34medge[39m(graph[33m,[39mfile)[33m;[39m
+    [90m 32|[39m  [34mexpect[39m(call)[33m.[39m[34mtoMatchObject[39m({resolution[33m:[39m[32m"resolved"[39m})[33m;[39m
+    [90m   |[39m               [31m^[39m
+    [90m 33|[39m  expect(graph.nodes.get(call.targetId!)).toMatchObject({kind:"function…
+    [90m 34|[39m  const imported=graph.relations.find(r=>r.type==="imports"&&r.evidence…
+[90m [2m❯[22m packages/indexer/src/workspaceResolution.test.ts:[2m43:3[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/25]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m packages/indexer/src/workspaceResolution.test.ts[2m > [22mIDX02 captured workspace exports[2m > [22mrejects numeric condition keys and over-budget condition trees
+[31m[1mAssertionError[22m: expected { …(6) } to match object { resolution: 'unresolved', …(1) }
+(7 matching properties omitted from actual)[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[32m-   "resolution": "unresolved",[39m
+[32m-   "targetId": null,[39m
+[31m+   "resolution": "external",[39m
+[31m+   "targetId": "external:c34d50f44820803a89ebd367c7b7451c",[39m
+[2m  }[22m
+
+[36m [2m❯[22m unknown packages/indexer/src/workspaceResolution.test.ts:[2m38:27[22m[39m
+    [90m 36|[39m }
+    [90m 37|[39m [35mfunction[39m [34munknown[39m(graph[33m:[39m[33mGraph[39m[33m,[39mfile[33m=[39m[32m"packages/app/entry.ts"[39m) {
+    [90m 38|[39m  expect(edge(graph,file)).toMatchObject({resolution:"unresolved",targe…
+    [90m   |[39m                           [31m^[39m
+    [90m 39|[39m  expect(graph.relations.find(r=>r.type==="imports"&&r.evidence.filePat…
+    [90m 40|[39m }
+[90m [2m❯[22m packages/indexer/src/workspaceResolution.test.ts:[2m48:3[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/25]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m packages/indexer/src/workspaceResolution.test.ts[2m > [22mIDX02 captured workspace exports[2m > [22mmaps root exports to the exact captured implementation
+[31m[1mAssertionError[22m: expected { …(6) } to match object { resolution: 'resolved' }
+(8 matching properties omitted from actual)[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[32m-   "resolution": "resolved",[39m
+[31m+   "resolution": "external",[39m
+[2m  }[22m
+
+[36m [2m❯[22m target packages/indexer/src/workspaceResolution.test.ts:[2m32:15[22m[39m
+    [90m 30|[39m function target(graph: Graph,path="packages/lib/src/main.ts",file="pac…
+    [90m 31|[39m  [35mconst[39m call[33m=[39m[34medge[39m(graph[33m,[39mfile)[33m;[39m
+    [90m 32|[39m  [34mexpect[39m(call)[33m.[39m[34mtoMatchObject[39m({resolution[33m:[39m[32m"resolved"[39m})[33m;[39m
+    [90m   |[39m               [31m^[39m
+    [90m 33|[39m  expect(graph.nodes.get(call.targetId!)).toMatchObject({kind:"function…
+    [90m 34|[39m  const imported=graph.relations.find(r=>r.type==="imports"&&r.evidence…
+[90m [2m❯[22m packages/indexer/src/workspaceResolution.test.ts:[2m54:66[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/25]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m packages/indexer/src/workspaceResolution.test.ts[2m > [22mIDX02 captured workspace exports[2m > [22mmaps exact subpaths and static single-star source patterns
+[31m[1mAssertionError[22m: expected { …(6) } to match object { resolution: 'resolved' }
+(8 matching properties omitted from actual)[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[32m-   "resolution": "resolved",[39m
+[31m+   "resolution": "external",[39m
+[2m  }[22m
+
+[36m [2m❯[22m target packages/indexer/src/workspaceResolution.test.ts:[2m32:15[22m[39m
+    [90m 30|[39m function target(graph: Graph,path="packages/lib/src/main.ts",file="pac…
+    [90m 31|[39m  [35mconst[39m call[33m=[39m[34medge[39m(graph[33m,[39mfile)[33m;[39m
+    [90m 32|[39m  [34mexpect[39m(call)[33m.[39m[34mtoMatchObject[39m({resolution[33m:[39m[32m"resolved"[39m})[33m;[39m
+    [90m   |[39m               [31m^[39m
+    [90m 33|[39m  expect(graph.nodes.get(call.targetId!)).toMatchObject({kind:"function…
+    [90m 34|[39m  const imported=graph.relations.find(r=>r.type==="imports"&&r.evidence…
+[90m [2m❯[22m packages/indexer/src/workspaceResolution.test.ts:[2m56:3[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/25]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m packages/indexer/src/workspaceResolution.test.ts[2m > [22mIDX02 captured workspace exports[2m > [22mselects literal import and require conditions without merging identities
+[31m[1mAssertionError[22m: expected { …(6) } to match object { resolution: 'resolved' }
+(8 matching properties omitted from actual)[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[32m-   "resolution": "resolved",[39m
+[31m+   "resolution": "external",[39m
+[2m  }[22m
+
+[36m [2m❯[22m target packages/indexer/src/workspaceResolution.test.ts:[2m32:15[22m[39m
+    [90m 30|[39m function target(graph: Graph,path="packages/lib/src/main.ts",file="pac…
+    [90m 31|[39m  [35mconst[39m call[33m=[39m[34medge[39m(graph[33m,[39mfile)[33m;[39m
+    [90m 32|[39m  [34mexpect[39m(call)[33m.[39m[34mtoMatchObject[39m({resolution[33m:[39m[32m"resolved"[39m})[33m;[39m
+    [90m   |[39m               [31m^[39m
+    [90m 33|[39m  expect(graph.nodes.get(call.targetId!)).toMatchObject({kind:"function…
+    [90m 34|[39m  const imported=graph.relations.find(r=>r.type==="imports"&&r.evidence…
+[90m [2m❯[22m packages/indexer/src/workspaceResolution.test.ts:[2m61:3[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/25]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m packages/indexer/src/workspaceResolution.test.ts[2m > [22mIDX02 captured workspace exports[2m > [22maccepts convergent custom conditions and rejects divergent alternatives
+[31m[1mAssertionError[22m: expected { …(6) } to match object { resolution: 'resolved' }
+(8 matching properties omitted from actual)[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[32m-   "resolution": "resolved",[39m
+[31m+   "resolution": "external",[39m
+[2m  }[22m
+
+[36m [2m❯[22m target packages/indexer/src/workspaceResolution.test.ts:[2m32:15[22m[39m
+    [90m 30|[39m function target(graph: Graph,path="packages/lib/src/main.ts",file="pac…
+    [90m 31|[39m  [35mconst[39m call[33m=[39m[34medge[39m(graph[33m,[39mfile)[33m;[39m
+    [90m 32|[39m  [34mexpect[39m(call)[33m.[39m[34mtoMatchObject[39m({resolution[33m:[39m[32m"resolved"[39m})[33m;[39m
+    [90m   |[39m               [31m^[39m
+    [90m 33|[39m  expect(graph.nodes.get(call.targetId!)).toMatchObject({kind:"function…
+    [90m 34|[39m  const imported=graph.relations.find(r=>r.type==="imports"&&r.evidence…
+[90m [2m❯[22m packages/indexer/src/workspaceResolution.test.ts:[2m66:3[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/25]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m packages/indexer/src/workspaceResolution.test.ts[2m > [22mIDX02 captured workspace exports[2m > [22mhonors ordered default and inactive branches
+[31m[1mAssertionError[22m: expected { …(6) } to match object { resolution: 'resolved' }
+(8 matching properties omitted from actual)[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[32m-   "resolution": "resolved",[39m
+[31m+   "resolution": "external",[39m
+[2m  }[22m
+
+[36m [2m❯[22m target packages/indexer/src/workspaceResolution.test.ts:[2m32:15[22m[39m
+    [90m 30|[39m function target(graph: Graph,path="packages/lib/src/main.ts",file="pac…
+    [90m 31|[39m  [35mconst[39m call[33m=[39m[34medge[39m(graph[33m,[39mfile)[33m;[39m
+    [90m 32|[39m  [34mexpect[39m(call)[33m.[39m[34mtoMatchObject[39m({resolution[33m:[39m[32m"resolved"[39m})[33m;[39m
+    [90m   |[39m               [31m^[39m
+    [90m 33|[39m  expect(graph.nodes.get(call.targetId!)).toMatchObject({kind:"function…
+    [90m 34|[39m  const imported=graph.relations.find(r=>r.type==="imports"&&r.evidence…
+[90m [2m❯[22m packages/indexer/src/workspaceResolution.test.ts:[2m71:3[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/25]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m packages/indexer/src/workspaceResolution.test.ts[2m > [22mIDX02 captured workspace exports[2m > [22mrejects mixed request modes when their selected targets diverge
+[31m[1mAssertionError[22m: expected { …(6) } to match object { resolution: 'unresolved', …(1) }
+(7 matching properties omitted from actual)[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[32m-   "resolution": "unresolved",[39m
+[32m-   "targetId": null,[39m
+[31m+   "resolution": "external",[39m
+[31m+   "targetId": "external:c34d50f44820803a89ebd367c7b7451c",[39m
+[2m  }[22m
+
+[36m [2m❯[22m unknown packages/indexer/src/workspaceResolution.test.ts:[2m38:27[22m[39m
+    [90m 36|[39m }
+    [90m 37|[39m [35mfunction[39m [34munknown[39m(graph[33m:[39m[33mGraph[39m[33m,[39mfile[33m=[39m[32m"packages/app/entry.ts"[39m) {
+    [90m 38|[39m  expect(edge(graph,file)).toMatchObject({resolution:"unresolved",targe…
+    [90m   |[39m                           [31m^[39m
+    [90m 39|[39m  expect(graph.relations.find(r=>r.type==="imports"&&r.evidence.filePat…
+    [90m 40|[39m }
+[90m [2m❯[22m packages/indexer/src/workspaceResolution.test.ts:[2m75:3[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/25]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m packages/indexer/src/workspaceResolution.test.ts[2m > [22mIDX02 captured workspace exports[2m > [22mkeeps invalid/blocked/missing/guessed target unknown: null
+[41m[1m FAIL [22m[49m packages/indexer/src/workspaceResolution.test.ts[2m > [22mIDX02 captured workspace exports[2m > [22mkeeps invalid/blocked/missing/guessed target unknown: "./src/main.ts"
+[41m[1m FAIL [22m[49m packages/indexer/src/workspaceResolution.test.ts[2m > [22mIDX02 captured workspace exports[2m > [22mkeeps invalid/blocked/missing/guessed target unknown: {".":"./src/main.ts","import":"./src/main.ts"}
+[41m[1m FAIL [22m[49m packages/indexer/src/workspaceResolution.test.ts[2m > [22mIDX02 captured workspace exports[2m > [22mkeeps invalid/blocked/missing/guessed target unknown: "./src/missing.ts"
+[41m[1m FAIL [22m[49m packages/indexer/src/workspaceResolution.test.ts[2m > [22mIDX02 captured workspace exports[2m > [22mkeeps invalid/blocked/missing/guessed target unknown: "../app/entry.ts"
+[41m[1m FAIL [22m[49m packages/indexer/src/workspaceResolution.test.ts[2m > [22mIDX02 captured workspace exports[2m > [22mkeeps invalid/blocked/missing/guessed target unknown: "./src/../src/main.ts"
+[41m[1m FAIL [22m[49m packages/indexer/src/workspaceResolution.test.ts[2m > [22mIDX02 captured workspace exports[2m > [22mkeeps invalid/blocked/missing/guessed target unknown: "./node_modules/main.ts"
+[41m[1m FAIL [22m[49m packages/indexer/src/workspaceResolution.test.ts[2m > [22mIDX02 captured workspace exports[2m > [22mkeeps invalid/blocked/missing/guessed target unknown: "./src/%2e/main.ts"
+[41m[1m FAIL [22m[49m packages/indexer/src/workspaceResolution.test.ts[2m > [22mIDX02 captured workspace exports[2m > [22mkeeps invalid/blocked/missing/guessed target unknown: "./src/main.ts?x"
+[41m[1m FAIL [22m[49m packages/indexer/src/workspaceResolution.test.ts[2m > [22mIDX02 captured workspace exports[2m > [22mkeeps invalid/blocked/missing/guessed target unknown: "./src/main.js"
+[31m[1mAssertionError[22m: expected { …(6) } to match object { resolution: 'unresolved', …(1) }
+(7 matching properties omitted from actual)[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[32m-   "resolution": "unresolved",[39m
+[32m-   "targetId": null,[39m
+[31m+   "resolution": "external",[39m
+[31m+   "targetId": "external:c34d50f44820803a89ebd367c7b7451c",[39m
+[2m  }[22m
+
+[36m [2m❯[22m unknown packages/indexer/src/workspaceResolution.test.ts:[2m38:27[22m[39m
+    [90m 36|[39m }
+    [90m 37|[39m [35mfunction[39m [34munknown[39m(graph[33m:[39m[33mGraph[39m[33m,[39mfile[33m=[39m[32m"packages/app/entry.ts"[39m) {
+    [90m 38|[39m  expect(edge(graph,file)).toMatchObject({resolution:"unresolved",targe…
+    [90m   |[39m                           [31m^[39m
+    [90m 39|[39m  expect(graph.relations.find(r=>r.type==="imports"&&r.evidence.filePat…
+    [90m 40|[39m }
+[90m [2m❯[22m packages/indexer/src/workspaceResolution.test.ts:[2m77:288[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/25]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m packages/indexer/src/workspaceResolution.test.ts[2m > [22mIDX02 captured workspace exports[2m > [22mdoes not infer private subpaths when exports lacks the requested key
+[31m[1mAssertionError[22m: expected { …(6) } to match object { resolution: 'unresolved', …(1) }
+(7 matching properties omitted from actual)[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[32m-   "resolution": "unresolved",[39m
+[32m-   "targetId": null,[39m
+[31m+   "resolution": "external",[39m
+[31m+   "targetId": "external:164a22b02b4084c7f98646874dfed6d9",[39m
+[2m  }[22m
+
+[36m [2m❯[22m unknown packages/indexer/src/workspaceResolution.test.ts:[2m38:27[22m[39m
+    [90m 36|[39m }
+    [90m 37|[39m [35mfunction[39m [34munknown[39m(graph[33m:[39m[33mGraph[39m[33m,[39mfile[33m=[39m[32m"packages/app/entry.ts"[39m) {
+    [90m 38|[39m  expect(edge(graph,file)).toMatchObject({resolution:"unresolved",targe…
+    [90m   |[39m                           [31m^[39m
+    [90m 39|[39m  expect(graph.relations.find(r=>r.type==="imports"&&r.evidence.filePat…
+    [90m 40|[39m }
+[90m [2m❯[22m packages/indexer/src/workspaceResolution.test.ts:[2m78:80[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/25]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m packages/indexer/src/workspaceResolution.test.ts[2m > [22mIDX02 captured workspace exports[2m > [22mrejects duplicate workspace names without affecting unrelated names
+[31m[1mAssertionError[22m: expected { …(6) } to match object { resolution: 'unresolved', …(1) }
+(7 matching properties omitted from actual)[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[32m-   "resolution": "unresolved",[39m
+[32m-   "targetId": null,[39m
+[31m+   "resolution": "external",[39m
+[31m+   "targetId": "external:c34d50f44820803a89ebd367c7b7451c",[39m
+[2m  }[22m
+
+[36m [2m❯[22m unknown packages/indexer/src/workspaceResolution.test.ts:[2m38:27[22m[39m
+    [90m 36|[39m }
+    [90m 37|[39m [35mfunction[39m [34munknown[39m(graph[33m:[39m[33mGraph[39m[33m,[39mfile[33m=[39m[32m"packages/app/entry.ts"[39m) {
+    [90m 38|[39m  expect(edge(graph,file)).toMatchObject({resolution:"unresolved",targe…
+    [90m   |[39m                           [31m^[39m
+    [90m 39|[39m  expect(graph.relations.find(r=>r.type==="imports"&&r.evidence.filePat…
+    [90m 40|[39m }
+[90m [2m❯[22m packages/indexer/src/workspaceResolution.test.ts:[2m80:3[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/25]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m packages/indexer/src/workspaceResolution.test.ts[2m > [22mIDX02 captured workspace exports[2m > [22mrejects unregistered consumers and package targets crossing a nested package boundary
+[31m[1mAssertionError[22m: expected { …(6) } to match object { resolution: 'unresolved', …(1) }
+(7 matching properties omitted from actual)[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[32m-   "resolution": "unresolved",[39m
+[32m-   "targetId": null,[39m
+[31m+   "resolution": "external",[39m
+[31m+   "targetId": "external:c34d50f44820803a89ebd367c7b7451c",[39m
+[2m  }[22m
+
+[36m [2m❯[22m unknown packages/indexer/src/workspaceResolution.test.ts:[2m38:27[22m[39m
+    [90m 36|[39m }
+    [90m 37|[39m [35mfunction[39m [34munknown[39m(graph[33m:[39m[33mGraph[39m[33m,[39mfile[33m=[39m[32m"packages/app/entry.ts"[39m) {
+    [90m 38|[39m  expect(edge(graph,file)).toMatchObject({resolution:"unresolved",targe…
+    [90m   |[39m                           [31m^[39m
+    [90m 39|[39m  expect(graph.relations.find(r=>r.type==="imports"&&r.evidence.filePat…
+    [90m 40|[39m }
+[90m [2m❯[22m packages/indexer/src/workspaceResolution.test.ts:[2m83:3[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/25]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m packages/indexer/src/workspaceResolution.test.ts[2m > [22mIDX02 captured workspace exports[2m > [22msupports object packages syntax and explicit workspace directories
+[31m[1mAssertionError[22m: expected { …(6) } to match object { resolution: 'resolved' }
+(8 matching properties omitted from actual)[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[32m-   "resolution": "resolved",[39m
+[31m+   "resolution": "external",[39m
+[2m  }[22m
+
+[36m [2m❯[22m target packages/indexer/src/workspaceResolution.test.ts:[2m32:15[22m[39m
+    [90m 30|[39m function target(graph: Graph,path="packages/lib/src/main.ts",file="pac…
+    [90m 31|[39m  [35mconst[39m call[33m=[39m[34medge[39m(graph[33m,[39mfile)[33m;[39m
+    [90m 32|[39m  [34mexpect[39m(call)[33m.[39m[34mtoMatchObject[39m({resolution[33m:[39m[32m"resolved"[39m})[33m;[39m
+    [90m   |[39m               [31m^[39m
+    [90m 33|[39m  expect(graph.nodes.get(call.targetId!)).toMatchObject({kind:"function…
+    [90m 34|[39m  const imported=graph.relations.find(r=>r.type==="imports"&&r.evidence…
+[90m [2m❯[22m packages/indexer/src/workspaceResolution.test.ts:[2m86:78[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/25]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m packages/indexer/src/workspaceResolution.test.ts[2m > [22mIDX02 captured workspace exports[2m > [22mdoes not apply unsupported workspace globs
+[31m[1mAssertionError[22m: expected { …(6) } to match object { resolution: 'unresolved', …(1) }
+(7 matching properties omitted from actual)[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[32m-   "resolution": "unresolved",[39m
+[32m-   "targetId": null,[39m
+[31m+   "resolution": "external",[39m
+[31m+   "targetId": "external:c34d50f44820803a89ebd367c7b7451c",[39m
+[2m  }[22m
+
+[36m [2m❯[22m unknown packages/indexer/src/workspaceResolution.test.ts:[2m38:27[22m[39m
+    [90m 36|[39m }
+    [90m 37|[39m [35mfunction[39m [34munknown[39m(graph[33m:[39m[33mGraph[39m[33m,[39mfile[33m=[39m[32m"packages/app/entry.ts"[39m) {
+    [90m 38|[39m  expect(edge(graph,file)).toMatchObject({resolution:"unresolved",targe…
+    [90m   |[39m                           [31m^[39m
+    [90m 39|[39m  expect(graph.relations.find(r=>r.type==="imports"&&r.evidence.filePat…
+    [90m 40|[39m }
+[90m [2m❯[22m packages/indexer/src/workspaceResolution.test.ts:[2m87:54[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/25]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m packages/indexer/src/workspaceResolution.test.ts[2m > [22mIDX02 captured workspace exports[2m > [22misolates nested workspace owners with identical package names
+[31m[1mAssertionError[22m: expected { …(6) } to match object { resolution: 'resolved' }
+(8 matching properties omitted from actual)[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[32m-   "resolution": "resolved",[39m
+[31m+   "resolution": "external",[39m
+[2m  }[22m
+
+[36m [2m❯[22m target packages/indexer/src/workspaceResolution.test.ts:[2m32:15[22m[39m
+    [90m 30|[39m function target(graph: Graph,path="packages/lib/src/main.ts",file="pac…
+    [90m 31|[39m  [35mconst[39m call[33m=[39m[34medge[39m(graph[33m,[39mfile)[33m;[39m
+    [90m 32|[39m  [34mexpect[39m(call)[33m.[39m[34mtoMatchObject[39m({resolution[33m:[39m[32m"resolved"[39m})[33m;[39m
+    [90m   |[39m               [31m^[39m
+    [90m 33|[39m  expect(graph.nodes.get(call.targetId!)).toMatchObject({kind:"function…
+    [90m 34|[39m  const imported=graph.relations.find(r=>r.type==="imports"&&r.evidence…
+[90m [2m❯[22m packages/indexer/src/workspaceResolution.test.ts:[2m109:3[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/25]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m packages/indexer/src/workspaceResolution.test.ts[2m > [22mIDX02 captured workspace exports[2m > [22mdoes not turn type-only workspace imports into callable runtime identity
+[31m[1mAssertionError[22m: expected { …(6) } to match object { resolution: 'unresolved', …(1) }
+(7 matching properties omitted from actual)[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[32m-   "resolution": "unresolved",[39m
+[32m-   "targetId": null,[39m
+[31m+   "resolution": "external",[39m
+[31m+   "targetId": "external:c34d50f44820803a89ebd367c7b7451c",[39m
+[2m  }[22m
+
+[36m [2m❯[22m packages/indexer/src/workspaceResolution.test.ts:[2m114:23[22m[39m
+    [90m112|[39m  it("does not turn type-only workspace imports into callable runtime i…
+    [90m113|[39m   const graph=analyze("./src/main.ts",'import type {helper} from "@dem…
+    [90m114|[39m   expect(edge(graph)).toMatchObject({resolution:"unresolved",targetId:…
+    [90m   |[39m                       [31m^[39m
+    [90m115|[39m   expect(graph.relations.find(r=>r.type==="imports"&&r.evidence.filePa…
+    [90m116|[39m  })[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/25]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m25 failed[39m[22m[2m | [22m[1m[32m1 passed[39m[22m[90m (26)[39m
+[2m   Start at [22m 15:00:26
+[2m   Duration [22m 1.66s[2m (transform 275ms, setup 0ms, import 817ms, tests 492ms, environment 0ms)[22m
+

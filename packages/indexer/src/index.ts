@@ -31,6 +31,7 @@ export class SourceIndexer implements IndexerPort {
       capture.configurations,
       capture.diagnostics,
       createPackageModeProvider(capture.manifests, capture.diagnostics),
+      capture.manifests,
     );
     await indexPython(
       capture.files.filter((f) => f.path.endsWith(".py")),

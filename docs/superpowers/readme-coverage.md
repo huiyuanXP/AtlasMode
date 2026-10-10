@@ -4,7 +4,7 @@
 PASS表示下述范围已有实际证据，PARTIAL表示部分功能或平台尚未覆盖，
 UNIMPLEMENTED表示仍为后续需求。测试通过不等于原README所有目标完成。
 问卷要求优先：首轮含Python、多个本地项目、三系统配置和英文，真实MCP为首轮要求。
-无共享分支push或公开部署授权。
+该2026-10-03阶段无共享分支push或公开部署授权。2026-10-10用户已授权安全分支按阶段commit/push；以下相关行按新证据更新，其余历史计数仍属于各自阶段；不授权生产部署/merge。
 
 ## 要求覆盖
 
@@ -17,8 +17,8 @@ UNIMPLEMENTED表示仍为后续需求。测试通过不等于原README所有目�
 | 函数/方法、目录/文件、导入/调用、未知和源码（§5）              | PASS          | 源码与range、动态/external/unresolved样本；UI实际源代码与Chromium原生clipboard.readText                                                                            |
 | 跨文件相对import、局部别名、re-export（§5）                    | PASS          | TS/Python fixtures、实际索引调用证据；限定为当前适配器支持的可证明解析                                                                                             |
 | 受限tsconfig paths/baseUrl与配置可见性                     | PASS          | 捕获JSONC/相对extends、最近配置归属、checker声明解析；配置only生命周期HTTP/SDK与真实SQLite历史读取、双语UI回归通过                                                                                      |
-| 受保护静态 CommonJS 与包配置 | PARTIAL | .cjs/有效包scope的.js、稳定const require和导出、覆盖/遮蔽guard、包only新鲜度/历史/双语已验；受保护精确转发Task1已复审通过；新实际HTTP/SDK/SQLite alias-only生命周期与双语源码/clipboard已验；唯一完整Express严格入口仍FAIL（34/34无createApplication），test/exports.js嵌套写入整组拒绝；Task2独立gate待审，旧失败保持历史，完整值流/运行兼容性未实现 |
-| workspace package/exports、references图 | UNIMPLEMENTED | 不展开references或猜测package源码 |
+| 受保护静态 CommonJS 与包配置 | PARTIAL | IDX-01与IDX-02已完成：完整固定Express35/35入口及真实源码/上下文/浏览器通过，既有349回归保持；旧34/34无canonical入口FAIL保留历史。更广值流、动态mixin及运行时加载兼容性未实现。[IDX01](reviews/idx01-2026-10-10/README.md) |
+| workspace package/exports、references图 | PARTIAL | IDX-02 DONE：44新+349旧=393/9、静态条件收敛与未知保守处理、真实HTTP/MCP/browser/freshness/history/restart/isolation已验；完整Express35/35保持；IDX-03 references待实施。[证据](reviews/idx02-2026-10-10/README.md) |
 | 稳定ID、快照摘要、忽略规则和源码安全（§5）                     | PASS          | 插空行身份不变、文件内容hash/捕获字节、安全源码路径、symlink排除等回归；快照记录Git revision                                                                       |
 | 重命名/移动迁移映射和候选（§5）                                | UNIMPLEMENTED | 没有以相似函数自动替换绑定；需要后续显式接受映射流程                                                                                                               |
 | 成熟公开仓库实际浏览                                           | PASS          | 固定Vite/Flask真实HTTP/UI/SDK通过，截图已查看；范围/SHAs/未知/截断见validation-targets.md，上游测试未运行                                                          |
@@ -26,7 +26,7 @@ UNIMPLEMENTED表示仍为后续需求。测试通过不等于原README所有目�
 | 中文/英文、主题、局部画布和入口浏览（问卷/P1）                 | PASS          | E2E界面语言/主题实际重启保留；入口/展开/搜索/源码；M3 cached help与快照提示RED→GREEN                                                                               |
 | 独立事实/规划层、新函数、已有箭头改接、移除helper（§3/P2/§12） | PASS          | 真实browser/MCP闭环：caller→A变为caller→requestWithRetry，事实remove+plan add；新函数复用同B，helper删除                                                           |
 | 规划目标文件修改及布局不移动文件（§3）                         | PARTIAL       | 表单修改为services/notes.ts、只保存规划；真实拖动布局保持revision/hash；专用文件/目录框拖入与路径预览未实现                                                        |
-| 功能集和多对多成员（§4/P4）                                    | PARTIAL       | Agent来源propose_group、UI勾选创建、共享成员、成员/说明查看与持久化已验证；画布圈选、成员编辑/折叠及外部端点保留未实现                                             |
+| 功能集和多对多成员（§4/P4） | PARTIAL | GRP-01实际圈选、完整成员编辑/共享成员、SQLite重启与源码不动已通过独立复审；GRP-02折叠与外部端点实施中，不能用GRP01证据代替。[证据](reviews/grp01-2026-10-10/README.md) |
 | sequence/wrapper高级操作（§4/P4）                              | UNIMPLEMENTED | 当前优先capability；不把成员列表伪装成调用顺序，不自动生成wrapper                                                                                                  |
 | 说明、约束、失联知识保留（§5/9）                               | PARTIAL       | 规划annotation、组说明、目录purpose持久化；失联组成员显示missing；独立通用annotation编辑/重新绑定工作流未实现                                                      |
 | 目录职责/禁止依赖、知识修改需重新批准（§6/P4）                 | PARTIAL       | 真实policy save→revision+1，禁止requests.ts报错，purpose改变也撤销批准；自然语言职责人工判定，allowed/例外理由编辑未实现                                           |
@@ -88,8 +88,8 @@ UNIMPLEMENTED表示仍为后续需求。测试通过不等于原README所有目�
 不把 README 的未来路线图当成已实现功能。
 
 1. **目标项目模块解析的剩余边界**：受限 tsconfig paths/baseUrl 已实现。CommonJS 覆盖/遮蔽与稳定子集已实现，
-   精确转发已支持，但完整Express捕获的嵌套原型写入使canonical入口仍保守失效；剩余 workspace package/exports、
-   references 图与更广的值流另票处理；条件导出/动态加载不作运行时保证。
+   精确转发与IDX-01完整Express入口已支持；IDX-02静态workspace/exports有界收敛映射已完成。
+   references图与更广值流另票处理；完整Node loader/动态加载不作运行时保证。
 2. **功能集的 Agent 闭环复核**：propose_group 已纳入 T06，固定 agent 来源并
    遵守 project/member 验证；首轮实际 stdio 与 HTTP 一致性验收后再检查高级组合缺口。
 3. **独立持久化知识与失联绑定**：注释不只依附某个规划，保留作者来源与约束语义，
@@ -98,7 +98,7 @@ UNIMPLEMENTED表示仍为后续需求。测试通过不等于原README所有目�
    SQLite 一致备份入口。不得用缓存清理删除唯一知识或审批历史。
 5. **目录约定文件闭环**：structure.json 读取、校验、原子写回及审计；允许/禁止
    依赖与有理由例外。区分显式机器约束和需要人工判断的自然语言职责。
-6. **完整分组交互和归属操作**：组成员编辑/折叠，保留具体外部函数端点；明确
+6. **完整分组交互和归属操作**：GRP-01成员编辑/圈选已完成，GRP-02折叠实施中，保留具体外部函数端点；明确
    文件归属拖动与普通布局拖动的模式，移动到目录时补全文件名并展示路径预览。
 7. **身份迁移和索引差异**：提出可审查的移动/重命名候选，保存明确接受的映射；
    报告调用方减少、引用消失和抽象绕过，避免把没有入边当成死代码。

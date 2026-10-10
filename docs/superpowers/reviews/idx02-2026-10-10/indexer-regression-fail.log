@@ -1,0 +1,229 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90m/home/agent/projects/AtlasMode[39m
+
+ [32m✓[39m packages/indexer/src/configCapture.test.ts [2m([22m[2m25 tests[22m[2m)[22m[33m 2145[2mms[22m[39m
+     [33m[2m✓[22m[39m enforces the 512 file limit for 512 eligible seeds [33m 543[2mms[22m[39m
+     [33m[2m✓[22m[39m enforces the 512 file limit for 513 eligible seeds [33m 1191[2mms[22m[39m
+ [32m✓[39m packages/indexer/src/packageCapture.test.ts [2m([22m[2m24 tests[22m[2m)[22m[33m 2881[2mms[22m[39m
+     [33m[2m✓[22m[39m enforces count boundary with 512 files [33m 910[2mms[22m[39m
+     [33m[2m✓[22m[39m enforces count boundary with 513 files [33m 1330[2mms[22m[39m
+ [32m✓[39m packages/indexer/src/index.test.ts [2m([22m[2m54 tests[22m[2m)[22m[33m 3814[2mms[22m[39m
+ [32m✓[39m packages/indexer/src/workspaceResolution.test.ts [2m([22m[2m42 tests[22m[2m)[22m[33m 1239[2mms[22m[39m
+ [31m❯[39m packages/indexer/src/commonjs.test.ts [2m([22m[2m183 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[33m 2887[2mms[22m[39m
+       [32m✓[39m rejects both destructured cycle bindings regardless of source order (reverse=false)[32m 87[2mms[22m[39m
+       [32m✓[39m rejects both destructured cycle bindings regardless of source order (reverse=true)[32m 27[2mms[22m[39m
+       [32m✓[39m rejects a self-cycle without losing the actual exported declaration[32m 25[2mms[22m[39m
+       [32m✓[39m guards namespace in a cycle and preserves its acyclic implementation ID[32m 50[2mms[22m[39m
+       [32m✓[39m guards literal namespace in a cycle and preserves its acyclic implementation ID[32m 19[2mms[22m[39m
+       [32m✓[39m guards destructured in a cycle and preserves its acyclic implementation ID[32m 21[2mms[22m[39m
+       [32m✓[39m guards property binding in a cycle and preserves its acyclic implementation ID[32m 13[2mms[22m[39m
+       [32m✓[39m guards direct property in a cycle and preserves its acyclic implementation ID[32m 13[2mms[22m[39m
+       [32m✓[39m guards callable binding in a cycle and preserves its acyclic implementation ID[32m 14[2mms[22m[39m
+       [32m✓[39m guards direct callable in a cycle and preserves its acyclic implementation ID[32m 15[2mms[22m[39m
+       [32m✓[39m detects a longer cycle through side-effect requires while preserving outgoing and incoming acyclic bindings[32m 16[2mms[22m[39m
+       [32m✓[39m does not invent a cycle from a shadowed require[32m 8[2mms[22m[39m
+       [32m✓[39m does not invent a cycle from a dynamic require[32m 10[2mms[22m[39m
+       [32m✓[39m does not invent a cycle through an unproved Node-global mode[32m 8[2mms[22m[39m
+       [32m✓[39m preserves ordinary local function recursion even inside a cyclic module graph[32m 10[2mms[22m[39m
+       [32m✓[39m retains cross-consumer guards for a cyclic importer with property mutation[32m 22[2mms[22m[39m
+       [32m✓[39m retains cross-consumer guards for a cyclic importer with unknown mutation[32m 37[2mms[22m[39m
+       [32m✓[39m retains cross-consumer guards for a cyclic importer with namespace escape[32m 26[2mms[22m[39m
+     [32m✓[39m resolves stable declaration with unchanged declaration identity[32m 13[2mms[22m[39m
+     [32m✓[39m resolves stable arrow with unchanged declaration identity[32m 17[2mms[22m[39m
+     [32m✓[39m resolves stable function expression with unchanged declaration identity[32m 13[2mms[22m[39m
+     [32m✓[39m resolves stable const callable with unchanged declaration identity[32m 11[2mms[22m[39m
+     [32m✓[39m resolves stable object shorthand with unchanged declaration identity[32m 34[2mms[22m[39m
+     [32m✓[39m resolves stable object property with unchanged declaration identity[32m 21[2mms[22m[39m
+     [32m✓[39m resolves stable literal property with unchanged declaration identity[32m 6[2mms[22m[39m
+     [32m✓[39m supports const renamed[32m 8[2mms[22m[39m
+     [32m✓[39m supports const property[32m 14[2mms[22m[39m
+     [32m✓[39m supports literal selection[32m 4[2mms[22m[39m
+     [32m✓[39m supports direct property[32m 3[2mms[22m[39m
+     [32m✓[39m supports the single default initialization module.exports = help;[32m 5[2mms[22m[39m
+     [32m✓[39m supports the single default initialization exports = module.exports = help;[32m 9[2mms[22m[39m
+     [32m✓[39m rejects repeated export uncertainty[32m 11[2mms[22m[39m
+     [32m✓[39m rejects compound export uncertainty[32m 8[2mms[22m[39m
+     [32m✓[39m rejects delete export uncertainty[32m 12[2mms[22m[39m
+     [32m✓[39m rejects update export uncertainty[32m 10[2mms[22m[39m
+     [32m✓[39m rejects conditional export uncertainty[32m 9[2mms[22m[39m
+     [32m✓[39m rejects nested write export uncertainty[32m 7[2mms[22m[39m
+     [32m✓[39m rejects unknown key export uncertainty[32m 16[2mms[22m[39m
+     [32m✓[39m rejects root replacement export uncertainty[32m 16[2mms[22m[39m
+     [32m✓[39m rejects exports replacement export uncertainty[32m 9[2mms[22m[39m
+     [32m✓[39m rejects namespace escape export uncertainty[32m 10[2mms[22m[39m
+     [32m✓[39m rejects module escape export uncertainty[32m 11[2mms[22m[39m
+     [32m✓[39m rejects namespace alias export uncertainty[32m 11[2mms[22m[39m
+     [32m✓[39m rejects function rewrite export uncertainty[32m 21[2mms[22m[39m
+     [32m✓[39m rejects function destructuring rewrite export uncertainty[32m 10[2mms[22m[39m
+     [32m✓[39m preserves a different stable export when exports.bad = runtime;[32m 14[2mms[22m[39m
+     [32m✓[39m preserves a different stable export when exports.bad = require('outside');[32m 10[2mms[22m[39m
+     [32m✓[39m preserves a different stable export when exports.bad = help; exports.bad = other;[32m 18[2mms[22m[39m
+     [32m✓[39m preserves a different stable export when if (flag) exports.bad = help;[32m 20[2mms[22m[39m
+     [32m✓[39m preserves a different stable export when delete exports.bad;[32m 30[2mms[22m[39m
+     [32m✓[39m rejects shadowed export identity: function wrap(exports) { exports.help = help; }[32m 14[2mms[22m[39m
+     [32m✓[39m rejects shadowed export identity: const exports = {}; exports.help = help;[32m 25[2mms[22m[39m
+     [32m✓[39m rejects shadowed export identity: import exports from './other.mjs'; exports.help = help;[32m 46[2mms[22m[39m
+     [32m✓[39m rejects shadowed export identity: function wrap(module) { module.exports = {help}; }[32m 8[2mms[22m[39m
+     [32m✓[39m rejects shadowed export identity: const module = {}; module.exports = {help};[32m 17[2mms[22m[39m
+     [32m✓[39m rejects shadowed require identity: function entry(require) { const mod = require('./lib.cjs'); mod.help(); }[32m 19[2mms[22m[39m
+     [32m✓[39m rejects shadowed require identity: const require = load; const mod = require('./lib.cjs'); function entry() { mod.help(); }[32m 10[2mms[22m[39m
+     [32m✓[39m rejects shadowed require identity: import require from './other.mjs'; const mod = require('./lib.cjs'); function entry() { mod.help(); }[32m 10[2mms[22m[39m
+     [32m✓[39m retains a user function named require as a direct callee but rejects its assumed namespace[32m 9[2mms[22m[39m
+     [32m✓[39m rejects let importer bindings[32m 7[2mms[22m[39m
+     [32m✓[39m rejects var importer bindings[32m 5[2mms[22m[39m
+     [32m✓[39m rejects const rewritten importer bindings[32m 7[2mms[22m[39m
+     [32m✓[39m invalidates shared exports across consumers for member write[32m 9[2mms[22m[39m
+     [32m✓[39m invalidates shared exports across consumers for compound write[32m 5[2mms[22m[39m
+     [32m✓[39m invalidates shared exports across consumers for delete[32m 12[2mms[22m[39m
+     [32m✓[39m invalidates shared exports across consumers for unknown key[32m 9[2mms[22m[39m
+     [32m✓[39m invalidates shared exports across consumers for namespace escape[32m 9[2mms[22m[39m
+     [32m✓[39m invalidates shared exports across consumers for namespace alias[32m 24[2mms[22m[39m
+     [32m✓[39m rejects Node globals without .cjs mode in mjs[32m 13[2mms[22m[39m
+     [32m✓[39m rejects Node globals without .cjs mode in js[32m 6[2mms[22m[39m
+     [32m✓[39m rejects Node globals without .cjs mode in ts[32m 13[2mms[22m[39m
+     [32m✓[39m rejects Node globals without .cjs mode in jsx[32m 5[2mms[22m[39m
+     [32m✓[39m uses the internal mode provider and rejects .js ESM syntax even with commonjs mode[32m 28[2mms[22m[39m
+     [32m✓[39m does not infer an implementation from function help() {} exports.help = factory();[32m 11[2mms[22m[39m
+     [32m✓[39m does not infer an implementation from declare function help(): void; exports.help = help;[32m 8[2mms[22m[39m
+     [32m✓[39m does not infer an implementation from const help = () => {}; help = replacement; exports.help = help;[32m 10[2mms[22m[39m
+     [32m✓[39m does not infer an implementation from import type { help } from './types'; exports.help = help;[32m 54[2mms[22m[39m
+     [32m✓[39m resolves single-hop forwarding to the original captured declaration[32m 11[2mms[22m[39m
+     [32m✓[39m guards ESM imports of rejected CJS properties[32m 16[2mms[22m[39m
+     [32m✓[39m records missing relative/configured imports as unresolved and bare dependencies as external[32m 29[2mms[22m[39m
+     [32m✓[39m rejects export destructuring while retaining another property[32m 22[2mms[22m[39m
+     [32m✓[39m rejects consumer destructuring while retaining another property[32m 12[2mms[22m[39m
+     [32m✓[39m rejects consumer array write while retaining another property[32m 15[2mms[22m[39m
+     [32m✓[39m rejects consumer for-of write while retaining another property[32m 9[2mms[22m[39m
+     [32m✓[39m rejects type-only namespace import calls[32m 7[2mms[22m[39m
+     [32m✓[39m rejects ambiguous callable declarations: function help() {} function help() {} exports.help = help;[32m 5[2mms[22m[39m
+     [32m✓[39m rejects ambiguous callable declarations: function help() {} var help = replacement; exports.help = help;[32m 4[2mms[22m[39m
+     [32m✓[39m accepts static object literal keys but isolates unknown values[32m 9[2mms[22m[39m
+     [32m✓[39m retains a callable default despite an unsupported known property[32m 9[2mms[22m[39m
+     [32m✓[39m guards a rejected CommonJS export through an ESM re-export[32m 10[2mms[22m[39m
+     [32m✓[39m collects consumer mutations before calls regardless of input ordering[32m 9[2mms[22m[39m
+     [32m✓[39m retains IDs across trivia without changing anonymous implementation names[32m 11[2mms[22m[39m
+     [32m✓[39m distinguishes a property named default from a callable module value[32m 5[2mms[22m[39m
+     [32m✓[39m retains a callable root independently of its default property[32m 14[2mms[22m[39m
+[31m     [31m×[31m does not confuse ESM namespace default with an exported property named default[39m[32m 45[2mms[22m[39m
+     [32m✓[39m does not resolve local calls through a shadowed exports root[32m 18[2mms[22m[39m
+     [32m✓[39m does not resolve local calls through a shadowed module root[32m 16[2mms[22m[39m
+     [32m✓[39m does not recover a rewritten local CJS callable through checker fallback: function help() {} help = function replacement() {};[32m 13[2mms[22m[39m
+     [32m✓[39m does not recover a rewritten local CJS callable through checker fallback: const help = () => {}; help = replacement;[32m 8[2mms[22m[39m
+     [32m✓[39m rejects duplicate local executable declarations before checker fallback[32m 9[2mms[22m[39m
+     [32m✓[39m retains unique local CJS declarations and a single implementation with overload signatures[32m 32[2mms[22m[39m
+     [32m✓[39m rejects .js module syntax import.meta.url;[32m 25[2mms[22m[39m
+     [32m✓[39m rejects .js module syntax function meta() { return import.meta.url; }[32m 18[2mms[22m[39m
+     [32m✓[39m rejects .js module syntax await Promise.resolve();[32m 23[2mms[22m[39m
+     [32m✓[39m rejects .js module syntax class Holder { [await Promise.resolve()]() {} }[32m 32[2mms[22m[39m
+     [32m✓[39m rejects .js module syntax for await (const item of []) {}[32m 16[2mms[22m[39m
+     [32m✓[39m rejects .js module syntax if (true) { await Promise.resolve(); }[32m 35[2mms[22m[39m
+     [32m✓[39m keeps nested async syntax eligible: async function helper() { await Promise.resolve(); }[32m 28[2mms[22m[39m
+     [32m✓[39m keeps nested async syntax eligible: const holder = { async method() { await Promise.resolve(); } };[32m 25[2mms[22m[39m
+     [32m✓[39m keeps nested async syntax eligible: class Holder { async method() { for await (const item of []) {} } }[32m 14[2mms[22m[39m
+     [32m✓[39m resolves two-hop forwarding without duplicate leaf nodes (reverse=false)[32m 11[2mms[22m[39m
+     [32m✓[39m resolves two-hop forwarding without duplicate leaf nodes (reverse=true)[32m 15[2mms[22m[39m
+     [32m✓[39m forwards function declaration with its actual identity[32m 10[2mms[22m[39m
+     [32m✓[39m forwards anonymous function with its actual identity[32m 10[2mms[22m[39m
+     [32m✓[39m forwards arrow with its actual identity[32m 11[2mms[22m[39m
+     [32m✓[39m forwards object with its actual identity[32m 13[2mms[22m[39m
+     [32m✓[39m forwards named default with its actual identity[32m 8[2mms[22m[39m
+     [32m✓[39m keeps callable default separate from named default[32m 37[2mms[22m[39m
+     [32m✓[39m bounds a forwarding chain of 16 edges[32m 46[2mms[22m[39m
+     [32m✓[39m bounds a forwarding chain of 17 edges[32m 57[2mms[22m[39m
+     [32m✓[39m rejects self and preserves an unrelated component[32m 15[2mms[22m[39m
+     [32m✓[39m rejects forward cycle and preserves an unrelated component[32m 18[2mms[22m[39m
+     [32m✓[39m rejects ordinary require back edge and preserves an unrelated component[32m 12[2mms[22m[39m
+     [32m✓[39m propagates a known-property write through barrel to every alias[32m 26[2mms[22m[39m
+     [32m✓[39m propagates a known-property write through middle to every alias[32m 26[2mms[22m[39m
+     [32m✓[39m propagates a known-property write through leaf to every alias[32m 52[2mms[22m[39m
+     [32m✓[39m propagates a known-property write through ESM default to every alias[32m 29[2mms[22m[39m
+     [32m✓[39m propagates a known-property write through ESM namespace default to every alias[32m 108[2mms[22m[39m
+     [32m✓[39m propagates whole-namespace invalidation: const mod = require('./barrel.cjs'); mod[key] = replacement;[32m 11[2mms[22m[39m
+     [32m✓[39m propagates whole-namespace invalidation: const mod = require('./middle.cjs'); expose(mod);[32m 14[2mms[22m[39m
+     [32m✓[39m propagates whole-namespace invalidation: const mod = require('./lib.cjs'); const alias = mod;[32m 18[2mms[22m[39m
+     [32m✓[39m propagates whole-namespace invalidation: import mod from './barrel.cjs'; expose(mod);[32m 14[2mms[22m[39m
+     [32m✓[39m does not infer unsupported forwarding: module.exports = require('./middle.cjs'); module.exports = require('./middle.cjs');[32m 15[2mms[22m[39m
+     [32m✓[39m does not infer unsupported forwarding: if (flag) module.exports = require('./middle.cjs');[32m 4[2mms[22m[39m
+     [32m✓[39m does not infer unsupported forwarding: exports = module.exports = require('./middle.cjs');[32m 4[2mms[22m[39m
+     [32m✓[39m does not infer unsupported forwarding: const mod = require('./middle.cjs'); module.exports = mod;[32m 7[2mms[22m[39m
+     [32m✓[39m does not infer unsupported forwarding: let mod = require('./middle.cjs'); module.exports = mod;[32m 16[2mms[22m[39m
+     [32m✓[39m does not infer unsupported forwarding: var mod = require('./middle.cjs'); module.exports = mod;[32m 12[2mms[22m[39m
+     [32m✓[39m does not infer unsupported forwarding: module.exports = require('./middle.cjs').help;[32m 16[2mms[22m[39m
+     [32m✓[39m does not infer unsupported forwarding: module.exports = require(name);[32m 20[2mms[22m[39m
+     [32m✓[39m does not infer unsupported forwarding: module.exports = require('external');[32m 15[2mms[22m[39m
+     [32m✓[39m does not infer unsupported forwarding: module.exports = require('./middle.cjs'); module.exports.help = replacement;[32m 9[2mms[22m[39m
+     [32m✓[39m does not infer unsupported forwarding: const module = {}; module.exports = require('./middle.cjs');[32m 9[2mms[22m[39m
+     [32m✓[39m does not infer unsupported forwarding: const require = () => ({}); module.exports = require('./middle.cjs');[32m 18[2mms[22m[39m
+     [32m✓[39m does not infer unsupported forwarding: module = {}; module.exports = require('./middle.cjs');[32m 10[2mms[22m[39m
+     [32m✓[39m does not infer unsupported forwarding: require = other; module.exports = require('./middle.cjs');[32m 6[2mms[22m[39m
+     [32m✓[39m rejects a unknown leaf module mode[32m 6[2mms[22m[39m
+     [32m✓[39m rejects a esm leaf module mode[32m 6[2mms[22m[39m
+     [32m✓[39m rejects missing captured leaves[32m 6[2mms[22m[39m
+     [32m✓[39m unions sibling alias and leaf writes before exposure (reverse=false)[32m 10[2mms[22m[39m
+     [32m✓[39m unions sibling alias and leaf writes before exposure (reverse=true)[32m 11[2mms[22m[39m
+     [32m✓[39m preserves stable properties after the leaf rewrites a different export[32m 14[2mms[22m[39m
+     [32m✓[39m withholds the escape exemption from an invalid forwarder: module.exports = require('./middle.cjs'); module.exports.extra = other;[32m 16[2mms[22m[39m
+     [32m✓[39m withholds the escape exemption from an invalid forwarder: exports = module.exports = require('./middle.cjs');[32m 15[2mms[22m[39m
+     [32m✓[39m withholds the escape exemption from an invalid forwarder: if (flag) module.exports = require('./middle.cjs');[32m 8[2mms[22m[39m
+     [32m✓[39m withholds the escape exemption from an invalid forwarder: module.exports = require('./middle.cjs'); module.exports = other;[32m 9[2mms[22m[39m
+     [32m✓[39m retains local recursion in a valid forwarded leaf[32m 7[2mms[22m[39m
+     [32m✓[39m rejects a forwarding edge in an ordinary require SCC (reverse=false)[32m 5[2mms[22m[39m
+     [32m✓[39m rejects a forwarding edge in an ordinary require SCC (reverse=true)[32m 11[2mms[22m[39m
+     [32m✓[39m retains the incoming cycle flag even when the physical target has a canonical leaf[32m 12[2mms[22m[39m
+     [32m✓[39m rejects additional source identity uncertainty: ESM[32m 8[2mms[22m[39m
+     [32m✓[39m rejects additional source identity uncertainty: require function[32m 5[2mms[22m[39m
+     [32m✓[39m rejects additional source identity uncertainty: module destructuring[32m 48[2mms[22m[39m
+     [32m✓[39m rejects additional source identity uncertainty: compound write[32m 22[2mms[22m[39m
+     [32m✓[39m rejects additional source identity uncertainty: ESM syntax in leaf[32m 20[2mms[22m[39m
+     [32m✓[39m rejects only the known empty-string property across forwarding aliases[32m 8[2mms[22m[39m
+     [32m✓[39m keeps callable identity after a named-default property mutation[32m 11[2mms[22m[39m
+     [32m✓[39m does not grant forwarding identity to a configured nonrelative require[32m 4[2mms[22m[39m
+     [32m✓[39m rejects stale local export overlays on unsupported forwarding: module.exports = require('./middle.cjs');[32m 6[2mms[22m[39m
+     [32m✓[39m rejects stale local export overlays on unsupported forwarding: const mod = require('./middle.cjs'); module.exports = mod;[32m 6[2mms[22m[39m
+     [32m✓[39m rejects stale local export overlays on unsupported forwarding: let mod = require('./middle.cjs'); module.exports = mod;[32m 5[2mms[22m[39m
+     [32m✓[39m rejects stale local export overlays on unsupported forwarding: var mod = require('./middle.cjs'); module.exports = mod;[32m 5[2mms[22m[39m
+     [32m✓[39m rejects stale local export overlays on unsupported forwarding: module.exports = require('./middle.cjs').help;[32m 15[2mms[22m[39m
+     [32m✓[39m rejects detached local exports without losing the forwarded namespace: exports.help()[32m 14[2mms[22m[39m
+     [32m✓[39m rejects detached local exports without losing the forwarded namespace: exports['help']()[32m 8[2mms[22m[39m
+     [32m✓[39m keeps wrapped detached exports conservative under the existing escape guard[32m 4[2mms[22m[39m
+     [32m✓[39m does not recover a selected detached exports property through const declarations: const selected = exports.help;[32m 5[2mms[22m[39m
+     [32m✓[39m does not recover a selected detached exports property through const declarations: const selected = exports['help'];[32m 5[2mms[22m[39m
+     [32m✓[39m does not recover a selected detached exports property through const declarations: const first = exports.help; const selected = first;[32m 5[2mms[22m[39m
+     [32m✓[39m keeps detached exports destructuring outside the supported alias subset: const { help: selected } = exports;[32m 4[2mms[22m[39m
+     [32m✓[39m keeps detached exports destructuring outside the supported alias subset: const { ['help']: selected } = exports;[32m 4[2mms[22m[39m
+     [32m✓[39m keeps detached exports destructuring outside the supported alias subset: const alias = exports; const { help: selected } = alias;[32m 6[2mms[22m[39m
+     [32m✓[39m guards ESM imports through the same forwarding identity[32m 6[2mms[22m[39m
+ [32m✓[39m packages/indexer/src/idx01.test.ts [2m([22m[2m17 tests[22m[2m)[22m[33m 575[2mms[22m[39m
+ [32m✓[39m packages/indexer/src/configResolution.test.ts [2m([22m[2m31 tests[22m[2m)[22m[33m 412[2mms[22m[39m
+ [32m✓[39m packages/indexer/src/packageMode.test.ts [2m([22m[2m13 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+ [32m✓[39m packages/indexer/src/declarations.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 204[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m packages/indexer/src/commonjs.test.ts[2m > [22mcaptured CommonJS[2m > [22mdoes not confuse ESM namespace default with an exported property named default
+[31m[1mError[22m: Debug Failure.[39m
+[90m [2m❯[22m Object.getImmediateAliasedSymbol node_modules/@ts-morph/common/dist/typescript.js:[2m78572:31[22m[39m
+[36m [2m❯[22m typeOnlySymbol packages/indexer/src/typescript.ts:[2m288:21[22m[39m
+    [90m286|[39m       current [33m=[39m
+    [90m287|[39m         current[33m.[39mflags [33m&[39m ts[33m.[39m[33mSymbolFlags[39m[33m.[39m[33mAlias[39m
+    [90m288|[39m           [33m?[39m checker[33m.[39m[34mgetImmediateAliasedSymbol[39m(current)
+    [90m   |[39m                     [31m^[39m
+    [90m289|[39m           [33m:[39m undefined
+    [90m290|[39m     ) {
+[90m [2m❯[22m typeOnlyCall packages/indexer/src/typescript.ts:[2m361:9[22m[39m
+[90m [2m❯[22m visit packages/indexer/src/typescript.ts:[2m445:24[22m[39m
+[90m [2m❯[22m packages/indexer/src/typescript.ts:[2m478:40[22m[39m
+[90m [2m❯[22m visitNode2 node_modules/@ts-morph/common/dist/typescript.js:[2m32437:18[22m[39m
+[90m [2m❯[22m forEachChildInExpressionStatement node_modules/@ts-morph/common/dist/typescript.js:[2m32667:12[22m[39m
+[90m [2m❯[22m Object.forEachChild node_modules/@ts-morph/common/dist/typescript.js:[2m32958:35[22m[39m
+[90m [2m❯[22m visit packages/indexer/src/typescript.ts:[2m478:10[22m[39m
+[90m [2m❯[22m packages/indexer/src/typescript.ts:[2m478:40[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m8 passed[39m[22m[90m (9)[39m
+[2m      Tests [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m390 passed[39m[22m[90m (391)[39m
+[2m   Start at [22m 15:11:06
+[2m   Duration [22m 8.31s[2m (transform 1.51s, setup 0ms, import 7.32s, tests 14.17s, environment 1ms)[22m
+

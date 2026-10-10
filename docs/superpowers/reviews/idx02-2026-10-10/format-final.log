@@ -1,0 +1,5 @@
+packages/indexer/src/workspaceResolution.ts 371ms
+packages/indexer/src/workspaceResolution.test.ts 95ms
+packages/indexer/src/typescript.ts 108ms
+tests/support/idx02-validate.mjs 121ms
+tests/support/idx02-express-validate.mjs 49ms (unchanged)

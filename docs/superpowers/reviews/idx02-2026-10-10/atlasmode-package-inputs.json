@@ -1,0 +1,39 @@
+{
+  "scope": "Read-only exact package manifest bytes from the final real AtlasMode coverage; collected after its source capture. No target modules or scripts executed.",
+  "snapshotId": "snapshot:dec391394e3484fa3cddd772b6a21ff4",
+  "contentHash": "51b12a68229a0caf635876ca434a45ac06ac52ec9b09e66f477f95568c13463f",
+  "packages": {
+    "apps/mcp/package.json": {
+      "sha256": "b023d3e162e1720fbc6c9a915905376236c71e8e3e20127878641a03a551043a",
+      "bytes": "{\n  \"name\": \"@codemap/mcp\",\n  \"version\": \"0.1.0\",\n  \"private\": true,\n  \"type\": \"module\",\n  \"exports\": {\n    \".\": {\n      \"types\": \"./dist/index.d.ts\",\n      \"import\": \"./dist/index.js\"\n    }\n  },\n  \"main\": \"./dist/index.js\",\n  \"types\": \"./dist/index.d.ts\",\n  \"scripts\": {\n    \"build\": \"tsc -p tsconfig.json\",\n    \"typecheck\": \"tsc -p tsconfig.json --noEmit\",\n    \"test\": \"vitest run\"\n  },\n  \"dependencies\": {\n    \"@codemap/core\": \"0.1.0\",\n    \"@modelcontextprotocol/sdk\": \"1.32.0\",\n    \"zod\": \"4.6.5\"\n  }\n}\n"
+    },
+    "apps/server/package.json": {
+      "sha256": "aa83873de5cfde8f78fedeefb106eaa3249ba1cc02dc7b5415b77b422a02f540",
+      "bytes": "{\n  \"name\": \"@codemap/server\",\n  \"version\": \"0.1.0\",\n  \"private\": true,\n  \"type\": \"module\",\n  \"exports\": {\n    \".\": {\n      \"types\": \"./dist/index.d.ts\",\n      \"import\": \"./dist/index.js\"\n    }\n  },\n  \"main\": \"./dist/index.js\",\n  \"types\": \"./dist/index.d.ts\",\n  \"scripts\": {\n    \"build\": \"tsc -p tsconfig.json\",\n    \"typecheck\": \"tsc -p tsconfig.json --noEmit\",\n    \"test\": \"vitest run\",\n    \"dev\": \"tsx watch src/index.ts\",\n    \"start\": \"node dist/index.js\"\n  },\n  \"dependencies\": {\n    \"@codemap/core\": \"0.1.0\",\n    \"@codemap/indexer\": \"0.1.0\",\n    \"@codemap/service\": \"0.1.0\",\n    \"@codemap/storage\": \"0.1.0\",\n    \"@fastify/static\": \"10.1.5\",\n    \"fastify\": \"5.12.5\",\n    \"smol-toml\": \"1.9.0\",\n    \"zod\": \"4.6.5\",\n    \"@codemap/mcp\": \"0.1.0\",\n    \"@modelcontextprotocol/sdk\": \"1.32.0\"\n  }\n}\n"
+    },
+    "apps/web/package.json": {
+      "sha256": "5a98c067e46b506901a6a190a44d018d7407b84eadb2cc54b8a34cf6381f8559",
+      "bytes": "{\n  \"name\": \"@codemap/web\",\n  \"version\": \"0.1.0\",\n  \"private\": true,\n  \"type\": \"module\",\n  \"exports\": {\n    \".\": {\n      \"types\": \"./dist/index.d.ts\",\n      \"import\": \"./dist/index.js\"\n    }\n  },\n  \"main\": \"./dist/index.js\",\n  \"types\": \"./dist/index.d.ts\",\n  \"scripts\": {\n    \"dev\": \"vite --host 127.0.0.1\",\n    \"build\": \"tsc -p tsconfig.json && vite build\",\n    \"typecheck\": \"tsc -p tsconfig.json --noEmit\",\n    \"test\": \"vitest run\"\n  },\n  \"dependencies\": {\n    \"@codemap/core\": \"0.1.0\",\n    \"react\": \"19.3.0\",\n    \"react-dom\": \"19.3.0\",\n    \"@xyflow/react\": \"12.12.0\",\n    \"zustand\": \"5.0.15\"\n  },\n  \"devDependencies\": {\n    \"vite\": \"7.3.6\",\n    \"@vitejs/plugin-react\": \"5.2.0\",\n    \"@types/react\": \"19.3.0\",\n    \"@types/react-dom\": \"19.3.0\"\n  }\n}\n"
+    },
+    "package.json": {
+      "sha256": "e9e609078de582fa90d21f7a7651ffc273e571cc15d9eb79c7b76739fa07b875",
+      "bytes": "{\n  \"name\": \"atlasmode\",\n  \"version\": \"0.1.0\",\n  \"private\": true,\n  \"type\": \"module\",\n  \"engines\": {\n    \"node\": \"24.19.0\",\n    \"npm\": \"11.9.0\"\n  },\n  \"packageManager\": \"npm@11.9.0\",\n  \"workspaces\": [\n    \"packages/core\",\n    \"packages/indexer\",\n    \"packages/storage\",\n    \"packages/service\",\n    \"apps/server\",\n    \"apps/web\",\n    \"apps/mcp\"\n  ],\n  \"scripts\": {\n    \"dev\": \"node scripts/dev.mjs\",\n    \"build\": \"node scripts/workspaces.mjs build\",\n    \"start\": \"node apps/server/dist/index.js\",\n    \"typecheck\": \"node scripts/workspaces.mjs typecheck\",\n    \"lint\": \"eslint .\",\n    \"test\": \"vitest run\",\n    \"test:e2e\": \"playwright test\",\n    \"mcp\": \"node apps/mcp/dist/index.js\",\n    \"smoke\": \"node scripts/smoke.mjs\",\n    \"validate:repository\": \"node scripts/validate-repository.mjs\",\n    \"test:mcp\": \"node scripts/test-mcp-connection.mjs\",\n    \"test:agent\": \"node scripts/test-agent-connection.mjs\"\n  },\n  \"devDependencies\": {\n    \"typescript\": \"5.9.3\",\n    \"tsx\": \"4.23.15\",\n    \"@types/node\": \"24.19.1\",\n    \"concurrently\": \"10.0.6\",\n    \"vitest\": \"4.1.11\",\n    \"eslint\": \"10.11.0\",\n    \"typescript-eslint\": \"8.71.0\",\n    \"prettier\": \"3.9.9\",\n    \"@playwright/test\": \"1.63.0\"\n  }\n}\n"
+    },
+    "packages/core/package.json": {
+      "sha256": "1778259f891e34f0869988d49b1013a877f40ffb0afde1d921596f0bd51ff294",
+      "bytes": "{\n  \"name\": \"@codemap/core\",\n  \"version\": \"0.1.0\",\n  \"private\": true,\n  \"type\": \"module\",\n  \"exports\": {\n    \".\": {\n      \"types\": \"./dist/index.d.ts\",\n      \"import\": \"./dist/index.js\"\n    }\n  },\n  \"main\": \"./dist/index.js\",\n  \"types\": \"./dist/index.d.ts\",\n  \"scripts\": {\n    \"build\": \"tsc -p tsconfig.json\",\n    \"typecheck\": \"tsc -p tsconfig.json --noEmit\",\n    \"test\": \"vitest run\"\n  },\n  \"dependencies\": {\n    \"zod\": \"4.6.5\"\n  }\n}\n"
+    },
+    "packages/indexer/package.json": {
+      "sha256": "4f42a8175f3855cd68ee0958e15df5a12af5947350d58f26e19ed234c977ebf7",
+      "bytes": "{\n  \"name\": \"@codemap/indexer\",\n  \"version\": \"0.1.0\",\n  \"private\": true,\n  \"type\": \"module\",\n  \"exports\": {\n    \".\": {\n      \"types\": \"./dist/index.d.ts\",\n      \"import\": \"./dist/index.js\"\n    }\n  },\n  \"main\": \"./dist/index.js\",\n  \"types\": \"./dist/index.d.ts\",\n  \"files\": [\n    \"dist\",\n    \"python\"\n  ],\n  \"scripts\": {\n    \"build\": \"tsc -p tsconfig.json\",\n    \"typecheck\": \"tsc -p tsconfig.json --noEmit\",\n    \"test\": \"vitest run\"\n  },\n  \"dependencies\": {\n    \"@codemap/core\": \"0.1.0\",\n    \"typescript\": \"5.9.3\",\n    \"ts-morph\": \"27.0.2\",\n    \"ignore\": \"7.0.12\"\n  }\n}\n"
+    },
+    "packages/service/package.json": {
+      "sha256": "db1a0742f88fa6e2e6d8243cc0643ddf416633906d8219fef018ff95417e91b1",
+      "bytes": "{\n  \"name\": \"@codemap/service\",\n  \"version\": \"0.1.0\",\n  \"private\": true,\n  \"type\": \"module\",\n  \"exports\": {\n    \".\": {\n      \"types\": \"./dist/index.d.ts\",\n      \"import\": \"./dist/index.js\"\n    }\n  },\n  \"main\": \"./dist/index.js\",\n  \"types\": \"./dist/index.d.ts\",\n  \"scripts\": {\n    \"build\": \"tsc -p tsconfig.json\",\n    \"typecheck\": \"tsc -p tsconfig.json --noEmit\",\n    \"test\": \"vitest run\"\n  },\n  \"dependencies\": {\n    \"@codemap/core\": \"0.1.0\"\n  },\n  \"files\": [\n    \"dist\"\n  ]\n}\n"
+    },
+    "packages/storage/package.json": {
+      "sha256": "970a1a2a426c9486a842c25ab578edd8e4a3a74b879ab378c44fa43847e8edce",
+      "bytes": "{\n  \"name\": \"@codemap/storage\",\n  \"version\": \"0.1.0\",\n  \"private\": true,\n  \"type\": \"module\",\n  \"exports\": {\n    \".\": {\n      \"types\": \"./dist/index.d.ts\",\n      \"import\": \"./dist/index.js\"\n    }\n  },\n  \"main\": \"./dist/index.js\",\n  \"types\": \"./dist/index.d.ts\",\n  \"scripts\": {\n    \"build\": \"tsc -p tsconfig.json\",\n    \"typecheck\": \"tsc -p tsconfig.json --noEmit\",\n    \"test\": \"vitest run\"\n  },\n  \"dependencies\": {\n    \"@codemap/core\": \"0.1.0\",\n    \"better-sqlite3\": \"13.0.3\"\n  },\n  \"devDependencies\": {\n    \"@types/better-sqlite3\": \"9.6.0\"\n  },\n  \"files\": [\n    \"dist\",\n    \"migrations\"\n  ]\n}\n"
+    }
+  }
+}

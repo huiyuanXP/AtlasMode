@@ -2,6 +2,7 @@ import { Project, ts } from "ts-morph";
 import type { CodeSnapshot } from "@codemap/core";
 import { createCommonJsAnalyzer, type ModuleModeProvider } from "./commonjs.js";
 import { createConfigurationResolver } from "./configResolution.js";
+import { createWorkspaceResolver } from "./workspaceResolution.js";
 import type { SourceFile } from "./scan.js";
 import type { Graph } from "./graph.js";
 
@@ -19,12 +20,19 @@ export function indexTypeScript(
   configurations: readonly SourceFile[] = [],
   captureDiagnostics: readonly CodeSnapshot["diagnostics"][number][] = [],
   modeForPath?: ModuleModeProvider,
+  manifests: readonly SourceFile[] = [],
 ) {
   if (!files.length) return;
+  const workspace = createWorkspaceResolver(
+    files,
+    manifests,
+    captureDiagnostics,
+  );
   const configuration = createConfigurationResolver(
     files,
     configurations,
     captureDiagnostics,
+    workspace,
   );
   const project = new Project({
     resolutionHost: configuration.resolutionHost,
@@ -270,8 +278,136 @@ export function indexTypeScript(
       }
     }
   }
+  function typeOnlySymbol(symbol: ts.Symbol | undefined): boolean {
+    const visited = new Set<ts.Symbol>();
+    for (
+      let current = symbol;
+      current;
+      current =
+        current.flags & ts.SymbolFlags.Alias &&
+        current.declarations?.some(
+          (d) =>
+            ts.isImportSpecifier(d) ||
+            ts.isImportClause(d) ||
+            ts.isNamespaceImport(d) ||
+            ts.isImportEqualsDeclaration(d) ||
+            ts.isExportSpecifier(d),
+        )
+          ? checker.getImmediateAliasedSymbol(current)
+          : undefined
+    ) {
+      if (visited.has(current) || visited.size >= 16) return true;
+      visited.add(current);
+      for (const declaration of current.declarations ?? []) {
+        for (
+          let node: ts.Node | undefined = declaration;
+          node && !ts.isSourceFile(node);
+          node = node.parent
+        ) {
+          if (
+            (ts.isImportSpecifier(node) ||
+              ts.isImportClause(node) ||
+              ts.isImportEqualsDeclaration(node) ||
+              ts.isExportSpecifier(node) ||
+              ts.isExportDeclaration(node)) &&
+            node.isTypeOnly
+          )
+            return true;
+        }
+      }
+    }
+    return false;
+  }
+  function typeOnlyExport(
+    source: ts.SourceFile,
+    name: string,
+    seen = new Set<string>(),
+  ): boolean {
+    const key = JSON.stringify([source.fileName, name]);
+    if (seen.has(key) || seen.size >= 16) return true;
+    seen = new Set(seen).add(key);
+    for (const declaration of source.statements) {
+      if (!ts.isExportDeclaration(declaration) || !declaration.moduleSpecifier)
+        continue;
+      const module = checker.getSymbolAtLocation(declaration.moduleSpecifier);
+      const target = module?.declarations?.find(ts.isSourceFile);
+      if (!target || !filePaths.has(target.fileName)) continue;
+      const clause = declaration.exportClause;
+      if (clause && ts.isNamedExports(clause)) {
+        for (const element of clause.elements) {
+          if (element.name.text !== name) continue;
+          if (
+            declaration.isTypeOnly ||
+            element.isTypeOnly ||
+            typeOnlyExport(
+              target,
+              element.propertyName?.text ?? element.name.text,
+              seen,
+            )
+          )
+            return true;
+        }
+      } else if (!clause) {
+        // TypeScript may collapse export-star aliases directly to a leaf symbol.
+        if (
+          declaration.isTypeOnly &&
+          module &&
+          checker.getExportsOfModule(module).some((s) => s.name === name)
+        )
+          return true;
+        if (!declaration.isTypeOnly && typeOnlyExport(target, name, seen))
+          return true;
+      } else if (clause.name.text === name && declaration.isTypeOnly)
+        return true;
+    }
+    return false;
+  }
+  function typeOnlyCall(
+    expression: ts.Expression,
+    symbol: ts.Symbol | undefined,
+  ): boolean {
+    if (typeOnlySymbol(symbol)) return true;
+    let root = expression;
+    let member: string | undefined;
+    while (
+      ts.isPropertyAccessExpression(root) ||
+      ts.isElementAccessExpression(root)
+    ) {
+      member = ts.isPropertyAccessExpression(root)
+        ? root.name.text
+        : root.argumentExpression &&
+            ts.isStringLiteralLike(root.argumentExpression)
+          ? root.argumentExpression.text
+          : undefined;
+      root = root.expression;
+    }
+    const rootSymbol = checker.getSymbolAtLocation(root);
+    if (typeOnlySymbol(rootSymbol)) return true;
+    for (const declaration of rootSymbol?.declarations ?? []) {
+      let importedName: string | undefined;
+      if (ts.isImportSpecifier(declaration))
+        importedName = declaration.propertyName?.text ?? declaration.name.text;
+      else if (ts.isNamespaceImport(declaration)) importedName = member;
+      else if (ts.isImportClause(declaration)) importedName = "default";
+      if (!importedName) continue;
+      let importNode: ts.Node | undefined = declaration;
+      while (importNode && !ts.isImportDeclaration(importNode))
+        importNode = importNode.parent;
+      if (!importNode || !ts.isImportDeclaration(importNode)) continue;
+      const module = checker.getSymbolAtLocation(importNode.moduleSpecifier);
+      const source = module?.declarations?.find(ts.isSourceFile);
+      if (
+        source &&
+        filePaths.has(source.fileName) &&
+        typeOnlyExport(source, importedName)
+      )
+        return true;
+    }
+    return false;
+  }
   function targetFromSymbol(symbol: ts.Symbol | undefined): string | undefined {
     if (!symbol) return undefined;
+    if (typeOnlySymbol(symbol)) return;
     if (symbol.flags & ts.SymbolFlags.Alias)
       symbol = checker.getAliasedSymbol(symbol);
     for (const declaration of symbol.declarations ?? []) {
@@ -314,9 +450,11 @@ export function indexTypeScript(
             : expression,
         );
         const classification = commonjs.classifyCall(expression);
-        const target = classification
-          ? classification.targetId
-          : targetFromSymbol(symbol);
+        const target = typeOnlyCall(expression, symbol)
+          ? undefined
+          : classification
+            ? classification.targetId
+            : targetFromSymbol(symbol);
         let root: ts.Expression = expression;
         while (
           ts.isPropertyAccessExpression(root) ||
@@ -349,5 +487,8 @@ export function indexTypeScript(
     }
     visit(source, graph.file(path).id);
   }
-  graph.diagnostics.push(...configuration.diagnostics);
+  graph.diagnostics.push(
+    ...configuration.diagnostics,
+    ...workspace.diagnostics,
+  );
 }

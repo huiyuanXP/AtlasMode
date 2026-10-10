@@ -1,0 +1,26 @@
+{
+  "stage": "final-code-frozen-pre-gates",
+  "gitHead": "77e455408ec97687ca4cef635ac8dac4e6202d79",
+  "sha256": {
+    "package-lock.json": "f26ef3a7cf494becb903226ef01d86dfa7ca1e014c271e284bb0db1b9cee49c4",
+    "packages/indexer/src/workspaceResolution.ts": "5d3e42ae3ac9434ed68907dc0f8434b10d4e1117eac3268c42fe3416e6aa5e1f",
+    "packages/indexer/src/workspaceResolution.test.ts": "7d21ea58113fd7f5d1a66fbb04cdee960b572fa9541eaac325e5df4e28aa5f85",
+    "packages/indexer/src/typescript.ts": "823e036412c2bc4db3b0b7e2887d19be26735cb8c054b2f0dda2ce240aa4fa67",
+    "packages/indexer/src/configResolution.ts": "56df690f4f4947e7dcae35738af27a7142253fb3e6a370deb6e940c97b9011eb",
+    "packages/indexer/src/index.ts": "2a6519050442bfa6421531a8b9dd37fa9e1132655740b6cb4b5ef52e790757d2",
+    "tests/support/idx02-validate.mjs": "4844518ef6f7faa017b8cad7ac246aac0707e5b4c06a9a1ed5267143edb52dae",
+    "tests/support/idx02-express-validate.mjs": "12bc8b78657fefeba20f533a58a946103f11f717527159b55eadbbc8ae2552f5",
+    "packages/indexer/dist/index.js": "ab404071abe9b8b0c21534d0c40842d451c0a4dd6815ff85719b8c920bf3fe9f",
+    "packages/indexer/dist/typescript.js": "5bb857f669eacc94e92e4d085650a481914eb703d59b2668fddffc1283f74a04",
+    "packages/indexer/dist/workspaceResolution.js": "d2c16c2eed0996d80090b5f451d289c5cef95dcec8df371a5ac98eba660d6ed2",
+    "packages/indexer/dist/configResolution.js": "6cde546bbd37a245b991235d4a1c28a14dc51be61c8a4617c520f96f05d9d263",
+    "apps/server/dist/index.js": "0daaba18e88e951b1ef67bdb3274af28717f0b2078b1d2baf17b8ca6ec787ab6",
+    "apps/server/dist/server.js": "cca66a8180f8884867212dd0dfadbe7c65c76e1e866f14b86c7d8d7483f2bd5f",
+    "apps/server/dist/routes.js": "bd7b37007a0bb58e2251982e321cd8d64a076fa31c2aaec38d67c613b1d611a7",
+    "apps/mcp/dist/index.js": "ce27aa23da77bb00e5fcaec932b034d5e7c0ba95feaf72f62b3a175b7fadccb5",
+    "apps/web/dist/index.html": "b19c878cc6652eaf0430ec22da76fd3c40ebb1219c2cdf79fa1a65243b0c3c71",
+    "apps/web/dist/assets/index-2uV7OwI7.css": "9d34a14c224ca98b5bdd6b0f952573a60a29330e3080bbd57c669744e9db53ed",
+    "apps/web/dist/assets/index-DgO45JQo.js": "008025553810759b94d2b9d26ca56baf3986b081fba372d8b7cacfdff9726028"
+  },
+  "scope": "Only indexer built in shared checkout; existing compiled server/MCP/web byte hashes recorded. Controller owns root CI and commit/push. Earlier successful gate artifacts retained separately and not claimed final."
+}

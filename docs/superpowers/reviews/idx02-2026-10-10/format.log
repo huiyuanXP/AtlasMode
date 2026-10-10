@@ -1,0 +1,5 @@
+packages/indexer/src/workspaceResolution.ts 295ms
+packages/indexer/src/workspaceResolution.test.ts 64ms
+packages/indexer/src/configResolution.ts 64ms
+packages/indexer/src/typescript.ts 89ms
+packages/indexer/src/index.ts 19ms (unchanged)

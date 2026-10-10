@@ -1,0 +1,10 @@
+{
+  "status": "failed",
+  "target": "/tmp/atlasmode-idx02-fixture-PqmW5H",
+  "otherTarget": "/tmp/atlasmode-idx02-isolated-FeLIAs",
+  "scope": "Actual built HTTP/MCP/Chromium; only captured source is analyzed; target modules and scripts never execute.",
+  "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:\n+ actual - expected\n\n  {\n    dataSource: 'code',\n    incoming: [],\n+   limit: 200,\n-   limit: 50,\n    node: {\n      declarationKind: 'function',\n      endLine: 2,\n      exported: true,\n      filePath: 'packages/app/entry.ts',\n",
+  "errors": [],
+  "external": [],
+  "protocolErrors": []
+}

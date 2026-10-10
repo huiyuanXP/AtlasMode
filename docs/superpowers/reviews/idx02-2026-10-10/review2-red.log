@@ -1,0 +1,107 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90m/home/agent/projects/AtlasMode[39m
+
+ [31m❯[39m packages/indexer/src/workspaceResolution.test.ts [2m([22m[2m44 tests[22m[2m | [22m[31m2 failed[39m[2m)[22m[33m 1112[2mms[22m[39m
+     [32m✓[39m continues outer default after nested NO_MATCH but never after BLOCKED[32m 159[2mms[22m[39m
+     [32m✓[39m rejects numeric condition keys and over-budget condition trees[32m 61[2mms[22m[39m
+     [32m✓[39m maps root exports to the exact captured implementation[32m 14[2mms[22m[39m
+     [32m✓[39m maps exact subpaths and static single-star source patterns[32m 43[2mms[22m[39m
+     [32m✓[39m selects literal import and require conditions without merging identities[32m 38[2mms[22m[39m
+     [32m✓[39m accepts convergent custom conditions and rejects divergent alternatives[32m 32[2mms[22m[39m
+     [32m✓[39m honors ordered default and inactive branches[32m 41[2mms[22m[39m
+     [32m✓[39m rejects mixed request modes when their selected targets diverge[32m 54[2mms[22m[39m
+     [32m✓[39m keeps invalid/blocked/missing/guessed target unknown: null[32m 17[2mms[22m[39m
+     [32m✓[39m keeps invalid/blocked/missing/guessed target unknown: "./src/main.ts"[32m 14[2mms[22m[39m
+     [32m✓[39m keeps invalid/blocked/missing/guessed target unknown: {".":"./src/main.ts","import":"./src/main.ts"}[32m 16[2mms[22m[39m
+     [32m✓[39m keeps invalid/blocked/missing/guessed target unknown: "./src/missing.ts"[32m 15[2mms[22m[39m
+     [32m✓[39m keeps invalid/blocked/missing/guessed target unknown: "../app/entry.ts"[32m 11[2mms[22m[39m
+     [32m✓[39m keeps invalid/blocked/missing/guessed target unknown: "./src/../src/main.ts"[32m 10[2mms[22m[39m
+     [32m✓[39m keeps invalid/blocked/missing/guessed target unknown: "./node_modules/main.ts"[32m 8[2mms[22m[39m
+     [32m✓[39m keeps invalid/blocked/missing/guessed target unknown: "./src/%2e/main.ts"[32m 7[2mms[22m[39m
+     [32m✓[39m keeps invalid/blocked/missing/guessed target unknown: "./src/main.ts?x"[32m 20[2mms[22m[39m
+     [32m✓[39m keeps invalid/blocked/missing/guessed target unknown: "./src/main.js"[32m 14[2mms[22m[39m
+     [32m✓[39m does not infer private subpaths when exports lacks the requested key[32m 16[2mms[22m[39m
+     [32m✓[39m rejects duplicate workspace names without affecting unrelated names[32m 20[2mms[22m[39m
+     [32m✓[39m rejects unregistered consumers and package targets crossing a nested package boundary[32m 29[2mms[22m[39m
+     [32m✓[39m supports object packages syntax and explicit workspace directories[32m 11[2mms[22m[39m
+     [32m✓[39m does not apply unsupported workspace globs[32m 14[2mms[22m[39m
+     [32m✓[39m preserves explicit paths precedence and refuses failed paths fallback[32m 47[2mms[22m[39m
+     [32m✓[39m isolates nested workspace owners with identical package names[32m 34[2mms[22m[39m
+     [32m✓[39m does not turn type-only workspace imports into callable runtime identity[32m 8[2mms[22m[39m
+     [32m✓[39m rejects opaque consumer/target package manifests[32m 32[2mms[22m[39m
+     [32m✓[39m rejects unsafe requested subpath even with a fixed pattern target: ../private[32m 10[2mms[22m[39m
+     [32m✓[39m rejects unsafe requested subpath even with a fixed pattern target: %2e[32m 15[2mms[22m[39m
+     [32m✓[39m rejects unsafe requested subpath even with a fixed pattern target: folder//x[32m 13[2mms[22m[39m
+     [32m✓[39m rejects unsafe requested subpath even with a fixed pattern target: node_modules/x[32m 10[2mms[22m[39m
+     [32m✓[39m rejects unsafe requested subpath even with a fixed pattern target: feature?x[32m 9[2mms[22m[39m
+     [32m✓[39m does not infer runtime targets from type-only namespace and re-export chains[32m 50[2mms[22m[39m
+     [32m✓[39m ignores shadowed require when selecting a separate static import request[32m 15[2mms[22m[39m
+     [32m✓[39m supports explicit own-package exports self-reference without a workspace[32m 14[2mms[22m[39m
+     [32m✓[39m requires nonempty wildcard matches and validates export-star type-only chains[32m 49[2mms[22m[39m
+     [32m✓[39m rejects unavailable registered consumers and opaque nested target boundaries[32m 25[2mms[22m[39m
+     [32m✓[39m does not mix shadowed require binding with a static import: function local(){var require:any; require("@demo/lib");}[32m 14[2mms[22m[39m
+     [32m✓[39m does not mix shadowed require binding with a static import: function local(){const require=(x:any)=>x; require("@demo/lib");}[32m 13[2mms[22m[39m
+     [32m✓[39m does not mix shadowed require binding with a static import: function local(){function require(x:any){} require("@demo/lib");}[32m 8[2mms[22m[39m
+     [32m✓[39m does not mix shadowed require binding with a static import: function local(){try{}catch(require){require("@demo/lib");}}[32m 11[2mms[22m[39m
+     [32m✓[39m does not mix shadowed require binding with a static import: function local(){for(const require of []){require("@demo/lib");}}[32m 8[2mms[22m[39m
+[31m     [31m×[31m retains own __proto__ condition keys through wildcard substitution[39m[32m 28[2mms[22m[39m
+[31m     [31m×[31m rejects case variants of forbidden node_modules segments[39m[32m 18[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 2 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m packages/indexer/src/workspaceResolution.test.ts[2m > [22mIDX02 captured workspace exports[2m > [22mretains own __proto__ condition keys through wildcard substitution
+[31m[1mAssertionError[22m: expected { …(6) } to match object { resolution: 'unresolved', …(1) }
+(7 matching properties omitted from actual)[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[32m-   "resolution": "unresolved",[39m
+[32m-   "targetId": null,[39m
+[31m+   "resolution": "resolved",[39m
+[31m+   "targetId": "function:10415ed8342340796c16674fb502d0a9",[39m
+[2m  }[22m
+
+[36m [2m❯[22m unknown packages/indexer/src/workspaceResolution.test.ts:[2m77:29[22m[39m
+    [90m 75|[39m }
+    [90m 76|[39m [35mfunction[39m [34munknown[39m(graph[33m:[39m [33mGraph[39m[33m,[39m file [33m=[39m [32m"packages/app/entry.ts"[39m) {
+    [90m 77|[39m   [34mexpect[39m([34medge[39m(graph[33m,[39m file))[33m.[39m[34mtoMatchObject[39m({
+    [90m   |[39m                             [31m^[39m
+    [90m 78|[39m     resolution[33m:[39m [32m"unresolved"[39m[33m,[39m
+    [90m 79|[39m     targetId[33m:[39m [35mnull[39m[33m,[39m
+[90m [2m❯[22m packages/indexer/src/workspaceResolution.test.ts:[2m436:4[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m packages/indexer/src/workspaceResolution.test.ts[2m > [22mIDX02 captured workspace exports[2m > [22mrejects case variants of forbidden node_modules segments
+[31m[1mAssertionError[22m: expected { …(6) } to match object { resolution: 'unresolved', …(1) }
+(7 matching properties omitted from actual)[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[32m-   "resolution": "unresolved",[39m
+[32m-   "targetId": null,[39m
+[31m+   "resolution": "resolved",[39m
+[31m+   "targetId": "function:47d63e2b545af24f78049c1c3ec3c117",[39m
+[2m  }[22m
+
+[36m [2m❯[22m unknown packages/indexer/src/workspaceResolution.test.ts:[2m77:29[22m[39m
+    [90m 75|[39m }
+    [90m 76|[39m [35mfunction[39m [34munknown[39m(graph[33m:[39m [33mGraph[39m[33m,[39m file [33m=[39m [32m"packages/app/entry.ts"[39m) {
+    [90m 77|[39m   [34mexpect[39m([34medge[39m(graph[33m,[39m file))[33m.[39m[34mtoMatchObject[39m({
+    [90m   |[39m                             [31m^[39m
+    [90m 78|[39m     resolution[33m:[39m [32m"unresolved"[39m[33m,[39m
+    [90m 79|[39m     targetId[33m:[39m [35mnull[39m[33m,[39m
+[90m [2m❯[22m packages/indexer/src/workspaceResolution.test.ts:[2m439:4[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m2 failed[39m[22m[2m | [22m[1m[32m42 passed[39m[22m[90m (44)[39m
+[2m   Start at [22m 15:13:47
+[2m   Duration [22m 2.59s[2m (transform 527ms, setup 0ms, import 1.18s, tests 1.11s, environment 0ms)[22m
+

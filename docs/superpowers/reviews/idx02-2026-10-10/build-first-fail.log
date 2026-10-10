@@ -1,0 +1,17 @@
+
+> @codemap/indexer@0.1.0 build
+> tsc -p tsconfig.json
+
+src/workspaceResolution.ts(480,10): error TS18048: 'target' is possibly 'undefined'.
+src/workspaceResolution.ts(485,29): error TS18048: 'target' is possibly 'undefined'.
+src/workspaceResolution.ts(485,52): error TS2345: Argument of type 'string | symbol' is not assignable to parameter of type 'string'.
+  Type 'symbol' is not assignable to type 'string'.
+src/workspaceResolution.ts(494,51): error TS2345: Argument of type 'Manifest | undefined' is not assignable to parameter of type 'Manifest'.
+  Type 'undefined' is not assignable to type 'Manifest'.
+npm error Lifecycle script `build` failed with error:
+npm error code 2
+npm error path /home/agent/projects/AtlasMode/packages/indexer
+npm error workspace @codemap/indexer@0.1.0
+npm error location /home/agent/projects/AtlasMode/packages/indexer
+npm error command failed
+npm error command sh -c tsc -p tsconfig.json
