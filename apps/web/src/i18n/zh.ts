@@ -1,5 +1,21 @@
 /** Authored names, paths, notes and service evidence remain verbatim. */
 export const zh = {
+  collapseGroup: "折叠",
+  expandGroup: "展开",
+  groupVisibleCards: "当前加载范围：分组卡片",
+  groupVisibleMirrors: "展开成员镜像",
+  groupBudgetHint: "分组视图数量另计，不包含在事实查询预算中",
+  groupLoaded: "已加载成员",
+  groupNotLoaded: "尚未加载",
+  groupInternalCalls: "已加载内部调用",
+  groupInternalPlans: "已加载内部计划关系",
+  groupScopeHint: "仅显示已加载范围；未加载调用关系未知",
+  groupMirror: "同一函数镜像",
+  groupEndpoints: "具体外部调用端点",
+  groupEvidence: "调用证据",
+  groupEvidenceSource: "查看调用方",
+  groupEvidenceTarget: "查看被调用方",
+
   welcomeFlow:
     "打开项目 → 搜索或浏览代码 → 查看引用和源码 → 创建图上规划。浏览与手动规划不需要连接 AI。",
   offlineBrowseHint:
@@ -74,7 +90,8 @@ export const zh = {
   graphHelp:
     "悬停预览关联，单击查看引用，双击进入依赖漏斗；所有卡片均可拖动。Esc 依次收起小地图、详情，再退出漏斗。",
   graphEmpty: "选择入口、搜索结果或路线步骤以浏览子图",
-  bounded: "每次展开最多 80 个节点 / 240 条关系；按需可增至 300 / 900。",
+  bounded:
+    "代码事实查询预算：每次展开最多 80 个节点 / 240 条关系；按需可增至 300 / 900。",
   expand: "展开一层",
   expandMore: "扩大到 300 节点",
   diagnostics: "静态分析诊断",

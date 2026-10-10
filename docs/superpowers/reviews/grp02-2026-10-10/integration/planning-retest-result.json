@@ -1,0 +1,13 @@
+{
+  "gate": "planning-retest",
+  "command": [
+    "npx",
+    "playwright",
+    "test",
+    "tests/e2e/planning.spec.mjs",
+    "--workers=1"
+  ],
+  "startedAt": "2026-10-10T16:09:28.019717+00:00",
+  "durationSeconds": 23.304,
+  "exitCode": 0
+}

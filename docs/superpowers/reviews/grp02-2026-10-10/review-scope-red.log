@@ -1,0 +1,88 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90m/home/agent/projects/AtlasMode[39m
+
+ [31m❯[39m apps/web/src/features/groups/projection.test.ts [2m([22m[2m5 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[32m 36[2mms[22m[39m
+   [32m✓[39m projects independent shared-member aliases without changing physical parents or source facts[32m 17[2mms[22m[39m
+   [32m✓[39m folds members to precise function handles and retains true relation identity and evidence[32m 3[2mms[22m[39m
+   [32m✓[39m bounds overlapping routes linearly and preserves plan distinction and unresolved notices[32m 2[2mms[22m[39m
+   [32m✓[39m keeps saved visual alias and group coordinates distinct from domain identity[32m 1[2mms[22m[39m
+[31m   [31m×[31m keeps unrelated groups outside the loaded local canvas while retaining active partial groups[39m[32m 11[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/features/groups/projection.test.ts[2m > [22mkeeps unrelated groups outside the loaded local canvas while retaining active partial groups
+[31m[1mAssertionError[22m: expected [ Array(51) ] to deeply equal [ 'group:g1' ][39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  [[22m
+[2m    "group:g1",[22m
+[31m+   "group:outside-0",[39m
+[31m+   "group:outside-1",[39m
+[31m+   "group:outside-10",[39m
+[31m+   "group:outside-11",[39m
+[31m+   "group:outside-12",[39m
+[31m+   "group:outside-13",[39m
+[31m+   "group:outside-14",[39m
+[31m+   "group:outside-15",[39m
+[31m+   "group:outside-16",[39m
+[31m+   "group:outside-17",[39m
+[31m+   "group:outside-18",[39m
+[31m+   "group:outside-19",[39m
+[31m+   "group:outside-2",[39m
+[31m+   "group:outside-20",[39m
+[31m+   "group:outside-21",[39m
+[31m+   "group:outside-22",[39m
+[31m+   "group:outside-23",[39m
+[31m+   "group:outside-24",[39m
+[31m+   "group:outside-25",[39m
+[31m+   "group:outside-26",[39m
+[31m+   "group:outside-27",[39m
+[31m+   "group:outside-28",[39m
+[31m+   "group:outside-29",[39m
+[31m+   "group:outside-3",[39m
+[31m+   "group:outside-30",[39m
+[31m+   "group:outside-31",[39m
+[31m+   "group:outside-32",[39m
+[31m+   "group:outside-33",[39m
+[31m+   "group:outside-34",[39m
+[31m+   "group:outside-35",[39m
+[31m+   "group:outside-36",[39m
+[31m+   "group:outside-37",[39m
+[31m+   "group:outside-38",[39m
+[31m+   "group:outside-39",[39m
+[31m+   "group:outside-4",[39m
+[31m+   "group:outside-40",[39m
+[31m+   "group:outside-41",[39m
+[31m+   "group:outside-42",[39m
+[31m+   "group:outside-43",[39m
+[31m+   "group:outside-44",[39m
+[31m+   "group:outside-45",[39m
+[31m+   "group:outside-46",[39m
+[31m+   "group:outside-47",[39m
+[31m+   "group:outside-48",[39m
+[31m+   "group:outside-49",[39m
+[31m+   "group:outside-5",[39m
+[31m+   "group:outside-6",[39m
+[31m+   "group:outside-7",[39m
+[31m+   "group:outside-8",[39m
+[31m+   "group:outside-9",[39m
+[2m  ][22m
+
+[36m [2m❯[22m apps/web/src/features/groups/projection.test.ts:[2m191:64[22m[39m
+    [90m189|[39m  [35mconst[39m saved[33m=[39m{[32m"group:outside-0"[39m[33m:[39m{x[33m:[39m[34m999[39m[33m,[39my[33m:[39m[34m999[39m}}[33m;[39m
+    [90m190|[39m  const result=projectGroups(local,[groups[0]!,...unrelated],["outside-…
+    [90m191|[39m  expect(result.nodes.filter(n=>n.type==="group").map(n=>n.id)).toEqual…
+    [90m   |[39m                                                                [31m^[39m
+    [90m192|[39m  expect(result.nodes.find(n=>n.id==="group:g1")?.data.group).toMatchOb…
+    [90m193|[39m  expect(result.edges).toEqual([]);expect(saved).toEqual({"group:outsid…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m4 passed[39m[22m[90m (5)[39m
+[2m   Start at [22m 15:22:14
+[2m   Duration [22m 432ms[2m (transform 145ms, setup 0ms, import 187ms, tests 36ms, environment 0ms)[22m
+

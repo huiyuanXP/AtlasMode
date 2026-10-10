@@ -1,0 +1,17 @@
+{
+  "planning-final-desktop-light.png": {
+    "sha256": "f7393742c2c0f57e755b8fe1e8bf6bc604a225425cd853191756ab5a01ffa6d2",
+    "source": "/tmp/atlas-grp02-clean-20261010-8k6k_twz/workspace/artifacts/e2e/desktop-light.png",
+    "sizeBytes": 260873
+  },
+  "planning-final-desktop-dark.png": {
+    "sha256": "ecf5bb0fec0c5212fcb885b2000617e1c3db99ca2d55aea0e1cd015c711ccf13",
+    "source": "/tmp/atlas-grp02-clean-20261010-8k6k_twz/workspace/artifacts/e2e/desktop-dark.png",
+    "sizeBytes": 262250
+  },
+  "planning-final-narrow.png": {
+    "sha256": "fa578eb4a07c41cff3e61b2f280614be85dd8a3a95b7baf939d3e0541a3453f5",
+    "source": "/tmp/atlas-grp02-clean-20261010-8k6k_twz/workspace/artifacts/e2e/narrow.png",
+    "sizeBytes": 142154
+  }
+}

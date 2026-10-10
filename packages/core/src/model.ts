@@ -134,6 +134,7 @@ export type DirectoryPolicy = {
   forbiddenDependencies: string[];
 };
 export type ViewState = {
+  collapsedGroupIds?: string[];
   positions: Record<string, { x: number; y: number }>;
   theme: "light" | "dark";
   locale: "zh" | "en";

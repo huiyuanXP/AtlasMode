@@ -1,0 +1,105 @@
+.group-card {
+  position: relative;
+  width: 310px;
+  background: var(--panel, #172437);
+  border: 2px solid #8b94ff;
+  border-radius: 12px;
+  padding: 14px;
+  color: var(--text, #e9eef8);
+}
+.group-card-content > strong {
+  display: block;
+  margin-bottom: 8px;
+}
+.group-card-content > small {
+  display: block;
+  margin: 6px 0;
+  font-size: 11px;
+}
+.group-card-content > p {
+  font-size: 12px;
+}
+.group-endpoint {
+  display: block;
+  width: 100%;
+  text-align: left;
+  margin: 6px 0;
+  min-height: 42px;
+}
+.group-endpoint code {
+  display: block;
+  font-size: 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.group-mirror {
+  font-size: 11px;
+  color: #b0b8ff;
+  padding: 5px 0;
+  border-bottom: 1px solid #667085;
+}
+.group-evidence {
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  max-width: 420px;
+  max-height: 65%;
+  overflow: auto;
+  z-index: 12;
+  background: var(--panel, #172437);
+  color: var(--text, #e9eef8);
+  border: 1px solid #8b94ff;
+  border-radius: 10px;
+  padding: 16px;
+}
+.group-evidence code {
+  display: block;
+  overflow-wrap: anywhere;
+}
+.group-evidence pre {
+  white-space: pre-wrap;
+}
+
+.group-endpoint-row {
+  position: relative;
+}
+.group-endpoint-row .react-flow__handle-left {
+  left: -15px;
+}
+.group-endpoint-row .react-flow__handle-right {
+  right: -15px;
+}
+
+.group-projection-summary {
+  position: absolute;
+  left: 210px;
+  bottom: 14px;
+  z-index: 4;
+  max-width: 450px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: var(--panel, #172437);
+  color: var(--text, #e9eef8);
+  font-size: 12px;
+  pointer-events: none;
+}
+.group-projection-summary small {
+  display: block;
+  margin-top: 4px;
+  font-size: 11px;
+}
+
+.group-card-content > strong:first-child,
+.group-endpoint {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.group-card.inspection-selected,
+.group-card.inspection-preview {
+  border-color: #7c3aed;
+  box-shadow: 0 0 0 3px #7c3aed33;
+}
+.group-card.inspection-muted {
+  opacity: 0.35;
+}

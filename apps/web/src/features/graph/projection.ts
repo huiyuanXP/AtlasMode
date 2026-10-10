@@ -1,6 +1,7 @@
 import { dictionaries, type Locale } from "../../i18n/index.js";
 import type {
   CodeNode,
+  Relation,
   Operation,
   SubgraphResult,
   ViewState,
@@ -8,7 +9,21 @@ import type {
 import type { Edge, Node } from "@xyflow/react";
 import type { FocusRequest } from "./focus.js";
 export type LayerFilter = "fact" | "plan" | "both";
+export type GroupCardData = {
+  id: string;
+  title: string;
+  total: number;
+  loadedMembers: CodeNode[];
+  unknownMembers: number;
+  collapsed: boolean;
+  portIds: string[];
+  internalRelationIds: string[];
+  plannedInternalIds: string[];
+};
 export type CardData = {
+  group?: GroupCardData;
+  groupId?: string;
+  groupTitle?: string;
   node: CodeNode;
   layer: "fact" | "plan" | "anchor";
   changes: string[];
@@ -19,12 +34,22 @@ export type GraphEdge = Edge<{
   layer: "fact" | "plan";
   domainId: string;
   relationType?: string;
+  sourceId?: string;
+  targetId?: string;
+  evidence?: Relation["evidence"];
+  groupProjection?: boolean;
+  mirrored?: boolean;
+  collapsedEndpoints?: boolean;
 }>;
 export function focusTargets(nodes: GraphNode[], request?: FocusRequest) {
   const ids = new Set(
     request?.nodeIds ?? (request?.nodeId ? [request.nodeId] : []),
   );
-  return nodes.filter((node) => ids.has(node.data.node.id));
+  return nodes.filter(
+    (node) =>
+      ids.has(node.data.node.id) ||
+      node.data.group?.loadedMembers.some((member) => ids.has(member.id)),
+  );
 }
 export function projectGraph(
   graph: SubgraphResult | undefined,
@@ -125,7 +150,14 @@ export function projectGraph(
         source: factsByDomain.get(r.sourceId)!,
         target: factsByDomain.get(r.targetId)!,
         label: `${text.fact} · ${text[r.type]}${removed ? ` · ${text.plannedRemoval}` : ""}`,
-        data: { layer: "fact", domainId: r.id, relationType: r.type },
+        data: {
+          layer: "fact",
+          domainId: r.id,
+          relationType: r.type,
+          sourceId: r.sourceId,
+          targetId: r.targetId,
+          evidence: r.evidence,
+        },
         deletable: false,
         reconnectable: r.type === "calls",
         style: {
@@ -147,7 +179,13 @@ export function projectGraph(
         source: byDomain.get(op.sourceId)!,
         target: byDomain.get(op.targetId)!,
         label: `${text.plan} · ${text[op.type]}`,
-        data: { layer: "plan", domainId: op.id, relationType: op.type },
+        data: {
+          layer: "plan",
+          domainId: op.id,
+          relationType: op.type,
+          sourceId: op.sourceId,
+          targetId: op.targetId,
+        },
         deletable: false,
         reconnectable: true,
         style: { stroke: "#8962ce", strokeDasharray: "6 3" },

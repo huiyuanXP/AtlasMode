@@ -1,0 +1,192 @@
+{
+  "recordedAt": "2026-10-10T16:11:08.525287+00:00",
+  "testedTree": "2d8a310d92ef222bd4505c294679c80af815d179",
+  "testedHead": "fe4b52c191640913d192ca514164d972275531d1",
+  "workspace": "/tmp/atlas-grp02-clean-20261010-8k6k_twz/workspace",
+  "installation": "fresh npm ci; no node_modules copied",
+  "versions": {
+    "node": "v24.19.0",
+    "npm": "11.9.0"
+  },
+  "gateResults": [
+    {
+      "gate": "npm-ci",
+      "command": [
+        "npm",
+        "ci"
+      ],
+      "startedAt": "2026-10-10T15:53:58.260279+00:00",
+      "durationSeconds": 8.696,
+      "exitCode": 0,
+      "log": "/tmp/atlas-grp02-clean-20261010-8k6k_twz/logs/npm-ci.log",
+      "logSha256": "702882bd736a5c542ef386fe45003afb410510437309d59573a6de29bdaa014c"
+    },
+    {
+      "gate": "build",
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "startedAt": "2026-10-10T15:54:06.956869+00:00",
+      "durationSeconds": 13.587,
+      "exitCode": 0,
+      "log": "/tmp/atlas-grp02-clean-20261010-8k6k_twz/logs/build.log",
+      "logSha256": "6603115692a8711a4175a7f7acec39ea1edb92cc95388f30dcbd4c3630ba1e95"
+    },
+    {
+      "gate": "typecheck",
+      "command": [
+        "npm",
+        "run",
+        "typecheck"
+      ],
+      "startedAt": "2026-10-10T15:54:20.544134+00:00",
+      "durationSeconds": 24.053,
+      "exitCode": 0,
+      "log": "/tmp/atlas-grp02-clean-20261010-8k6k_twz/logs/typecheck.log",
+      "logSha256": "e5141ef26fb8210283066263ffc9e6d9b7f1f8373fbfc709be46ffa4fb6df7fe"
+    },
+    {
+      "gate": "lint",
+      "command": [
+        "npm",
+        "run",
+        "lint"
+      ],
+      "startedAt": "2026-10-10T15:54:44.597914+00:00",
+      "durationSeconds": 3.236,
+      "exitCode": 0,
+      "log": "/tmp/atlas-grp02-clean-20261010-8k6k_twz/logs/lint.log",
+      "logSha256": "7800494729c08273ed821839df88b07aa887e163a5d86a3fd5f0a034acfa0ca4"
+    },
+    {
+      "gate": "test",
+      "command": [
+        "npm",
+        "test"
+      ],
+      "startedAt": "2026-10-10T15:54:47.834144+00:00",
+      "durationSeconds": 62.764,
+      "exitCode": 0,
+      "log": "/tmp/atlas-grp02-clean-20261010-8k6k_twz/logs/test.log",
+      "logSha256": "97bd4d0c41d7c1286e70236cf0d0654053d100d4432c575369884b2d4ced133e"
+    },
+    {
+      "gate": "smoke",
+      "command": [
+        "npm",
+        "run",
+        "smoke"
+      ],
+      "startedAt": "2026-10-10T15:55:50.599567+00:00",
+      "durationSeconds": 5.543,
+      "exitCode": 0,
+      "log": "/tmp/atlas-grp02-clean-20261010-8k6k_twz/logs/smoke.log",
+      "logSha256": "744c39f61f4e04c1f2e295889ad5db62645ddadacf754a4e7008563dbe2e57b2"
+    },
+    {
+      "gate": "e2e",
+      "command": [
+        "npm",
+        "run",
+        "test:e2e"
+      ],
+      "startedAt": "2026-10-10T15:55:56.143331+00:00",
+      "durationSeconds": 113.211,
+      "exitCode": 1,
+      "log": "/tmp/atlas-grp02-clean-20261010-8k6k_twz/logs/e2e.log",
+      "logSha256": "3446a56e98e2d400fd66ca2db3c29c9cde142bd53d8d19a99bace199fdddd1ea"
+    }
+  ],
+  "planningRetest": {
+    "gate": "planning-retest",
+    "command": [
+      "npx",
+      "playwright",
+      "test",
+      "tests/e2e/planning.spec.mjs",
+      "--workers=1"
+    ],
+    "startedAt": "2026-10-10T16:09:28.019717+00:00",
+    "durationSeconds": 23.304,
+    "exitCode": 0,
+    "logSha256": "841db5a4532db854fed0f0b62b69f0a6b26aac453a49d4612e99c2e9e118808d"
+  },
+  "planningTestSha256": "5efae9962c64c0a4ea01ddbf3aa39855da70cb5eca16b4949c75d408002fdeef",
+  "sourceVerification": "15/15 frozen production hashes match archive after all gates and current staged blobs; every staged product/test blob matches tested archive; only approved legacy planning test helper changed after original full gates",
+  "sourceSha256": {
+    "packages/core/src/model.ts": "469de3015d759b3a84cac273bf38e6fbac5dcd4c19daa00eb02264d10fc192de",
+    "apps/server/src/routes.ts": "0d4856f68cdb47d1d48cd00cb75dfe2725384d29e7e0e567023e247741bc7e80",
+    "packages/service/src/knowledge.ts": "4cd591704ff942e48088940aefc9d731097cf3791330c0f2fe46019c6e1ef210",
+    "apps/web/src/app/workspace.ts": "dada9a1648315602ee6310468bbb47fd1f79bf312475e836f280a402cffbb1f9",
+    "apps/web/src/app/WorkspacePanels.tsx": "3eeda8d79025d04bd5d137f44387cc8ea4cf38149543c78926a2ee3e90fe9c7a",
+    "apps/web/src/features/graph/Canvas.tsx": "3124ae71ccedf554072383654869b62f5e0e7d99e1fcb8422f5639270e3c406f",
+    "apps/web/src/features/graph/MapPanel.tsx": "31a9e1ca128b810e0ce3336e867b16602b7f97465625ff5d07f61d9a580278e7",
+    "apps/web/src/features/graph/projection.ts": "c13b32de342ddbb4b79660c09fdd42fabed0886a567a1b4db8f0062be792c0cf",
+    "apps/web/src/features/graph/inspection.ts": "3ccc7df7cebe6e6ccd0bfc650ea2a4cbf34cc5ffd623d1659f6c08f23ff194b3",
+    "apps/web/src/features/groups/projection.ts": "027249184becc3af2187519ac55c5700302202f16ee89ad7d57e4d94dea60f67",
+    "apps/web/src/features/groups/GroupCard.tsx": "3a2f82c9a76717a2e9e971378b9f3bed4449b2453bd40cb382ac952061981f5c",
+    "apps/web/src/features/groups/GroupsPanel.tsx": "e28346719156e389cbd38b12842c3b454efe89ae9a574ecc1c5bd3f2edf54341",
+    "apps/web/src/features/groups/group-graph.css": "b316b38759f81c300f502c7175a91abce6eb6ff19da5eff58deffd922dd70fa1",
+    "apps/web/src/i18n/en.ts": "d5aa05dfe857d33bf3a06c860c77cda0959545ec9b4826602dd912471809e7c7",
+    "apps/web/src/i18n/zh.ts": "22077f47cfb293804b51512e3bd7dd93388f207435029745179e50bba1cea460"
+  },
+  "packageLockSha256": "f26ef3a7cf494becb903226ef01d86dfa7ca1e014c271e284bb0db1b9cee49c4",
+  "productionMutation": false,
+  "commitPushDeploy": false,
+  "tracePaths": [
+    "/tmp/atlas-grp02-clean-20261010-8k6k_twz/e2e-first-run-artifacts",
+    "/tmp/atlas-grp02-clean-20261010-8k6k_twz/diagnostic-artifacts",
+    "/tmp/atlas-grp02-clean-20261010-8k6k_twz/planning-helper-attempt1-artifacts",
+    "/tmp/atlas-grp02-clean-20261010-8k6k_twz/planning-helper-attempt2-artifacts",
+    "/tmp/atlas-grp02-clean-20261010-8k6k_twz/planning-helper-attempt3-artifacts"
+  ],
+  "unitSummary": {
+    "filesPassed": 72,
+    "testsPassed": 795
+  },
+  "e2eSummary": {
+    "startTime": "2026-10-10T15:55:56.900Z",
+    "duration": 112394.543,
+    "expected": 18,
+    "skipped": 0,
+    "unexpected": 1,
+    "flaky": 0
+  },
+  "planningRetestSummary": {
+    "startTime": "2026-10-10T16:09:31.700Z",
+    "duration": 19593.663,
+    "expected": 1,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "finalPlanningScreenshots": {
+    "planning-final-desktop-light.png": {
+      "sha256": "f7393742c2c0f57e755b8fe1e8bf6bc604a225425cd853191756ab5a01ffa6d2",
+      "source": "/tmp/atlas-grp02-clean-20261010-8k6k_twz/workspace/artifacts/e2e/desktop-light.png",
+      "sizeBytes": 260873
+    },
+    "planning-final-desktop-dark.png": {
+      "sha256": "ecf5bb0fec0c5212fcb885b2000617e1c3db99ca2d55aea0e1cd015c711ccf13",
+      "source": "/tmp/atlas-grp02-clean-20261010-8k6k_twz/workspace/artifacts/e2e/desktop-dark.png",
+      "sizeBytes": 262250
+    },
+    "planning-final-narrow.png": {
+      "sha256": "fa578eb4a07c41cff3e61b2f280614be85dd8a3a95b7baf939d3e0541a3453f5",
+      "source": "/tmp/atlas-grp02-clean-20261010-8k6k_twz/workspace/artifacts/e2e/narrow.png",
+      "sizeBytes": 142154
+    }
+  },
+  "planningIndependentReview": {
+    "outcome": "APPROVE",
+    "critical": 0,
+    "important": 0,
+    "minor": 0,
+    "file": "planning-helper-independent-review.md",
+    "sha256": "2d3c7ce0ca6dda16fdda22aea5f68f3e7bf631e2060fd95b6f69aad25f54cedc",
+    "reviewer": "/root/ci_repair",
+    "model": "gpt-6.1-sol high"
+  }
+}

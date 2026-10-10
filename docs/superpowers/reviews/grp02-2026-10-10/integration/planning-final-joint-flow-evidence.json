@@ -1,0 +1,162 @@
+{
+  "errors": [],
+  "external": [],
+  "clipboard": "actual navigator.clipboard.readText in Chromium",
+  "approval": {
+    "id": "0cfec712-d229-4ca0-987c-f34c53603f02",
+    "planId": "0be2245e-dda1-402e-a773-bf5123544ceb",
+    "revision": 16,
+    "semanticHash": "8485fb44703baf63ff1569694995304e33c4ec9657578f9835ddb36aa99f8ebe",
+    "baselineSnapshotId": "snapshot:0be80f704901beacf986bec3027edd7c",
+    "baselineContentHash": "84656acb8b511f4d66bb5dd952988ff4dfdae716f2649b14814f6681080ca579",
+    "approvedAt": "2026-10-10T16:09:45.187Z",
+    "actor": "user"
+  },
+  "exportJSON": {
+    "bytes": 3828,
+    "name": "plan-0be2245e-dda1-402e-a773-bf5123544ceb-r16.json"
+  },
+  "exportMarkdown": {
+    "bytes": 4016,
+    "name": "plan-0be2245e-dda1-402e-a773-bf5123544ceb-r16.md"
+  },
+  "satisfied": {
+    "planId": "0be2245e-dda1-402e-a773-bf5123544ceb",
+    "revision": 16,
+    "snapshotId": "snapshot:4a015de58a58bcf2042dbd651616433c",
+    "items": [
+      {
+        "operationIndex": 0,
+        "status": "satisfied",
+        "message": "Planned function exists at the target path.",
+        "evidence": [
+          "services/notes.ts:2"
+        ]
+      },
+      {
+        "operationIndex": 1,
+        "status": "satisfied",
+        "message": "The required relation exists.",
+        "evidence": [
+          "services/notes.ts:2 requestWithRetry()"
+        ]
+      },
+      {
+        "operationIndex": 2,
+        "status": "unknown",
+        "message": "Annotation semantics require human review.",
+        "evidence": []
+      },
+      {
+        "operationIndex": 3,
+        "status": "satisfied",
+        "message": "The original relation is absent.",
+        "evidence": [
+          "main.ts:2",
+          "requests.ts:1"
+        ]
+      },
+      {
+        "operationIndex": 4,
+        "status": "satisfied",
+        "message": "The required relation exists.",
+        "evidence": [
+          "main.ts:2 requestWithRetry()"
+        ]
+      }
+    ]
+  },
+  "bypass": {
+    "planId": "0be2245e-dda1-402e-a773-bf5123544ceb",
+    "revision": 16,
+    "snapshotId": "snapshot:5d816ef78816fda15e72cbf0890544e7",
+    "items": [
+      {
+        "operationIndex": 0,
+        "status": "satisfied",
+        "message": "Planned function exists at the target path.",
+        "evidence": [
+          "services/notes.ts:2"
+        ]
+      },
+      {
+        "operationIndex": 1,
+        "status": "unmet",
+        "message": "No direct call to the required target was found.",
+        "evidence": [
+          "services/notes.ts:2",
+          "requests.ts:2"
+        ]
+      },
+      {
+        "operationIndex": 2,
+        "status": "unknown",
+        "message": "Annotation semantics require human review.",
+        "evidence": []
+      },
+      {
+        "operationIndex": 3,
+        "status": "satisfied",
+        "message": "The original relation is absent.",
+        "evidence": [
+          "main.ts:2",
+          "requests.ts:1"
+        ]
+      },
+      {
+        "operationIndex": 4,
+        "status": "satisfied",
+        "message": "The required relation exists.",
+        "evidence": [
+          "main.ts:2 requestWithRetry()"
+        ]
+      }
+    ]
+  },
+  "unknown": {
+    "planId": "0be2245e-dda1-402e-a773-bf5123544ceb",
+    "revision": 16,
+    "snapshotId": "snapshot:be29a4ab92359e35b40a38b382c81110",
+    "items": [
+      {
+        "operationIndex": 0,
+        "status": "satisfied",
+        "message": "Planned function exists at the target path.",
+        "evidence": [
+          "services/notes.ts:1"
+        ]
+      },
+      {
+        "operationIndex": 1,
+        "status": "unknown",
+        "message": "Dynamic or unresolved relations prevent a definitive absence check.",
+        "evidence": [
+          "services/notes.ts:1 fn()"
+        ]
+      },
+      {
+        "operationIndex": 2,
+        "status": "unknown",
+        "message": "Annotation semantics require human review.",
+        "evidence": []
+      },
+      {
+        "operationIndex": 3,
+        "status": "satisfied",
+        "message": "The original relation is absent.",
+        "evidence": [
+          "main.ts:2",
+          "requests.ts:1"
+        ]
+      },
+      {
+        "operationIndex": 4,
+        "status": "satisfied",
+        "message": "The required relation exists.",
+        "evidence": [
+          "main.ts:2 requestWithRetry()"
+        ]
+      }
+    ]
+  }
+}

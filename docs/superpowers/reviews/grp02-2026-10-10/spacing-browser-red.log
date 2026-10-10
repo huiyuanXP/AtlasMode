@@ -1,0 +1,38 @@
+
+Running 1 test using 1 worker
+
+  ✘  1 tests/e2e/groups-collapse.spec.ts:17:1 › group collapse preserves shared function aliases, true external call endpoints, layout and view across owned restart (2.7s)
+
+
+  1) tests/e2e/groups-collapse.spec.ts:17:1 › group collapse preserves shared function aliases, true external call endpoints, layout and view across owned restart 
+
+    Error: expect(received).toBeLessThanOrEqual(expected)
+
+    Expected: <= 0
+    Received:    78.35003662109375
+
+      124 |     const firstBounds=await card(g1.id).boundingBox(),secondBounds=await card(g2.id).boundingBox();
+      125 |     expect(firstBounds).not.toBeNull();expect(secondBounds).not.toBeNull();
+    > 126 |     expect(Math.min(firstBounds!.y+firstBounds!.height,secondBounds!.y+secondBounds!.height)-Math.max(firstBounds!.y,secondBounds!.y)).toBeLessThanOrEqual(0);
+          |                                                                                                                                        ^
+      127 |
+      128 |     await expect(
+      129 |       page.locator(`.code-card[data-domain-id="${alpha.id}"]`),
+        at /home/agent/projects/AtlasMode/tests/e2e/groups-collapse.spec.ts:126:136
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    artifacts/e2e/results/groups-collapse-group-coll-0cdef-d-view-across-owned-restart/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: artifacts/e2e/results/groups-collapse-group-coll-0cdef-d-view-across-owned-restart/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    artifacts/e2e/results/groups-collapse-group-coll-0cdef-d-view-across-owned-restart/trace.zip
+    Usage:
+
+        npx playwright show-trace artifacts/e2e/results/groups-collapse-group-coll-0cdef-d-view-across-owned-restart/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests/e2e/groups-collapse.spec.ts:17:1 › group collapse preserves shared function aliases, true external call endpoints, layout and view across owned restart 

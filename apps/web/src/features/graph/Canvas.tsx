@@ -17,6 +17,7 @@ import {
 } from "@xyflow/react";
 import type {
   CodeNode,
+  FunctionGroup,
   Operation,
   SubgraphResult,
   ViewState,
@@ -42,6 +43,8 @@ import {
   inspectionPlacement,
 } from "./inspection.js";
 import { circleFunctions, circleSelectedNodes } from "../groups/selection.js";
+import { projectGroups } from "../groups/projection.js";
+import { GroupCard } from "../groups/GroupCard.js";
 import { MapPanel } from "./MapPanel.js";
 import "./graph-inspection.css";
 function CodeCard({ data }: NodeProps<GraphNode>) {
@@ -52,6 +55,8 @@ function CodeCard({ data }: NodeProps<GraphNode>) {
   return (
     <div
       className={`code-card ${data.layer} kind-${n.kind} ${lane ? `funnel-${lane}` : ""} inspection-${data.highlight ?? "idle"}`}
+      data-domain-id={n.id}
+      data-group-id={data.groupId}
       data-funnel-lane={lane}
       data-highlight={String(data.highlight ?? "idle")}
     >
@@ -84,6 +89,11 @@ function CodeCard({ data }: NodeProps<GraphNode>) {
         </span>
         <span>{nodeIdentity(n, data.locale as "zh" | "en").typeLabel}</span>
       </div>
+      {data.groupId && (
+        <div className="group-mirror">
+          {zh.groupMirror} · {data.groupTitle}
+        </div>
+      )}
       <strong title={n.qualifiedName ?? n.name}>
         <NodeIdentity node={n} locale={data.locale as "zh" | "en"} />
       </strong>
@@ -193,7 +203,7 @@ function OverviewViewport({
   }, [active, saved, getViewport, setViewport]);
   return null;
 }
-const nodeTypes = { code: CodeCard };
+const nodeTypes = { code: CodeCard, group: GroupCard };
 // React Flow queues explicit fit options. Stable overview options avoid a
 // parent render overwriting that queued request with a fit of every node.
 const overviewFitOptions = { padding: 0.25, minZoom: 0.8, maxZoom: 1 };
@@ -201,6 +211,8 @@ export function Canvas(props: {
   graph?: SubgraphResult;
   projectId?: string;
   selectedNodeId?: string;
+  groups?: FunctionGroup[];
+  onToggleGroup?: (id: string) => void;
   groupSelectionMode?: boolean;
   groupSelectionIds?: string[];
   onGroupSelection?: (nodes: CodeNode[]) => void;
@@ -245,6 +257,16 @@ export function Canvas(props: {
     height: number;
   }>();
   const [hovered, setHovered] = useState<string>();
+  const [groupEvidence, setGroupEvidence] = useState<GraphEdge>();
+  useEffect(
+    () => setGroupEvidence(undefined),
+    [
+      props.projectId,
+      props.graph?.snapshotId,
+      props.groupSelectionMode,
+      props.funnel,
+    ],
+  );
   const hoverTimer = useRef<ReturnType<typeof setTimeout> | undefined>(
     undefined,
   );
@@ -294,7 +316,7 @@ export function Canvas(props: {
     observer.observe(canvas.current);
     return () => observer.disconnect();
   }, []);
-  const projection = useMemo(
+  const baseProjection = useMemo(
     () =>
       projectGraph(
         props.graph,
@@ -311,6 +333,27 @@ export function Canvas(props: {
       props.view.positions,
       props.view.locale,
       props.referenceNodes,
+    ],
+  );
+  const projection = useMemo(
+    () =>
+      props.groupSelectionMode || props.funnel
+        ? baseProjection
+        : projectGroups(
+            baseProjection,
+            props.groups ?? [],
+            props.view.collapsedGroupIds ?? [],
+            props.view.positions,
+            props.view.locale,
+          ),
+    [
+      baseProjection,
+      props.groupSelectionMode,
+      props.funnel,
+      props.groups,
+      props.view.collapsedGroupIds,
+      props.view.positions,
+      props.view.locale,
     ],
   );
   const [nodes, setNodes] = useState(projection.nodes);
@@ -428,7 +471,10 @@ export function Canvas(props: {
     const exit = (event: KeyboardEvent) => {
       if (event.key !== "Escape" || event.defaultPrevented) return;
       clearTimeout(clickTimer.current);
-      if (mapExpanded) {
+      if (groupEvidence) {
+        setGroupEvidence(undefined);
+        event.preventDefault();
+      } else if (mapExpanded) {
         setMapExpanded(false);
         event.preventDefault();
       } else if (props.inspection) {
@@ -443,6 +489,7 @@ export function Canvas(props: {
     window.addEventListener("keydown", exit);
     return () => window.removeEventListener("keydown", exit);
   }, [
+    groupEvidence,
     mapExpanded,
     props.inspection,
     props.funnel,
@@ -451,7 +498,7 @@ export function Canvas(props: {
     props.onExitFunnel,
   ]);
   const domain = (id: string) =>
-    projection.nodes.find((n) => n.id === id)?.data.node.id;
+    projection.nodes.find((n) => n.id === id && !n.data.group)?.data.node.id;
   const selectedFocus =
     props.funnel &&
     props.focusRequest &&
@@ -515,7 +562,11 @@ export function Canvas(props: {
     reconnectable: editable && e.reconnectable,
   }));
   const selectedCard = nodes.find(
-    (n) => n.data.node.id === props.selectedNodeId,
+    (n) =>
+      n.data.node.id === props.selectedNodeId ||
+      n.data.group?.loadedMembers.some(
+        (member) => member.id === props.selectedNodeId,
+      ),
   );
   const viewport = instance.current?.getViewport() ?? { x: 0, y: 0, zoom: 1 };
   const selectionRect = selectedCard
@@ -539,7 +590,9 @@ export function Canvas(props: {
   );
   // Expanded-map navigation keeps both panels in the layout captured on opening.
   // Pin the details to the same placement that chooses the map's opposite side.
-  const activeDetailPlacement = mapExpanded ? mapDetailPlacement : detailPlacement;
+  const activeDetailPlacement = mapExpanded
+    ? mapDetailPlacement
+    : detailPlacement;
   const mapAbove = mapSelectionRect ? mapSelectionRect.y - 58 - 16 : 0;
   const mapBelow = mapSelectionRect
     ? size.height - mapSelectionRect.y - mapSelectionRect.height - 28
@@ -608,7 +661,7 @@ export function Canvas(props: {
           .closest(".react-flow__node")
           ?.getAttribute("data-id");
         const node = nodes.find((n) => n.id === id);
-        if (node) previewNode(node.data.node.id);
+        if (node && !node.data.group) previewNode(node.data.node.id);
       }}
       onBlurCapture={stopHover}
     >
@@ -639,7 +692,12 @@ export function Canvas(props: {
           selectable:
             !props.groupSelectionMode ||
             (n.data.layer !== "plan" && n.data.node.kind === "function"),
-          data: { ...n.data, locale: props.view.locale },
+          data: {
+            ...n.data,
+            locale: props.view.locale,
+            onToggleGroup: props.onToggleGroup,
+            onSelectMember: props.onSelect,
+          },
         }))}
         edges={edges}
         nodeTypes={nodeTypes}
@@ -685,10 +743,13 @@ export function Canvas(props: {
         onPaneClick={() => {
           clearTimeout(clickTimer.current);
           stopHover();
+          setGroupEvidence(undefined);
           props.onCloseInspection?.();
           props.onPreviewRelation?.();
         }}
-        onNodeMouseEnter={(_, node) => previewNode(node.data.node.id)}
+        onNodeMouseEnter={(_, node) => {
+          if (!node.data.group) previewNode(node.data.node.id);
+        }}
         onNodeMouseLeave={stopHover}
         onEdgeMouseEnter={(_, edge) =>
           props.onPreviewRelation?.(edge.data?.domainId)
@@ -702,7 +763,7 @@ export function Canvas(props: {
           }
         }}
         onNodeClick={(event, node) => {
-          if (props.groupSelectionMode) return;
+          if (props.groupSelectionMode || node.data.group) return;
           if (!props.funnel && event.detail < 2)
             clickViewport.current = instance.current?.getViewport();
           clearTimeout(clickTimer.current);
@@ -714,7 +775,7 @@ export function Canvas(props: {
           );
         }}
         onNodeDoubleClick={(_, node) => {
-          if (props.groupSelectionMode) return;
+          if (props.groupSelectionMode || node.data.group) return;
           clearTimeout(clickTimer.current);
           if (
             node.data.node.kind === "file" ||
@@ -755,6 +816,10 @@ export function Canvas(props: {
         zoomOnDoubleClick={false}
         onEdgeClick={(_, edge) => {
           if (props.groupSelectionMode) return;
+          if (edge.data?.layer === "fact" && edge.data.groupProjection) {
+            setGroupEvidence(edge);
+            return;
+          }
           if (props.funnel?.root.kind !== "file" && edge.data)
             props.onEdge({ id: edge.id, ...edge.data });
         }}
@@ -847,6 +912,71 @@ export function Canvas(props: {
           }
         />
       </ReactFlow>
+      {groupEvidence?.data && (
+        <section className="group-evidence" aria-label={zh.groupEvidence}>
+          <button
+            aria-label={zh.close}
+            onClick={() => setGroupEvidence(undefined)}
+          >
+            ×
+          </button>
+          <h3>{zh.groupEvidence}</h3>
+          <code>{groupEvidence.data.domainId}</code>
+          {props.canEdit && (
+            <button
+              onClick={() => {
+                props.onEdge({ id: groupEvidence.id, ...groupEvidence.data! });
+                setGroupEvidence(undefined);
+              }}
+            >
+              {props.view.locale === "en"
+                ? "Plan a change to this relation"
+                : "规划修改此关系"}
+            </button>
+          )}
+          {[
+            ["sourceId", zh.groupEvidenceSource],
+            ["targetId", zh.groupEvidenceTarget],
+          ].map(([key, label]) => {
+            const id = groupEvidence.data?.[key as "sourceId" | "targetId"];
+            const node = baseProjection.nodes.find(
+              (item) => item.data.node.id === id,
+            )?.data.node;
+            return (
+              node && (
+                <div key={key}>
+                  <strong>{node.name}</strong>
+                  <code>{node.filePath}</code>
+                  <button
+                    onClick={() => {
+                      setGroupEvidence(undefined);
+                      props.onSelect(node);
+                    }}
+                  >
+                    {label}
+                  </button>
+                </div>
+              )
+            );
+          })}
+          {groupEvidence.data.evidence && (
+            <>
+              <code>
+                {groupEvidence.data.evidence.filePath}:
+                {groupEvidence.data.evidence.line}
+              </code>
+              <pre>{groupEvidence.data.evidence.text}</pre>
+            </>
+          )}
+          {groupEvidence.data.mirrored && (
+            <small>
+              {props.view.locale === "en"
+                ? "Same relation mirrored"
+                : "同一关系镜像"}
+            </small>
+          )}
+        </section>
+      )}
       {(props.selectedNodeId || hovered) && (
         <div className="inspection-legend">
           <span>
@@ -908,6 +1038,17 @@ export function Canvas(props: {
             {props.view.locale === "en" ? "Rearrange" : "重新排列"}
           </button>
           <button onClick={props.onExitFunnel}>{zh.exitFunnel}</button>
+        </div>
+      )}
+      {projection.nodes.some((node) => node.data.group) && (
+        <div className="group-projection-summary" role="status">
+          <span>
+            {zh.groupVisibleCards}:{" "}
+            {projection.nodes.filter((node) => node.data.group).length} ·{" "}
+            {zh.groupVisibleMirrors}:{" "}
+            {projection.nodes.filter((node) => node.data.groupId).length}
+          </span>
+          <small>{zh.groupBudgetHint}</small>
         </div>
       )}
       {!nodes.length && <div className="canvas-empty">{zh.graphEmpty}</div>}

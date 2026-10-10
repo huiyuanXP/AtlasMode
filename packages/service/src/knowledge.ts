@@ -67,17 +67,27 @@ export class Knowledge {
   }
   view(projectId: string): ViewState {
     this.snapshot(projectId);
-    return (
+    return this.normalizeView(
+      projectId,
       this.storage.get<ViewState>("views", projectId) ?? {
         positions: {},
         theme: "light",
         locale: "zh",
-      }
+      },
     );
   }
   saveView(projectId: string, view: ViewState): ViewState {
     this.snapshot(projectId);
-    inputKeys(view, ["positions", "theme", "locale"]);
+    inputKeys(view, ["positions", "theme", "locale", "collapsedGroupIds"]);
+    if (
+      view.collapsedGroupIds !== undefined &&
+      (!Array.isArray(view.collapsedGroupIds) ||
+        view.collapsedGroupIds.length > 200 ||
+        view.collapsedGroupIds.some(
+          (id) => typeof id !== "string" || id.length < 1 || id.length > 200,
+        ))
+    )
+      throw new DomainError("INVALID_INPUT", "Invalid collapsed group IDs.");
     if (
       !["light", "dark"].includes(view.theme) ||
       !["zh", "en"].includes(view.locale) ||
@@ -94,8 +104,19 @@ export class Knowledge {
           "Positions must be finite coordinates.",
         );
     }
-    this.storage.put("views", projectId, view);
-    return view;
+    const normalized = this.normalizeView(projectId, view);
+    this.storage.put("views", projectId, normalized);
+    return normalized;
+  }
+  private normalizeView(projectId: string, view: ViewState): ViewState {
+    if (view.collapsedGroupIds === undefined) return view;
+    const known = new Set(this.groups(projectId).map((group) => group.id));
+    return {
+      ...view,
+      collapsedGroupIds: [...new Set(view.collapsedGroupIds)].filter((id) =>
+        known.has(id),
+      ),
+    };
   }
   groups(projectId: string): FunctionGroup[] {
     this.snapshot(projectId);

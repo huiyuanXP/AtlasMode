@@ -788,6 +788,23 @@ export function createWorkspace(
       },
     );
   };
+  const toggleGroupCollapse = (id: string) => {
+    const state = get();
+    const known = new Set(
+      state.groups
+        .filter((group) => group.projectId === state.project?.id)
+        .map((group) => group.id),
+    );
+    if (!known.has(id) || id.length > 200) return;
+    const ids = [...new Set(state.view.collapsedGroupIds ?? [])].filter(
+      (value) => known.has(value) && value.length <= 200,
+    );
+    const next = ids.includes(id)
+      ? ids.filter((value) => value !== id)
+      : [...ids, id];
+    if (next.length > 200) return;
+    saveView({ ...state.view, collapsedGroupIds: next });
+  };
   const saveView = (view: ViewState) => {
     if (!get().project || get().busy.project) return;
     set({ view });
@@ -1591,6 +1608,7 @@ export function createWorkspace(
     search,
     refresh,
     saveView,
+    toggleGroupCollapse,
     savePlan,
     undo: () => travel("undo"),
     redo: () => travel("redo"),

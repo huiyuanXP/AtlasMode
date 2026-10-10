@@ -1,0 +1,8 @@
+
+Running 3 tests using 1 worker
+
+  ✓  1 tests/e2e/first-use.spec.ts:10:1 › first use offers an offline path and preserves optional AI drafts through disclosure (5.9s)
+  ✓  2 tests/e2e/groups-collapse.spec.ts:17:1 › group collapse preserves shared function aliases, true external call endpoints, layout and view across owned restart (6.9s)
+  ✓  3 tests/e2e/groups.spec.ts:17:1 › circle groups edit cross-directory shared functions and persist across owned-server restart without changing source (4.9s)
+
+  3 passed (20.1s)

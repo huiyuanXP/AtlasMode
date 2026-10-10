@@ -152,6 +152,15 @@ export function GroupsPanel({ app }: { app: Workspace }) {
         <article className="group" key={group.id}>
           <h3>{group.title}</h3>
           <p>{group.description}</p>
+          <button
+            type="button"
+            onClick={() => app.toggleGroupCollapse(group.id)}
+            disabled={!!state.busy.project}
+          >
+            {(state.view.collapsedGroupIds ?? []).includes(group.id)
+              ? text.expandGroup
+              : text.collapseGroup}
+          </button>
           <small>
             {text[group.source]} · {text.members}: {group.memberIds.length}
           </small>

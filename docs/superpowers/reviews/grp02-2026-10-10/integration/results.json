@@ -1,0 +1,91 @@
+[
+  {
+    "gate": "npm-ci",
+    "command": [
+      "npm",
+      "ci"
+    ],
+    "startedAt": "2026-10-10T15:53:58.260279+00:00",
+    "durationSeconds": 8.696,
+    "exitCode": 0,
+    "log": "/tmp/atlas-grp02-clean-20261010-8k6k_twz/logs/npm-ci.log",
+    "logSha256": "702882bd736a5c542ef386fe45003afb410510437309d59573a6de29bdaa014c"
+  },
+  {
+    "gate": "build",
+    "command": [
+      "npm",
+      "run",
+      "build"
+    ],
+    "startedAt": "2026-10-10T15:54:06.956869+00:00",
+    "durationSeconds": 13.587,
+    "exitCode": 0,
+    "log": "/tmp/atlas-grp02-clean-20261010-8k6k_twz/logs/build.log",
+    "logSha256": "6603115692a8711a4175a7f7acec39ea1edb92cc95388f30dcbd4c3630ba1e95"
+  },
+  {
+    "gate": "typecheck",
+    "command": [
+      "npm",
+      "run",
+      "typecheck"
+    ],
+    "startedAt": "2026-10-10T15:54:20.544134+00:00",
+    "durationSeconds": 24.053,
+    "exitCode": 0,
+    "log": "/tmp/atlas-grp02-clean-20261010-8k6k_twz/logs/typecheck.log",
+    "logSha256": "e5141ef26fb8210283066263ffc9e6d9b7f1f8373fbfc709be46ffa4fb6df7fe"
+  },
+  {
+    "gate": "lint",
+    "command": [
+      "npm",
+      "run",
+      "lint"
+    ],
+    "startedAt": "2026-10-10T15:54:44.597914+00:00",
+    "durationSeconds": 3.236,
+    "exitCode": 0,
+    "log": "/tmp/atlas-grp02-clean-20261010-8k6k_twz/logs/lint.log",
+    "logSha256": "7800494729c08273ed821839df88b07aa887e163a5d86a3fd5f0a034acfa0ca4"
+  },
+  {
+    "gate": "test",
+    "command": [
+      "npm",
+      "test"
+    ],
+    "startedAt": "2026-10-10T15:54:47.834144+00:00",
+    "durationSeconds": 62.764,
+    "exitCode": 0,
+    "log": "/tmp/atlas-grp02-clean-20261010-8k6k_twz/logs/test.log",
+    "logSha256": "97bd4d0c41d7c1286e70236cf0d0654053d100d4432c575369884b2d4ced133e"
+  },
+  {
+    "gate": "smoke",
+    "command": [
+      "npm",
+      "run",
+      "smoke"
+    ],
+    "startedAt": "2026-10-10T15:55:50.599567+00:00",
+    "durationSeconds": 5.543,
+    "exitCode": 0,
+    "log": "/tmp/atlas-grp02-clean-20261010-8k6k_twz/logs/smoke.log",
+    "logSha256": "744c39f61f4e04c1f2e295889ad5db62645ddadacf754a4e7008563dbe2e57b2"
+  },
+  {
+    "gate": "e2e",
+    "command": [
+      "npm",
+      "run",
+      "test:e2e"
+    ],
+    "startedAt": "2026-10-10T15:55:56.143331+00:00",
+    "durationSeconds": 113.211,
+    "exitCode": 1,
+    "log": "/tmp/atlas-grp02-clean-20261010-8k6k_twz/logs/e2e.log",
+    "logSha256": "3446a56e98e2d400fd66ca2db3c29c9cde142bd53d8d19a99bace199fdddd1ea"
+  }
+]

@@ -1,0 +1,2 @@
+PASS: 15 owned production inputs match compiled-snapshot receipt.
+PASS: scoped review Markdown links resolve.

@@ -267,6 +267,8 @@ export function WorkspacePanels({
           graph={graph}
           projectId={project.id}
           selectedNodeId={state.selectedNode?.id}
+          groups={state.groups}
+          onToggleGroup={app.toggleGroupCollapse}
           groupSelectionMode={state.groupSelectionMode}
           groupSelectionIds={state.groupSelection.map((n) => n.id)}
           onGroupSelection={app.setGroupSelection}

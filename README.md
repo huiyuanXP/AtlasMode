@@ -2,7 +2,7 @@
 
 用可编辑的代码关系图替代传统文字 Plan Mode。Agent 在实际修改代码之前，把规划叠加到现有项目图上；用户理解、调整并确认后，Agent 才实施。人通过图形理解项目，Agent 通过 MCP 查询同一份结构化模型。
 
-> 当前仓库已有本地 UI、真实 TS/JS/Python 索引、SQLite、stdio MCP、中文/英文、主题、功能集、目录约束及撤销重做。首轮 T01–T08 与整体审查通过，四项 Important 与两项 Minor 修复均独立复审通过；本轮精确检查结果见 [环境与验证](docs/environment.md)。固定目标的阶段、修订和统计见 [外部验证记录](docs/superpowers/validation-targets.md)，不将旧运行计数当作当前结果。基线86e6b12的原生 Linux/Windows/macOS CI及Linux Chromium已通过（[run37148507859](https://github.com/huiyuanXP/AtlasMode/actions/runs/37148507859)）；该历史阶段的实际 Codex/Claude 客户端连接尚未验证；本轮 Codex Profile 真实接入见下方更新。以下规格保留后续目标，组折叠/高级流程、知识迁移/备份、完整 CommonJS 值流和 references 图等仍有缺口，详见 [要求覆盖表](docs/superpowers/readme-coverage.md)。
+> 当前仓库已有本地 UI、真实 TS/JS/Python 索引、SQLite、stdio MCP、中文/英文、主题、功能集、目录约束及撤销重做。首轮 T01–T08 与整体审查通过，四项 Important 与两项 Minor 修复均独立复审通过；本轮精确检查结果见 [环境与验证](docs/environment.md)。固定目标的阶段、修订和统计见 [外部验证记录](docs/superpowers/validation-targets.md)，不将旧运行计数当作当前结果。基线86e6b12的原生 Linux/Windows/macOS CI及Linux Chromium已通过（[run37148507859](https://github.com/huiyuanXP/AtlasMode/actions/runs/37148507859)）；该历史阶段的实际 Codex/Claude 客户端连接尚未验证；本轮 Codex Profile 真实接入见下方更新。以下规格保留后续目标，组折叠已在GRP-02完成；高级流程、知识迁移/备份、完整 CommonJS 值流和 references 图等仍有缺口，详见 [要求覆盖表](docs/superpowers/readme-coverage.md)。
 
 
 本轮已完成 UI-05～UI-10 图检查交互，实际未批准规划和精确验证见 [验收报告](docs/superpowers/reviews/graph-inspection-2026-10-09/README.md)。
@@ -35,7 +35,7 @@ npm start
 类型标识来自 AST 声明信息，区分函数、方法、类、目录与文件；本地 Nerd 图标字体随网页分发，字体不可用时保留通用图标与类型文字。旧快照可继续读取，刷新索引后补齐声明类型。
 源码通过「查看源码」展开，精确参数表单集中在「高级编辑」。直接函数搜索在 Agent 未连接时也可使用。
 
-图上“圈选函数”进入矩形选择模式，可创建跨目录分组；“管理分组”可编辑名称、说明与完整成员，一个函数可属于多组。分组修改会使受影响规划需要重新确认，源码和路径保持原状。实际圈选、编辑与重启持久化见 [GRP-01验收](docs/superpowers/reviews/grp01-2026-10-10/README.md)。组折叠及高级sequence/wrapper另见后续票。
+图上“圈选函数”进入矩形选择模式，可创建跨目录分组；“管理分组”可编辑名称、说明与完整成员，一个函数可属于多组。分组修改会使受影响规划需要重新确认，源码和路径保持原状。实际圈选、编辑与重启持久化见 [GRP-01验收](docs/superpowers/reviews/grp01-2026-10-10/README.md)。GRP-02已实现折叠/展开、共享函数镜像及真实外部端点，刷新恢复视图，见 [验收](docs/superpowers/reviews/grp02-2026-10-10/README.md)。未加载范围与全局布局规模评估、高级sequence/wrapper仍见后续票。
 
 网页 Chat 复用本机 Codex/Claude CLI。Codex 支持既有账户认证或本机 Profile 的 Provider API 环境，不要求有 API 配置的用户再次 Device 登录。例如使用已经配置好的 `mimo` Profile：
 

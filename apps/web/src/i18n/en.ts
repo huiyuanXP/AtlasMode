@@ -1,5 +1,21 @@
 import type { zh } from "./zh.js";
 export const en: Record<keyof typeof zh, string> = {
+  collapseGroup: "Collapse",
+  expandGroup: "Expand",
+  groupVisibleCards: "Loaded scope: group cards",
+  groupVisibleMirrors: "expanded member mirrors",
+  groupBudgetHint: "Group view counts are additional to the fact query budget",
+  groupLoaded: "loaded members",
+  groupNotLoaded: "not loaded",
+  groupInternalCalls: "loaded internal calls",
+  groupInternalPlans: "loaded internal planned relations",
+  groupScopeHint: "Only the loaded scope is shown; unloaded calls are unknown",
+  groupMirror: "Same function mirrored",
+  groupEndpoints: "External function endpoints",
+  groupEvidence: "Call evidence",
+  groupEvidenceSource: "Inspect caller",
+  groupEvidenceTarget: "Inspect callee",
+
   welcomeFlow:
     "Open a project \u2192 search or browse code \u2192 inspect references and source \u2192 create a plan on the graph. Browsing and manual planning work without AI.",
   offlineBrowseHint:
@@ -79,7 +95,8 @@ export const en: Record<keyof typeof zh, string> = {
   graphHelp:
     "Hover to preview links, click for references, double-click for the dependency funnel. Drag any card. Esc closes the map, then details, then the funnel.",
   graphEmpty: "Choose an entry, search result or route step to explore",
-  bounded: "Expansion: up to 80 nodes / 240 relations; optionally 300 / 900.",
+  bounded:
+    "Code fact query budget: Expansion: up to 80 nodes / 240 relations; optionally 300 / 900.",
   expand: "Expand one level",
   expandMore: "Expand to 300 nodes",
   diagnostics: "Static analysis diagnostics",

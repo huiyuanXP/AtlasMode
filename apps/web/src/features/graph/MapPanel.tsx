@@ -1,6 +1,6 @@
 import type { CSSProperties } from "react";
 import { MiniMap, useReactFlow } from "@xyflow/react";
-import type { GraphNode, GraphEdge } from "./projection.js";
+import { focusTargets, type GraphNode, type GraphEdge } from "./projection.js";
 export function MapPanel({
   expanded,
   onExpanded,
@@ -29,7 +29,10 @@ export function MapPanel({
   const flow = useReactFlow<GraphNode, GraphEdge>();
   const text = (zh: string, en: string) => (locale === "en" ? en : zh);
   const center = () => {
-    const node = flow.getNodes().find((n) => n.data.node.id === selectedNodeId);
+    const node = focusTargets(
+      flow.getNodes(),
+      selectedNodeId ? { sequence: 0, nodeId: selectedNodeId } : undefined,
+    )[0];
     if (node)
       void flow.setCenter(
         node.position.x + (node.measured?.width ?? 260) / 2,
@@ -92,7 +95,14 @@ export function MapPanel({
         zoomStep={1.15}
         nodeStrokeWidth={3}
         nodeStrokeColor={(n) =>
-          n.data.node.id === selectedNodeId ? "#6550db" : "transparent"
+          focusTargets(
+            [n],
+            selectedNodeId
+              ? { sequence: 0, nodeId: selectedNodeId }
+              : undefined,
+          ).length
+            ? "#6550db"
+            : "transparent"
         }
         nodeColor={(n) =>
           n.data.layer === "plan"

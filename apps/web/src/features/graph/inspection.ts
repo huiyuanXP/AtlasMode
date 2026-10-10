@@ -8,29 +8,40 @@ export function inspectionHighlight(
   hovered?: string,
 ) {
   const root = selected ?? hovered;
+  const domainEndpoint = (edge: GraphEdge, side: "source" | "target") =>
+    (side === "source" ? edge.data?.sourceId : edge.data?.targetId) ??
+    nodes.find((n) => n.id === edge[side])?.data.node.id;
+  const rootIds = new Set(
+    nodes
+      .filter(
+        (n) =>
+          n.data.node.id === root ||
+          n.data.group?.loadedMembers.some((member) => member.id === root),
+      )
+      .map((n) => n.id),
+  );
   const active = relationId
     ? edges.filter((e) => e.data?.domainId === relationId)
     : root
       ? edges.filter(
           (e) =>
-            nodes.find((n) => n.id === e.source)?.data.node.id === root ||
-            nodes.find((n) => n.id === e.target)?.data.node.id === root,
+            domainEndpoint(e, "source") === root ||
+            domainEndpoint(e, "target") === root,
         )
       : [];
   const endpoints = new Set(active.flatMap((e) => [e.source, e.target]));
-  const rootId = nodes.find((n) => n.data.node.id === root)?.id;
-  if (rootId) endpoints.add(rootId);
+  for (const rootId of rootIds) endpoints.add(rootId);
   const enabled = !!root || !!relationId;
   return {
     nodes: nodes.map((n) => ({
       ...n,
-      selected: n.data.node.id === selected,
+      selected: !!selected && rootIds.has(n.id),
       data: {
         ...n.data,
         projectionData: n.data,
         highlight: !enabled
           ? "idle"
-          : n.id === rootId
+          : rootIds.has(n.id)
             ? "selected"
             : endpoints.has(n.id)
               ? "neighbor"
@@ -45,7 +56,7 @@ export function inspectionHighlight(
           ? "muted"
           : relationId
             ? "relation"
-            : e.target === rootId
+            : domainEndpoint(e, "target") === root
               ? "incoming"
               : "outgoing";
       const stroke =

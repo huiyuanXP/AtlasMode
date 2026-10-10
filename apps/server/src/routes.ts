@@ -75,6 +75,7 @@ const policy = z.strictObject({
   forbiddenDependencies: z.array(z.string()),
 });
 const view = z.strictObject({
+  collapsedGroupIds: z.array(z.string().min(1).max(200)).max(200).optional(),
   positions: z.record(id, z.strictObject({ x: z.number(), y: z.number() })),
   theme: z.enum(["light", "dark"]),
   locale: z.enum(["zh", "en"]),

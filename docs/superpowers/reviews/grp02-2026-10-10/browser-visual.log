@@ -1,0 +1,6 @@
+
+Running 1 test using 1 worker
+
+  ✓  1 tests/e2e/groups-collapse.spec.ts:17:1 › group collapse preserves shared function aliases, true external call endpoints, layout and view across owned restart (10.0s)
+
+  1 passed (12.3s)

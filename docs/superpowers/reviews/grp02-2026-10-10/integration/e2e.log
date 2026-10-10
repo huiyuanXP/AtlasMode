@@ -1,0 +1,61 @@
+
+> atlasmode@0.1.0 test:e2e
+> playwright test
+
+
+Running 19 tests using 1 worker
+
+  ✓   1 tests/e2e/agent-chat.spec.ts:26:1 › actual disconnected provider shows conversation shell and retains failed input; source and advanced controls are opt-in (2.7s)
+  ✓   2 tests/e2e/agent-chat.spec.ts:182:1 › labeled trusted test adapter streams through real bridge, journals drafts, focuses changes, cancels partial work and isolates projects (4.9s)
+  ✓   3 tests/e2e/breadcrumb-navigation.spec.ts:33:1 › breadcrumbs navigate function, indexed file, folders, root and truthful planned paths, superseding stale scope responses (8.2s)
+  ✓   4 tests/e2e/commonjs.spec.ts:22:3 › production browser displays captured package coverage truthfully in Chinese and English (4.2s)
+  ✓   5 tests/e2e/commonjs.spec.ts:22:3 › production browser displays unrecorded legacy package coverage truthfully in Chinese and English (4.6s)
+  ✓   6 tests/e2e/commonjs.spec.ts:221:1 › recorded zero manifests is distinct from unrecorded coverage (1.6s)
+  ✓   7 tests/e2e/direct-api.spec.ts:14:1 › Responses API fixture through real browser send, streamed draft and cancel (3.8s)
+  ✓   8 tests/e2e/first-use.spec.ts:10:1 › first use offers an offline path and preserves optional AI drafts through disclosure (5.5s)
+  ✓   9 tests/e2e/focus-navigation.spec.ts:35:1 › high-degree function and file funnels keep readable neighbor windows with truthful totals and restore overview (5.5s)
+  ✓  10 tests/e2e/focus-navigation.spec.ts:204:1 › semantic creation after overview and multi-change plan choice fit their affected cards (3.2s)
+  ✓  11 tests/e2e/focus-navigation.spec.ts:406:1 › double-click builds an animated directional funnel, restores overview and honors reduced motion for file dependencies (3.2s)
+  ✓  12 tests/e2e/forwarding.spec.ts:21:1 › production browser follows a two-hop entry to the real leaf, preserves authored source in both languages and exposes unsafe forwarding reason (3.7s)
+{"viewportWidth":1900,"canvasWidth":1190,"capturedDock":"inspection-overlay dock-side","panelsFit":true,"navigation":"zoom, drag, wheel, key pan, click changed camera"}
+{"viewportWidth":1600,"canvasWidth":930,"capturedDock":"inspection-overlay dock-side","panelsFit":true,"navigation":"zoom, drag, wheel, key pan, click changed camera"}
+  ✓  13 tests/e2e/graph-inspection.spec.ts:43:1 › inspection preserves the camera, uniquely previews repeated calls, and funnel dragging survives pages while maps navigate (11.1s)
+  ✓  14 tests/e2e/groups-collapse.spec.ts:17:1 › group collapse preserves shared function aliases, true external call endpoints, layout and view across owned restart (6.9s)
+  ✓  15 tests/e2e/groups.spec.ts:17:1 › circle groups edit cross-directory shared functions and persist across owned-server restart without changing source (4.9s)
+  ✓  16 tests/e2e/pending-plans.spec.ts:11:1 › 待审入口打开实际变更，选择改动与显式批准分别生效 (2.4s)
+  ✘  17 tests/e2e/planning.spec.mjs:18:1 › production UI and SDK share the complete planning, approval, persistence and verification flow offline (18.1s)
+  ✓  18 tests/e2e/tsconfig.spec.ts:17:3 › production browser displays captured configuration coverage truthfully in Chinese and English (6.5s)
+  ✓  19 tests/e2e/tsconfig.spec.ts:17:3 › production browser displays unrecorded legacy configuration coverage truthfully in Chinese and English (5.7s)
+
+
+  1) tests/e2e/planning.spec.mjs:18:1 › production UI and SDK share the complete planning, approval, persistence and verification flow offline 
+
+    Error: Timeout 10000ms exceeded while waiting on the predicate
+
+      84 |           return point !== null;
+      85 |         })
+    > 86 |         .toBe(true);
+         |          ^
+      87 |       await page.mouse.click(point.x, point.y);
+      88 |       await expect(
+      89 |         page.getByRole("combobox", { name: "Source function", exact: true }),
+        at clickEdge (/tmp/atlas-grp02-clean-20261010-8k6k_twz/workspace/tests/e2e/planning.spec.mjs:86:10)
+        at /tmp/atlas-grp02-clean-20261010-8k6k_twz/workspace/tests/e2e/planning.spec.mjs:370:5
+
+    attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+    artifacts/e2e/results/planning-production-UI-and-0ffc9-d-verification-flow-offline/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: artifacts/e2e/results/planning-production-UI-and-0ffc9-d-verification-flow-offline/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    artifacts/e2e/results/planning-production-UI-and-0ffc9-d-verification-flow-offline/trace.zip
+    Usage:
+
+        npx playwright show-trace artifacts/e2e/results/planning-production-UI-and-0ffc9-d-verification-flow-offline/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests/e2e/planning.spec.mjs:18:1 › production UI and SDK share the complete planning, approval, persistence and verification flow offline 
+  18 passed (1.9m)

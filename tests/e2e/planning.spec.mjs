@@ -47,36 +47,52 @@ test("production UI and SDK share the complete planning, approval, persistence a
       await page.getByRole("button", { name: "Fit view", exact: true }).click();
       // FocusViewport animates navigation for 250ms; wait for that documented transition.
       await page.waitForTimeout(300);
-      const edge = page
-        .getByTestId(`rf__edge-${id}`)
+      const escapedId = id.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      // A grouped relation retains its true ID across one or more visual routes.
+      const edges = page
+        .getByTestId(
+          new RegExp(
+            `^rf__edge-(?:${escapedId}|group-edge:${escapedId}:\\d+)$`,
+          ),
+        )
         .locator(".react-flow__edge-interaction");
       let point;
       await expect
         .poll(async () => {
-          point = await edge.evaluate((path) => {
-            // Crossing curves can cover the midpoint. Click a visible segment
-            // belonging to this relation, using actual browser hit testing.
-            for (let segment = 1; segment < 100; segment++) {
-              const fraction = segment / 100;
-              const p = path.getPointAtLength(path.getTotalLength() * fraction);
-              const transformed = new DOMPoint(p.x, p.y).matrixTransform(
-                path.getScreenCTM(),
-              );
-              for (const [dx, dy] of [
-                [0, 0],
-                [0, 4],
-                [0, -4],
-                [4, 0],
-                [-4, 0],
-              ]) {
-                const x = transformed.x + dx,
-                  y = transformed.y + dy;
-                const hit = document.elementFromPoint(x, y);
-                if (
-                  hit?.closest(".react-flow__edge") ===
-                  path.closest(".react-flow__edge")
-                )
-                  return { x, y };
+          point = await edges.evaluateAll((paths) => {
+            for (const path of paths) {
+              // Crossing curves can cover the midpoint. Click a visible segment
+              // belonging to this relation, using actual browser hit testing.
+              for (let segment = 1; segment < 100; segment++) {
+                const fraction = segment / 100;
+                const p = path.getPointAtLength(
+                  path.getTotalLength() * fraction,
+                );
+                const transformed = new DOMPoint(p.x, p.y).matrixTransform(
+                  path.getScreenCTM(),
+                );
+                for (const [dx, dy] of [
+                  [0, 0],
+                  [0, 4],
+                  [0, -4],
+                  [4, 0],
+                  [-4, 0],
+                ]) {
+                  const x = transformed.x + dx,
+                    y = transformed.y + dy;
+                  const hit = document.elementFromPoint(x, y);
+                  if (
+                    hit?.closest(".react-flow__edge") ===
+                    path.closest(".react-flow__edge")
+                  )
+                    return {
+                      x,
+                      y,
+                      visualRoute: path
+                        .closest(".react-flow__edge")
+                        .getAttribute("data-testid"),
+                    };
+                }
               }
             }
             return null;
@@ -84,7 +100,33 @@ test("production UI and SDK share the complete planning, approval, persistence a
           return point !== null;
         })
         .toBe(true);
+      console.log(
+        JSON.stringify({ requestedRelation: id, clickedRoute: point }),
+      );
       await page.mouse.click(point.x, point.y);
+      if (
+        id.startsWith("fact:") &&
+        point.visualRoute.startsWith("rf__edge-group-edge:")
+      ) {
+        const callEvidence = page.getByRole("region", {
+          name: "Call evidence",
+          exact: true,
+        });
+        await expect(callEvidence).toContainText(id.slice(5));
+        if (id === `fact:${callA.id}`) {
+          await expect(callEvidence).toContainText(node("caller").name);
+          await expect(callEvidence).toContainText(node("A").name);
+          await expect(callEvidence).toContainText(
+            `${callA.evidence.filePath}:${callA.evidence.line}`,
+          );
+        }
+        await callEvidence
+          .getByRole("button", {
+            name: "Plan a change to this relation",
+            exact: true,
+          })
+          .click();
+      }
       await expect(
         page.getByRole("combobox", { name: "Source function", exact: true }),
       ).toBeVisible();
@@ -94,6 +136,18 @@ test("production UI and SDK share the complete planning, approval, persistence a
           { exact: true },
         ),
       ).toBeVisible();
+      if (id === `fact:${callA.id}`) {
+        await expect(
+          page.getByRole("combobox", { name: "Source function", exact: true }),
+        ).toHaveValue(callA.sourceId);
+        // Fact reconnection deliberately requires an explicit target choice.
+        const target = page.getByRole("combobox", {
+          name: "Target function",
+          exact: true,
+        });
+        await target.selectOption(callA.targetId);
+        await expect(target).toHaveValue(callA.targetId);
+      }
     };
     mcp = await connectMcp(server.url);
     await context.grantPermissions(["clipboard-read", "clipboard-write"], {
@@ -384,11 +438,14 @@ test("production UI and SDK share the complete planning, approval, persistence a
         { kind: "remove_relation", relationId: callA.id },
       ]),
     );
-    await expect(
-      page.locator(
-        `.react-flow__node[data-id="fact:${node("requestWithRetry").id}"]`,
-      ),
-    ).toContainText("requestWithRetry");
+    const reconnectTarget = page
+      .locator(`.code-card[data-domain-id="${node("requestWithRetry").id}"]`)
+      .first();
+    await expect(reconnectTarget).toBeVisible();
+    await expect(reconnectTarget).toContainText("requestWithRetry");
+    await expect(reconnectTarget).toContainText(
+      node("requestWithRetry").filePath,
+    );
     await page
       .getByRole("button", { name: "Validate plan", exact: true })
       .click();
@@ -546,9 +603,9 @@ test("production UI and SDK share the complete planning, approval, persistence a
     await f.assertNotExecuted();
     await page.getByRole("button", { name: "Fit view", exact: true }).click();
     await expect(
-      page.locator(
-        `.react-flow__node[data-id="fact:${node("requestWithRetry").id}"]`,
-      ),
+      page
+        .locator(`.code-card[data-domain-id="${node("requestWithRetry").id}"]`)
+        .first(),
     ).toBeInViewport();
     await page.screenshot({
       path: join(screenshots, "desktop-light.png"),

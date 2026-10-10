@@ -3,8 +3,8 @@
 ## 当前工作（2026-10-10 UTC）
 
 首用离线路径、AI渐进披露、可读初始图与手动规划入口已实现并独立审查通过；精确证据见 [验收](reviews/first-use-2026-10-10/README.md)。
-GitHub真实7个Issue均open；本地36票17DONE/19未完成；SEC-01已DONE，AG-05为PARTIAL，GRP-02实施中；IDX-03、POL-01与AG-02先盘点/设计，其余待办按依赖推进。不能用本地状态代替远端结案。IDX-02静态workspace/exports映射已通过393/9、真实HTTP/MCP/浏览器与freshness/history/restart/crossproject，独立复审APPROVE，见 [验收](reviews/idx02-2026-10-10/README.md)。IDX-01完整Express入口已通过，见 [证据](reviews/idx01-2026-10-10/README.md)，保留历史FAIL。
-提交7528f78远端CI38064184377四job（Ubuntu/Windows/macOS native、Chromium）全部SUCCESS；同冻结clean快照全根build/typecheck/lint、781/65测试、smoke、18/18浏览器及安装审计0通过。SEC-01已DONE；GRP02不在该快照，独立集成正在执行。AG-05本地HTTP/SDK/SQLite/浏览器协议闭环已通过独立复审，真实外部Provider配置/最小调用授权仍待答复，保持PARTIAL。历史CI失败与首次复用产物TS2349日志及未确定根因保留。详见 [CI报告](reviews/ci-repair-2026-10-10/README.md)。
+GitHub真实7个Issue均open；本地36票18DONE/18未完成；SEC-01已DONE，AG-05为PARTIAL，GRP-02已完成；IDX-03与POL-01设计独立复审通过、限定文件TDD实施中；KN-01设计复审通过、新模块实施中；FS-01设计复审通过、UI窗口待交接，AG-02设计通过但源码writer未实施，其余待办按依赖推进。不能用本地状态代替远端结案。IDX-02静态workspace/exports映射已通过393/9、真实HTTP/MCP/浏览器与freshness/history/restart/crossproject，独立复审APPROVE，见 [验收](reviews/idx02-2026-10-10/README.md)。IDX-01完整Express入口已通过，见 [证据](reviews/idx01-2026-10-10/README.md)，保留历史FAIL。
+提交7528f78远端CI38064184377四job（Ubuntu/Windows/macOS native、Chromium）全部SUCCESS；同冻结clean快照全根build/typecheck/lint、781/65测试、smoke、18/18浏览器及安装审计0通过。SEC-01已DONE；GRP02不在该旧快照；其新独立集成795/72、smoke与浏览器18初次PASS+planning定向1PASS、独立复审已通过。AG-05本地HTTP/SDK/SQLite/浏览器协议闭环已通过独立复审，真实外部Provider配置/最小调用授权仍待答复，保持PARTIAL。历史CI失败与首次复用产物TS2349日志及未确定根因保留。详见 [CI报告](reviews/ci-repair-2026-10-10/README.md)。
 当前分支fix/first-use-20261010，保留已有AGENTS修改。用户最新授权按阶段同步文档后commit/push；不授权merge、生产部署或权限修改。下面旧阶段“不push”仅记录当时状态。
 neat-freak v3.0.0已配置并应用；生成记忆未写，临时预览已关闭，工作区与证据保留。
 
@@ -446,3 +446,7 @@ cfda22b已推送IDX02；与地图独立patch冻结联合快照fefda8e后，clean
 ## 2026-10-10 SEC01最终收尾
 
 2026-10-10 最终验收：提交7528f78302275acb11cb9a23b49cb284d2a7fd9f的远端CI [38064184377](https://github.com/huiyuanXP/AtlasMode/actions/runs/38064184377) 四个job全部SUCCESS：Linux、Windows、macOS native及Chromium。冻结锁SHA256 f26ef3a7cf494becb903226ef01d86dfa7ca1e014c271e284bb0db1b9cee49c4；对应clean隔离快照全根build/typecheck/lint、781/65测试、smoke及18/18浏览器通过，npm ci审计0。原始远端收据：[JSON](reviews/ci-repair-2026-10-10/remote-ci-38064184377.json)。此门禁不包含尚未提交的GRP02、IDX03等候选。
+
+## 2026-10-10 GRP02收尾
+
+15项冻结产品SHA与暂存/隔离归档一致，clean安装审计0，全根build/typecheck/lint、795/72、smoke通过。整套浏览器首次18/19，唯一旧fact定位改成同真实domain镜像/真实关系route后完整planning场景1/1通过，独立high限定复审APPROVE；不声称单次19/19。新远端CI提交后确认。源码改动与其原始失败、诊断99点、最终收据见 [GRP02](reviews/grp02-2026-10-10/README.md)。IDX03/POL01/KN01当前未完成候选不包含于GRP02提交。

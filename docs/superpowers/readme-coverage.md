@@ -26,7 +26,7 @@ UNIMPLEMENTED表示仍为后续需求。测试通过不等于原README所有目�
 | 中文/英文、主题、局部画布和入口浏览（问卷/P1）                 | PASS          | E2E界面语言/主题实际重启保留；入口/展开/搜索/源码；M3 cached help与快照提示RED→GREEN                                                                               |
 | 独立事实/规划层、新函数、已有箭头改接、移除helper（§3/P2/§12） | PASS          | 真实browser/MCP闭环：caller→A变为caller→requestWithRetry，事实remove+plan add；新函数复用同B，helper删除                                                           |
 | 规划目标文件修改及布局不移动文件（§3）                         | PARTIAL       | 表单修改为services/notes.ts、只保存规划；真实拖动布局保持revision/hash；专用文件/目录框拖入与路径预览未实现                                                        |
-| 功能集和多对多成员（§4/P4） | PARTIAL | GRP-01实际圈选、完整成员编辑/共享成员、SQLite重启与源码不动已通过独立复审；GRP-02折叠与外部端点实施中，不能用GRP01证据代替。[证据](reviews/grp01-2026-10-10/README.md) |
+| 功能集和多对多成员（§4/P4） | PARTIAL | GRP-01实际圈选、完整成员编辑/共享成员、SQLite重启与源码不动已通过独立复审；GRP-02折叠/展开、共享函数镜像与真实外部端点通过独立审查及隔离795/72、smoke、浏览器18项初次PASS+规划定向1PASS，见[证据](reviews/grp02-2026-10-10/README.md)。全局布局/规模评估仍归PERF02。[证据](reviews/grp01-2026-10-10/README.md) |
 | sequence/wrapper高级操作（§4/P4）                              | UNIMPLEMENTED | 当前优先capability；不把成员列表伪装成调用顺序，不自动生成wrapper                                                                                                  |
 | 说明、约束、失联知识保留（§5/9）                               | PARTIAL       | 规划annotation、组说明、目录purpose持久化；失联组成员显示missing；独立通用annotation编辑/重新绑定工作流未实现                                                      |
 | 目录职责/禁止依赖、知识修改需重新批准（§6/P4）                 | PARTIAL       | 真实policy save→revision+1，禁止requests.ts报错，purpose改变也撤销批准；自然语言职责人工判定，allowed/例外理由编辑未实现                                           |
@@ -98,7 +98,7 @@ UNIMPLEMENTED表示仍为后续需求。测试通过不等于原README所有目�
    SQLite 一致备份入口。不得用缓存清理删除唯一知识或审批历史。
 5. **目录约定文件闭环**：structure.json 读取、校验、原子写回及审计；允许/禁止
    依赖与有理由例外。区分显式机器约束和需要人工判断的自然语言职责。
-6. **完整分组交互和归属操作**：GRP-01成员编辑/圈选已完成，GRP-02折叠实施中，保留具体外部函数端点；明确
+6. **完整分组交互和归属操作**：GRP-01成员编辑/圈选已完成，GRP-02折叠/外部端点已完成，保留具体外部函数端点；明确
    文件归属拖动与普通布局拖动的模式，移动到目录时补全文件名并展示路径预览。
 7. **身份迁移和索引差异**：提出可审查的移动/重命名候选，保存明确接受的映射；
    报告调用方减少、引用消失和抽象绕过，避免把没有入边当成死代码。

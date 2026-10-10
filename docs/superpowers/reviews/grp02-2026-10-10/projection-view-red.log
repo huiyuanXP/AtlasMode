@@ -1,0 +1,94 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90m/home/agent/projects/AtlasMode[39m
+
+ [31m❯[39m apps/web/src/features/groups/inspection.test.ts [2m([22m[2m2 tests[22m[2m | [22m[31m2 failed[39m[2m)[22m[32m 22[2mms[22m[39m
+[31m   [31m×[31m highlights collapsed aliases by real endpoints and keeps incoming/outgoing directions[39m[32m 18[2mms[22m[39m
+[31m   [31m×[31m gives every shared function alias selected emphasis and identifies inbound mirrors by domain target[39m[32m 2[2mms[22m[39m
+ [31m❯[39m apps/web/src/features/groups/projection.test.ts [2m([22m[2m0 test[22m[2m)[22m
+ [31m❯[39m packages/service/src/group-view.test.ts [2m([22m[2m4 tests[22m[2m | [22m[31m2 failed[39m[2m)[22m[32m 84[2mms[22m[39m
+   [32m✓[39m keeps old ViewState without collapse metadata compatible[32m 25[2mms[22m[39m
+[31m   [31m×[31m deduplicates known project IDs and filters unknown, stale and foreign groups on read and write without invalidating plans[39m[32m 6[2mms[22m[39m
+   [32m✓[39m rejects unbounded and malformed collapse lists before persisting[32m 5[2mms[22m[39m
+[31m   [31m×[31m restores collapse and visual layout from a fresh SQLite instance[39m[32m 45[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Suites 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/features/groups/projection.test.ts[2m [ apps/web/src/features/groups/projection.test.ts ][22m
+[31m[1mError[22m: Cannot find module './projection.js' imported from /home/agent/projects/AtlasMode/apps/web/src/features/groups/projection.test.ts[39m
+[36m [2m❯[22m apps/web/src/features/groups/projection.test.ts:[2m4:1[22m[39m
+
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯[22m[39m
+
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 4 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m packages/service/src/group-view.test.ts[2m > [22mdeduplicates known project IDs and filters unknown, stale and foreign groups on read and write without invalidating plans
+[31m[1mDomainError[22m: Unexpected input fields.[39m
+[36m [2m❯[22m inputKeys packages/service/src/planning.ts:[2m23:11[22m[39m
+    [90m 21|[39m     [33mObject[39m[33m.[39m[34mkeys[39m(input)[33m.[39m[34msome[39m((key) [33m=>[39m [33m![39mkeys[33m.[39m[34mincludes[39m(key))
+    [90m 22|[39m   )
+    [90m 23|[39m     [35mthrow[39m [35mnew[39m [33mDomainError[39m([32m"INVALID_INPUT"[39m[33m,[39m [32m"Unexpected input fields."[39m)[33m;[39m
+    [90m   |[39m           [31m^[39m
+    [90m 24|[39m }
+    [90m 25|[39m [35mexport[39m [35mfunction[39m [34msemanticHash[39m(plan[33m:[39m [33mPlan[39m)[33m:[39m string {
+[90m [2m❯[22m Knowledge.saveView packages/service/src/knowledge.ts:[2m80:5[22m[39m
+[90m [2m❯[22m packages/service/src/group-view.test.ts:[2m15:19[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m packages/service/src/group-view.test.ts[2m > [22mrestores collapse and visual layout from a fresh SQLite instance
+[31m[1mDomainError[22m: Unexpected input fields.[39m
+[36m [2m❯[22m inputKeys packages/service/src/planning.ts:[2m23:11[22m[39m
+    [90m 21|[39m     [33mObject[39m[33m.[39m[34mkeys[39m(input)[33m.[39m[34msome[39m((key) [33m=>[39m [33m![39mkeys[33m.[39m[34mincludes[39m(key))
+    [90m 22|[39m   )
+    [90m 23|[39m     [35mthrow[39m [35mnew[39m [33mDomainError[39m([32m"INVALID_INPUT"[39m[33m,[39m [32m"Unexpected input fields."[39m)[33m;[39m
+    [90m   |[39m           [31m^[39m
+    [90m 24|[39m }
+    [90m 25|[39m [35mexport[39m [35mfunction[39m [34msemanticHash[39m(plan[33m:[39m [33mPlan[39m)[33m:[39m string {
+[90m [2m❯[22m Knowledge.saveView packages/service/src/knowledge.ts:[2m80:5[22m[39m
+[90m [2m❯[22m packages/service/src/group-view.test.ts:[2m20:290[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/features/groups/inspection.test.ts[2m > [22mhighlights collapsed aliases by real endpoints and keeps incoming/outgoing directions
+[31m[1mAssertionError[22m: expected [ 'muted', 'muted' ] to deeply equal [ 'outgoing', 'incoming' ][39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  [[22m
+[32m-   "outgoing",[39m
+[32m-   "incoming",[39m
+[31m+   "muted",[39m
+[31m+   "muted",[39m
+[2m  ][22m
+
+[36m [2m❯[22m apps/web/src/features/groups/inspection.test.ts:[2m8:99[22m[39m
+
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/features/groups/inspection.test.ts[2m > [22mgives every shared function alias selected emphasis and identifies inbound mirrors by domain target
+[31m[1mAssertionError[22m: expected [ 'selected', 'neighbor' ] to deeply equal [ 'selected', 'selected' ][39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  [[22m
+[2m    "selected",[22m
+[32m-   "selected",[39m
+[31m+   "neighbor",[39m
+[2m  ][22m
+
+[36m [2m❯[22m apps/web/src/features/groups/inspection.test.ts:[2m11:263[22m[39m
+
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/5]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m3 failed[39m[22m[90m (3)[39m
+[2m      Tests [22m [1m[31m4 failed[39m[22m[2m | [22m[1m[32m2 passed[39m[22m[90m (6)[39m
+[2m   Start at [22m 15:02:25
+[2m   Duration [22m 751ms[2m (transform 356ms, setup 0ms, import 461ms, tests 106ms, environment 1ms)[22m
+

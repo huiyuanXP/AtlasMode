@@ -1,0 +1,48 @@
+
+Running 1 test using 1 worker
+
+{"requestedRelation":"plan:new-call","clickedRoute":{"x":672.3078819538932,"y":343.609326839447,"visualRoute":"rf__edge-plan:new-call"}}
+{"requestedRelation":"fact:relation:2514edf3ce35a44e38e67e0f7b2a13e5","clickedRoute":{"x":973.6458839897023,"y":260.62849012148104,"visualRoute":"rf__edge-group-edge:fact:relation:2514edf3ce35a44e38e67e0f7b2a13e5:0"}}
+  ✘  1 tests/e2e/planning.spec.mjs:18:1 › production UI and SDK share the complete planning, approval, persistence and verification flow offline (21.0s)
+
+
+  1) tests/e2e/planning.spec.mjs:18:1 › production UI and SDK share the complete planning, approval, persistence and verification flow offline 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('combobox', { name: 'Source function', exact: true })
+    Expected: visible
+    Timeout: 10000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('combobox', { name: 'Source function', exact: true }) with timeout 10000ms
+      - waiting for getByRole('combobox', { name: 'Source function', exact: true })
+
+
+      107 |       await expect(
+      108 |         page.getByRole("combobox", { name: "Source function", exact: true }),
+    > 109 |       ).toBeVisible();
+          |         ^
+      110 |       await expect(
+      111 |         page.getByText(
+      112 |           `Selected relation: ${id.replace(/^(fact|plan):/, "")}`,
+        at clickEdge (/tmp/atlas-grp02-clean-20261010-8k6k_twz/workspace/tests/e2e/planning.spec.mjs:109:9)
+        at /tmp/atlas-grp02-clean-20261010-8k6k_twz/workspace/tests/e2e/planning.spec.mjs:397:5
+
+    attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../planning-helper-artifacts/planning-production-UI-and-0ffc9-d-verification-flow-offline/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../planning-helper-artifacts/planning-production-UI-and-0ffc9-d-verification-flow-offline/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../planning-helper-artifacts/planning-production-UI-and-0ffc9-d-verification-flow-offline/trace.zip
+    Usage:
+
+        npx playwright show-trace ../planning-helper-artifacts/planning-production-UI-and-0ffc9-d-verification-flow-offline/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests/e2e/planning.spec.mjs:18:1 › production UI and SDK share the complete planning, approval, persistence and verification flow offline 
