@@ -156,7 +156,27 @@ test("group collapse preserves shared function aliases, true external call endpo
     const clickPoint = await projected
       .first()
       .locator(".react-flow__edge-interaction")
-      .evaluate((path: SVGPathElement) => {
+      .evaluate(async (path: SVGPathElement) => {
+        // Fit applies on animation frames after the control click has returned.
+        // Observe the real path until its screen geometry has settled before
+        // taking the coordinate used by the native mouse below.
+        let previous = "",
+          stableFrames = 0;
+        const deadline = performance.now() + 5000;
+        while (stableFrames < 4) {
+          await new Promise<void>((done) => requestAnimationFrame(() => done()));
+          const matrix = path.getScreenCTM();
+          if (!matrix || !path.isConnected)
+            throw new Error("Requested relation detached during fit");
+          const geometry = [
+            matrix.a, matrix.b, matrix.c, matrix.d, matrix.e, matrix.f,
+            path.getAttribute("d"),
+          ].join("|");
+          stableFrames = geometry === previous ? stableFrames + 1 : 0;
+          previous = geometry;
+          if (performance.now() > deadline)
+            throw new Error("Requested relation did not settle after fit");
+        }
         const matrix = path.getScreenCTM()!,
           length = path.getTotalLength(),
           id = path.closest(".react-flow__edge")!.getAttribute("data-id");

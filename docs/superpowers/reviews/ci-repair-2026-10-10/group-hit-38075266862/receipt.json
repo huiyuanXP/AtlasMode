@@ -1,0 +1,8 @@
+{
+  "root": "/tmp/atlas-integration-fs-kn-pol-20261010-c9d842hi",
+  "workspace": "/tmp/atlas-integration-fs-kn-pol-20261010-c9d842hi/workspace",
+  "head": "8c305ae5fd68118f53d16e544e8b5f5dc81bfab5",
+  "created": "2026-10-10T18:20:01.701584+00:00",
+  "sourceOverlay": "none; await reviewed product freezes",
+  "npmCiExit": 0
+}
