@@ -1,0 +1,13 @@
+{
+  "extends": "/tmp/atlas-configcapture-clean-20261010-58e1s7w8/workspace/tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "/tmp/atlas-configcapture-clean-20261010-58e1s7w8/workspace",
+    "noEmit": true,
+    "typeRoots": [
+      "/tmp/atlas-configcapture-clean-20261010-58e1s7w8/workspace/node_modules/@types"
+    ]
+  },
+  "include": [
+    "/tmp/atlas-configcapture-clean-20261010-58e1s7w8/workspace/packages/indexer/src/configCapture.test.ts"
+  ]
+}

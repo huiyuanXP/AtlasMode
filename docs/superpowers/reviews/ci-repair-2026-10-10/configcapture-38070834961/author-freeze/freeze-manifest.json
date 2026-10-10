@@ -1,0 +1,25 @@
+{
+  "baseCommit": "c9b9206cb83f8bc440aa386140247b08a0eaa734",
+  "changedSource": [
+    "packages/indexer/src/configCapture.test.ts"
+  ],
+  "beforeSha256": "63ee995288c11508671b23c434218c43c1a4673e1137718003b2e058efdcb869",
+  "afterSha256": "d7a97f244028f7529ca3d87c0cb3944b3bdc53a94d30070572862d2fb2fab7ad",
+  "patchSha256": "deb6ed9711c3a197da7de67ea079ac8d9da5330b37356c8a62ffeee13f8b06e6",
+  "productionFileCount": 16,
+  "productionUnchanged": true,
+  "logs": {
+    "drain-GREEN.log": "eb770a7b58d3dc360a4ae1635ffcc22b8c73438d6a0fbbb6446e28287fcd4286",
+    "drain-failfast-RED.log": "b462472b732bd8ca8016e55569fab9dbbd2c9e14493c82620e7a0a6c16c8fab5",
+    "final-26-GREEN.log": "8b8754d54c3abdfebdb19e33a3410438072ee0250714aeb8c720439f45375c94",
+    "final-scoped-lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "fixture-noEmit.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "linux-GREEN.log": "cf15a1c3350e7b7720e51b31834252c78d8f7ec2a0dbfee8b75b896d27ee23b2",
+    "linux-baseline.log": "0a9e7938e9f78b34d18359cac5aa2ba27e01ec56f99c18094e78c343a5c682dd",
+    "scoped-lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "scoped-noEmit.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "windows-ci-original-FAIL.log": "84225397ea16881b7528e43c203fd8084467a146c94fac28c1fd5c588c9b9151"
+  },
+  "frozenUtc": "2026-10-10T17:32:03.663713+00:00",
+  "status": "Linux scoped PASS; native Windows rerun and independent review pending"
+}

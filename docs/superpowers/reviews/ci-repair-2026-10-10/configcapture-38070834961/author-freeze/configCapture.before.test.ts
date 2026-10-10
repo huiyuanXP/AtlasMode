@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import * as fs from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
@@ -14,16 +14,7 @@ vi.mock("node:fs/promises", async (importOriginal) => {
 const nativeFs = await vi.importActual<typeof fs>("node:fs/promises");
 
 const temps: string[] = [];
-const fixtureOperations: Promise<string>[] = [];
-function fixture(
-  inputs: Record<string, string | Buffer>,
-  aliasedParent = false,
-) {
-  const operation = createFixture(inputs, aliasedParent);
-  fixtureOperations.push(operation);
-  return operation;
-}
-async function createFixture(
+async function fixture(
   inputs: Record<string, string | Buffer>,
   aliasedParent = false,
 ) {
@@ -41,133 +32,25 @@ async function createFixture(
     await fs.mkdtemp(join(parent, "codemap-config-")),
   );
   if (!aliasedParent) temps.push(root);
-  const entries = Object.entries(inputs);
-  const directories = new Set(entries.map(([path]) => dirname(join(root, path))));
-  for (const directory of directories)
-    await fs.mkdir(directory, { recursive: true });
-  let next = 0;
-  const writes = await Promise.allSettled(
-    Array.from({ length: Math.min(4, entries.length) }, async () => {
-      while (next < entries.length) {
-        const [path, bytes] = entries[next++]!;
-        await fs.writeFile(join(root, path), bytes);
-      }
-    }),
-  );
-  // A failed worker must not leave other owned writes racing directory removal.
-  for (const write of writes)
-    if (write.status === "rejected") throw write.reason;
+  for (const [path, bytes] of Object.entries(inputs)) {
+    await fs.mkdir(dirname(join(root, path)), { recursive: true });
+    await fs.writeFile(join(root, path), bytes);
+  }
   return root;
 }
-async function cleanupFixtures() {
-  // Vitest timeouts do not cancel an async fixture. Drain owned setup before
-  // deleting roots, including a setup that exceeded its hook deadline.
-  await Promise.allSettled(fixtureOperations.splice(0));
-  await Promise.all(
-    temps.splice(0).map((p) => fs.rm(p, { recursive: true, force: true })),
-  );
-}
 afterEach(async () => {
-  await cleanupFixtures();
   vi.restoreAllMocks();
   vi.clearAllMocks();
   vi.mocked(fs.open).mockReset().mockImplementation(nativeFs.open);
+  await Promise.all(
+    temps.splice(0).map((p) => fs.rm(p, { recursive: true, force: true })),
+  );
 });
 const padded = (size: number) => "{}" + " ".repeat(size - 2);
 const paths = (capture: Awaited<ReturnType<typeof captureConfigurations>>) =>
   capture.files.map((f) => f.path);
 
 describe("captured configuration inputs", () => {
-  it("drains bounded fixture writers after a real write failure before cleanup", async () => {
-    const gate = () => {
-      let release!: () => void;
-      const promise = new Promise<void>((resolve) => {
-        release = resolve;
-      });
-      return { promise, release };
-    };
-    const fourStarted = gate(),
-      failFirst = gate(),
-      failedWrite = gate(),
-      finishOthers = gate();
-    let active = 0,
-      peak = 0,
-      started = 0,
-      finished = 0,
-      root = "";
-    let fixtureFinished = false,
-      cleanupFinished = false;
-    const ownedWrites: Promise<void>[] = [];
-    vi.spyOn(fs, "writeFile").mockImplementation((...args: Parameters<typeof fs.writeFile>) => {
-      const write = (async () => {
-        root = dirname(String(args[0]));
-        active++;
-        peak = Math.max(peak, active);
-        if (++started === 4) fourStarted.release();
-        try {
-          if (String(args[0]).endsWith("tsconfig.0.json")) {
-            await failFirst.promise;
-            failedWrite.release();
-            throw new Error("OWNED_FIXTURE_WRITE_FAILURE");
-          }
-          await finishOthers.promise;
-          await nativeFs.writeFile(...args);
-        } finally {
-          active--;
-          finished++;
-        }
-      })();
-      ownedWrites.push(write);
-      return write;
-    });
-    const operation = fixture(
-      Object.fromEntries(
-        Array.from({ length: 8 }, (_, i) => [`tsconfig.${i}.json`, "{}"]),
-      ),
-    );
-    const outcome = operation.then(
-      () => {
-        fixtureFinished = true;
-        return undefined;
-      },
-      (error: unknown) => {
-        fixtureFinished = true;
-        return error;
-      },
-    );
-    let cleanup: Promise<void> | undefined;
-    try {
-      await fourStarted.promise;
-      cleanup = cleanupFixtures().then(() => {
-        cleanupFinished = true;
-      });
-      failFirst.release();
-      await failedWrite.promise;
-      // Drain promise reactions while the remaining real filesystem writes
-      // stay behind an explicit barrier; this is not a timing/sleep assertion.
-      await new Promise<void>((resolve) => setImmediate(resolve));
-      expect(fixtureFinished).toBe(false);
-      expect(cleanupFinished).toBe(false);
-      finishOthers.release();
-      expect(await outcome).toEqual(new Error("OWNED_FIXTURE_WRITE_FAILURE"));
-      await cleanup;
-      expect(peak).toBe(4);
-      expect(started).toBe(8);
-      expect(finished).toBe(8);
-      expect(active).toBe(0);
-      await expect(nativeFs.stat(root)).rejects.toMatchObject({ code: "ENOENT" });
-    } finally {
-      failFirst.release();
-      finishOthers.release();
-      await Promise.allSettled([
-        outcome,
-        ...(cleanup ? [cleanup] : []),
-        ...ownedWrites,
-      ]);
-      if (root) await nativeFs.rm(root, { recursive: true, force: true });
-    }
-  });
-
   it("preserves unreadable capture fault injection through an aliased temporary parent", async () => {
     const root = await fixture({ "tsconfig.json": "{}" }, true);
     vi.mocked(fs.open).mockImplementation(
@@ -383,20 +266,16 @@ describe("captured configuration inputs", () => {
     },
   );
 
-  describe.each([512, 513])("%i eligible configuration seeds", (count) => {
-    const inputs = Object.fromEntries(
-      Array.from({ length: count }, (_, i) => [
-        `tsconfig.${String(i).padStart(3, "0")}.json`,
-        "{}",
-      ]),
-    );
-    let root: string;
-    beforeEach(async () => {
-      // Fixture preparation has its own hook budget; the test measures the
-      // real 512/513 capture boundary without serial setup IO in its deadline.
-      root = await fixture(inputs);
-    });
-    it(`enforces the 512 file limit for ${count} eligible seeds`, async () => {
+  it.each([512, 513])(
+    "enforces the 512 file limit for %i eligible seeds",
+    async (count) => {
+      const inputs = Object.fromEntries(
+        Array.from({ length: count }, (_, i) => [
+          `tsconfig.${String(i).padStart(3, "0")}.json`,
+          "{}",
+        ]),
+      );
+      const root = await fixture(inputs);
       const result = await captureConfigurations(
         root,
         Object.keys(inputs).reverse(),
@@ -405,8 +284,8 @@ describe("captured configuration inputs", () => {
       expect(result.diagnostics.length).toBe(count === 512 ? 0 : 1);
       if (count === 513)
         expect(result.diagnostics[0]?.filePath).toBe("tsconfig.512.json");
-    });
-  });
+    },
+  );
 
   it.each([16, 17])(
     "bounds an extends chain of %i configuration levels",

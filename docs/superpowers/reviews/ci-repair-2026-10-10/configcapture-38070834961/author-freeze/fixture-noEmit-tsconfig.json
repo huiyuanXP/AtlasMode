@@ -1,0 +1,13 @@
+{
+  "extends": "/home/agent/projects/AtlasMode/tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "/home/agent/projects/AtlasMode",
+    "noEmit": true,
+    "typeRoots": [
+      "/home/agent/projects/AtlasMode/node_modules/@types"
+    ]
+  },
+  "include": [
+    "/home/agent/projects/AtlasMode/packages/indexer/src/configCapture.test.ts"
+  ]
+}

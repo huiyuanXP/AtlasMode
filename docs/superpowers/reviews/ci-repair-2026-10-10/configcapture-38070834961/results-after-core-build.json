@@ -1,0 +1,22 @@
+[
+  {
+    "check": "core-build",
+    "exit": 0,
+    "seconds": 3.232
+  },
+  {
+    "check": "scoped-tests-after-core-build",
+    "exit": 0,
+    "seconds": 3.842
+  },
+  {
+    "check": "scoped-lint",
+    "exit": 0,
+    "seconds": 1.256
+  },
+  {
+    "check": "indexer-noemit",
+    "exit": 0,
+    "seconds": 1.572
+  }
+]

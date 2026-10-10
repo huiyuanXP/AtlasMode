@@ -42,11 +42,10 @@ async function createFixture(
   );
   if (!aliasedParent) temps.push(root);
   const entries = Object.entries(inputs);
-  const directories = new Set(entries.map(([path]) => dirname(join(root, path))));
-  for (const directory of directories)
+  for (const directory of new Set(entries.map(([path]) => dirname(join(root, path)))))
     await fs.mkdir(directory, { recursive: true });
   let next = 0;
-  const writes = await Promise.allSettled(
+  const writes = await Promise.all(
     Array.from({ length: Math.min(4, entries.length) }, async () => {
       while (next < entries.length) {
         const [path, bytes] = entries[next++]!;
@@ -81,22 +80,12 @@ describe("captured configuration inputs", () => {
   it("drains bounded fixture writers after a real write failure before cleanup", async () => {
     const gate = () => {
       let release!: () => void;
-      const promise = new Promise<void>((resolve) => {
-        release = resolve;
-      });
+      const promise = new Promise<void>((resolve) => { release = resolve; });
       return { promise, release };
     };
-    const fourStarted = gate(),
-      failFirst = gate(),
-      failedWrite = gate(),
-      finishOthers = gate();
-    let active = 0,
-      peak = 0,
-      started = 0,
-      finished = 0,
-      root = "";
-    let fixtureFinished = false,
-      cleanupFinished = false;
+    const fourStarted = gate(), failFirst = gate(), failedWrite = gate(), finishOthers = gate();
+    let active = 0, peak = 0, started = 0, finished = 0, root = "";
+    let fixtureFinished = false, cleanupFinished = false;
     const ownedWrites: Promise<void>[] = [];
     vi.spyOn(fs, "writeFile").mockImplementation((...args: Parameters<typeof fs.writeFile>) => {
       const write = (async () => {
@@ -120,27 +109,17 @@ describe("captured configuration inputs", () => {
       ownedWrites.push(write);
       return write;
     });
-    const operation = fixture(
-      Object.fromEntries(
-        Array.from({ length: 8 }, (_, i) => [`tsconfig.${i}.json`, "{}"]),
-      ),
-    );
+    const operation = fixture(Object.fromEntries(
+      Array.from({ length: 8 }, (_, i) => [`tsconfig.${i}.json`, "{}"]),
+    ));
     const outcome = operation.then(
-      () => {
-        fixtureFinished = true;
-        return undefined;
-      },
-      (error: unknown) => {
-        fixtureFinished = true;
-        return error;
-      },
+      () => { fixtureFinished = true; return undefined; },
+      (error: unknown) => { fixtureFinished = true; return error; },
     );
     let cleanup: Promise<void> | undefined;
     try {
       await fourStarted.promise;
-      cleanup = cleanupFixtures().then(() => {
-        cleanupFinished = true;
-      });
+      cleanup = cleanupFixtures().then(() => { cleanupFinished = true; });
       failFirst.release();
       await failedWrite.promise;
       // Drain promise reactions while the remaining real filesystem writes
@@ -159,11 +138,7 @@ describe("captured configuration inputs", () => {
     } finally {
       failFirst.release();
       finishOthers.release();
-      await Promise.allSettled([
-        outcome,
-        ...(cleanup ? [cleanup] : []),
-        ...ownedWrites,
-      ]);
+      await Promise.allSettled([outcome, ...(cleanup ? [cleanup] : []), ...ownedWrites]);
       if (root) await nativeFs.rm(root, { recursive: true, force: true });
     }
   });

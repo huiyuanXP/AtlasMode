@@ -1,0 +1,7 @@
+[
+  {
+    "check": "scoped-tests",
+    "exit": 1,
+    "seconds": 1.866
+  }
+]
