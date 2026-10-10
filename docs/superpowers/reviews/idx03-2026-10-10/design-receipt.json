@@ -1,0 +1,24 @@
+{
+  "observedAt": "2026-10-10T15:45:34.819075+00:00",
+  "stage": "design-only-rev1",
+  "status": "APPROVE",
+  "reviewer": "existing idx02_review gpt-6.1-sol high",
+  "review": {
+    "critical": 0,
+    "important": 0,
+    "minor": 0
+  },
+  "implementation": "not started; ticket TODO; core/Nav/i18n/build ownership window controller-coordinated",
+  "checks": "Read-only documents; no product tests/build/code writes",
+  "sha256": {
+    "docs/superpowers/specs/2026-10-10-idx03-design.md": "a8cea6f1608e30a64fe0918e53d0e66f9323fe4f3657fe6d6ff0d95953db826c",
+    "docs/superpowers/plans/2026-10-10-idx03.md": "e61340493440d59828f66d0bfb54826631df2e3ffa48f29580fbae780d2bd710",
+    "docs/superpowers/reviews/idx03-2026-10-10/design-inventory.md": "64c13fb5895a9f81aac7b90c25dd939e705ae20811f27c2861dab6a4631b5b56",
+    "docs/superpowers/reviews/idx03-2026-10-10/independent-design-review-rev0.md": "79cc36f4876c1467161971a5cc8fa59e2afd64aca68a1e6d84eff2b1192f8a31",
+    "docs/superpowers/reviews/idx03-2026-10-10/independent-design-review-rev1.md": "495ff8f6d7dfdcc268e78fd78a016993fe18bfe0e365b281539caa839ffc009b",
+    "docs/superpowers/reviews/idx03-2026-10-10/rev0/2026-10-10-idx03-design.md": "785cb0ef5454c3bae160dfb0cf5b6a3d73b56abe026b0bc7ffdabdc79302da2e",
+    "docs/superpowers/reviews/idx03-2026-10-10/rev0/2026-10-10-idx03.md": "595b99c04ae8c2b302620fedc2e09d5c91dd3c1fe87c3fa25b9bf73e2000e1ea",
+    "docs/superpowers/reviews/idx03-2026-10-10/review-rev0-raw.md": "ab97c968c0bc5f7c0fedf701d1888c1a02810170c1c07ee3e59f8de57cfa558f",
+    "docs/superpowers/reviews/idx03-2026-10-10/review-rev1-raw.md": "2d6c55bb02306ded86e78eaad275a1bb7a41854c80c7300e0e7fb0263359c1fa"
+  }
+}

@@ -22,6 +22,45 @@ export type Relation = {
   evidence: { filePath: string; line: number; text?: string };
   reason?: string;
 };
+export type ConfigurationScopeStatus =
+  "resolved" | "unconfigured" | "ambiguous" | "invalid";
+export type ConfigurationProjectGraph = {
+  version: 1;
+  status: "complete" | "partial";
+  counts: {
+    observedRoots: number;
+    observedProjects: number;
+    observedReferences: number;
+    sourceScopes: number;
+    resolved: number;
+    unconfigured: number;
+    ambiguous: number;
+    invalid: number;
+  };
+  roots: string[];
+  projects: { configPath: string; status: "resolved" | "invalid" }[];
+  references: {
+    sourceConfigPath: string;
+    referencePathPreview: string;
+    targetConfigPath?: string;
+    status: "resolved" | "invalid" | "unavailable" | "cycle" | "budget";
+    reason?: string;
+    referencePathTruncated: boolean;
+    reasonTruncated: boolean;
+  }[];
+  scopes: {
+    sourcePath: string;
+    configPath?: string;
+    status: ConfigurationScopeStatus;
+  }[];
+  truncated: {
+    roots: boolean;
+    projects: boolean;
+    references: boolean;
+    scopes: boolean;
+  };
+};
+
 export type CodeSnapshot = {
   id: string;
   projectId: string;
@@ -34,6 +73,7 @@ export type CodeSnapshot = {
   coverage: {
     files: string[];
     configurationFiles?: string[];
+    configurationProjectGraph?: ConfigurationProjectGraph;
     packageFiles?: string[];
     excludedPatterns: string[];
     unresolvedCount: number;

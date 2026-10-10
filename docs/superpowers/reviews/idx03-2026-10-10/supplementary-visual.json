@@ -1,0 +1,474 @@
+{
+  "status": "passed",
+  "stage": "same compiled graph final-state visual evidence",
+  "project": {
+    "id": "project:f33adeb6fcecd58dd2925becbd60e743",
+    "path": "/tmp/atlasmode-idx03-fixture-IZpWRj",
+    "name": "atlasmode-idx03-fixture-IZpWRj",
+    "snapshotId": "snapshot:e48b0e8051ae2ed9802c499c0662f65a"
+  },
+  "contentHash": "1783d164396dc81f27f8b31e65700708e7ee95b04378b3e1e34292dbc10a9a44",
+  "sourceTarget": "/tmp/atlasmode-idx03-fixture-IZpWRj",
+  "coverage": {
+    "files": [
+      "app/cjs-entry.cjs",
+      "app/entry.ts",
+      "app/no-import.ts",
+      "app/side-effect.ts",
+      "bulk/file000.ts",
+      "bulk/file001.ts",
+      "bulk/file002.ts",
+      "bulk/file003.ts",
+      "bulk/file004.ts",
+      "bulk/file005.ts",
+      "bulk/file006.ts",
+      "bulk/file007.ts",
+      "bulk/file008.ts",
+      "bulk/file009.ts",
+      "bulk/file010.ts",
+      "bulk/file011.ts",
+      "bulk/file012.ts",
+      "bulk/file013.ts",
+      "bulk/file014.ts",
+      "bulk/file015.ts",
+      "bulk/file016.ts",
+      "bulk/file017.ts",
+      "bulk/file018.ts",
+      "bulk/file019.ts",
+      "bulk/file020.ts",
+      "bulk/file021.ts",
+      "bulk/file022.ts",
+      "bulk/file023.ts",
+      "bulk/file024.ts",
+      "bulk/file025.ts",
+      "bulk/file026.ts",
+      "bulk/file027.ts",
+      "bulk/file028.ts",
+      "bulk/file029.ts",
+      "bulk/file030.ts",
+      "bulk/file031.ts",
+      "bulk/file032.ts",
+      "bulk/file033.ts",
+      "bulk/file034.ts",
+      "bulk/file035.ts",
+      "bulk/file036.ts",
+      "bulk/file037.ts",
+      "bulk/file038.ts",
+      "bulk/file039.ts",
+      "bulk/file040.ts",
+      "bulk/file041.ts",
+      "bulk/file042.ts",
+      "bulk/file043.ts",
+      "bulk/file044.ts",
+      "bulk/file045.ts",
+      "bulk/file046.ts",
+      "bulk/file047.ts",
+      "bulk/file048.ts",
+      "bulk/file049.ts",
+      "bulk/file050.ts",
+      "bulk/file051.ts",
+      "bulk/file052.ts",
+      "bulk/file053.ts",
+      "bulk/file054.ts",
+      "bulk/file055.ts",
+      "cjslib/main.cjs",
+      "lib/global.ts",
+      "lib/main.ts",
+      "lib/other.ts",
+      "mutator/change.cjs",
+      "never-execute.ts"
+    ],
+    "configurationFiles": [
+      "configs/app.json",
+      "configs/bulk.json",
+      "configs/cjslib.json",
+      "configs/lib.json",
+      "configs/mutator.json",
+      "tsconfig.json"
+    ],
+    "configurationProjectGraph": {
+      "version": 1,
+      "status": "partial",
+      "counts": {
+        "observedRoots": 1,
+        "observedProjects": 6,
+        "observedReferences": 7,
+        "sourceScopes": 66,
+        "resolved": 65,
+        "unconfigured": 1,
+        "ambiguous": 0,
+        "invalid": 0
+      },
+      "roots": [
+        "tsconfig.json"
+      ],
+      "projects": [
+        {
+          "configPath": "configs/app.json",
+          "status": "resolved"
+        },
+        {
+          "configPath": "configs/bulk.json",
+          "status": "resolved"
+        },
+        {
+          "configPath": "configs/cjslib.json",
+          "status": "resolved"
+        },
+        {
+          "configPath": "configs/lib.json",
+          "status": "resolved"
+        },
+        {
+          "configPath": "configs/mutator.json",
+          "status": "resolved"
+        },
+        {
+          "configPath": "tsconfig.json",
+          "status": "invalid"
+        }
+      ],
+      "references": [
+        {
+          "sourceConfigPath": "configs/app.json",
+          "referencePathPreview": "./cjslib.json",
+          "targetConfigPath": "configs/cjslib.json",
+          "status": "resolved",
+          "referencePathTruncated": false,
+          "reasonTruncated": false
+        },
+        {
+          "sourceConfigPath": "configs/app.json",
+          "referencePathPreview": "./lib.json",
+          "targetConfigPath": "configs/lib.json",
+          "status": "resolved",
+          "referencePathTruncated": false,
+          "reasonTruncated": false
+        },
+        {
+          "sourceConfigPath": "tsconfig.json",
+          "referencePathPreview": "../../outside",
+          "status": "invalid",
+          "reason": "reference path escapes outside the repository",
+          "referencePathTruncated": false,
+          "reasonTruncated": false
+        },
+        {
+          "sourceConfigPath": "tsconfig.json",
+          "referencePathPreview": "./configs/app.json",
+          "targetConfigPath": "configs/app.json",
+          "status": "resolved",
+          "referencePathTruncated": false,
+          "reasonTruncated": false
+        },
+        {
+          "sourceConfigPath": "tsconfig.json",
+          "referencePathPreview": "./configs/bulk.json",
+          "targetConfigPath": "configs/bulk.json",
+          "status": "resolved",
+          "referencePathTruncated": false,
+          "reasonTruncated": false
+        },
+        {
+          "sourceConfigPath": "tsconfig.json",
+          "referencePathPreview": "./configs/mutator.json",
+          "targetConfigPath": "configs/mutator.json",
+          "status": "resolved",
+          "referencePathTruncated": false,
+          "reasonTruncated": false
+        },
+        {
+          "sourceConfigPath": "tsconfig.json",
+          "referencePathPreview": "./missing",
+          "targetConfigPath": "missing/tsconfig.json",
+          "status": "unavailable",
+          "reason": "Reference configuration unavailable in captured inputs (missing, excluded, ignored, symlinked or unreadable)",
+          "referencePathTruncated": false,
+          "reasonTruncated": false
+        }
+      ],
+      "scopes": [
+        {
+          "sourcePath": "app/cjs-entry.cjs",
+          "configPath": "configs/app.json",
+          "status": "resolved"
+        },
+        {
+          "sourcePath": "app/entry.ts",
+          "configPath": "configs/app.json",
+          "status": "resolved"
+        },
+        {
+          "sourcePath": "app/no-import.ts",
+          "configPath": "configs/app.json",
+          "status": "resolved"
+        },
+        {
+          "sourcePath": "app/side-effect.ts",
+          "configPath": "configs/app.json",
+          "status": "resolved"
+        },
+        {
+          "sourcePath": "bulk/file000.ts",
+          "configPath": "configs/bulk.json",
+          "status": "resolved"
+        },
+        {
+          "sourcePath": "bulk/file001.ts",
+          "configPath": "configs/bulk.json",
+          "status": "resolved"
+        },
+        {
+          "sourcePath": "bulk/file002.ts",
+          "configPath": "configs/bulk.json",
+          "status": "resolved"
+        },
+        {
+          "sourcePath": "bulk/file003.ts",
+          "configPath": "configs/bulk.json",
+          "status": "resolved"
+        },
+        {
+          "sourcePath": "bulk/file004.ts",
+          "configPath": "configs/bulk.json",
+          "status": "resolved"
+        },
+        {
+          "sourcePath": "bulk/file005.ts",
+          "configPath": "configs/bulk.json",
+          "status": "resolved"
+        },
+        {
+          "sourcePath": "bulk/file006.ts",
+          "configPath": "configs/bulk.json",
+          "status": "resolved"
+        },
+        {
+          "sourcePath": "bulk/file007.ts",
+          "configPath": "configs/bulk.json",
+          "status": "resolved"
+        },
+        {
+          "sourcePath": "bulk/file008.ts",
+          "configPath": "configs/bulk.json",
+          "status": "resolved"
+        },
+        {
+          "sourcePath": "bulk/file009.ts",
+          "configPath": "configs/bulk.json",
+          "status": "resolved"
+        },
+        {
+          "sourcePath": "bulk/file010.ts",
+          "configPath": "configs/bulk.json",
+          "status": "resolved"
+        },
+        {
+          "sourcePath": "bulk/file011.ts",
+          "configPath": "configs/bulk.json",
+          "status": "resolved"
+        },
+        {
+          "sourcePath": "bulk/file012.ts",
+          "configPath": "configs/bulk.json",
+          "status": "resolved"
+        },
+        {
+          "sourcePath": "bulk/file013.ts",
+          "configPath": "configs/bulk.json",
+          "status": "resolved"
+        },
+        {
+          "sourcePath": "bulk/file014.ts",
+          "configPath": "configs/bulk.json",
+          "status": "resolved"
+        },
+        {
+          "sourcePath": "bulk/file015.ts",
+          "configPath": "configs/bulk.json",
+          "status": "resolved"
+        },
+        {
+          "sourcePath": "bulk/file016.ts",
+          "configPath": "configs/bulk.json",
+          "status": "resolved"
+        },
+        {
+          "sourcePath": "bulk/file017.ts",
+          "configPath": "configs/bulk.json",
+          "status": "resolved"
+        },
+        {
+          "sourcePath": "bulk/file018.ts",
+          "configPath": "configs/bulk.json",
+          "status": "resolved"
+        },
+        {
+          "sourcePath": "bulk/file019.ts",
+          "configPath": "configs/bulk.json",
+          "status": "resolved"
+        },
+        {
+          "sourcePath": "bulk/file020.ts",
+          "configPath": "configs/bulk.json",
+          "status": "resolved"
+        },
+        {
+          "sourcePath": "bulk/file021.ts",
+          "configPath": "configs/bulk.json",
+          "status": "resolved"
+        },
+        {
+          "sourcePath": "bulk/file022.ts",
+          "configPath": "configs/bulk.json",
+          "status": "resolved"
+        },
+        {
+          "sourcePath": "bulk/file023.ts",
+          "configPath": "configs/bulk.json",
+          "status": "resolved"
+        },
+        {
+          "sourcePath": "bulk/file024.ts",
+          "configPath": "configs/bulk.json",
+          "status": "resolved"
+        },
+        {
+          "sourcePath": "bulk/file025.ts",
+          "configPath": "configs/bulk.json",
+          "status": "resolved"
+        },
+        {
+          "sourcePath": "bulk/file026.ts",
+          "configPath": "configs/bulk.json",
+          "status": "resolved"
+        },
+        {
+          "sourcePath": "bulk/file027.ts",
+          "configPath": "configs/bulk.json",
+          "status": "resolved"
+        },
+        {
+          "sourcePath": "bulk/file028.ts",
+          "configPath": "configs/bulk.json",
+          "status": "resolved"
+        },
+        {
+          "sourcePath": "bulk/file029.ts",
+          "configPath": "configs/bulk.json",
+          "status": "resolved"
+        },
+        {
+          "sourcePath": "bulk/file030.ts",
+          "configPath": "configs/bulk.json",
+          "status": "resolved"
+        },
+        {
+          "sourcePath": "bulk/file031.ts",
+          "configPath": "configs/bulk.json",
+          "status": "resolved"
+        },
+        {
+          "sourcePath": "bulk/file032.ts",
+          "configPath": "configs/bulk.json",
+          "status": "resolved"
+        },
+        {
+          "sourcePath": "bulk/file033.ts",
+          "configPath": "configs/bulk.json",
+          "status": "resolved"
+        },
+        {
+          "sourcePath": "bulk/file034.ts",
+          "configPath": "configs/bulk.json",
+          "status": "resolved"
+        },
+        {
+          "sourcePath": "bulk/file035.ts",
+          "configPath": "configs/bulk.json",
+          "status": "resolved"
+        },
+        {
+          "sourcePath": "bulk/file036.ts",
+          "configPath": "configs/bulk.json",
+          "status": "resolved"
+        },
+        {
+          "sourcePath": "bulk/file037.ts",
+          "configPath": "configs/bulk.json",
+          "status": "resolved"
+        },
+        {
+          "sourcePath": "bulk/file038.ts",
+          "configPath": "configs/bulk.json",
+          "status": "resolved"
+        },
+        {
+          "sourcePath": "bulk/file039.ts",
+          "configPath": "configs/bulk.json",
+          "status": "resolved"
+        },
+        {
+          "sourcePath": "bulk/file040.ts",
+          "configPath": "configs/bulk.json",
+          "status": "resolved"
+        },
+        {
+          "sourcePath": "bulk/file041.ts",
+          "configPath": "configs/bulk.json",
+          "status": "resolved"
+        },
+        {
+          "sourcePath": "bulk/file042.ts",
+          "configPath": "configs/bulk.json",
+          "status": "resolved"
+        },
+        {
+          "sourcePath": "bulk/file043.ts",
+          "configPath": "configs/bulk.json",
+          "status": "resolved"
+        },
+        {
+          "sourcePath": "bulk/file044.ts",
+          "configPath": "configs/bulk.json",
+          "status": "resolved"
+        },
+        {
+          "sourcePath": "bulk/file045.ts",
+          "configPath": "configs/bulk.json",
+          "status": "resolved"
+        }
+      ],
+      "truncated": {
+        "roots": false,
+        "projects": false,
+        "references": false,
+        "scopes": true
+      }
+    },
+    "packageFiles": [],
+    "excludedPatterns": [
+      "**/.git/**",
+      "**/node_modules/**",
+      "**/dist/**",
+      "**/build/**",
+      "**/coverage/**",
+      "**/__pycache__/**",
+      "**/.venv/**",
+      "**/venv/**",
+      "**/.agents/**",
+      "**/.superpowers/**",
+      "**/.next/**",
+      "**/.cache/**",
+      "**/vendor/**"
+    ],
+    "unresolvedCount": 7,
+    "availability": {
+      "complete": true,
+      "unavailablePaths": [],
+      "excludedPaths": []
+    }
+  },
+  "errors": [],
+  "external": []
+}

@@ -1,0 +1,93 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90m/home/agent/projects/AtlasMode[39m
+
+ [31m❯[39m packages/indexer/src/projectReferencesReview.test.ts [2m([22m[2m5 tests[22m[2m | [22m[31m5 failed[39m[2m)[22m[33m 313[2mms[22m[39m
+[31m     [31m×[31m keeps the global 2048 reference budget across recursive parent resumes[39m[32m 121[2mms[22m[39m
+[31m     [31m×[31m checks deep reused paths when shallow root is a and deep root z[39m[32m 8[2mms[22m[39m
+[31m     [31m×[31m checks deep reused paths when shallow root is z and deep root a[39m[32m 3[2mms[22m[39m
+[31m     [31m×[31m vetoes an independent scope's CommonJS namespace write before another consumer call[39m[32m 127[2mms[22m[39m
+[31m     [31m×[31m vetoes an independent scope's CommonJS namespace escape before another consumer call[39m[32m 51[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 5 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m packages/indexer/src/projectReferencesReview.test.ts[2m > [22mIDX03 independent review boundary regressions[2m > [22mkeeps the global 2048 reference budget across recursive parent resumes
+[31m[1mAssertionError[22m: expected 4095 to be less than or equal to 2048[39m
+[36m [2m❯[22m packages/indexer/src/projectReferencesReview.test.ts:[2m17:43[22m[39m
+    [90m 15|[39m   const result=createCapturedReferenceGraph(inputsMap(inputs),["tsconf…
+    [90m 16|[39m   [35mconst[39m graph[33m=[39mresult[33m.[39m[34mview[39m([])[33m;[39m
+    [90m 17|[39m   [34mexpect[39m(graph[33m.[39mcounts[33m.[39mobservedReferences)[33m.[39m[34mtoBeLessThanOrEqual[39m([34m2048[39m)[33m;[39m
+    [90m   |[39m                                           [31m^[39m
+    [90m 18|[39m   [34mexpect[39m(graph[33m.[39mstatus)[33m.[39m[34mtoBe[39m([32m"partial"[39m)[33m;[39m
+    [90m 19|[39m  })[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m packages/indexer/src/projectReferencesReview.test.ts[2m > [22mIDX03 independent review boundary regressions[2m > [22mchecks deep reused paths when shallow root is a and deep root z
+[31m[1mAssertionError[22m: expected true to be false // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- false[39m
+[31m+ true[39m
+
+[36m [2m❯[22m packages/indexer/src/projectReferencesReview.test.ts:[2m30:47[22m[39m
+    [90m 28|[39m   const result=createCapturedReferenceGraph(inputsMap(inputs),[shallow…
+    [90m 29|[39m   [34mexpect[39m(result[33m.[39m[34mvalid[39m(shallow[33m+[39m[32m"/tsconfig.json"[39m))[33m.[39m[34mtoBe[39m([35mtrue[39m)[33m;[39m
+    [90m 30|[39m   [34mexpect[39m(result[33m.[39m[34mvalid[39m(deep[33m+[39m[32m"/tsconfig.json"[39m))[33m.[39m[34mtoBe[39m([35mfalse[39m)[33m;[39m
+    [90m   |[39m                                               [31m^[39m
+    [90m 31|[39m   expect(result.reachable(shallow+"/tsconfig.json")).toContain("leaf.j…
+    [90m 32|[39m   expect(result.reachable(deep+"/tsconfig.json")).not.toContain("leaf.…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m packages/indexer/src/projectReferencesReview.test.ts[2m > [22mIDX03 independent review boundary regressions[2m > [22mchecks deep reused paths when shallow root is z and deep root a
+[31m[1mAssertionError[22m: expected false to be true // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- true[39m
+[31m+ false[39m
+
+[36m [2m❯[22m packages/indexer/src/projectReferencesReview.test.ts:[2m29:50[22m[39m
+    [90m 27|[39m   for(let i=1;i<=14;i++)inputs["level"+i+".json"]={references:[{path:i…
+    [90m 28|[39m   const result=createCapturedReferenceGraph(inputsMap(inputs),[shallow…
+    [90m 29|[39m   [34mexpect[39m(result[33m.[39m[34mvalid[39m(shallow[33m+[39m[32m"/tsconfig.json"[39m))[33m.[39m[34mtoBe[39m([35mtrue[39m)[33m;[39m
+    [90m   |[39m                                                  [31m^[39m
+    [90m 30|[39m   [34mexpect[39m(result[33m.[39m[34mvalid[39m(deep[33m+[39m[32m"/tsconfig.json"[39m))[33m.[39m[34mtoBe[39m([35mfalse[39m)[33m;[39m
+    [90m 31|[39m   expect(result.reachable(shallow+"/tsconfig.json")).toContain("leaf.j…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m packages/indexer/src/projectReferencesReview.test.ts[2m > [22mIDX03 independent review boundary regressions[2m > [22mvetoes an independent scope's CommonJS namespace write before another consumer call
+[41m[1m FAIL [22m[49m packages/indexer/src/projectReferencesReview.test.ts[2m > [22mIDX03 independent review boundary regressions[2m > [22mvetoes an independent scope's CommonJS namespace escape before another consumer call
+[31m[1mAssertionError[22m: expected { …(6) } to match object { resolution: 'unresolved', …(1) }
+(7 matching properties omitted from actual)[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[32m-   "resolution": "unresolved",[39m
+[32m-   "targetId": null,[39m
+[31m+   "resolution": "resolved",[39m
+[31m+   "targetId": "function:94d26b10f59c11d27228e5faa3973ce3",[39m
+[2m  }[22m
+
+[36m [2m❯[22m packages/indexer/src/projectReferencesReview.test.ts:[2m44:122[22m[39m
+    [90m 42|[39m   [35mconst[39m graph[33m=[39m[35mnew[39m [33mGraph[39m([32m"idx03-review"[39m)[33m;[39m
+    [90m 43|[39m   [34mindexTypeScript[39m([34mcaptured[39m(sources)[33m,[39mgraph[33m,[39m[34mcaptured[39m(configs))[33m;[39m
+    [90m 44|[39m   expect(graph.relations.find(r=>r.type==="calls"&&r.evidence.filePath…
+    [90m   |[39m                                                                                                                          [31m^[39m
+    [90m 45|[39m  })[33m;[39m
+    [90m 46|[39m })[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m5 failed[39m[22m[90m (5)[39m
+[2m   Start at [22m 16:12:31
+[2m   Duration [22m 2.37s[2m (transform 483ms, setup 0ms, import 1.83s, tests 313ms, environment 0ms)[22m
+

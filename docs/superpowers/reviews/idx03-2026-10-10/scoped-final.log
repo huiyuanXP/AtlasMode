@@ -1,0 +1,30 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90m/home/agent/projects/AtlasMode[39m
+
+ [32m✓[39m apps/web/src/app/ConfigurationProjectGraphPanel.test.tsx [2m([22m[2m7 tests[22m[2m)[22m[32m 62[2mms[22m[39m
+ [32m✓[39m packages/indexer/src/packageCapture.test.ts [2m([22m[2m24 tests[22m[2m)[22m[33m 3424[2mms[22m[39m
+     [33m[2m✓[22m[39m enforces count boundary with 512 files [33m 1233[2mms[22m[39m
+     [33m[2m✓[22m[39m enforces count boundary with 513 files [33m 1379[2mms[22m[39m
+ [32m✓[39m packages/indexer/src/commonjs.test.ts [2m([22m[2m183 tests[22m[2m)[22m[33m 2494[2mms[22m[39m
+ [32m✓[39m packages/indexer/src/index.test.ts [2m([22m[2m54 tests[22m[2m)[22m[33m 4117[2mms[22m[39m
+ [32m✓[39m apps/web/src/i18n/locale.test.tsx [2m([22m[2m5 tests[22m[2m)[22m[33m 756[2mms[22m[39m
+   [33m[2m✓[22m[39m cached failure help follows current locale while backend diagnostics remain verbatim [33m 722[2mms[22m[39m
+ [32m✓[39m packages/indexer/src/configResolution.test.ts [2m([22m[2m31 tests[22m[2m)[22m[33m 334[2mms[22m[39m
+ [32m✓[39m packages/indexer/src/idx01.test.ts [2m([22m[2m17 tests[22m[2m)[22m[33m 426[2mms[22m[39m
+ [32m✓[39m packages/indexer/src/configCapture.test.ts [2m([22m[2m25 tests[22m[2m)[22m[33m 1606[2mms[22m[39m
+     [33m[2m✓[22m[39m enforces the 512 file limit for 512 eligible seeds [33m 506[2mms[22m[39m
+     [33m[2m✓[22m[39m enforces the 512 file limit for 513 eligible seeds [33m 523[2mms[22m[39m
+ [32m✓[39m packages/indexer/src/projectReferencesResolution.test.ts [2m([22m[2m15 tests[22m[2m)[22m[32m 269[2mms[22m[39m
+ [32m✓[39m packages/indexer/src/projectReferencesReview.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 236[2mms[22m[39m
+ [32m✓[39m packages/indexer/src/workspaceResolution.test.ts [2m([22m[2m44 tests[22m[2m)[22m[33m 491[2mms[22m[39m
+ [32m✓[39m packages/indexer/src/projectReferencesCapture.test.ts [2m([22m[2m24 tests[22m[2m)[22m[32m 168[2mms[22m[39m
+ [32m✓[39m packages/indexer/src/projectReferencesFreshness.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 145[2mms[22m[39m
+ [32m✓[39m packages/indexer/src/declarations.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 216[2mms[22m[39m
+ [32m✓[39m packages/core/src/projectReferenceSchema.test.ts [2m([22m[2m30 tests[22m[2m)[22m[32m 20[2mms[22m[39m
+ [32m✓[39m packages/indexer/src/packageMode.test.ts [2m([22m[2m13 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m16 passed[39m[22m[90m (16)[39m
+[2m      Tests [22m [1m[32m483 passed[39m[22m[90m (483)[39m
+[2m   Start at [22m 16:20:06
+[2m   Duration [22m 9.76s[2m (transform 2.38s, setup 0ms, import 10.95s, tests 14.77s, environment 2ms)[22m
+

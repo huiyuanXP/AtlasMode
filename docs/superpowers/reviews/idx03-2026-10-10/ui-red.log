@@ -1,0 +1,25 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90m/home/agent/projects/AtlasMode[39m
+
+ [31m❯[39m apps/web/src/app/ConfigurationProjectGraphPanel.test.tsx [2m([22m[2m0 test[22m[2m)[22m
+
+[31m⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Suites 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/app/ConfigurationProjectGraphPanel.test.tsx[2m [ apps/web/src/app/ConfigurationProjectGraphPanel.test.tsx ][22m
+[31m[1mError[22m: Cannot find module './ConfigurationProjectGraphPanel.js' imported from /home/agent/projects/AtlasMode/apps/web/src/app/ConfigurationProjectGraphPanel.test.tsx[39m
+[36m [2m❯[22m apps/web/src/app/ConfigurationProjectGraphPanel.test.tsx:[2m4:1[22m[39m
+    [90m  2|[39m [35mimport[39m { renderToStaticMarkup } [35mfrom[39m [32m"react-dom/server"[39m[33m;[39m
+    [90m  3|[39m [35mimport[39m { [33mLocaleProvider[39m } [35mfrom[39m [32m"../i18n/index.js"[39m[33m;[39m
+    [90m  4|[39m import { ConfigurationProjectGraphPanel } from "./ConfigurationProject…
+    [90m   |[39m [31m^[39m
+    [90m  5|[39m [35mimport[39m type { [33mConfigurationProjectGraph[39m } [35mfrom[39m [32m"@codemap/core"[39m[33m;[39m
+    [90m  6|[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [2mno tests[22m
+[2m   Start at [22m 16:06:54
+[2m   Duration [22m 497ms[2m (transform 146ms, setup 0ms, import 0ms, tests 0ms, environment 0ms)[22m
+

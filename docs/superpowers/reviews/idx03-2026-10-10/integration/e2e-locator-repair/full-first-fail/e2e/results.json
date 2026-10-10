@@ -1,0 +1,1089 @@
+{
+  "config": {
+    "argv": [
+      "/home/agent/.node/node-v24.19.0-linux-x64/bin/node",
+      "/tmp/atlas-idx03-clean-20261010-wn3h_oyv/workspace/node_modules/.bin/playwright",
+      "test"
+    ],
+    "configFile": "/tmp/atlas-idx03-clean-20261010-wn3h_oyv/workspace/playwright.config.ts",
+    "rootDir": "/tmp/atlas-idx03-clean-20261010-wn3h_oyv/workspace/tests/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/tmp/atlas-idx03-clean-20261010-wn3h_oyv/workspace/artifacts/e2e/results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "",
+        "name": "",
+        "testDir": "/tmp/atlas-idx03-clean-20261010-wn3h_oyv/workspace/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 120000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "artifacts/e2e/results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.63.0",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "agent-chat.spec.ts",
+      "file": "agent-chat.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "actual disconnected provider shows conversation shell and retains failed input; source and advanced controls are opt-in",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2803,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T16:41:59.163Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "provider-truth",
+                      "contentType": "application/json",
+                      "body": "eyJwcm92aWRlciI6ImNvZGV4IiwiY29uZmlndXJlZCI6dHJ1ZSwiYXZhaWxhYmxlIjpmYWxzZSwicmVhc29uIjoiQWdlbnQgZXhlY3V0YWJsZSBpcyB1bmF2YWlsYWJsZS4gSW5zdGFsbCB0aGUgc2VsZWN0ZWQgQ0xJIG9yIGNvbmZpZ3VyZSBpdHMgdHJ1c3RlZCBhYnNvbHV0ZSBwYXRoLiJ9"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "6e39eaf9cb62a7381bdd-8fd0e19ec5843540933f",
+          "file": "agent-chat.spec.ts",
+          "line": 26,
+          "column": 1
+        },
+        {
+          "title": "labeled trusted test adapter streams through real bridge, journals drafts, focuses changes, cancels partial work and isolates projects",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4790,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T16:42:02.087Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "test-adapter-scope",
+                      "contentType": "application/json",
+                      "body": "eyJsYWJlbCI6IlRydXN0ZWQgc2ltdWxhdGVkIG1vZGVsIGFkYXB0ZXI7IGFjdHVhbCBIVFRQIGdhdGV3YXkvc3RvcmFnZSBqb3VybmFsIG11dGF0aW9ucyIsImlucHV0cyI6W3sicHJvamVjdElkIjoicHJvamVjdDoyNzQyMzNmMjMwZWVjYzdmMDQ1OTc0MGZkNzNjMDIzMCIsImlucHV0Ijp7ImNoYW5uZWwiOiJwbGFuIiwibWVzc2FnZSI6InByb3Bvc2UiLCJzbmFwc2hvdElkIjoic25hcHNob3Q6YTJlOWQwMTI3ZTVkNjI4YTY0N2Y0NTdhZDYyN2U4MWIifX0seyJwcm9qZWN0SWQiOiJwcm9qZWN0OjI3NDIzM2YyMzBlZWNjN2YwNDU5NzQwZmQ3M2MwMjMwIiwiaW5wdXQiOnsiY2hhbm5lbCI6InBsYW4iLCJtZXNzYWdlIjoicGFydGlhbCIsInBsYW5JZCI6IjlhZDYyN2JjLTNmMGItNDRlMy1hYTYwLTdlNzczNWFiZTM2ZCIsInNuYXBzaG90SWQiOiJzbmFwc2hvdDphMmU5ZDAxMjdlNWQ2MjhhNjQ3ZjQ1N2FkNjI3ZTgxYiIsImV4cGVjdGVkUmV2aXNpb24iOjJ9fSx7InByb2plY3RJZCI6InByb2plY3Q6Mjc0MjMzZjIzMGVlY2M3ZjA0NTk3NDBmZDczYzAyMzAiLCJpbnB1dCI6eyJjaGFubmVsIjoiZXhwbG9yZSIsIm1lc3NhZ2UiOiJ3YWl0IiwicGxhbklkIjoiZGFjNWE4NTQtY2Y5Ni00ZDkwLWIxYmQtNTg2NDQ2MWMwM2E5Iiwic25hcHNob3RJZCI6InNuYXBzaG90OmEyZTlkMDEyN2U1ZDYyOGE2NDdmNDU3YWQ2MjdlODFiIiwiZXhwZWN0ZWRSZXZpc2lvbiI6Mn19XSwic3RvcHBlZCI6WyJwcm9qZWN0OjI3NDIzM2YyMzBlZWNjN2YwNDU5NzQwZmQ3M2MwMjMwIiwicHJvamVjdDoyNzQyMzNmMjMwZWVjYzdmMDQ1OTc0MGZkNzNjMDIzMCJdfQ=="
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "6e39eaf9cb62a7381bdd-f790302ae4ca02ca2777",
+          "file": "agent-chat.spec.ts",
+          "line": 182,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "breadcrumb-navigation.spec.ts",
+      "file": "breadcrumb-navigation.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "breadcrumbs navigate function, indexed file, folders, root and truthful planned paths, superseding stale scope responses",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 9774,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T16:42:06.906Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "breadcrumb-evidence",
+                      "contentType": "application/json",
+                      "body": "eyJmbiI6eyJpZCI6ImZ1bmN0aW9uOjQ4NmY0Mzg1OTZkMTdlMDlhNzU1MTIyNDU4YWU5OGM5Iiwia2luZCI6ImZ1bmN0aW9uIiwiZGVjbGFyYXRpb25LaW5kIjoiZnVuY3Rpb24iLCJuYW1lIjoicnVuIiwicXVhbGlmaWVkTmFtZSI6InJ1biIsImZpbGVQYXRoIjoic3JjL25lc3RlZC9pbmRleC50cyIsInBhcmVudElkIjoiZmlsZTpjYTAzOTcwYTI0Mzk5Zjc1YmQ4OWNlYjM3YWY2ZTMxYyIsImxhbmd1YWdlIjoidHlwZXNjcmlwdCIsInNpZ25hdHVyZSI6ImV4cG9ydCBmdW5jdGlvbiBydW4oKSIsInN0YXJ0TGluZSI6MSwiZW5kTGluZSI6MSwiZXhwb3J0ZWQiOnRydWV9LCJpbmRleGVkRmlsZSI6eyJpZCI6ImZpbGU6Y2EwMzk3MGEyNDM5OWY3NWJkODljZWIzN2FmNmUzMWMiLCJraW5kIjoiZmlsZSIsIm5hbWUiOiJpbmRleC50cyIsInF1YWxpZmllZE5hbWUiOiJzcmMvbmVzdGVkL2luZGV4LnRzIiwiZmlsZVBhdGgiOiJzcmMvbmVzdGVkL2luZGV4LnRzIiwicGFyZW50SWQiOiJmb2xkZXI6M2Y3ODgxODE3MzU2ZDRmZDg4ZjI4MWI4MWY1ODJkYjYiLCJsYW5ndWFnZSI6InR5cGVzY3JpcHQifSwicGxhbm5lZFBhdGgiOiJmdXR1cmUvbmV3LnRzIiwiZXJyb3JzIjpbXSwiZXh0ZXJuYWwiOltdfQ=="
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a8db8e9d2cb5d351d174-2739688bed287bbd6fc8",
+          "file": "breadcrumb-navigation.spec.ts",
+          "line": 33,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "commonjs.spec.ts",
+      "file": "commonjs.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "production browser displays captured package coverage truthfully in Chinese and English",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 2907,
+                  "error": {
+                    "message": "Error: locator.click: Error: strict mode violation: locator('.navigation details').filter({ has: locator('summary').filter({ hasText: '静态分析诊断' }) }).locator('summary') resolved to 6 elements:\n    1) <summary>静态分析诊断 (0)</summary> aka getByText('静态分析诊断 (0)')\n    2) <summary>配置项目图</summary> aka getByText('配置项目图')\n    3) <summary>…</summary> aka getByText('项目根配置 (0/0)')\n    4) <summary>…</summary> aka getByText('已观察项目 (0/0)')\n    5) <summary>…</summary> aka getByText('项目引用 (0/0)')\n    6) <summary>…</summary> aka getByText('源码归属样本 (5/5)')\n\nCall log:\n\u001b[2m  - waiting for locator('.navigation details').filter({ has: locator('summary').filter({ hasText: '静态分析诊断' }) }).locator('summary')\u001b[22m\n",
+                    "stack": "Error: locator.click: Error: strict mode violation: locator('.navigation details').filter({ has: locator('summary').filter({ hasText: '静态分析诊断' }) }).locator('summary') resolved to 6 elements:\n    1) <summary>静态分析诊断 (0)</summary> aka getByText('静态分析诊断 (0)')\n    2) <summary>配置项目图</summary> aka getByText('配置项目图')\n    3) <summary>…</summary> aka getByText('项目根配置 (0/0)')\n    4) <summary>…</summary> aka getByText('已观察项目 (0/0)')\n    5) <summary>…</summary> aka getByText('项目引用 (0/0)')\n    6) <summary>…</summary> aka getByText('源码归属样本 (5/5)')\n\nCall log:\n\u001b[2m  - waiting for locator('.navigation details').filter({ has: locator('summary').filter({ hasText: '静态分析诊断' }) }).locator('summary')\u001b[22m\n\n    at /tmp/atlas-idx03-clean-20261010-wn3h_oyv/workspace/tests/e2e/commonjs.spec.ts:96:44",
+                    "location": {
+                      "file": "/tmp/atlas-idx03-clean-20261010-wn3h_oyv/workspace/tests/e2e/commonjs.spec.ts",
+                      "column": 44,
+                      "line": 96
+                    },
+                    "snippet": "  94 |         .locator(\".navigation details\")\n  95 |         .filter({ has: page.locator(\"summary\", { hasText: \"静态分析诊断\" }) });\n> 96 |       await diagnostics.locator(\"summary\").click();\n     |                                            ^\n  97 |       const coverage = diagnostics.getByRole(\"region\", {\n  98 |         name: \"包配置\",\n  99 |         exact: true,"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/tmp/atlas-idx03-clean-20261010-wn3h_oyv/workspace/tests/e2e/commonjs.spec.ts",
+                        "column": 44,
+                        "line": 96
+                      },
+                      "message": "Error: locator.click: Error: strict mode violation: locator('.navigation details').filter({ has: locator('summary').filter({ hasText: '静态分析诊断' }) }).locator('summary') resolved to 6 elements:\n    1) <summary>静态分析诊断 (0)</summary> aka getByText('静态分析诊断 (0)')\n    2) <summary>配置项目图</summary> aka getByText('配置项目图')\n    3) <summary>…</summary> aka getByText('项目根配置 (0/0)')\n    4) <summary>…</summary> aka getByText('已观察项目 (0/0)')\n    5) <summary>…</summary> aka getByText('项目引用 (0/0)')\n    6) <summary>…</summary> aka getByText('源码归属样本 (5/5)')\n\nCall log:\n\u001b[2m  - waiting for locator('.navigation details').filter({ has: locator('summary').filter({ hasText: '静态分析诊断' }) }).locator('summary')\u001b[22m\n\n\n  94 |         .locator(\".navigation details\")\n  95 |         .filter({ has: page.locator(\"summary\", { hasText: \"静态分析诊断\" }) });\n> 96 |       await diagnostics.locator(\"summary\").click();\n     |                                            ^\n  97 |       const coverage = diagnostics.getByRole(\"region\", {\n  98 |         name: \"包配置\",\n  99 |         exact: true,\n    at /tmp/atlas-idx03-clean-20261010-wn3h_oyv/workspace/tests/e2e/commonjs.spec.ts:96:44"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T16:42:16.698Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/tmp/atlas-idx03-clean-20261010-wn3h_oyv/workspace/artifacts/e2e/results/commonjs-production-browse-39ad5-ully-in-Chinese-and-English/test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/tmp/atlas-idx03-clean-20261010-wn3h_oyv/workspace/artifacts/e2e/results/commonjs-production-browse-39ad5-ully-in-Chinese-and-English/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/tmp/atlas-idx03-clean-20261010-wn3h_oyv/workspace/artifacts/e2e/results/commonjs-production-browse-39ad5-ully-in-Chinese-and-English/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/tmp/atlas-idx03-clean-20261010-wn3h_oyv/workspace/tests/e2e/commonjs.spec.ts",
+                    "column": 44,
+                    "line": 96
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "7aaf3dc3a2fac0835710-9183f962eb064a82c6f4",
+          "file": "commonjs.spec.ts",
+          "line": 22,
+          "column": 3
+        },
+        {
+          "title": "production browser displays unrecorded legacy package coverage truthfully in Chinese and English",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 3780,
+                  "error": {
+                    "message": "Error: locator.click: Error: strict mode violation: locator('.navigation details').filter({ has: locator('summary').filter({ hasText: '静态分析诊断' }) }).locator('summary') resolved to 6 elements:\n    1) <summary>静态分析诊断 (0)</summary> aka getByText('静态分析诊断 (0)')\n    2) <summary>配置项目图</summary> aka getByText('配置项目图')\n    3) <summary>…</summary> aka getByText('项目根配置 (0/0)')\n    4) <summary>…</summary> aka getByText('已观察项目 (0/0)')\n    5) <summary>…</summary> aka getByText('项目引用 (0/0)')\n    6) <summary>…</summary> aka getByText('源码归属样本 (5/5)')\n\nCall log:\n\u001b[2m  - waiting for locator('.navigation details').filter({ has: locator('summary').filter({ hasText: '静态分析诊断' }) }).locator('summary')\u001b[22m\n",
+                    "stack": "Error: locator.click: Error: strict mode violation: locator('.navigation details').filter({ has: locator('summary').filter({ hasText: '静态分析诊断' }) }).locator('summary') resolved to 6 elements:\n    1) <summary>静态分析诊断 (0)</summary> aka getByText('静态分析诊断 (0)')\n    2) <summary>配置项目图</summary> aka getByText('配置项目图')\n    3) <summary>…</summary> aka getByText('项目根配置 (0/0)')\n    4) <summary>…</summary> aka getByText('已观察项目 (0/0)')\n    5) <summary>…</summary> aka getByText('项目引用 (0/0)')\n    6) <summary>…</summary> aka getByText('源码归属样本 (5/5)')\n\nCall log:\n\u001b[2m  - waiting for locator('.navigation details').filter({ has: locator('summary').filter({ hasText: '静态分析诊断' }) }).locator('summary')\u001b[22m\n\n    at /tmp/atlas-idx03-clean-20261010-wn3h_oyv/workspace/tests/e2e/commonjs.spec.ts:96:44",
+                    "location": {
+                      "file": "/tmp/atlas-idx03-clean-20261010-wn3h_oyv/workspace/tests/e2e/commonjs.spec.ts",
+                      "column": 44,
+                      "line": 96
+                    },
+                    "snippet": "  94 |         .locator(\".navigation details\")\n  95 |         .filter({ has: page.locator(\"summary\", { hasText: \"静态分析诊断\" }) });\n> 96 |       await diagnostics.locator(\"summary\").click();\n     |                                            ^\n  97 |       const coverage = diagnostics.getByRole(\"region\", {\n  98 |         name: \"包配置\",\n  99 |         exact: true,"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/tmp/atlas-idx03-clean-20261010-wn3h_oyv/workspace/tests/e2e/commonjs.spec.ts",
+                        "column": 44,
+                        "line": 96
+                      },
+                      "message": "Error: locator.click: Error: strict mode violation: locator('.navigation details').filter({ has: locator('summary').filter({ hasText: '静态分析诊断' }) }).locator('summary') resolved to 6 elements:\n    1) <summary>静态分析诊断 (0)</summary> aka getByText('静态分析诊断 (0)')\n    2) <summary>配置项目图</summary> aka getByText('配置项目图')\n    3) <summary>…</summary> aka getByText('项目根配置 (0/0)')\n    4) <summary>…</summary> aka getByText('已观察项目 (0/0)')\n    5) <summary>…</summary> aka getByText('项目引用 (0/0)')\n    6) <summary>…</summary> aka getByText('源码归属样本 (5/5)')\n\nCall log:\n\u001b[2m  - waiting for locator('.navigation details').filter({ has: locator('summary').filter({ hasText: '静态分析诊断' }) }).locator('summary')\u001b[22m\n\n\n  94 |         .locator(\".navigation details\")\n  95 |         .filter({ has: page.locator(\"summary\", { hasText: \"静态分析诊断\" }) });\n> 96 |       await diagnostics.locator(\"summary\").click();\n     |                                            ^\n  97 |       const coverage = diagnostics.getByRole(\"region\", {\n  98 |         name: \"包配置\",\n  99 |         exact: true,\n    at /tmp/atlas-idx03-clean-20261010-wn3h_oyv/workspace/tests/e2e/commonjs.spec.ts:96:44"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T16:42:20.284Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/tmp/atlas-idx03-clean-20261010-wn3h_oyv/workspace/artifacts/e2e/results/commonjs-production-browse-3768a-ully-in-Chinese-and-English/test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/tmp/atlas-idx03-clean-20261010-wn3h_oyv/workspace/artifacts/e2e/results/commonjs-production-browse-3768a-ully-in-Chinese-and-English/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/tmp/atlas-idx03-clean-20261010-wn3h_oyv/workspace/artifacts/e2e/results/commonjs-production-browse-3768a-ully-in-Chinese-and-English/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/tmp/atlas-idx03-clean-20261010-wn3h_oyv/workspace/tests/e2e/commonjs.spec.ts",
+                    "column": 44,
+                    "line": 96
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "7aaf3dc3a2fac0835710-b31020273f27627e4b4d",
+          "file": "commonjs.spec.ts",
+          "line": 22,
+          "column": 3
+        },
+        {
+          "title": "recorded zero manifests is distinct from unrecorded coverage",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 1502,
+                  "error": {
+                    "message": "Error: locator.click: Error: strict mode violation: locator('.navigation details').filter({ has: locator('summary').filter({ hasText: '静态分析诊断' }) }).locator('summary') resolved to 6 elements:\n    1) <summary>静态分析诊断 (0)</summary> aka getByText('静态分析诊断 (0)')\n    2) <summary>配置项目图</summary> aka getByText('配置项目图')\n    3) <summary>…</summary> aka getByText('项目根配置 (0/0)')\n    4) <summary>…</summary> aka getByText('已观察项目 (0/0)')\n    5) <summary>…</summary> aka getByText('项目引用 (0/0)')\n    6) <summary>…</summary> aka getByText('源码归属样本 (1/1)')\n\nCall log:\n\u001b[2m  - waiting for locator('.navigation details').filter({ has: locator('summary').filter({ hasText: '静态分析诊断' }) }).locator('summary')\u001b[22m\n",
+                    "stack": "Error: locator.click: Error: strict mode violation: locator('.navigation details').filter({ has: locator('summary').filter({ hasText: '静态分析诊断' }) }).locator('summary') resolved to 6 elements:\n    1) <summary>静态分析诊断 (0)</summary> aka getByText('静态分析诊断 (0)')\n    2) <summary>配置项目图</summary> aka getByText('配置项目图')\n    3) <summary>…</summary> aka getByText('项目根配置 (0/0)')\n    4) <summary>…</summary> aka getByText('已观察项目 (0/0)')\n    5) <summary>…</summary> aka getByText('项目引用 (0/0)')\n    6) <summary>…</summary> aka getByText('源码归属样本 (1/1)')\n\nCall log:\n\u001b[2m  - waiting for locator('.navigation details').filter({ has: locator('summary').filter({ hasText: '静态分析诊断' }) }).locator('summary')\u001b[22m\n\n    at /tmp/atlas-idx03-clean-20261010-wn3h_oyv/workspace/tests/e2e/commonjs.spec.ts:254:8",
+                    "location": {
+                      "file": "/tmp/atlas-idx03-clean-20261010-wn3h_oyv/workspace/tests/e2e/commonjs.spec.ts",
+                      "column": 8,
+                      "line": 254
+                    },
+                    "snippet": "  252 |       .filter({ has: page.locator(\"summary\", { hasText: \"静态分析诊断\" }) })\n  253 |       .locator(\"summary\")\n> 254 |       .click();\n      |        ^\n  255 |     await expect(\n  256 |       page.getByRole(\"region\", { name: \"包配置\", exact: true }),\n  257 |     ).toHaveText(\"包配置: 0\");"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/tmp/atlas-idx03-clean-20261010-wn3h_oyv/workspace/tests/e2e/commonjs.spec.ts",
+                        "column": 8,
+                        "line": 254
+                      },
+                      "message": "Error: locator.click: Error: strict mode violation: locator('.navigation details').filter({ has: locator('summary').filter({ hasText: '静态分析诊断' }) }).locator('summary') resolved to 6 elements:\n    1) <summary>静态分析诊断 (0)</summary> aka getByText('静态分析诊断 (0)')\n    2) <summary>配置项目图</summary> aka getByText('配置项目图')\n    3) <summary>…</summary> aka getByText('项目根配置 (0/0)')\n    4) <summary>…</summary> aka getByText('已观察项目 (0/0)')\n    5) <summary>…</summary> aka getByText('项目引用 (0/0)')\n    6) <summary>…</summary> aka getByText('源码归属样本 (1/1)')\n\nCall log:\n\u001b[2m  - waiting for locator('.navigation details').filter({ has: locator('summary').filter({ hasText: '静态分析诊断' }) }).locator('summary')\u001b[22m\n\n\n  252 |       .filter({ has: page.locator(\"summary\", { hasText: \"静态分析诊断\" }) })\n  253 |       .locator(\"summary\")\n> 254 |       .click();\n      |        ^\n  255 |     await expect(\n  256 |       page.getByRole(\"region\", { name: \"包配置\", exact: true }),\n  257 |     ).toHaveText(\"包配置: 0\");\n    at /tmp/atlas-idx03-clean-20261010-wn3h_oyv/workspace/tests/e2e/commonjs.spec.ts:254:8"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T16:42:24.826Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/tmp/atlas-idx03-clean-20261010-wn3h_oyv/workspace/artifacts/e2e/results/commonjs-recorded-zero-man-cede7-ct-from-unrecorded-coverage/test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/tmp/atlas-idx03-clean-20261010-wn3h_oyv/workspace/artifacts/e2e/results/commonjs-recorded-zero-man-cede7-ct-from-unrecorded-coverage/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/tmp/atlas-idx03-clean-20261010-wn3h_oyv/workspace/artifacts/e2e/results/commonjs-recorded-zero-man-cede7-ct-from-unrecorded-coverage/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/tmp/atlas-idx03-clean-20261010-wn3h_oyv/workspace/tests/e2e/commonjs.spec.ts",
+                    "column": 8,
+                    "line": 254
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "7aaf3dc3a2fac0835710-d9c3bd4cd69b165486b0",
+          "file": "commonjs.spec.ts",
+          "line": 221,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "direct-api.spec.ts",
+      "file": "direct-api.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "Responses API fixture through real browser send, streamed draft and cancel",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3933,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T16:42:26.978Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "fixture-truth",
+                      "contentType": "application/json",
+                      "body": "eyJwcm92aWRlciI6ImxvY2FsIEhUVFAgUmVzcG9uc2VzIGZpeHR1cmUiLCJyZWFsUHJvdmlkZXJWZXJpZmllZCI6ZmFsc2UsIm1vZGVsIjoiZml4dHVyZS1tb2RlbCIsImNvbXBsZXRlZCI6eyJydW5JZCI6IjQwYjQ2MDAxLTU1NzktNDgxMS1iYjI2LTQzMzFjMTU5NWFhNyIsInN0YXR1cyI6ImNvbXBsZXRlZCIsIm1lc3NhZ2VzIjpbeyJyb2xlIjoiYXNzaXN0YW50IiwidGV4dCI6IkhUVFAgZml4dHVyZTogdW5hcHByb3ZlZCBkcmFmdCBzYXZlZCB0aHJvdWdoIHJlYWwgTUNQLiJ9XSwiYWN0aXZpdHkiOlt7InRvb2wiOiJnZXRfcHJvamVjdF9zdW1tYXJ5Iiwic3RhdHVzIjoicnVubmluZyJ9LHsidG9vbCI6ImdldF9wcm9qZWN0X3N1bW1hcnkiLCJzdGF0dXMiOiJjb21wbGV0ZWQifSx7InRvb2wiOiJwcm9wb3NlX3BsYW4iLCJzdGF0dXMiOiJydW5uaW5nIn0seyJ0b29sIjoicHJvcG9zZV9wbGFuIiwic3RhdHVzIjoiY29tcGxldGVkIn1dLCJlcnJvcnMiOltdLCJjaGFuZ2VkUGxhbklkcyI6WyJlODEyN2I2Ni1iZTI5LTQwZTUtODk4Zi0yZmQxN2RlYTdiOWQiXSwibWF5SGF2ZVNhdmVkQ2hhbmdlcyI6dHJ1ZX0sImNhbmNlbGxlZCI6eyJydW5JZCI6IjEyMDMxM2FmLTY5MzEtNDU1Zi05MGYyLWJkOGRlZjM2MzMwMSIsInN0YXR1cyI6ImNhbmNlbGxlZCIsIm1lc3NhZ2VzIjpbeyJyb2xlIjoiYXNzaXN0YW50IiwidGV4dCI6IkhUVFAgZml4dHVyZTogZHJhZnQgc2F2ZWQ7IHdhaXRpbmcgZm9yIGNhbmNlbGxhdGlvbi4ifV0sImFjdGl2aXR5IjpbeyJ0b29sIjoicHJvcG9zZV9wbGFuIiwic3RhdHVzIjoicnVubmluZyJ9LHsidG9vbCI6InByb3Bvc2VfcGxhbiIsInN0YXR1cyI6ImNvbXBsZXRlZCJ9XSwiZXJyb3JzIjpbXSwiY2hhbmdlZFBsYW5JZHMiOlsiYTg4NDI3MTEtZDBkZS00M2NjLTg5MjAtZWFiNzRlMjUwOGJjIl0sIm1heUhhdmVTYXZlZENoYW5nZXMiOnRydWV9LCJyZXF1ZXN0Q291bnQiOjV9"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "8486136bb831b0b1e4f5-813b40d04c6fa23ce362",
+          "file": "direct-api.spec.ts",
+          "line": 14,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "first-use.spec.ts",
+      "file": "first-use.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "first use offers an offline path and preserves optional AI drafts through disclosure",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 5739,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T16:42:31.032Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "da329574c0206cc23543-ae20e7df7ade2e277c7f",
+          "file": "first-use.spec.ts",
+          "line": 10,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "focus-navigation.spec.ts",
+      "file": "focus-navigation.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "high-degree function and file funnels keep readable neighbor windows with truthful totals and restore overview",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 5829,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T16:42:36.805Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f477f032855a0e129ce2-70710712801ee4423e6a",
+          "file": "focus-navigation.spec.ts",
+          "line": 35,
+          "column": 1
+        },
+        {
+          "title": "semantic creation after overview and multi-change plan choice fit their affected cards",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3500,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T16:42:42.645Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "focus-evidence",
+                      "contentType": "application/json",
+                      "body": "eyJjcmVhdGVkSWQiOiJwbGFuOnRlbXA6ZmJmYjNjMGMtYjdiYy00MDVhLTllNDQtN2RhZjk2OWMzOWEwIiwidGFyZ2V0cyI6WyJtdWx0aS1sZWZ0IiwibXVsdGktcmlnaHQiLCJmdW5jdGlvbjphYzk5ZTVlZWIzMWJlNjBiNzRmM2ZlZDFhMDUyYTljMiJdLCJlcnJvcnMiOltdLCJleHRlcm5hbCI6W119"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f477f032855a0e129ce2-3baedd24d0c64d673c97",
+          "file": "focus-navigation.spec.ts",
+          "line": 204,
+          "column": 1
+        },
+        {
+          "title": "double-click builds an animated directional funnel, restores overview and honors reduced motion for file dependencies",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3164,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T16:42:46.154Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "funnel-evidence",
+                      "contentType": "application/json",
+                      "body": "eyJmcmFtZXMiOlt7InRpbWUiOjMyNywiYWN0aXZlIjpmYWxzZSwidHJhbnNmb3JtcyI6eyJmYWN0OmZvbGRlcjozMDQzODQ1YjYyZDgxMmI2MTdkYTRjNjk3NzYxMjg2MSI6InRyYW5zbGF0ZSgyMDBweCwgMTAwcHgpIiwiZmFjdDpmdW5jdGlvbjpkNmJkZmI4ZTEzMWJlZGJiNTM4ZDY0YmQyOWQxNDFmNCI6InRyYW5zbGF0ZSg1NDBweCwgMTAwcHgpIiwiZmFjdDpmaWxlOjM2MzM1NDFjYjVkMzYyMjdjOWIxYWM1ZjFhYmIyMTQzIjoidHJhbnNsYXRlKDg4MHB4LCAxMDBweCkiLCJmYWN0OmZpbGU6NGJiNzI3NWRhMzhiNmI4MTI3NTUxZmNmMDQ0ZWRmMzciOiJ0cmFuc2xhdGUoMjAwcHgsIDMxMHB4KSIsImZhY3Q6ZnVuY3Rpb246NDhlNjhkYTcxMzJmMGZiMDljZjQyMWZhMGQ0YzlkNGQiOiJ0cmFuc2xhdGUoNTQwcHgsIDMxMHB4KSIsImZhY3Q6ZmlsZTo5NTM0YWVhMWM0YzliNzJiNWVlMDE4Mzk3NTczNTIyZiI6InRyYW5zbGF0ZSg4ODBweCwgMzEwcHgpIiwiZmFjdDpmdW5jdGlvbjozZTE3MmFkNDJkZjU1YTYzODMzNzRiOTU4YjY3YTcyZCI6InRyYW5zbGF0ZSgyMDBweCwgNTIwcHgpIiwiZmFjdDpmdW5jdGlvbjoyNjIwNTJmOTJjYjYzOWYxOWZhODI4OGM5NTdhNmEzYSI6InRyYW5zbGF0ZSg1NDBweCwgNTIwcHgpIiwiZmFjdDpmaWxlOmRkMmU4OTdhMjkwY2I2NWNlYmQ5YWQyOWI5NTNhMGY5IjoidHJhbnNsYXRlKDg4MHB4LCA1MjBweCkifX0seyJ0aW1lIjozNDMuNzAwMDAwMDAxMTE3NiwiYWN0aXZlIjpmYWxzZSwidHJhbnNmb3JtcyI6eyJmYWN0OmZvbGRlcjozMDQzODQ1YjYyZDgxMmI2MTdkYTRjNjk3NzYxMjg2MSI6InRyYW5zbGF0ZSgyMDBweCwgMTAwcHgpIiwiZmFjdDpmdW5jdGlvbjpkNmJkZmI4ZTEzMWJlZGJiNTM4ZDY0YmQyOWQxNDFmNCI6InRyYW5zbGF0ZSg1NDBweCwgMTAwcHgpIiwiZmFjdDpmaWxlOjM2MzM1NDFjYjVkMzYyMjdjOWIxYWM1ZjFhYmIyMTQzIjoidHJhbnNsYXRlKDg4MHB4LCAxMDBweCkiLCJmYWN0OmZpbGU6NGJiNzI3NWRhMzhiNmI4MTI3NTUxZmNmMDQ0ZWRmMzciOiJ0cmFuc2xhdGUoMjAwcHgsIDMxMHB4KSIsImZhY3Q6ZnVuY3Rpb246NDhlNjhkYTcxMzJmMGZiMDljZjQyMWZhMGQ0YzlkNGQiOiJ0cmFuc2xhdGUoNTQwcHgsIDMxMHB4KSIsImZhY3Q6ZmlsZTo5NTM0YWVhMWM0YzliNzJiNWVlMDE4Mzk3NTczNTIyZiI6InRyYW5zbGF0ZSg4ODBweCwgMzEwcHgpIiwiZmFjdDpmdW5jdGlvbjozZTE3MmFkNDJkZjU1YTYzODMzNzRiOTU4YjY3YTcyZCI6InRyYW5zbGF0ZSgyMDBweCwgNTIwcHgpIiwiZmFjdDpmdW5jdGlvbjoyNjIwNTJmOTJjYjYzOWYxOWZhODI4OGM5NTdhNmEzYSI6InRyYW5zbGF0ZSg1NDBweCwgNTIwcHgpIiwiZmFjdDpmaWxlOmRkMmU4OTdhMjkwY2I2NWNlYmQ5YWQyOWI5NTNhMGY5IjoidHJhbnNsYXRlKDg4MHB4LCA1MjBweCkifX0seyJ0aW1lIjozNjAuNSwiYWN0aXZlIjpmYWxzZSwidHJhbnNmb3JtcyI6eyJmYWN0OmZvbGRlcjozMDQzODQ1YjYyZDgxMmI2MTdkYTRjNjk3NzYxMjg2MSI6InRyYW5zbGF0ZSgyMDBweCwgMTAwcHgpIiwiZmFjdDpmdW5jdGlvbjpkNmJkZmI4ZTEzMWJlZGJiNTM4ZDY0YmQyOWQxNDFmNCI6InRyYW5zbGF0ZSg1NDBweCwgMTAwcHgpIiwiZmFjdDpmaWxlOjM2MzM1NDFjYjVkMzYyMjdjOWIxYWM1ZjFhYmIyMTQzIjoidHJhbnNsYXRlKDg4MHB4LCAxMDBweCkiLCJmYWN0OmZpbGU6NGJiNzI3NWRhMzhiNmI4MTI3NTUxZmNmMDQ0ZWRmMzciOiJ0cmFuc2xhdGUoMjAwcHgsIDMxMHB4KSIsImZhY3Q6ZnVuY3Rpb246NDhlNjhkYTcxMzJmMGZiMDljZjQyMWZhMGQ0YzlkNGQiOiJ0cmFuc2xhdGUoNTQwcHgsIDMxMHB4KSIsImZhY3Q6ZmlsZTo5NTM0YWVhMWM0YzliNzJiNWVlMDE4Mzk3NTczNTIyZiI6InRyYW5zbGF0ZSg4ODBweCwgMzEwcHgpIiwiZmFjdDpmdW5jdGlvbjozZTE3MmFkNDJkZjU1YTYzODMzNzRiOTU4YjY3YTcyZCI6InRyYW5zbGF0ZSgyMDBweCwgNTIwcHgpIiwiZmFjdDpmdW5jdGlvbjoyNjIwNTJmOTJjYjYzOWYxOWZhODI4OGM5NTdhNmEzYSI6InRyYW5zbGF0ZSg1NDBweCwgNTIwcHgpIiwiZmFjdDpmaWxlOmRkMmU4OTdhMjkwY2I2NWNlYmQ5YWQyOWI5NTNhMGY5IjoidHJhbnNsYXRlKDg4MHB4LCA1MjBweCkifX0seyJ0aW1lIjozODUuMjAwMDAwMDAxMTE3NiwiYWN0aXZlIjpmYWxzZSwidHJhbnNmb3JtcyI6eyJmYWN0OmZvbGRlcjozMDQzODQ1YjYyZDgxMmI2MTdkYTRjNjk3NzYxMjg2MSI6InRyYW5zbGF0ZSgyMDBweCwgMTAwcHgpIiwiZmFjdDpmdW5jdGlvbjpkNmJkZmI4ZTEzMWJlZGJiNTM4ZDY0YmQyOWQxNDFmNCI6InRyYW5zbGF0ZSg1NDBweCwgMTAwcHgpIiwiZmFjdDpmaWxlOjM2MzM1NDFjYjVkMzYyMjdjOWIxYWM1ZjFhYmIyMTQzIjoidHJhbnNsYXRlKDg4MHB4LCAxMDBweCkiLCJmYWN0OmZpbGU6NGJiNzI3NWRhMzhiNmI4MTI3NTUxZmNmMDQ0ZWRmMzciOiJ0cmFuc2xhdGUoMjAwcHgsIDMxMHB4KSIsImZhY3Q6ZnVuY3Rpb246NDhlNjhkYTcxMzJmMGZiMDljZjQyMWZhMGQ0YzlkNGQiOiJ0cmFuc2xhdGUoNTQwcHgsIDMxMHB4KSIsImZhY3Q6ZmlsZTo5NTM0YWVhMWM0YzliNzJiNWVlMDE4Mzk3NTczNTIyZiI6InRyYW5zbGF0ZSg4ODBweCwgMzEwcHgpIiwiZmFjdDpmdW5jdGlvbjozZTE3MmFkNDJkZjU1YTYzODMzNzRiOTU4YjY3YTcyZCI6InRyYW5zbGF0ZSgyMDBweCwgNTIwcHgpIiwiZmFjdDpmdW5jdGlvbjoyNjIwNTJmOTJjYjYzOWYxOWZhODI4OGM5NTdhNmEzYSI6InRyYW5zbGF0ZSg1NDBweCwgNTIwcHgpIiwiZmFjdDpmaWxlOmRkMmU4OTdhMjkwY2I2NWNlYmQ5YWQyOWI5NTNhMGY5IjoidHJhbnNsYXRlKDg4MHB4LCA1MjBweCkifX0seyJ0aW1lIjozOTQuNTk5OTk5OTk5NjI3NDcsImFjdGl2ZSI6ZmFsc2UsInRyYW5zZm9ybXMiOnsiZmFjdDpmb2xkZXI6MzA0Mzg0NWI2MmQ4MTJiNjE3ZGE0YzY5Nzc2MTI4NjEiOiJ0cmFuc2xhdGUoMjAwcHgsIDEwMHB4KSIsImZhY3Q6ZnVuY3Rpb246ZDZiZGZiOGUxMzFiZWRiYjUzOGQ2NGJkMjlkMTQxZjQiOiJ0cmFuc2xhdGUoNTQwcHgsIDEwMHB4KSIsImZhY3Q6ZmlsZTozNjMzNTQxY2I1ZDM2MjI3YzliMWFjNWYxYWJiMjE0MyI6InRyYW5zbGF0ZSg4ODBweCwgMTAwcHgpIiwiZmFjdDpmaWxlOjRiYjcyNzVkYTM4YjZiODEyNzU1MWZjZjA0NGVkZjM3IjoidHJhbnNsYXRlKDIwMHB4LCAzMTBweCkiLCJmYWN0OmZ1bmN0aW9uOjQ4ZTY4ZGE3MTMyZjBmYjA5Y2Y0MjFmYTBkNGM5ZDRkIjoidHJhbnNsYXRlKDU0MHB4LCAzMTBweCkiLCJmYWN0OmZpbGU6OTUzNGFlYTFjNGM5YjcyYjVlZTAxODM5NzU3MzUyMmYiOiJ0cmFuc2xhdGUoODgwcHgsIDMxMHB4KSIsImZhY3Q6ZnVuY3Rpb246M2UxNzJhZDQyZGY1NWE2MzgzMzc0Yjk1OGI2N2E3MmQiOiJ0cmFuc2xhdGUoMjAwcHgsIDUyMHB4KSIsImZhY3Q6ZnVuY3Rpb246MjYyMDUyZjkyY2I2MzlmMTlmYTgyODhjOTU3YTZhM2EiOiJ0cmFuc2xhdGUoNTQwcHgsIDUyMHB4KSIsImZhY3Q6ZmlsZTpkZDJlODk3YTI5MGNiNjVjZWJkOWFkMjliOTUzYTBmOSI6InRyYW5zbGF0ZSg4ODBweCwgNTIwcHgpIn19LHsidGltZSI6NDE0LjkwMDAwMDAwMDM3MjUzLCJhY3RpdmUiOnRydWUsInRyYW5zZm9ybXMiOnsiZmFjdDpmb2xkZXI6MzA0Mzg0NWI2MmQ4MTJiNjE3ZGE0YzY5Nzc2MTI4NjEiOiJ0cmFuc2xhdGUoMjAwcHgsIDEwMHB4KSIsImZhY3Q6ZnVuY3Rpb246ZDZiZGZiOGUxMzFiZWRiYjUzOGQ2NGJkMjlkMTQxZjQiOiJ0cmFuc2xhdGUoNTQwcHgsIDEwMHB4KSIsImZhY3Q6ZmlsZTozNjMzNTQxY2I1ZDM2MjI3YzliMWFjNWYxYWJiMjE0MyI6InRyYW5zbGF0ZSg4ODBweCwgMTAwcHgpIiwiZmFjdDpmaWxlOjRiYjcyNzVkYTM4YjZiODEyNzU1MWZjZjA0NGVkZjM3IjoidHJhbnNsYXRlKDIwMHB4LCAzMTBweCkiLCJmYWN0OmZ1bmN0aW9uOjQ4ZTY4ZGE3MTMyZjBmYjA5Y2Y0MjFmYTBkNGM5ZDRkIjoidHJhbnNsYXRlKDU0MHB4LCAzMTBweCkiLCJmYWN0OmZpbGU6OTUzNGFlYTFjNGM5YjcyYjVlZTAxODM5NzU3MzUyMmYiOiJ0cmFuc2xhdGUoODgwcHgsIDMxMHB4KSIsImZhY3Q6ZnVuY3Rpb246M2UxNzJhZDQyZGY1NWE2MzgzMzc0Yjk1OGI2N2E3MmQiOiJ0cmFuc2xhdGUoMjAwcHgsIDUyMHB4KSIsImZhY3Q6ZnVuY3Rpb246MjYyMDUyZjkyY2I2MzlmMTlmYTgyODhjOTU3YTZhM2EiOiJ0cmFuc2xhdGUoNTQwcHgsIDUyMHB4KSIsImZhY3Q6ZmlsZTpkZDJlODk3YTI5MGNiNjVjZWJkOWFkMjliOTUzYTBmOSI6InRyYW5zbGF0ZSg4ODBweCwgNTIwcHgpIn19LHsidGltZSI6NDM2LjU5OTk5OTk5OTYyNzQ3LCJhY3RpdmUiOnRydWUsInRyYW5zZm9ybXMiOnsiZmFjdDpmb2xkZXI6MzA0Mzg0NWI2MmQ4MTJiNjE3ZGE0YzY5Nzc2MTI4NjEiOiJ0cmFuc2xhdGUoMjAxLjQwOXB4LCAxMDAuMDNweCkiLCJmYWN0OmZ1bmN0aW9uOmQ2YmRmYjhlMTMxYmVkYmI1MzhkNjRiZDI5ZDE0MWY0IjoidHJhbnNsYXRlKDUzOS41NzNweCwgOTkuNzM4OHB4KSIsImZhY3Q6ZmlsZTozNjMzNTQxY2I1ZDM2MjI3YzliMWFjNWYxYWJiMjE0MyI6InRyYW5zbGF0ZSg4NzkuODI2cHgsIDEwMC4wM3B4KSIsImZhY3Q6ZmlsZTo0YmI3Mjc1ZGEzOGI2YjgxMjc1NTFmY2YwNDRlZGYzNyI6InRyYW5zbGF0ZSgyMDAuNjI1cHgsIDMwOS44NjRweCkiLCJmYWN0OmZ1bmN0aW9uOjQ4ZTY4ZGE3MTMyZjBmYjA5Y2Y0MjFmYTBkNGM5ZDRkIjoidHJhbnNsYXRlKDUzOS41NzNweCwgMzA5LjkzN3B4KSIsImZhY3Q6ZmlsZTo5NTM0YWVhMWM0YzliNzJiNWVlMDE4Mzk3NTczNTIyZiI6InRyYW5zbGF0ZSg4ODAuMzQ4cHgsIDMwOS44NjRweCkiLCJmYWN0OmZ1bmN0aW9uOjNlMTcyYWQ0MmRmNTVhNjM4MzM3NGI5NThiNjdhNzJkIjoidHJhbnNsYXRlKDE5OS44NDJweCwgNTE5LjU4OHB4KSIsImZhY3Q6ZnVuY3Rpb246MjYyMDUyZjkyY2I2MzlmMTlmYTgyODhjOTU3YTZhM2EiOiJ0cmFuc2xhdGUoNTQxLjQwMXB4LCA1MTkuNjk4cHgpIiwiZmFjdDpmaWxlOmRkMmU4OTdhMjkwY2I2NWNlYmQ5YWQyOWI5NTNhMGY5IjoidHJhbnNsYXRlKDg4MC42MXB4LCA1MTkuNjk4cHgpIn19LHsidGltZSI6NDQ0LjA5OTk5OTk5OTYyNzQ3LCJhY3RpdmUiOnRydWUsInRyYW5zZm9ybXMiOnsiZmFjdDpmb2xkZXI6MzA0Mzg0NWI2MmQ4MTJiNjE3ZGE0YzY5Nzc2MTI4NjEiOiJ0cmFuc2xhdGUoMjI2LjExNnB4LCAxMDAuNTU4cHgpIiwiZmFjdDpmdW5jdGlvbjpkNmJkZmI4ZTEzMWJlZGJiNTM4ZDY0YmQyOWQxNDFmNCI6InRyYW5zbGF0ZSg1MzIuMDc3cHgsIDk1LjE1ODJweCkiLCJmYWN0OmZpbGU6MzYzMzU0MWNiNWQzNjIyN2M5YjFhYzVmMWFiYjIxNDMiOiJ0cmFuc2xhdGUoODc2Ljc3MnB4LCAxMDAuNTU4cHgpIiwiZmFjdDpmaWxlOjRiYjcyNzVkYTM4YjZiODEyNzU1MWZjZjA0NGVkZjM3IjoidHJhbnNsYXRlKDIxMS41OTFweCwgMzA3LjQ3NnB4KSIsImZhY3Q6ZnVuY3Rpb246NDhlNjhkYTcxMzJmMGZiMDljZjQyMWZhMGQ0YzlkNGQiOiJ0cmFuc2xhdGUoNTMyLjA3N3B4LCAzMDguODI2cHgpIiwiZmFjdDpmaWxlOjk1MzRhZWExYzRjOWI3MmI1ZWUwMTgzOTc1NzM1MjJmIjoidHJhbnNsYXRlKDg4Ni40NTZweCwgMzA3LjQ3NnB4KSIsImZhY3Q6ZnVuY3Rpb246M2UxNzJhZDQyZGY1NWE2MzgzMzc0Yjk1OGI2N2E3MmQiOiJ0cmFuc2xhdGUoMTk3LjA2NnB4LCA1MTIuMzdweCkiLCJmYWN0OmZ1bmN0aW9uOjI2MjA1MmY5MmNiNjM5ZjE5ZmE4Mjg4Yzk1N2E2YTNhIjoidHJhbnNsYXRlKDU2NS45N3B4LCA1MTQuMzk1cHgpIiwiZmFjdDpmaWxlOmRkMmU4OTdhMjkwY2I2NWNlYmQ5YWQyOWI5NTNhMGY5IjoidHJhbnNsYXRlKDg5MS4yOThweCwgNTE0LjM5NXB4KSJ9fSx7InRpbWUiOjQ2MSwiYWN0aXZlIjp0cnVlLCJ0cmFuc2Zvcm1zIjp7ImZhY3Q6Zm9sZGVyOjMwNDM4NDViNjJkODEyYjYxN2RhNGM2OTc3NjEyODYxIjoidHJhbnNsYXRlKDIyNy4yMzdweCwgMTAwLjU4MXB4KSIsImZhY3Q6ZnVuY3Rpb246ZDZiZGZiOGUxMzFiZWRiYjUzOGQ2NGJkMjlkMTQxZjQiOiJ0cmFuc2xhdGUoNTMxLjczN3B4LCA5NC45NTA0cHgpIiwiZmFjdDpmaWxlOjM2MzM1NDFjYjVkMzYyMjdjOWIxYWM1ZjFhYmIyMTQzIjoidHJhbnNsYXRlKDg3Ni42MzRweCwgMTAwLjU4MXB4KSIsImZhY3Q6ZmlsZTo0YmI3Mjc1ZGEzOGI2YjgxMjc1NTFmY2YwNDRlZGYzNyI6InRyYW5zbGF0ZSgyMTIuMDg4cHgsIDMwNy4zNjhweCkiLCJmYWN0OmZ1bmN0aW9uOjQ4ZTY4ZGE3MTMyZjBmYjA5Y2Y0MjFmYTBkNGM5ZDRkIjoidHJhbnNsYXRlKDUzMS43MzdweCwgMzA4Ljc3NnB4KSIsImZhY3Q6ZmlsZTo5NTM0YWVhMWM0YzliNzJiNWVlMDE4Mzk3NTczNTIyZiI6InRyYW5zbGF0ZSg4ODYuNzMzcHgsIDMwNy4zNjhweCkiLCJmYWN0OmZ1bmN0aW9uOjNlMTcyYWQ0MmRmNTVhNjM4MzM3NGI5NThiNjdhNzJkIjoidHJhbnNsYXRlKDE5Ni45NHB4LCA1MTIuMDQzcHgpIiwiZmFjdDpmdW5jdGlvbjoyNjIwNTJmOTJjYjYzOWYxOWZhODI4OGM5NTdhNmEzYSI6InRyYW5zbGF0ZSg1NjcuMDg0cHgsIDUxNC4xNTVweCkiLCJmYWN0OmZpbGU6ZGQyZTg5N2EyOTBjYjY1Y2ViZDlhZDI5Yjk1M2EwZjkiOiJ0cmFuc2xhdGUoODkxLjc4MnB4LCA1MTQuMTU1cHgpIn19LHsidGltZSI6NDgxLjIwMDAwMDAwMTExNzYsImFjdGl2ZSI6dHJ1ZSwidHJhbnNmb3JtcyI6eyJmYWN0OmZvbGRlcjozMDQzODQ1YjYyZDgxMmI2MTdkYTRjNjk3NzYxMjg2MSI6InRyYW5zbGF0ZSgyNTAuOTI0cHgsIDEwMS4wODdweCkiLCJmYWN0OmZ1bmN0aW9uOmQ2YmRmYjhlMTMxYmVkYmI1MzhkNjRiZDI5ZDE0MWY0IjoidHJhbnNsYXRlKDUyNC41NTFweCwgOTAuNTU5cHgpIiwiZmFjdDpmaWxlOjM2MzM1NDFjYjVkMzYyMjdjOWIxYWM1ZjFhYmIyMTQzIjoidHJhbnNsYXRlKDg3My43MDZweCwgMTAxLjA4N3B4KSIsImZhY3Q6ZmlsZTo0YmI3Mjc1ZGEzOGI2YjgxMjc1NTFmY2YwNDRlZGYzNyI6InRyYW5zbGF0ZSgyMjIuNjAxcHgsIDMwNS4wNzlweCkiLCJmYWN0OmZ1bmN0aW9uOjQ4ZTY4ZGE3MTMyZjBmYjA5Y2Y0MjFmYTBkNGM5ZDRkIjoidHJhbnNsYXRlKDUyNC41NTFweCwgMzA3LjcxMXB4KSIsImZhY3Q6ZmlsZTo5NTM0YWVhMWM0YzliNzJiNWVlMDE4Mzk3NTczNTIyZiI6InRyYW5zbGF0ZSg4OTIuNTg4cHgsIDMwNS4wNzlweCkiLCJmYWN0OmZ1bmN0aW9uOjNlMTcyYWQ0MmRmNTVhNjM4MzM3NGI5NThiNjdhNzJkIjoidHJhbnNsYXRlKDE5NC4yNzhweCwgNTA1LjEyM3B4KSIsImZhY3Q6ZnVuY3Rpb246MjYyMDUyZjkyY2I2MzlmMTlmYTgyODhjOTU3YTZhM2EiOiJ0cmFuc2xhdGUoNTkwLjYzOHB4LCA1MDkuMDcxcHgpIiwiZmFjdDpmaWxlOmRkMmU4OTdhMjkwY2I2NWNlYmQ5YWQyOWI5NTNhMGY5IjoidHJhbnNsYXRlKDkwMi4wMjlweCwgNTA5LjA3MXB4KSJ9fSx7InRpbWUiOjUwMi4yMDAwMDAwMDExMTc2LCJhY3RpdmUiOnRydWUsInRyYW5zZm9ybXMiOnsiZmFjdDpmb2xkZXI6MzA0Mzg0NWI2MmQ4MTJiNjE3ZGE0YzY5Nzc2MTI4NjEiOiJ0cmFuc2xhdGUoMzAyLjYzNHB4LCAxMDIuMTkxcHgpIiwiZmFjdDpmdW5jdGlvbjpkNmJkZmI4ZTEzMWJlZGJiNTM4ZDY0YmQyOWQxNDFmNCI6InRyYW5zbGF0ZSg1MDguODY0cHgsIDgwLjk3MjRweCkiLCJmYWN0OmZpbGU6MzYzMzU0MWNiNWQzNjIyN2M5YjFhYzVmMWFiYjIxNDMiOiJ0cmFuc2xhdGUoODY3LjMxNXB4LCAxMDIuMTkxcHgpIiwiZmFjdDpmaWxlOjRiYjcyNzVkYTM4YjZiODEyNzU1MWZjZjA0NGVkZjM3IjoidHJhbnNsYXRlKDI0NS41NTFweCwgMzAwLjA4M3B4KSIsImZhY3Q6ZnVuY3Rpb246NDhlNjhkYTcxMzJmMGZiMDljZjQyMWZhMGQ0YzlkNGQiOiJ0cmFuc2xhdGUoNTA4Ljg2NHB4LCAzMDUuMzg3cHgpIiwiZmFjdDpmaWxlOjk1MzRhZWExYzRjOWI3MmI1ZWUwMTgzOTc1NzM1MjJmIjoidHJhbnNsYXRlKDkwNS4zN3B4LCAzMDAuMDgzcHgpIiwiZmFjdDpmdW5jdGlvbjozZTE3MmFkNDJkZjU1YTYzODMzNzRiOTU4YjY3YTcyZCI6InRyYW5zbGF0ZSgxODguNDY4cHgsIDQ5MC4wMTdweCkiLCJmYWN0OmZ1bmN0aW9uOjI2MjA1MmY5MmNiNjM5ZjE5ZmE4Mjg4Yzk1N2E2YTNhIjoidHJhbnNsYXRlKDY0Mi4wNTdweCwgNDk3Ljk3NHB4KSIsImZhY3Q6ZmlsZTpkZDJlODk3YTI5MGNiNjVjZWJkOWFkMjliOTUzYTBmOSI6InRyYW5zbGF0ZSg5MjQuMzk4cHgsIDQ5Ny45NzRweCkifX0seyJ0aW1lIjo1MTEuODAwMDAwMDAwNzQ1MDYsImFjdGl2ZSI6dHJ1ZSwidHJhbnNmb3JtcyI6eyJmYWN0OmZvbGRlcjozMDQzODQ1YjYyZDgxMmI2MTdkYTRjNjk3NzYxMjg2MSI6InRyYW5zbGF0ZSgzNzguMjE0cHgsIDEwMy44MDVweCkiLCJmYWN0OmZ1bmN0aW9uOmQ2YmRmYjhlMTMxYmVkYmI1MzhkNjRiZDI5ZDE0MWY0IjoidHJhbnNsYXRlKDQ4NS45MzVweCwgNjYuOTYwNHB4KSIsImZhY3Q6ZmlsZTozNjMzNTQxY2I1ZDM2MjI3YzliMWFjNWYxYWJiMjE0MyI6InRyYW5zbGF0ZSg4NTcuOTc0cHgsIDEwMy44MDVweCkiLCJmYWN0OmZpbGU6NGJiNzI3NWRhMzhiNmI4MTI3NTUxZmNmMDQ0ZWRmMzciOiJ0cmFuc2xhdGUoMjc5LjA5NXB4LCAyOTIuNzc5cHgpIiwiZmFjdDpmdW5jdGlvbjo0OGU2OGRhNzEzMmYwZmIwOWNmNDIxZmEwZDRjOWQ0ZCI6InRyYW5zbGF0ZSg0ODUuOTM1cHgsIDMwMS45OXB4KSIsImZhY3Q6ZmlsZTo5NTM0YWVhMWM0YzliNzJiNWVlMDE4Mzk3NTczNTIyZiI6InRyYW5zbGF0ZSg5MjQuMDUzcHgsIDI5Mi43NzlweCkiLCJmYWN0OmZ1bmN0aW9uOjNlMTcyYWQ0MmRmNTVhNjM4MzM3NGI5NThiNjdhNzJkIjoidHJhbnNsYXRlKDE3OS45NzZweCwgNDY3LjkzOHB4KSIsImZhY3Q6ZnVuY3Rpb246MjYyMDUyZjkyY2I2MzlmMTlmYTgyODhjOTU3YTZhM2EiOiJ0cmFuc2xhdGUoNzE3LjIxMnB4LCA0ODEuNzU0cHgpIiwiZmFjdDpmaWxlOmRkMmU4OTdhMjkwY2I2NWNlYmQ5YWQyOWI5NTNhMGY5IjoidHJhbnNsYXRlKDk1Ny4wOTJweCwgNDgxLjc1NHB4KSJ9fSx7InRpbWUiOjUzNy41LCJhY3RpdmUiOnRydWUsInRyYW5zZm9ybXMiOnsiZmFjdDpmb2xkZXI6MzA0Mzg0NWI2MmQ4MTJiNjE3ZGE0YzY5Nzc2MTI4NjEiOiJ0cmFuc2xhdGUoNDc0Ljk2M3B4LCAxMDUuODdweCkiLCJmYWN0OmZ1bmN0aW9uOmQ2YmRmYjhlMTMxYmVkYmI1MzhkNjRiZDI5ZDE0MWY0IjoidHJhbnNsYXRlKDQ1Ni41ODRweCwgNDkuMDIzOHB4KSIsImZhY3Q6ZmlsZTozNjMzNTQxY2I1ZDM2MjI3YzliMWFjNWYxYWJiMjE0MyI6InRyYW5zbGF0ZSg4NDYuMDE2cHgsIDEwNS44N3B4KSIsImZhY3Q6ZmlsZTo0YmI3Mjc1ZGEzOGI2YjgxMjc1NTFmY2YwNDRlZGYzNyI6InRyYW5zbGF0ZSgzMjIuMDM0cHgsIDI4My40MzFweCkiLCJmYWN0OmZ1bmN0aW9uOjQ4ZTY4ZGE3MTMyZjBmYjA5Y2Y0MjFmYTBkNGM5ZDRkIjoidHJhbnNsYXRlKDQ1Ni41ODRweCwgMjk3LjY0MnB4KSIsImZhY3Q6ZmlsZTo5NTM0YWVhMWM0YzliNzJiNWVlMDE4Mzk3NTczNTIyZiI6InRyYW5zbGF0ZSg5NDcuOTY4cHgsIDI4My40MzFweCkiLCJmYWN0OmZ1bmN0aW9uOjNlMTcyYWQ0MmRmNTVhNjM4MzM3NGI5NThiNjdhNzJkIjoidHJhbnNsYXRlKDE2OS4xMDVweCwgNDM5LjY3NHB4KSIsImZhY3Q6ZnVuY3Rpb246MjYyMDUyZjkyY2I2MzlmMTlmYTgyODhjOTU3YTZhM2EiOiJ0cmFuc2xhdGUoODEzLjQxOHB4LCA0NjAuOTkxcHgpIiwiZmFjdDpmaWxlOmRkMmU4OTdhMjkwY2I2NWNlYmQ5YWQyOWI5NTNhMGY5IjoidHJhbnNsYXRlKDk5OC45NDRweCwgNDYwLjk5MXB4KSJ9fSx7InRpbWUiOjU1MC41OTk5OTk5OTk2Mjc1LCJhY3RpdmUiOnRydWUsInRyYW5zZm9ybXMiOnsiZmFjdDpmb2xkZXI6MzA0Mzg0NWI2MmQ4MTJiNjE3ZGE0YzY5Nzc2MTI4NjEiOiJ0cmFuc2xhdGUoNTg4LjEzOHB4LCAxMDguMjg2cHgpIiwiZmFjdDpmdW5jdGlvbjpkNmJkZmI4ZTEzMWJlZGJiNTM4ZDY0YmQyOWQxNDFmNCI6InRyYW5zbGF0ZSg0MjIuMjVweCwgMjguMDQxOHB4KSIsImZhY3Q6ZmlsZTozNjMzNTQxY2I1ZDM2MjI3YzliMWFjNWYxYWJiMjE0MyI6InRyYW5zbGF0ZSg4MzIuMDI4cHgsIDEwOC4yODZweCkiLCJmYWN0OmZpbGU6NGJiNzI3NWRhMzhiNmI4MTI3NTUxZmNmMDQ0ZWRmMzciOiJ0cmFuc2xhdGUoMzcyLjI2NHB4LCAyNzIuNDk1cHgpIiwiZmFjdDpmdW5jdGlvbjo0OGU2OGRhNzEzMmYwZmIwOWNmNDIxZmEwZDRjOWQ0ZCI6InRyYW5zbGF0ZSg0MjIuMjVweCwgMjkyLjU1NnB4KSIsImZhY3Q6ZmlsZTo5NTM0YWVhMWM0YzliNzJiNWVlMDE4Mzk3NTczNTIyZiI6InRyYW5zbGF0ZSg5NzUuOTQ0cHgsIDI3Mi40OTVweCkiLCJmYWN0OmZ1bmN0aW9uOjNlMTcyYWQ0MmRmNTVhNjM4MzM3NGI5NThiNjdhNzJkIjoidHJhbnNsYXRlKDE1Ni4zODlweCwgNDA2LjYxMXB4KSIsImZhY3Q6ZnVuY3Rpb246MjYyMDUyZjkyY2I2MzlmMTlmYTgyODhjOTU3YTZhM2EiOiJ0cmFuc2xhdGUoOTI1Ljk1OHB4LCA0MzYuNzAzcHgpIiwiZmFjdDpmaWxlOmRkMmU4OTdhMjkwY2I2NWNlYmQ5YWQyOWI5NTNhMGY5IjoidHJhbnNsYXRlKDEwNDcuOXB4LCA0MzYuNzAzcHgpIn19LHsidGltZSI6NTY1LjMwMDAwMDAwMDc0NTEsImFjdGl2ZSI6dHJ1ZSwidHJhbnNmb3JtcyI6eyJmYWN0OmZvbGRlcjozMDQzODQ1YjYyZDgxMmI2MTdkYTRjNjk3NzYxMjg2MSI6InRyYW5zbGF0ZSg3MTUuNDkxcHgsIDExMS4wMDVweCkiLCJmYWN0OmZ1bmN0aW9uOmQ2YmRmYjhlMTMxYmVkYmI1MzhkNjRiZDI5ZDE0MWY0IjoidHJhbnNsYXRlKDM4My42MTVweCwgNC40MzEzN3B4KSIsImZhY3Q6ZmlsZTozNjMzNTQxY2I1ZDM2MjI3YzliMWFjNWYxYWJiMjE0MyI6InRyYW5zbGF0ZSg4MTYuMjg4cHgsIDExMS4wMDVweCkiLCJmYWN0OmZpbGU6NGJiNzI3NWRhMzhiNmI4MTI3NTUxZmNmMDQ0ZWRmMzciOiJ0cmFuc2xhdGUoNDI4Ljc4NXB4LCAyNjAuMTg4cHgpIiwiZmFjdDpmdW5jdGlvbjo0OGU2OGRhNzEzMmYwZmIwOWNmNDIxZmEwZDRjOWQ0ZCI6InRyYW5zbGF0ZSgzODMuNjE1cHgsIDI4Ni44MzJweCkiLCJmYWN0OmZpbGU6OTUzNGFlYTFjNGM5YjcyYjVlZTAxODM5NzU3MzUyMmYiOiJ0cmFuc2xhdGUoMTAwNy40MnB4LCAyNjAuMTg4cHgpIiwiZmFjdDpmdW5jdGlvbjozZTE3MmFkNDJkZjU1YTYzODMzNzRiOTU4YjY3YTcyZCI6InRyYW5zbGF0ZSgxNDIuMDhweCwgMzY5LjQwN3B4KSIsImZhY3Q6ZnVuY3Rpb246MjYyMDUyZjkyY2I2MzlmMTlmYTgyODhjOTU3YTZhM2EiOiJ0cmFuc2xhdGUoMTA1Mi42cHgsIDQwOS4zNzJweCkiLCJmYWN0OmZpbGU6ZGQyZTg5N2EyOTBjYjY1Y2ViZDlhZDI5Yjk1M2EwZjkiOiJ0cmFuc2xhdGUoMTEwMi45OXB4LCA0MDkuMzcycHgpIn19LHsidGltZSI6NTc4LjA5OTk5OTk5OTYyNzUsImFjdGl2ZSI6dHJ1ZSwidHJhbnNmb3JtcyI6eyJmYWN0OmZvbGRlcjozMDQzODQ1YjYyZDgxMmI2MTdkYTRjNjk3NzYxMjg2MSI6InRyYW5zbGF0ZSg4NTIuNzU4cHgsIDExMy45MzVweCkiLCJmYWN0OmZ1bmN0aW9uOmQ2YmRmYjhlMTMxYmVkYmI1MzhkNjRiZDI5ZDE0MWY0IjoidHJhbnNsYXRlKDM0MS45NzJweCwgLTIxLjAxNjlweCkiLCJmYWN0OmZpbGU6MzYzMzU0MWNiNWQzNjIyN2M5YjFhYzVmMWFiYjIxNDMiOiJ0cmFuc2xhdGUoNzk5LjMyMnB4LCAxMTMuOTM1cHgpIiwiZmFjdDpmaWxlOjRiYjcyNzVkYTM4YjZiODEyNzU1MWZjZjA0NGVkZjM3IjoidHJhbnNsYXRlKDQ4OS43MDdweCwgMjQ2LjkyNXB4KSIsImZhY3Q6ZnVuY3Rpb246NDhlNjhkYTcxMzJmMGZiMDljZjQyMWZhMGQ0YzlkNGQiOiJ0cmFuc2xhdGUoMzQxLjk3MnB4LCAyODAuNjYzcHgpIiwiZmFjdDpmaWxlOjk1MzRhZWExYzRjOWI3MmI1ZWUwMTgzOTc1NzM1MjJmIjoidHJhbnNsYXRlKDEwNDEuMzZweCwgMjQ2LjkyNXB4KSIsImZhY3Q6ZnVuY3Rpb246M2UxNzJhZDQyZGY1NWE2MzgzMzc0Yjk1OGI2N2E3MmQiOiJ0cmFuc2xhdGUoMTI2LjY1NnB4LCAzMjkuMzA3cHgpIiwiZmFjdDpmdW5jdGlvbjoyNjIwNTJmOTJjYjYzOWYxOWZhODI4OGM5NTdhNmEzYSI6InRyYW5zbGF0ZSgxMTg5LjA5cHgsIDM3OS45MTRweCkiLCJmYWN0OmZpbGU6ZGQyZTg5N2EyOTBjYjY1Y2ViZDlhZDI5Yjk1M2EwZjkiOiJ0cmFuc2xhdGUoMTE2Mi4zN3B4LCAzNzkuOTE0cHgpIn19LHsidGltZSI6NTk0LCJhY3RpdmUiOnRydWUsInRyYW5zZm9ybXMiOnsiZmFjdDpmb2xkZXI6MzA0Mzg0NWI2MmQ4MTJiNjE3ZGE0YzY5Nzc2MTI4NjEiOiJ0cmFuc2xhdGUoOTk1LjQzNnB4LCAxMTYuOTgxcHgpIiwiZmFjdDpmdW5jdGlvbjpkNmJkZmI4ZTEzMWJlZGJiNTM4ZDY0YmQyOWQxNDFmNCI6InRyYW5zbGF0ZSgyOTguNjg4cHgsIC00Ny40Njg1cHgpIiwiZmFjdDpmaWxlOjM2MzM1NDFjYjVkMzYyMjdjOWIxYWM1ZjFhYmIyMTQzIjoidHJhbnNsYXRlKDc4MS42ODhweCwgMTE2Ljk4MXB4KSIsImZhY3Q6ZmlsZTo0YmI3Mjc1ZGEzOGI2YjgxMjc1NTFmY2YwNDRlZGYzNyI6InRyYW5zbGF0ZSg1NTMuMDMxcHgsIDIzMy4xMzhweCkiLCJmYWN0OmZ1bmN0aW9uOjQ4ZTY4ZGE3MTMyZjBmYjA5Y2Y0MjFmYTBkNGM5ZDRkIjoidHJhbnNsYXRlKDI5OC42ODhweCwgMjc0LjI1cHgpIiwiZmFjdDpmaWxlOjk1MzRhZWExYzRjOWI3MmI1ZWUwMTgzOTc1NzM1MjJmIjoidHJhbnNsYXRlKDEwNzYuNjJweCwgMjMzLjEzOHB4KSIsImZhY3Q6ZnVuY3Rpb246M2UxNzJhZDQyZGY1NWE2MzgzMzc0Yjk1OGI2N2E3MmQiOiJ0cmFuc2xhdGUoMTEwLjYyNXB4LCAyODcuNjI1cHgpIiwiZmFjdDpmdW5jdGlvbjoyNjIwNTJmOTJjYjYzOWYxOWZhODI4OGM5NTdhNmEzYSI6InRyYW5zbGF0ZSgxMzMwLjk3cHgsIDM0OS4yOTRweCkiLCJmYWN0OmZpbGU6ZGQyZTg5N2EyOTBjYjY1Y2ViZDlhZDI5Yjk1M2EwZjkiOiJ0cmFuc2xhdGUoMTIyNC4wOXB4LCAzNDkuMjk0cHgpIn19LHsidGltZSI6NjExLjA5OTk5OTk5OTYyNzUsImFjdGl2ZSI6dHJ1ZSwidHJhbnNmb3JtcyI6eyJmYWN0OmZvbGRlcjozMDQzODQ1YjYyZDgxMmI2MTdkYTRjNjk3NzYxMjg2MSI6InRyYW5zbGF0ZSgxMTQyLjUxcHgsIDEyMC4xMjFweCkiLCJmYWN0OmZ1bmN0aW9uOmQ2YmRmYjhlMTMxYmVkYmI1MzhkNjRiZDI5ZDE0MWY0IjoidHJhbnNsYXRlKDI1NC4wN3B4LCAtNzQuNzM0OHB4KSIsImZhY3Q6ZmlsZTozNjMzNTQxY2I1ZDM2MjI3YzliMWFjNWYxYWJiMjE0MyI6InRyYW5zbGF0ZSg3NjMuNTFweCwgMTIwLjEyMXB4KSIsImZhY3Q6ZmlsZTo0YmI3Mjc1ZGEzOGI2YjgxMjc1NTFmY2YwNDRlZGYzNyI6InRyYW5zbGF0ZSg2MTguMzA0cHgsIDIxOC45MjZweCkiLCJmYWN0OmZ1bmN0aW9uOjQ4ZTY4ZGE3MTMyZjBmYjA5Y2Y0MjFmYTBkNGM5ZDRkIjoidHJhbnNsYXRlKDI1NC4wN3B4LCAyNjcuNjRweCkiLCJmYWN0OmZpbGU6OTUzNGFlYTFjNGM5YjcyYjVlZTAxODM5NzU3MzUyMmYiOiJ0cmFuc2xhdGUoMTExMi45OHB4LCAyMTguOTI2cHgpIiwiZmFjdDpmdW5jdGlvbjozZTE3MmFkNDJkZjU1YTYzODMzNzRiOTU4YjY3YTcyZCI6InRyYW5zbGF0ZSg5NC4xMDAxcHgsIDI0NC42NnB4KSIsImZhY3Q6ZnVuY3Rpb246MjYyMDUyZjkyY2I2MzlmMTlmYTgyODhjOTU3YTZhM2EiOiJ0cmFuc2xhdGUoMTQ3Ny4yMXB4LCAzMTcuNzMxcHgpIiwiZmFjdDpmaWxlOmRkMmU4OTdhMjkwY2I2NWNlYmQ5YWQyOWI5NTNhMGY5IjoidHJhbnNsYXRlKDEyODcuNzFweCwgMzE3LjczMXB4KSJ9fSx7InRpbWUiOjYyNy40MDAwMDAwMDAzNzI1LCJhY3RpdmUiOnRydWUsInRyYW5zZm9ybXMiOnsiZmFjdDpmb2xkZXI6MzA0Mzg0NWI2MmQ4MTJiNjE3ZGE0YzY5Nzc2MTI4NjEiOiJ0cmFuc2xhdGUoMTI4Ni44N3B4LCAxMjMuMjAzcHgpIiwiZmFjdDpmdW5jdGlvbjpkNmJkZmI4ZTEzMWJlZGJiNTM4ZDY0YmQyOWQxNDFmNCI6InRyYW5zbGF0ZSgyMTAuMjc1cHgsIC0xMDEuNDk5cHgpIiwiZmFjdDpmaWxlOjM2MzM1NDFjYjVkMzYyMjdjOWIxYWM1ZjFhYmIyMTQzIjoidHJhbnNsYXRlKDc0NS42NjdweCwgMTIzLjIwM3B4KSIsImZhY3Q6ZmlsZTo0YmI3Mjc1ZGEzOGI2YjgxMjc1NTFmY2YwNDRlZGYzNyI6InRyYW5zbGF0ZSg2ODIuMzc2cHgsIDIwNC45NzZweCkiLCJmYWN0OmZ1bmN0aW9uOjQ4ZTY4ZGE3MTMyZjBmYjA5Y2Y0MjFmYTBkNGM5ZDRkIjoidHJhbnNsYXRlKDIxMC4yNzVweCwgMjYxLjE1MnB4KSIsImZhY3Q6ZmlsZTo5NTM0YWVhMWM0YzliNzJiNWVlMDE4Mzk3NTczNTIyZiI6InRyYW5zbGF0ZSgxMTQ4LjY3cHgsIDIwNC45NzZweCkiLCJmYWN0OmZ1bmN0aW9uOjNlMTcyYWQ0MmRmNTVhNjM4MzM3NGI5NThiNjdhNzJkIjoidHJhbnNsYXRlKDc3Ljg3OTVweCwgMjAyLjQ4N3B4KSIsImZhY3Q6ZnVuY3Rpb246MjYyMDUyZjkyY2I2MzlmMTlmYTgyODhjOTU3YTZhM2EiOiJ0cmFuc2xhdGUoMTYyMC43N3B4LCAyODYuNzVweCkiLCJmYWN0OmZpbGU6ZGQyZTg5N2EyOTBjYjY1Y2ViZDlhZDI5Yjk1M2EwZjkiOiJ0cmFuc2xhdGUoMTM1MC4xNnB4LCAyODYuNzVweCkifX0seyJ0aW1lIjo2NDQuMzAwMDAwMDAwNzQ1MSwiYWN0aXZlIjp0cnVlLCJ0cmFuc2Zvcm1zIjp7ImZhY3Q6Zm9sZGVyOjMwNDM4NDViNjJkODEyYjYxN2RhNGM2OTc3NjEyODYxIjoidHJhbnNsYXRlKDE0MjYuN3B4LCAxMjYuMTg4cHgpIiwiZmFjdDpmdW5jdGlvbjpkNmJkZmI4ZTEzMWJlZGJiNTM4ZDY0YmQyOWQxNDFmNCI6InRyYW5zbGF0ZSgxNjcuODU0cHgsIC0xMjcuNDIzcHgpIiwiZmFjdDpmaWxlOjM2MzM1NDFjYjVkMzYyMjdjOWIxYWM1ZjFhYmIyMTQzIjoidHJhbnNsYXRlKDcyOC4zODVweCwgMTI2LjE4OHB4KSIsImZhY3Q6ZmlsZTo0YmI3Mjc1ZGEzOGI2YjgxMjc1NTFmY2YwNDRlZGYzNyI6InRyYW5zbGF0ZSg3NDQuNDM2cHgsIDE5MS40NjVweCkiLCJmYWN0OmZ1bmN0aW9uOjQ4ZTY4ZGE3MTMyZjBmYjA5Y2Y0MjFmYTBkNGM5ZDRkIjoidHJhbnNsYXRlKDE2Ny44NTRweCwgMjU0Ljg2N3B4KSIsImZhY3Q6ZmlsZTo5NTM0YWVhMWM0YzliNzJiNWVlMDE4Mzk3NTczNTIyZiI6InRyYW5zbGF0ZSgxMTgzLjIzcHgsIDE5MS40NjVweCkiLCJmYWN0OmZ1bmN0aW9uOjNlMTcyYWQ0MmRmNTVhNjM4MzM3NGI5NThiNjdhNzJkIjoidHJhbnNsYXRlKDYyLjE2ODFweCwgMTYxLjYzN3B4KSIsImZhY3Q6ZnVuY3Rpb246MjYyMDUyZjkyY2I2MzlmMTlmYTgyODhjOTU3YTZhM2EiOiJ0cmFuc2xhdGUoMTc1OS44MXB4LCAyNTYuNzQxcHgpIiwiZmFjdDpmaWxlOmRkMmU4OTdhMjkwY2I2NWNlYmQ5YWQyOWI5NTNhMGY5IjoidHJhbnNsYXRlKDE0MTAuNjVweCwgMjU2Ljc0MXB4KSJ9fSx7InRpbWUiOjY2MC41OTk5OTk5OTk2Mjc1LCJhY3RpdmUiOnRydWUsInRyYW5zZm9ybXMiOnsiZmFjdDpmb2xkZXI6MzA0Mzg0NWI2MmQ4MTJiNjE3ZGE0YzY5Nzc2MTI4NjEiOiJ0cmFuc2xhdGUoMTU1OS4ycHgsIDEyOS4wMTdweCkiLCJmYWN0OmZ1bmN0aW9uOmQ2YmRmYjhlMTMxYmVkYmI1MzhkNjRiZDI5ZDE0MWY0IjoidHJhbnNsYXRlKDEyNy42NTlweCwgLTE1MS45ODZweCkiLCJmYWN0OmZpbGU6MzYzMzU0MWNiNWQzNjIyN2M5YjFhYzVmMWFiYjIxNDMiOiJ0cmFuc2xhdGUoNzEyLjAwOXB4LCAxMjkuMDE3cHgpIiwiZmFjdDpmaWxlOjRiYjcyNzVkYTM4YjZiODEyNzU1MWZjZjA0NGVkZjM3IjoidHJhbnNsYXRlKDgwMy4yNHB4LCAxNzguNjYycHgpIiwiZmFjdDpmdW5jdGlvbjo0OGU2OGRhNzEzMmYwZmIwOWNmNDIxZmEwZDRjOWQ0ZCI6InRyYW5zbGF0ZSgxMjcuNjU5cHgsIDI0OC45MTJweCkiLCJmYWN0OmZpbGU6OTUzNGFlYTFjNGM5YjcyYjVlZTAxODM5NzU3MzUyMmYiOiJ0cmFuc2xhdGUoMTIxNS45OHB4LCAxNzguNjYycHgpIiwiZmFjdDpmdW5jdGlvbjozZTE3MmFkNDJkZjU1YTYzODMzNzRiOTU4YjY3YTcyZCI6InRyYW5zbGF0ZSg0Ny4yODFweCwgMTIyLjkzMXB4KSIsImZhY3Q6ZnVuY3Rpb246MjYyMDUyZjkyY2I2MzlmMTlmYTgyODhjOTU3YTZhM2EiOiJ0cmFuc2xhdGUoMTg5MS41NnB4LCAyMjguMzA3cHgpIiwiZmFjdDpmaWxlOmRkMmU4OTdhMjkwY2I2NWNlYmQ5YWQyOWI5NTNhMGY5IjoidHJhbnNsYXRlKDE0NjcuOTdweCwgMjI4LjMwN3B4KSJ9fSx7InRpbWUiOjY3OS43MDAwMDAwMDExMTc2LCJhY3RpdmUiOnRydWUsInRyYW5zZm9ybXMiOnsiZmFjdDpmb2xkZXI6MzA0Mzg0NWI2MmQ4MTJiNjE3ZGE0YzY5Nzc2MTI4NjEiOiJ0cmFuc2xhdGUoMTY3OS44N3B4LCAxMzEuNTkzcHgpIiwiZmFjdDpmdW5jdGlvbjpkNmJkZmI4ZTEzMWJlZGJiNTM4ZDY0YmQyOWQxNDFmNCI6InRyYW5zbGF0ZSg5MS4wNTEycHgsIC0xNzQuMzU4cHgpIiwiZmFjdDpmaWxlOjM2MzM1NDFjYjVkMzYyMjdjOWIxYWM1ZjFhYmIyMTQzIjoidHJhbnNsYXRlKDY5Ny4wOTVweCwgMTMxLjU5M3B4KSIsImZhY3Q6ZmlsZTo0YmI3Mjc1ZGEzOGI2YjgxMjc1NTFmY2YwNDRlZGYzNyI6InRyYW5zbGF0ZSg4NTYuNzk1cHgsIDE2Ny4wMDFweCkiLCJmYWN0OmZ1bmN0aW9uOjQ4ZTY4ZGE3MTMyZjBmYjA5Y2Y0MjFmYTBkNGM5ZDRkIjoidHJhbnNsYXRlKDkxLjA1MTJweCwgMjQzLjQ4OXB4KSIsImZhY3Q6ZmlsZTo5NTM0YWVhMWM0YzliNzJiNWVlMDE4Mzk3NTczNTIyZiI6InRyYW5zbGF0ZSgxMjQ1LjgxcHgsIDE2Ny4wMDFweCkiLCJmYWN0OmZ1bmN0aW9uOjNlMTcyYWQ0MmRmNTVhNjM4MzM3NGI5NThiNjdhNzJkIjoidHJhbnNsYXRlKDMzLjcyMjdweCwgODcuNjc4OXB4KSIsImZhY3Q6ZnVuY3Rpb246MjYyMDUyZjkyY2I2MzlmMTlmYTgyODhjOTU3YTZhM2EiOiJ0cmFuc2xhdGUoMjAxMS41NXB4LCAyMDIuNDFweCkiLCJmYWN0OmZpbGU6ZGQyZTg5N2EyOTBjYjY1Y2ViZDlhZDI5Yjk1M2EwZjkiOiJ0cmFuc2xhdGUoMTUyMC4xN3B4LCAyMDIuNDFweCkifX0seyJ0aW1lIjo2OTcuODAwMDAwMDAwNzQ1MSwiYWN0aXZlIjp0cnVlLCJ0cmFuc2Zvcm1zIjp7ImZhY3Q6Zm9sZGVyOjMwNDM4NDViNjJkODEyYjYxN2RhNGM2OTc3NjEyODYxIjoidHJhbnNsYXRlKDE3ODQuNXB4LCAxMzMuODI2cHgpIiwiZmFjdDpmdW5jdGlvbjpkNmJkZmI4ZTEzMWJlZGJiNTM4ZDY0YmQyOWQxNDFmNCI6InRyYW5zbGF0ZSg1OS4zMDc5cHgsIC0xOTMuNzU2cHgpIiwiZmFjdDpmaWxlOjM2MzM1NDFjYjVkMzYyMjdjOWIxYWM1ZjFhYmIyMTQzIjoidHJhbnNsYXRlKDY4NC4xNjJweCwgMTMzLjgyNnB4KSIsImZhY3Q6ZmlsZTo0YmI3Mjc1ZGEzOGI2YjgxMjc1NTFmY2YwNDRlZGYzNyI6InRyYW5zbGF0ZSg5MDMuMjM1cHgsIDE1Ni44OTFweCkiLCJmYWN0OmZ1bmN0aW9uOjQ4ZTY4ZGE3MTMyZjBmYjA5Y2Y0MjFmYTBkNGM5ZDRkIjoidHJhbnNsYXRlKDU5LjMwNzlweCwgMjM4Ljc4NnB4KSIsImZhY3Q6ZmlsZTo5NTM0YWVhMWM0YzliNzJiNWVlMDE4Mzk3NTczNTIyZiI6InRyYW5zbGF0ZSgxMjcxLjY4cHgsIDE1Ni44OTFweCkiLCJmYWN0OmZ1bmN0aW9uOjNlMTcyYWQ0MmRmNTVhNjM4MzM3NGI5NThiNjdhNzJkIjoidHJhbnNsYXRlKDIxLjk2NTlweCwgNTcuMTExM3B4KSIsImZhY3Q6ZnVuY3Rpb246MjYyMDUyZjkyY2I2MzlmMTlmYTgyODhjOTU3YTZhM2EiOiJ0cmFuc2xhdGUoMjExNS42cHgsIDE3OS45NTVweCkiLCJmYWN0OmZpbGU6ZGQyZTg5N2EyOTBjYjY1Y2ViZDlhZDI5Yjk1M2EwZjkiOiJ0cmFuc2xhdGUoMTU2NS40M3B4LCAxNzkuOTU1cHgpIn19LHsidGltZSI6NzEzLjIwMDAwMDAwMTExNzYsImFjdGl2ZSI6dHJ1ZSwidHJhbnNmb3JtcyI6eyJmYWN0OmZvbGRlcjozMDQzODQ1YjYyZDgxMmI2MTdkYTRjNjk3NzYxMjg2MSI6InRyYW5zbGF0ZSgxODcwLjc1cHgsIDEzNS42NjhweCkiLCJmYWN0OmZ1bmN0aW9uOmQ2YmRmYjhlMTMxYmVkYmI1MzhkNjRiZDI5ZDE0MWY0IjoidHJhbnNsYXRlKDMzLjE0MjJweCwgLTIwOS43NDZweCkiLCJmYWN0OmZpbGU6MzYzMzU0MWNiNWQzNjIyN2M5YjFhYzVmMWFiYjIxNDMiOiJ0cmFuc2xhdGUoNjczLjUwMnB4LCAxMzUuNjY4cHgpIiwiZmFjdDpmaWxlOjRiYjcyNzVkYTM4YjZiODEyNzU1MWZjZjA0NGVkZjM3IjoidHJhbnNsYXRlKDk0MS41MTRweCwgMTQ4LjU1NnB4KSIsImZhY3Q6ZnVuY3Rpb246NDhlNjhkYTcxMzJmMGZiMDljZjQyMWZhMGQ0YzlkNGQiOiJ0cmFuc2xhdGUoMzMuMTQyMnB4LCAyMzQuOTFweCkiLCJmYWN0OmZpbGU6OTUzNGFlYTFjNGM5YjcyYjVlZTAxODM5NzU3MzUyMmYiOiJ0cmFuc2xhdGUoMTI5M3B4LCAxNDguNTU2cHgpIiwiZmFjdDpmdW5jdGlvbjozZTE3MmFkNDJkZjU1YTYzODMzNzRiOTU4YjY3YTcyZCI6InRyYW5zbGF0ZSgxMi4yNzQ5cHgsIDMxLjkxNDdweCkiLCJmYWN0OmZ1bmN0aW9uOjI2MjA1MmY5MmNiNjM5ZjE5ZmE4Mjg4Yzk1N2E2YTNhIjoidHJhbnNsYXRlKDIyMDEuMzdweCwgMTYxLjQ0NXB4KSIsImZhY3Q6ZmlsZTpkZDJlODk3YTI5MGNiNjVjZWJkOWFkMjliOTUzYTBmOSI6InRyYW5zbGF0ZSgxNjAyLjc0cHgsIDE2MS40NDVweCkifX0seyJ0aW1lIjo3MjcuMzAwMDAwMDAwNzQ1MSwiYWN0aXZlIjp0cnVlLCJ0cmFuc2Zvcm1zIjp7ImZhY3Q6Zm9sZGVyOjMwNDM4NDViNjJkODEyYjYxN2RhNGM2OTc3NjEyODYxIjoidHJhbnNsYXRlKDE5MzQuMzFweCwgMTM3LjAyNXB4KSIsImZhY3Q6ZnVuY3Rpb246ZDZiZGZiOGUxMzFiZWRiYjUzOGQ2NGJkMjlkMTQxZjQiOiJ0cmFuc2xhdGUoMTMuODYxOXB4LCAtMjIxLjUyOXB4KSIsImZhY3Q6ZmlsZTozNjMzNTQxY2I1ZDM2MjI3YzliMWFjNWYxYWJiMjE0MyI6InRyYW5zbGF0ZSg2NjUuNjQ3cHgsIDEzNy4wMjVweCkiLCJmYWN0OmZpbGU6NGJiNzI3NWRhMzhiNmI4MTI3NTUxZmNmMDQ0ZWRmMzciOiJ0cmFuc2xhdGUoOTY5LjcyMXB4LCAxNDIuNDE1cHgpIiwiZmFjdDpmdW5jdGlvbjo0OGU2OGRhNzEzMmYwZmIwOWNmNDIxZmEwZDRjOWQ0ZCI6InRyYW5zbGF0ZSgxMy44NjE5cHgsIDIzMi4wNTRweCkiLCJmYWN0OmZpbGU6OTUzNGFlYTFjNGM5YjcyYjVlZTAxODM5NzU3MzUyMmYiOiJ0cmFuc2xhdGUoMTMwOC43MXB4LCAxNDIuNDE1cHgpIiwiZmFjdDpmdW5jdGlvbjozZTE3MmFkNDJkZjU1YTYzODMzNzRiOTU4YjY3YTcyZCI6InRyYW5zbGF0ZSg1LjEzNDAycHgsIDEzLjM0ODVweCkiLCJmYWN0OmZ1bmN0aW9uOjI2MjA1MmY5MmNiNjM5ZjE5ZmE4Mjg4Yzk1N2E2YTNhIjoidHJhbnNsYXRlKDIyNjQuNTZweCwgMTQ3LjgwNnB4KSIsImZhY3Q6ZmlsZTpkZDJlODk3YTI5MGNiNjVjZWJkOWFkMjliOTUzYTBmOSI6InRyYW5zbGF0ZSgxNjMwLjIzcHgsIDE0Ny44MDZweCkifX0seyJ0aW1lIjo3NDQuNzAwMDAwMDAxMTE3NiwiYWN0aXZlIjp0cnVlLCJ0cmFuc2Zvcm1zIjp7ImZhY3Q6Zm9sZGVyOjMwNDM4NDViNjJkODEyYjYxN2RhNGM2OTc3NjEyODYxIjoidHJhbnNsYXRlKDE5NzEuNTNweCwgMTM3LjgxOXB4KSIsImZhY3Q6ZnVuY3Rpb246ZDZiZGZiOGUxMzFiZWRiYjUzOGQ2NGJkMjlkMTQxZjQiOiJ0cmFuc2xhdGUoMi41NjgyNHB4LCAtMjI4LjQzMXB4KSIsImZhY3Q6ZmlsZTozNjMzNTQxY2I1ZDM2MjI3YzliMWFjNWYxYWJiMjE0MyI6InRyYW5zbGF0ZSg2NjEuMDQ2cHgsIDEzNy44MTlweCkiLCJmYWN0OmZpbGU6NGJiNzI3NWRhMzhiNmI4MTI3NTUxZmNmMDQ0ZWRmMzciOiJ0cmFuc2xhdGUoOTg2LjI0M3B4LCAxMzguODE4cHgpIiwiZmFjdDpmdW5jdGlvbjo0OGU2OGRhNzEzMmYwZmIwOWNmNDIxZmEwZDRjOWQ0ZCI6InRyYW5zbGF0ZSgyLjU2ODI0cHgsIDIzMC4zOHB4KSIsImZhY3Q6ZmlsZTo5NTM0YWVhMWM0YzliNzJiNWVlMDE4Mzk3NTczNTIyZiI6InRyYW5zbGF0ZSgxMzE3LjkxcHgsIDEzOC44MThweCkiLCJmYWN0OmZ1bmN0aW9uOjNlMTcyYWQ0MmRmNTVhNjM4MzM3NGI5NThiNjdhNzJkIjoidHJhbnNsYXRlKDAuOTUxMjAxcHgsIDIuNDczMTJweCkiLCJmYWN0OmZ1bmN0aW9uOjI2MjA1MmY5MmNiNjM5ZjE5ZmE4Mjg4Yzk1N2E2YTNhIjoidHJhbnNsYXRlKDIzMDEuNThweCwgMTM5LjgxN3B4KSIsImZhY3Q6ZmlsZTpkZDJlODk3YTI5MGNiNjVjZWJkOWFkMjliOTUzYTBmOSI6InRyYW5zbGF0ZSgxNjQ2LjM0cHgsIDEzOS44MTdweCkifX0seyJ0aW1lIjo3NjAuMzAwMDAwMDAwNzQ1MSwiYWN0aXZlIjp0cnVlLCJ0cmFuc2Zvcm1zIjp7ImZhY3Q6Zm9sZGVyOjMwNDM4NDViNjJkODEyYjYxN2RhNGM2OTc3NjEyODYxIjoidHJhbnNsYXRlKDE5ODBweCwgMTM4cHgpIiwiZmFjdDpmdW5jdGlvbjpkNmJkZmI4ZTEzMWJlZGJiNTM4ZDY0YmQyOWQxNDFmNCI6InRyYW5zbGF0ZSgwcHgsIC0yMzBweCkiLCJmYWN0OmZpbGU6MzYzMzU0MWNiNWQzNjIyN2M5YjFhYzVmMWFiYjIxNDMiOiJ0cmFuc2xhdGUoNjYwcHgsIDEzOHB4KSIsImZhY3Q6ZmlsZTo0YmI3Mjc1ZGEzOGI2YjgxMjc1NTFmY2YwNDRlZGYzNyI6InRyYW5zbGF0ZSg5OTBweCwgMTM4cHgpIiwiZmFjdDpmdW5jdGlvbjo0OGU2OGRhNzEzMmYwZmIwOWNmNDIxZmEwZDRjOWQ0ZCI6InRyYW5zbGF0ZSgwcHgsIDIzMHB4KSIsImZhY3Q6ZmlsZTo5NTM0YWVhMWM0YzliNzJiNWVlMDE4Mzk3NTczNTIyZiI6InRyYW5zbGF0ZSgxMzIwcHgsIDEzOHB4KSIsImZhY3Q6ZnVuY3Rpb246M2UxNzJhZDQyZGY1NWE2MzgzMzc0Yjk1OGI2N2E3MmQiOiJ0cmFuc2xhdGUoMHB4LCAwcHgpIiwiZmFjdDpmdW5jdGlvbjoyNjIwNTJmOTJjYjYzOWYxOWZhODI4OGM5NTdhNmEzYSI6InRyYW5zbGF0ZSgyMzEwcHgsIDEzOHB4KSIsImZhY3Q6ZmlsZTpkZDJlODk3YTI5MGNiNjVjZWJkOWFkMjliOTUzYTBmOSI6InRyYW5zbGF0ZSgxNjUwcHgsIDEzOHB4KSJ9fSx7InRpbWUiOjc3Ny4wOTk5OTk5OTk2Mjc1LCJhY3RpdmUiOnRydWUsInRyYW5zZm9ybXMiOnsiZmFjdDpmb2xkZXI6MzA0Mzg0NWI2MmQ4MTJiNjE3ZGE0YzY5Nzc2MTI4NjEiOiJ0cmFuc2xhdGUoMTk4MHB4LCAxMzhweCkiLCJmYWN0OmZ1bmN0aW9uOmQ2YmRmYjhlMTMxYmVkYmI1MzhkNjRiZDI5ZDE0MWY0IjoidHJhbnNsYXRlKDBweCwgLTIzMHB4KSIsImZhY3Q6ZmlsZTozNjMzNTQxY2I1ZDM2MjI3YzliMWFjNWYxYWJiMjE0MyI6InRyYW5zbGF0ZSg2NjBweCwgMTM4cHgpIiwiZmFjdDpmaWxlOjRiYjcyNzVkYTM4YjZiODEyNzU1MWZjZjA0NGVkZjM3IjoidHJhbnNsYXRlKDk5MHB4LCAxMzhweCkiLCJmYWN0OmZ1bmN0aW9uOjQ4ZTY4ZGE3MTMyZjBmYjA5Y2Y0MjFmYTBkNGM5ZDRkIjoidHJhbnNsYXRlKDBweCwgMjMwcHgpIiwiZmFjdDpmaWxlOjk1MzRhZWExYzRjOWI3MmI1ZWUwMTgzOTc1NzM1MjJmIjoidHJhbnNsYXRlKDEzMjBweCwgMTM4cHgpIiwiZmFjdDpmdW5jdGlvbjozZTE3MmFkNDJkZjU1YTYzODMzNzRiOTU4YjY3YTcyZCI6InRyYW5zbGF0ZSgwcHgsIDBweCkiLCJmYWN0OmZ1bmN0aW9uOjI2MjA1MmY5MmNiNjM5ZjE5ZmE4Mjg4Yzk1N2E2YTNhIjoidHJhbnNsYXRlKDIzMTBweCwgMTM4cHgpIiwiZmFjdDpmaWxlOmRkMmU4OTdhMjkwY2I2NWNlYmQ5YWQyOWI5NTNhMGY5IjoidHJhbnNsYXRlKDE2NTBweCwgMTM4cHgpIn19LHsidGltZSI6Nzk0LjMwMDAwMDAwMDc0NTEsImFjdGl2ZSI6dHJ1ZSwidHJhbnNmb3JtcyI6eyJmYWN0OmZvbGRlcjozMDQzODQ1YjYyZDgxMmI2MTdkYTRjNjk3NzYxMjg2MSI6InRyYW5zbGF0ZSgxOTgwcHgsIDEzOHB4KSIsImZhY3Q6ZnVuY3Rpb246ZDZiZGZiOGUxMzFiZWRiYjUzOGQ2NGJkMjlkMTQxZjQiOiJ0cmFuc2xhdGUoMHB4LCAtMjMwcHgpIiwiZmFjdDpmaWxlOjM2MzM1NDFjYjVkMzYyMjdjOWIxYWM1ZjFhYmIyMTQzIjoidHJhbnNsYXRlKDY2MHB4LCAxMzhweCkiLCJmYWN0OmZpbGU6NGJiNzI3NWRhMzhiNmI4MTI3NTUxZmNmMDQ0ZWRmMzciOiJ0cmFuc2xhdGUoOTkwcHgsIDEzOHB4KSIsImZhY3Q6ZnVuY3Rpb246NDhlNjhkYTcxMzJmMGZiMDljZjQyMWZhMGQ0YzlkNGQiOiJ0cmFuc2xhdGUoMHB4LCAyMzBweCkiLCJmYWN0OmZpbGU6OTUzNGFlYTFjNGM5YjcyYjVlZTAxODM5NzU3MzUyMmYiOiJ0cmFuc2xhdGUoMTMyMHB4LCAxMzhweCkiLCJmYWN0OmZ1bmN0aW9uOjNlMTcyYWQ0MmRmNTVhNjM4MzM3NGI5NThiNjdhNzJkIjoidHJhbnNsYXRlKDBweCwgMHB4KSIsImZhY3Q6ZnVuY3Rpb246MjYyMDUyZjkyY2I2MzlmMTlmYTgyODhjOTU3YTZhM2EiOiJ0cmFuc2xhdGUoMjMxMHB4LCAxMzhweCkiLCJmYWN0OmZpbGU6ZGQyZTg5N2EyOTBjYjY1Y2ViZDlhZDI5Yjk1M2EwZjkiOiJ0cmFuc2xhdGUoMTY1MHB4LCAxMzhweCkifX0seyJ0aW1lIjo4MTEuMjAwMDAwMDAxMTE3NiwiYWN0aXZlIjp0cnVlLCJ0cmFuc2Zvcm1zIjp7ImZhY3Q6Zm9sZGVyOjMwNDM4NDViNjJkODEyYjYxN2RhNGM2OTc3NjEyODYxIjoidHJhbnNsYXRlKDE5ODBweCwgMTM4cHgpIiwiZmFjdDpmdW5jdGlvbjpkNmJkZmI4ZTEzMWJlZGJiNTM4ZDY0YmQyOWQxNDFmNCI6InRyYW5zbGF0ZSgwcHgsIC0yMzBweCkiLCJmYWN0OmZpbGU6MzYzMzU0MWNiNWQzNjIyN2M5YjFhYzVmMWFiYjIxNDMiOiJ0cmFuc2xhdGUoNjYwcHgsIDEzOHB4KSIsImZhY3Q6ZmlsZTo0YmI3Mjc1ZGEzOGI2YjgxMjc1NTFmY2YwNDRlZGYzNyI6InRyYW5zbGF0ZSg5OTBweCwgMTM4cHgpIiwiZmFjdDpmdW5jdGlvbjo0OGU2OGRhNzEzMmYwZmIwOWNmNDIxZmEwZDRjOWQ0ZCI6InRyYW5zbGF0ZSgwcHgsIDIzMHB4KSIsImZhY3Q6ZmlsZTo5NTM0YWVhMWM0YzliNzJiNWVlMDE4Mzk3NTczNTIyZiI6InRyYW5zbGF0ZSgxMzIwcHgsIDEzOHB4KSIsImZhY3Q6ZnVuY3Rpb246M2UxNzJhZDQyZGY1NWE2MzgzMzc0Yjk1OGI2N2E3MmQiOiJ0cmFuc2xhdGUoMHB4LCAwcHgpIiwiZmFjdDpmdW5jdGlvbjoyNjIwNTJmOTJjYjYzOWYxOWZhODI4OGM5NTdhNmEzYSI6InRyYW5zbGF0ZSgyMzEwcHgsIDEzOHB4KSIsImZhY3Q6ZmlsZTpkZDJlODk3YTI5MGNiNjVjZWJkOWFkMjliOTUzYTBmOSI6InRyYW5zbGF0ZSgxNjUwcHgsIDEzOHB4KSJ9fSx7InRpbWUiOjgyNy45MDAwMDAwMDAzNzI1LCJhY3RpdmUiOnRydWUsInRyYW5zZm9ybXMiOnsiZmFjdDpmb2xkZXI6MzA0Mzg0NWI2MmQ4MTJiNjE3ZGE0YzY5Nzc2MTI4NjEiOiJ0cmFuc2xhdGUoMTk4MHB4LCAxMzhweCkiLCJmYWN0OmZ1bmN0aW9uOmQ2YmRmYjhlMTMxYmVkYmI1MzhkNjRiZDI5ZDE0MWY0IjoidHJhbnNsYXRlKDBweCwgLTIzMHB4KSIsImZhY3Q6ZmlsZTozNjMzNTQxY2I1ZDM2MjI3YzliMWFjNWYxYWJiMjE0MyI6InRyYW5zbGF0ZSg2NjBweCwgMTM4cHgpIiwiZmFjdDpmaWxlOjRiYjcyNzVkYTM4YjZiODEyNzU1MWZjZjA0NGVkZjM3IjoidHJhbnNsYXRlKDk5MHB4LCAxMzhweCkiLCJmYWN0OmZ1bmN0aW9uOjQ4ZTY4ZGE3MTMyZjBmYjA5Y2Y0MjFmYTBkNGM5ZDRkIjoidHJhbnNsYXRlKDBweCwgMjMwcHgpIiwiZmFjdDpmaWxlOjk1MzRhZWExYzRjOWI3MmI1ZWUwMTgzOTc1NzM1MjJmIjoidHJhbnNsYXRlKDEzMjBweCwgMTM4cHgpIiwiZmFjdDpmdW5jdGlvbjozZTE3MmFkNDJkZjU1YTYzODMzNzRiOTU4YjY3YTcyZCI6InRyYW5zbGF0ZSgwcHgsIDBweCkiLCJmYWN0OmZ1bmN0aW9uOjI2MjA1MmY5MmNiNjM5ZjE5ZmE4Mjg4Yzk1N2E2YTNhIjoidHJhbnNsYXRlKDIzMTBweCwgMTM4cHgpIiwiZmFjdDpmaWxlOmRkMmU4OTdhMjkwY2I2NWNlYmQ5YWQyOWI5NTNhMGY5IjoidHJhbnNsYXRlKDE2NTBweCwgMTM4cHgpIn19LHsidGltZSI6ODQ2LjIwMDAwMDAwMTExNzYsImFjdGl2ZSI6dHJ1ZSwidHJhbnNmb3JtcyI6eyJmYWN0OmZvbGRlcjozMDQzODQ1YjYyZDgxMmI2MTdkYTRjNjk3NzYxMjg2MSI6InRyYW5zbGF0ZSgxOTgwcHgsIDEzOHB4KSIsImZhY3Q6ZnVuY3Rpb246ZDZiZGZiOGUxMzFiZWRiYjUzOGQ2NGJkMjlkMTQxZjQiOiJ0cmFuc2xhdGUoMHB4LCAtMjMwcHgpIiwiZmFjdDpmaWxlOjM2MzM1NDFjYjVkMzYyMjdjOWIxYWM1ZjFhYmIyMTQzIjoidHJhbnNsYXRlKDY2MHB4LCAxMzhweCkiLCJmYWN0OmZpbGU6NGJiNzI3NWRhMzhiNmI4MTI3NTUxZmNmMDQ0ZWRmMzciOiJ0cmFuc2xhdGUoOTkwcHgsIDEzOHB4KSIsImZhY3Q6ZnVuY3Rpb246NDhlNjhkYTcxMzJmMGZiMDljZjQyMWZhMGQ0YzlkNGQiOiJ0cmFuc2xhdGUoMHB4LCAyMzBweCkiLCJmYWN0OmZpbGU6OTUzNGFlYTFjNGM5YjcyYjVlZTAxODM5NzU3MzUyMmYiOiJ0cmFuc2xhdGUoMTMyMHB4LCAxMzhweCkiLCJmYWN0OmZ1bmN0aW9uOjNlMTcyYWQ0MmRmNTVhNjM4MzM3NGI5NThiNjdhNzJkIjoidHJhbnNsYXRlKDBweCwgMHB4KSIsImZhY3Q6ZnVuY3Rpb246MjYyMDUyZjkyY2I2MzlmMTlmYTgyODhjOTU3YTZhM2EiOiJ0cmFuc2xhdGUoMjMxMHB4LCAxMzhweCkiLCJmYWN0OmZpbGU6ZGQyZTg5N2EyOTBjYjY1Y2ViZDlhZDI5Yjk1M2EwZjkiOiJ0cmFuc2xhdGUoMTY1MHB4LCAxMzhweCkifX0seyJ0aW1lIjo4NjIsImFjdGl2ZSI6dHJ1ZSwidHJhbnNmb3JtcyI6eyJmYWN0OmZvbGRlcjozMDQzODQ1YjYyZDgxMmI2MTdkYTRjNjk3NzYxMjg2MSI6InRyYW5zbGF0ZSgxOTgwcHgsIDEzOHB4KSIsImZhY3Q6ZnVuY3Rpb246ZDZiZGZiOGUxMzFiZWRiYjUzOGQ2NGJkMjlkMTQxZjQiOiJ0cmFuc2xhdGUoMHB4LCAtMjMwcHgpIiwiZmFjdDpmaWxlOjM2MzM1NDFjYjVkMzYyMjdjOWIxYWM1ZjFhYmIyMTQzIjoidHJhbnNsYXRlKDY2MHB4LCAxMzhweCkiLCJmYWN0OmZpbGU6NGJiNzI3NWRhMzhiNmI4MTI3NTUxZmNmMDQ0ZWRmMzciOiJ0cmFuc2xhdGUoOTkwcHgsIDEzOHB4KSIsImZhY3Q6ZnVuY3Rpb246NDhlNjhkYTcxMzJmMGZiMDljZjQyMWZhMGQ0YzlkNGQiOiJ0cmFuc2xhdGUoMHB4LCAyMzBweCkiLCJmYWN0OmZpbGU6OTUzNGFlYTFjNGM5YjcyYjVlZTAxODM5NzU3MzUyMmYiOiJ0cmFuc2xhdGUoMTMyMHB4LCAxMzhweCkiLCJmYWN0OmZ1bmN0aW9uOjNlMTcyYWQ0MmRmNTVhNjM4MzM3NGI5NThiNjdhNzJkIjoidHJhbnNsYXRlKDBweCwgMHB4KSIsImZhY3Q6ZnVuY3Rpb246MjYyMDUyZjkyY2I2MzlmMTlmYTgyODhjOTU3YTZhM2EiOiJ0cmFuc2xhdGUoMjMxMHB4LCAxMzhweCkiLCJmYWN0OmZpbGU6ZGQyZTg5N2EyOTBjYjY1Y2ViZDlhZDI5Yjk1M2EwZjkiOiJ0cmFuc2xhdGUoMTY1MHB4LCAxMzhweCkifX0seyJ0aW1lIjo4NzcuODAwMDAwMDAwNzQ1MSwiYWN0aXZlIjp0cnVlLCJ0cmFuc2Zvcm1zIjp7ImZhY3Q6Zm9sZGVyOjMwNDM4NDViNjJkODEyYjYxN2RhNGM2OTc3NjEyODYxIjoidHJhbnNsYXRlKDE5ODBweCwgMTM4cHgpIiwiZmFjdDpmdW5jdGlvbjpkNmJkZmI4ZTEzMWJlZGJiNTM4ZDY0YmQyOWQxNDFmNCI6InRyYW5zbGF0ZSgwcHgsIC0yMzBweCkiLCJmYWN0OmZpbGU6MzYzMzU0MWNiNWQzNjIyN2M5YjFhYzVmMWFiYjIxNDMiOiJ0cmFuc2xhdGUoNjYwcHgsIDEzOHB4KSIsImZhY3Q6ZmlsZTo0YmI3Mjc1ZGEzOGI2YjgxMjc1NTFmY2YwNDRlZGYzNyI6InRyYW5zbGF0ZSg5OTBweCwgMTM4cHgpIiwiZmFjdDpmdW5jdGlvbjo0OGU2OGRhNzEzMmYwZmIwOWNmNDIxZmEwZDRjOWQ0ZCI6InRyYW5zbGF0ZSgwcHgsIDIzMHB4KSIsImZhY3Q6ZmlsZTo5NTM0YWVhMWM0YzliNzJiNWVlMDE4Mzk3NTczNTIyZiI6InRyYW5zbGF0ZSgxMzIwcHgsIDEzOHB4KSIsImZhY3Q6ZnVuY3Rpb246M2UxNzJhZDQyZGY1NWE2MzgzMzc0Yjk1OGI2N2E3MmQiOiJ0cmFuc2xhdGUoMHB4LCAwcHgpIiwiZmFjdDpmdW5jdGlvbjoyNjIwNTJmOTJjYjYzOWYxOWZhODI4OGM5NTdhNmEzYSI6InRyYW5zbGF0ZSgyMzEwcHgsIDEzOHB4KSIsImZhY3Q6ZmlsZTpkZDJlODk3YTI5MGNiNjVjZWJkOWFkMjliOTUzYTBmOSI6InRyYW5zbGF0ZSgxNjUwcHgsIDEzOHB4KSJ9fSx7InRpbWUiOjg5NS40MDAwMDAwMDAzNzI1LCJhY3RpdmUiOnRydWUsInRyYW5zZm9ybXMiOnsiZmFjdDpmb2xkZXI6MzA0Mzg0NWI2MmQ4MTJiNjE3ZGE0YzY5Nzc2MTI4NjEiOiJ0cmFuc2xhdGUoMTk4MHB4LCAxMzhweCkiLCJmYWN0OmZ1bmN0aW9uOmQ2YmRmYjhlMTMxYmVkYmI1MzhkNjRiZDI5ZDE0MWY0IjoidHJhbnNsYXRlKDBweCwgLTIzMHB4KSIsImZhY3Q6ZmlsZTozNjMzNTQxY2I1ZDM2MjI3YzliMWFjNWYxYWJiMjE0MyI6InRyYW5zbGF0ZSg2NjBweCwgMTM4cHgpIiwiZmFjdDpmaWxlOjRiYjcyNzVkYTM4YjZiODEyNzU1MWZjZjA0NGVkZjM3IjoidHJhbnNsYXRlKDk5MHB4LCAxMzhweCkiLCJmYWN0OmZ1bmN0aW9uOjQ4ZTY4ZGE3MTMyZjBmYjA5Y2Y0MjFmYTBkNGM5ZDRkIjoidHJhbnNsYXRlKDBweCwgMjMwcHgpIiwiZmFjdDpmaWxlOjk1MzRhZWExYzRjOWI3MmI1ZWUwMTgzOTc1NzM1MjJmIjoidHJhbnNsYXRlKDEzMjBweCwgMTM4cHgpIiwiZmFjdDpmdW5jdGlvbjozZTE3MmFkNDJkZjU1YTYzODMzNzRiOTU4YjY3YTcyZCI6InRyYW5zbGF0ZSgwcHgsIDBweCkiLCJmYWN0OmZ1bmN0aW9uOjI2MjA1MmY5MmNiNjM5ZjE5ZmE4Mjg4Yzk1N2E2YTNhIjoidHJhbnNsYXRlKDIzMTBweCwgMTM4cHgpIiwiZmFjdDpmaWxlOmRkMmU4OTdhMjkwY2I2NWNlYmQ5YWQyOWI5NTNhMGY5IjoidHJhbnNsYXRlKDE2NTBweCwgMTM4cHgpIn19LHsidGltZSI6OTExLjU5OTk5OTk5OTYyNzUsImFjdGl2ZSI6dHJ1ZSwidHJhbnNmb3JtcyI6eyJmYWN0OmZvbGRlcjozMDQzODQ1YjYyZDgxMmI2MTdkYTRjNjk3NzYxMjg2MSI6InRyYW5zbGF0ZSgxOTgwcHgsIDEzOHB4KSIsImZhY3Q6ZnVuY3Rpb246ZDZiZGZiOGUxMzFiZWRiYjUzOGQ2NGJkMjlkMTQxZjQiOiJ0cmFuc2xhdGUoMHB4LCAtMjMwcHgpIiwiZmFjdDpmaWxlOjM2MzM1NDFjYjVkMzYyMjdjOWIxYWM1ZjFhYmIyMTQzIjoidHJhbnNsYXRlKDY2MHB4LCAxMzhweCkiLCJmYWN0OmZpbGU6NGJiNzI3NWRhMzhiNmI4MTI3NTUxZmNmMDQ0ZWRmMzciOiJ0cmFuc2xhdGUoOTkwcHgsIDEzOHB4KSIsImZhY3Q6ZnVuY3Rpb246NDhlNjhkYTcxMzJmMGZiMDljZjQyMWZhMGQ0YzlkNGQiOiJ0cmFuc2xhdGUoMHB4LCAyMzBweCkiLCJmYWN0OmZpbGU6OTUzNGFlYTFjNGM5YjcyYjVlZTAxODM5NzU3MzUyMmYiOiJ0cmFuc2xhdGUoMTMyMHB4LCAxMzhweCkiLCJmYWN0OmZ1bmN0aW9uOjNlMTcyYWQ0MmRmNTVhNjM4MzM3NGI5NThiNjdhNzJkIjoidHJhbnNsYXRlKDBweCwgMHB4KSIsImZhY3Q6ZnVuY3Rpb246MjYyMDUyZjkyY2I2MzlmMTlmYTgyODhjOTU3YTZhM2EiOiJ0cmFuc2xhdGUoMjMxMHB4LCAxMzhweCkiLCJmYWN0OmZpbGU6ZGQyZTg5N2EyOTBjYjY1Y2ViZDlhZDI5Yjk1M2EwZjkiOiJ0cmFuc2xhdGUoMTY1MHB4LCAxMzhweCkifX0seyJ0aW1lIjo5MjguNDAwMDAwMDAwMzcyNSwiYWN0aXZlIjp0cnVlLCJ0cmFuc2Zvcm1zIjp7ImZhY3Q6Zm9sZGVyOjMwNDM4NDViNjJkODEyYjYxN2RhNGM2OTc3NjEyODYxIjoidHJhbnNsYXRlKDE5ODBweCwgMTM4cHgpIiwiZmFjdDpmdW5jdGlvbjpkNmJkZmI4ZTEzMWJlZGJiNTM4ZDY0YmQyOWQxNDFmNCI6InRyYW5zbGF0ZSgwcHgsIC0yMzBweCkiLCJmYWN0OmZpbGU6MzYzMzU0MWNiNWQzNjIyN2M5YjFhYzVmMWFiYjIxNDMiOiJ0cmFuc2xhdGUoNjYwcHgsIDEzOHB4KSIsImZhY3Q6ZmlsZTo0YmI3Mjc1ZGEzOGI2YjgxMjc1NTFmY2YwNDRlZGYzNyI6InRyYW5zbGF0ZSg5OTBweCwgMTM4cHgpIiwiZmFjdDpmdW5jdGlvbjo0OGU2OGRhNzEzMmYwZmIwOWNmNDIxZmEwZDRjOWQ0ZCI6InRyYW5zbGF0ZSgwcHgsIDIzMHB4KSIsImZhY3Q6ZmlsZTo5NTM0YWVhMWM0YzliNzJiNWVlMDE4Mzk3NTczNTIyZiI6InRyYW5zbGF0ZSgxMzIwcHgsIDEzOHB4KSIsImZhY3Q6ZnVuY3Rpb246M2UxNzJhZDQyZGY1NWE2MzgzMzc0Yjk1OGI2N2E3MmQiOiJ0cmFuc2xhdGUoMHB4LCAwcHgpIiwiZmFjdDpmdW5jdGlvbjoyNjIwNTJmOTJjYjYzOWYxOWZhODI4OGM5NTdhNmEzYSI6InRyYW5zbGF0ZSgyMzEwcHgsIDEzOHB4KSIsImZhY3Q6ZmlsZTpkZDJlODk3YTI5MGNiNjVjZWJkOWFkMjliOTUzYTBmOSI6InRyYW5zbGF0ZSgxNjUwcHgsIDEzOHB4KSJ9fSx7InRpbWUiOjk0NC45MDAwMDAwMDAzNzI1LCJhY3RpdmUiOnRydWUsInRyYW5zZm9ybXMiOnsiZmFjdDpmb2xkZXI6MzA0Mzg0NWI2MmQ4MTJiNjE3ZGE0YzY5Nzc2MTI4NjEiOiJ0cmFuc2xhdGUoMTk4MHB4LCAxMzhweCkiLCJmYWN0OmZ1bmN0aW9uOmQ2YmRmYjhlMTMxYmVkYmI1MzhkNjRiZDI5ZDE0MWY0IjoidHJhbnNsYXRlKDBweCwgLTIzMHB4KSIsImZhY3Q6ZmlsZTozNjMzNTQxY2I1ZDM2MjI3YzliMWFjNWYxYWJiMjE0MyI6InRyYW5zbGF0ZSg2NjBweCwgMTM4cHgpIiwiZmFjdDpmaWxlOjRiYjcyNzVkYTM4YjZiODEyNzU1MWZjZjA0NGVkZjM3IjoidHJhbnNsYXRlKDk5MHB4LCAxMzhweCkiLCJmYWN0OmZ1bmN0aW9uOjQ4ZTY4ZGE3MTMyZjBmYjA5Y2Y0MjFmYTBkNGM5ZDRkIjoidHJhbnNsYXRlKDBweCwgMjMwcHgpIiwiZmFjdDpmaWxlOjk1MzRhZWExYzRjOWI3MmI1ZWUwMTgzOTc1NzM1MjJmIjoidHJhbnNsYXRlKDEzMjBweCwgMTM4cHgpIiwiZmFjdDpmdW5jdGlvbjozZTE3MmFkNDJkZjU1YTYzODMzNzRiOTU4YjY3YTcyZCI6InRyYW5zbGF0ZSgwcHgsIDBweCkiLCJmYWN0OmZ1bmN0aW9uOjI2MjA1MmY5MmNiNjM5ZjE5ZmE4Mjg4Yzk1N2E2YTNhIjoidHJhbnNsYXRlKDIzMTBweCwgMTM4cHgpIiwiZmFjdDpmaWxlOmRkMmU4OTdhMjkwY2I2NWNlYmQ5YWQyOWI5NTNhMGY5IjoidHJhbnNsYXRlKDE2NTBweCwgMTM4cHgpIn19LHsidGltZSI6OTYxLjMwMDAwMDAwMDc0NTEsImFjdGl2ZSI6dHJ1ZSwidHJhbnNmb3JtcyI6eyJmYWN0OmZvbGRlcjozMDQzODQ1YjYyZDgxMmI2MTdkYTRjNjk3NzYxMjg2MSI6InRyYW5zbGF0ZSgxOTgwcHgsIDEzOHB4KSIsImZhY3Q6ZnVuY3Rpb246ZDZiZGZiOGUxMzFiZWRiYjUzOGQ2NGJkMjlkMTQxZjQiOiJ0cmFuc2xhdGUoMHB4LCAtMjMwcHgpIiwiZmFjdDpmaWxlOjM2MzM1NDFjYjVkMzYyMjdjOWIxYWM1ZjFhYmIyMTQzIjoidHJhbnNsYXRlKDY2MHB4LCAxMzhweCkiLCJmYWN0OmZpbGU6NGJiNzI3NWRhMzhiNmI4MTI3NTUxZmNmMDQ0ZWRmMzciOiJ0cmFuc2xhdGUoOTkwcHgsIDEzOHB4KSIsImZhY3Q6ZnVuY3Rpb246NDhlNjhkYTcxMzJmMGZiMDljZjQyMWZhMGQ0YzlkNGQiOiJ0cmFuc2xhdGUoMHB4LCAyMzBweCkiLCJmYWN0OmZpbGU6OTUzNGFlYTFjNGM5YjcyYjVlZTAxODM5NzU3MzUyMmYiOiJ0cmFuc2xhdGUoMTMyMHB4LCAxMzhweCkiLCJmYWN0OmZ1bmN0aW9uOjNlMTcyYWQ0MmRmNTVhNjM4MzM3NGI5NThiNjdhNzJkIjoidHJhbnNsYXRlKDBweCwgMHB4KSIsImZhY3Q6ZnVuY3Rpb246MjYyMDUyZjkyY2I2MzlmMTlmYTgyODhjOTU3YTZhM2EiOiJ0cmFuc2xhdGUoMjMxMHB4LCAxMzhweCkiLCJmYWN0OmZpbGU6ZGQyZTg5N2EyOTBjYjY1Y2ViZDlhZDI5Yjk1M2EwZjkiOiJ0cmFuc2xhdGUoMTY1MHB4LCAxMzhweCkifX0seyJ0aW1lIjo5ODIuMzAwMDAwMDAwNzQ1MSwiYWN0aXZlIjp0cnVlLCJ0cmFuc2Zvcm1zIjp7ImZhY3Q6Zm9sZGVyOjMwNDM4NDViNjJkODEyYjYxN2RhNGM2OTc3NjEyODYxIjoidHJhbnNsYXRlKDE5ODBweCwgMTM4cHgpIiwiZmFjdDpmdW5jdGlvbjpkNmJkZmI4ZTEzMWJlZGJiNTM4ZDY0YmQyOWQxNDFmNCI6InRyYW5zbGF0ZSgwcHgsIC0yMzBweCkiLCJmYWN0OmZpbGU6MzYzMzU0MWNiNWQzNjIyN2M5YjFhYzVmMWFiYjIxNDMiOiJ0cmFuc2xhdGUoNjYwcHgsIDEzOHB4KSIsImZhY3Q6ZmlsZTo0YmI3Mjc1ZGEzOGI2YjgxMjc1NTFmY2YwNDRlZGYzNyI6InRyYW5zbGF0ZSg5OTBweCwgMTM4cHgpIiwiZmFjdDpmdW5jdGlvbjo0OGU2OGRhNzEzMmYwZmIwOWNmNDIxZmEwZDRjOWQ0ZCI6InRyYW5zbGF0ZSgwcHgsIDIzMHB4KSIsImZhY3Q6ZmlsZTo5NTM0YWVhMWM0YzliNzJiNWVlMDE4Mzk3NTczNTIyZiI6InRyYW5zbGF0ZSgxMzIwcHgsIDEzOHB4KSIsImZhY3Q6ZnVuY3Rpb246M2UxNzJhZDQyZGY1NWE2MzgzMzc0Yjk1OGI2N2E3MmQiOiJ0cmFuc2xhdGUoMHB4LCAwcHgpIiwiZmFjdDpmdW5jdGlvbjoyNjIwNTJmOTJjYjYzOWYxOWZhODI4OGM5NTdhNmEzYSI6InRyYW5zbGF0ZSgyMzEwcHgsIDEzOHB4KSIsImZhY3Q6ZmlsZTpkZDJlODk3YTI5MGNiNjVjZWJkOWFkMjliOTUzYTBmOSI6InRyYW5zbGF0ZSgxNjUwcHgsIDEzOHB4KSJ9fSx7InRpbWUiOjEwMDkuNTk5OTk5OTk5NjI3NSwiYWN0aXZlIjp0cnVlLCJ0cmFuc2Zvcm1zIjp7ImZhY3Q6Zm9sZGVyOjMwNDM4NDViNjJkODEyYjYxN2RhNGM2OTc3NjEyODYxIjoidHJhbnNsYXRlKDE5ODBweCwgMTM4cHgpIiwiZmFjdDpmdW5jdGlvbjpkNmJkZmI4ZTEzMWJlZGJiNTM4ZDY0YmQyOWQxNDFmNCI6InRyYW5zbGF0ZSgwcHgsIC0yMzBweCkiLCJmYWN0OmZpbGU6MzYzMzU0MWNiNWQzNjIyN2M5YjFhYzVmMWFiYjIxNDMiOiJ0cmFuc2xhdGUoNjYwcHgsIDEzOHB4KSIsImZhY3Q6ZmlsZTo0YmI3Mjc1ZGEzOGI2YjgxMjc1NTFmY2YwNDRlZGYzNyI6InRyYW5zbGF0ZSg5OTBweCwgMTM4cHgpIiwiZmFjdDpmdW5jdGlvbjo0OGU2OGRhNzEzMmYwZmIwOWNmNDIxZmEwZDRjOWQ0ZCI6InRyYW5zbGF0ZSgwcHgsIDIzMHB4KSIsImZhY3Q6ZmlsZTo5NTM0YWVhMWM0YzliNzJiNWVlMDE4Mzk3NTczNTIyZiI6InRyYW5zbGF0ZSgxMzIwcHgsIDEzOHB4KSIsImZhY3Q6ZnVuY3Rpb246M2UxNzJhZDQyZGY1NWE2MzgzMzc0Yjk1OGI2N2E3MmQiOiJ0cmFuc2xhdGUoMHB4LCAwcHgpIiwiZmFjdDpmdW5jdGlvbjoyNjIwNTJmOTJjYjYzOWYxOWZhODI4OGM5NTdhNmEzYSI6InRyYW5zbGF0ZSgyMzEwcHgsIDEzOHB4KSIsImZhY3Q6ZmlsZTpkZDJlODk3YTI5MGNiNjVjZWJkOWFkMjliOTUzYTBmOSI6InRyYW5zbGF0ZSgxNjUwcHgsIDEzOHB4KSJ9fSx7InRpbWUiOjEwMjguNDAwMDAwMDAwMzcyNSwiYWN0aXZlIjp0cnVlLCJ0cmFuc2Zvcm1zIjp7ImZhY3Q6Zm9sZGVyOjMwNDM4NDViNjJkODEyYjYxN2RhNGM2OTc3NjEyODYxIjoidHJhbnNsYXRlKDE5ODBweCwgMTM4cHgpIiwiZmFjdDpmdW5jdGlvbjpkNmJkZmI4ZTEzMWJlZGJiNTM4ZDY0YmQyOWQxNDFmNCI6InRyYW5zbGF0ZSgwcHgsIC0yMzBweCkiLCJmYWN0OmZpbGU6MzYzMzU0MWNiNWQzNjIyN2M5YjFhYzVmMWFiYjIxNDMiOiJ0cmFuc2xhdGUoNjYwcHgsIDEzOHB4KSIsImZhY3Q6ZmlsZTo0YmI3Mjc1ZGEzOGI2YjgxMjc1NTFmY2YwNDRlZGYzNyI6InRyYW5zbGF0ZSg5OTBweCwgMTM4cHgpIiwiZmFjdDpmdW5jdGlvbjo0OGU2OGRhNzEzMmYwZmIwOWNmNDIxZmEwZDRjOWQ0ZCI6InRyYW5zbGF0ZSgwcHgsIDIzMHB4KSIsImZhY3Q6ZmlsZTo5NTM0YWVhMWM0YzliNzJiNWVlMDE4Mzk3NTczNTIyZiI6InRyYW5zbGF0ZSgxMzIwcHgsIDEzOHB4KSIsImZhY3Q6ZnVuY3Rpb246M2UxNzJhZDQyZGY1NWE2MzgzMzc0Yjk1OGI2N2E3MmQiOiJ0cmFuc2xhdGUoMHB4LCAwcHgpIiwiZmFjdDpmdW5jdGlvbjoyNjIwNTJmOTJjYjYzOWYxOWZhODI4OGM5NTdhNmEzYSI6InRyYW5zbGF0ZSgyMzEwcHgsIDEzOHB4KSIsImZhY3Q6ZmlsZTpkZDJlODk3YTI5MGNiNjVjZWJkOWFkMjliOTUzYTBmOSI6InRyYW5zbGF0ZSgxNjUwcHgsIDEzOHB4KSJ9fV0sInJvb3RUcmFuc2Zvcm1zIjpbInRyYW5zbGF0ZSgyMDBweCwgNTIwcHgpIiwidHJhbnNsYXRlKDE5OS44NDJweCwgNTE5LjU4OHB4KSIsInRyYW5zbGF0ZSgxOTcuMDY2cHgsIDUxMi4zN3B4KSIsInRyYW5zbGF0ZSgxOTYuOTRweCwgNTEyLjA0M3B4KSIsInRyYW5zbGF0ZSgxOTQuMjc4cHgsIDUwNS4xMjNweCkiLCJ0cmFuc2xhdGUoMTg4LjQ2OHB4LCA0OTAuMDE3cHgpIiwidHJhbnNsYXRlKDE3OS45NzZweCwgNDY3LjkzOHB4KSIsInRyYW5zbGF0ZSgxNjkuMTA1cHgsIDQzOS42NzRweCkiLCJ0cmFuc2xhdGUoMTU2LjM4OXB4LCA0MDYuNjExcHgpIiwidHJhbnNsYXRlKDE0Mi4wOHB4LCAzNjkuNDA3cHgpIiwidHJhbnNsYXRlKDEyNi42NTZweCwgMzI5LjMwN3B4KSIsInRyYW5zbGF0ZSgxMTAuNjI1cHgsIDI4Ny42MjVweCkiLCJ0cmFuc2xhdGUoOTQuMTAwMXB4LCAyNDQuNjZweCkiLCJ0cmFuc2xhdGUoNzcuODc5NXB4LCAyMDIuNDg3cHgpIiwidHJhbnNsYXRlKDYyLjE2ODFweCwgMTYxLjYzN3B4KSIsInRyYW5zbGF0ZSg0Ny4yODFweCwgMTIyLjkzMXB4KSIsInRyYW5zbGF0ZSgzMy43MjI3cHgsIDg3LjY3ODlweCkiLCJ0cmFuc2xhdGUoMjEuOTY1OXB4LCA1Ny4xMTEzcHgpIiwidHJhbnNsYXRlKDEyLjI3NDlweCwgMzEuOTE0N3B4KSIsInRyYW5zbGF0ZSg1LjEzNDAycHgsIDEzLjM0ODVweCkiLCJ0cmFuc2xhdGUoMC45NTEyMDFweCwgMi40NzMxMnB4KSIsInRyYW5zbGF0ZSgwcHgsIDBweCkiXSwicHJldmlvdXNDYW1lcmEiOiJ0cmFuc2Zvcm06IHRyYW5zbGF0ZSgtNjlweCwgNzUuMnB4KSBzY2FsZSgwLjgpOyIsImZpbGVRdWVyeSI6eyJub2RlcyI6W3siaWQiOiJmaWxlOjM2MzM1NDFjYjVkMzYyMjdjOWIxYWM1ZjFhYmIyMTQzIiwia2luZCI6ImZpbGUiLCJuYW1lIjoiY2FsbGVyLnRzIiwicXVhbGlmaWVkTmFtZSI6ImNhbGxlci50cyIsImZpbGVQYXRoIjoiY2FsbGVyLnRzIiwicGFyZW50SWQiOiJmb2xkZXI6MzA0Mzg0NWI2MmQ4MTJiNjE3ZGE0YzY5Nzc2MTI4NjEiLCJsYW5ndWFnZSI6InR5cGVzY3JpcHQifSx7ImlkIjoiZmlsZTo0YmI3Mjc1ZGEzOGI2YjgxMjc1NTFmY2YwNDRlZGYzNyIsImtpbmQiOiJmaWxlIiwibmFtZSI6ImRlcGVuZGVuY3kudHMiLCJxdWFsaWZpZWROYW1lIjoiZGVwZW5kZW5jeS50cyIsImZpbGVQYXRoIjoiZGVwZW5kZW5jeS50cyIsInBhcmVudElkIjoiZm9sZGVyOjMwNDM4NDViNjJkODEyYjYxN2RhNGM2OTc3NjEyODYxIiwibGFuZ3VhZ2UiOiJ0eXBlc2NyaXB0In0seyJpZCI6ImZpbGU6OTUzNGFlYTFjNGM5YjcyYjVlZTAxODM5NzU3MzUyMmYiLCJraW5kIjoiZmlsZSIsIm5hbWUiOiJyb290LnRzIiwicXVhbGlmaWVkTmFtZSI6InJvb3QudHMiLCJmaWxlUGF0aCI6InJvb3QudHMiLCJwYXJlbnRJZCI6ImZvbGRlcjozMDQzODQ1YjYyZDgxMmI2MTdkYTRjNjk3NzYxMjg2MSIsImxhbmd1YWdlIjoidHlwZXNjcmlwdCJ9XSwicmVsYXRpb25zIjpbeyJpZCI6ImZpbGU6W1wiZmlsZTozNjMzNTQxY2I1ZDM2MjI3YzliMWFjNWYxYWJiMjE0M1wiLFwiZmlsZTo5NTM0YWVhMWM0YzliNzJiNWVlMDE4Mzk3NTczNTIyZlwiXSIsInR5cGUiOiJpbXBvcnRzIiwic291cmNlSWQiOiJmaWxlOjM2MzM1NDFjYjVkMzYyMjdjOWIxYWM1ZjFhYmIyMTQzIiwidGFyZ2V0SWQiOiJmaWxlOjk1MzRhZWExYzRjOWI3MmI1ZWUwMTgzOTc1NzM1MjJmIiwicmVzb2x1dGlvbiI6InJlc29sdmVkIiwiZXZpZGVuY2UiOnsiZmlsZVBhdGgiOiJjYWxsZXIudHMiLCJsaW5lIjoxLCJ0ZXh0IjoiaW1wb3J0IHsgc2VsZWN0ZWQgfSBmcm9tIFwiLi9yb290XCI7In19LHsiaWQiOiJmaWxlOltcImZpbGU6OTUzNGFlYTFjNGM5YjcyYjVlZTAxODM5NzU3MzUyMmZcIixcImZpbGU6NGJiNzI3NWRhMzhiNmI4MTI3NTUxZmNmMDQ0ZWRmMzdcIl0iLCJ0eXBlIjoiaW1wb3J0cyIsInNvdXJjZUlkIjoiZmlsZTo5NTM0YWVhMWM0YzliNzJiNWVlMDE4Mzk3NTczNTIyZiIsInRhcmdldElkIjoiZmlsZTo0YmI3Mjc1ZGEzOGI2YjgxMjc1NTFmY2YwNDRlZGYzNyIsInJlc29sdXRpb24iOiJyZXNvbHZlZCIsImV2aWRlbmNlIjp7ImZpbGVQYXRoIjoicm9vdC50cyIsImxpbmUiOjEsInRleHQiOiJpbXBvcnQgeyBoZWxwZXIgfSBmcm9tIFwiLi9kZXBlbmRlbmN5XCI7In19LHsiaWQiOiJmaWxlOnJlbGF0aW9uOjFjYmZhZmZlYmIzOGE1ZTJkMzIyYmQyODZmNjE3NTJmIiwidHlwZSI6ImNhbGxzIiwic291cmNlSWQiOiJmaWxlOjk1MzRhZWExYzRjOWI3MmI1ZWUwMTgzOTc1NzM1MjJmIiwidGFyZ2V0SWQiOm51bGwsInJlc29sdXRpb24iOiJ1bnJlc29sdmVkIiwiZXZpZGVuY2UiOnsiZmlsZVBhdGgiOiJyb290LnRzIiwibGluZSI6MiwidGV4dCI6InVua25vd25DYWxsKCkifSwicmVhc29uIjoiTm8gdW5pcXVlIGluZGV4ZWQgaW1wbGVtZW50YXRpb24gZm9yIHRoaXMgY2FsbCAoZHluYW1pYywgYW1iaWVudCwgb3IgZXhjbHVkZWQgdGFyZ2V0KSJ9XSwidHJ1bmNhdGVkIjpmYWxzZSwic25hcHNob3RJZCI6InNuYXBzaG90OjI3MzI3ZTkyMWY0MjY1MjFlZjdiZWZjMzE5NDg4NDQ3IiwiZGF0YVNvdXJjZSI6ImNvZGUiLCJ1bmtub3duQ291bnQiOjF9LCJyZWR1Y2VkVHJhbnNmb3JtcyI6WyJ0cmFuc2xhdGUoMHB4LCAwcHgpIl0sImVycm9ycyI6W10sImV4dGVybmFsIjpbXX0="
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f477f032855a0e129ce2-e0b6b85829d68c7b0e24",
+          "file": "focus-navigation.spec.ts",
+          "line": 406,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "forwarding.spec.ts",
+      "file": "forwarding.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "production browser follows a two-hop entry to the real leaf, preserves authored source in both languages and exposes unsafe forwarding reason",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3539,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T16:42:49.333Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "forwarding-evidence",
+                      "contentType": "application/json",
+                      "body": "eyJzbmFwc2hvdElkIjoic25hcHNob3Q6YjBlNzAwM2RjMDY4NDUzNTczM2MwMWVlZDMyZjliYzMiLCJlbnRyeUNvbnRleHQiOnsibm9kZSI6eyJpZCI6ImZ1bmN0aW9uOmIwOTNhZjJiNWM5YmJjMDQ5ZmQ0NWVhNGI5YzY1YzgyIiwia2luZCI6ImZ1bmN0aW9uIiwiZGVjbGFyYXRpb25LaW5kIjoiZnVuY3Rpb24iLCJuYW1lIjoiZW50cnkiLCJxdWFsaWZpZWROYW1lIjoiZW50cnkiLCJmaWxlUGF0aCI6ImVudHJ5LmNqcyIsInBhcmVudElkIjoiZmlsZTo4ZDY3YTEwZDE5OWIxZDY0MTA5MzE5OTc3M2Y4ZTg0NCIsImxhbmd1YWdlIjoiamF2YXNjcmlwdCIsInNpZ25hdHVyZSI6ImZ1bmN0aW9uIGVudHJ5KCkiLCJzdGFydExpbmUiOjIsImVuZExpbmUiOjIsImV4cG9ydGVkIjp0cnVlfSwiaW5jb21pbmciOltdLCJvdXRnb2luZyI6W3siaWQiOiJyZWxhdGlvbjo1NzMwNDUxNDI2NDA1Njk0MGJjYTg4OTMwMTVmN2UzNCIsInR5cGUiOiJjYWxscyIsInNvdXJjZUlkIjoiZnVuY3Rpb246YjA5M2FmMmI1YzliYmMwNDlmZDQ1ZWE0YjljNjVjODIiLCJ0YXJnZXRJZCI6ImZ1bmN0aW9uOjZkNTNkMDM4ODg3YzJlZTc5ODNkMDYxNjc2ODRlMGNjIiwicmVzb2x1dGlvbiI6InJlc29sdmVkIiwiZXZpZGVuY2UiOnsiZmlsZVBhdGgiOiJlbnRyeS5janMiLCJsaW5lIjoyLCJ0ZXh0IjoibW9kLmhlbHBlcigpIn19XSwicmVsYXRlZE5vZGVzIjpbeyJpZCI6ImZ1bmN0aW9uOmIwOTNhZjJiNWM5YmJjMDQ5ZmQ0NWVhNGI5YzY1YzgyIiwia2luZCI6ImZ1bmN0aW9uIiwiZGVjbGFyYXRpb25LaW5kIjoiZnVuY3Rpb24iLCJuYW1lIjoiZW50cnkiLCJxdWFsaWZpZWROYW1lIjoiZW50cnkiLCJmaWxlUGF0aCI6ImVudHJ5LmNqcyIsInBhcmVudElkIjoiZmlsZTo4ZDY3YTEwZDE5OWIxZDY0MTA5MzE5OTc3M2Y4ZTg0NCIsImxhbmd1YWdlIjoiamF2YXNjcmlwdCIsInNpZ25hdHVyZSI6ImZ1bmN0aW9uIGVudHJ5KCkiLCJzdGFydExpbmUiOjIsImVuZExpbmUiOjIsImV4cG9ydGVkIjp0cnVlfSx7ImlkIjoiZnVuY3Rpb246NmQ1M2QwMzg4ODdjMmVlNzk4M2QwNjE2NzY4NGUwY2MiLCJraW5kIjoiZnVuY3Rpb24iLCJkZWNsYXJhdGlvbktpbmQiOiJmdW5jdGlvbiIsIm5hbWUiOiJoZWxwZXIiLCJxdWFsaWZpZWROYW1lIjoiaGVscGVyIiwiZmlsZVBhdGgiOiJsZWFmLWEuY2pzIiwicGFyZW50SWQiOiJmaWxlOmMwOGRmYjAzMGFlYmMwNDRhNDNlZmM2NWQ3MTFlM2E0IiwibGFuZ3VhZ2UiOiJqYXZhc2NyaXB0Iiwic2lnbmF0dXJlIjoiZnVuY3Rpb24gaGVscGVyKCkiLCJzdGFydExpbmUiOjIsImVuZExpbmUiOjIsImV4cG9ydGVkIjp0cnVlfV0sInRvdGFsSW5jb21pbmciOjAsInRvdGFsT3V0Z29pbmciOjEsInRydW5jYXRlZCI6ZmFsc2UsIm9mZnNldCI6MCwibGltaXQiOjUwLCJzbmFwc2hvdElkIjoic25hcHNob3Q6YjBlNzAwM2RjMDY4NDUzNTczM2MwMWVlZDMyZjliYzMiLCJkYXRhU291cmNlIjoiY29kZSJ9LCJsZWFmIjp7ImlkIjoiZnVuY3Rpb246NmQ1M2QwMzg4ODdjMmVlNzk4M2QwNjE2NzY4NGUwY2MiLCJraW5kIjoiZnVuY3Rpb24iLCJkZWNsYXJhdGlvbktpbmQiOiJmdW5jdGlvbiIsIm5hbWUiOiJoZWxwZXIiLCJxdWFsaWZpZWROYW1lIjoiaGVscGVyIiwiZmlsZVBhdGgiOiJsZWFmLWEuY2pzIiwicGFyZW50SWQiOiJmaWxlOmMwOGRmYjAzMGFlYmMwNDRhNDNlZmM2NWQ3MTFlM2E0IiwibGFuZ3VhZ2UiOiJqYXZhc2NyaXB0Iiwic2lnbmF0dXJlIjoiZnVuY3Rpb24gaGVscGVyKCkiLCJzdGFydExpbmUiOjIsImVuZExpbmUiOjIsImV4cG9ydGVkIjp0cnVlfSwidW5rbm93bkNvbnRleHQiOnsibm9kZSI6eyJpZCI6ImZ1bmN0aW9uOjE0NThlMTliOTJlN2M3MWI4MzQwNzBjOGFlZTQ0Zjg3Iiwia2luZCI6ImZ1bmN0aW9uIiwiZGVjbGFyYXRpb25LaW5kIjoiZnVuY3Rpb24iLCJuYW1lIjoidW5zYWZlQ2FsbGVyIiwicXVhbGlmaWVkTmFtZSI6InVuc2FmZUNhbGxlciIsImZpbGVQYXRoIjoidW5rbm93bi5janMiLCJwYXJlbnRJZCI6ImZpbGU6NjBhMzI3YjVlOThkMTc2MDAyZmJlZmY2NzE3YTI0NzgiLCJsYW5ndWFnZSI6ImphdmFzY3JpcHQiLCJzaWduYXR1cmUiOiJmdW5jdGlvbiB1bnNhZmVDYWxsZXIoKSIsInN0YXJ0TGluZSI6MiwiZW5kTGluZSI6MiwiZXhwb3J0ZWQiOnRydWV9LCJpbmNvbWluZyI6W10sIm91dGdvaW5nIjpbeyJpZCI6InJlbGF0aW9uOjUzZjVlNGYxNjgwNTJjMDU3ZDgzMmJkNDNjMDgyOGMzIiwidHlwZSI6ImNhbGxzIiwic291cmNlSWQiOiJmdW5jdGlvbjoxNDU4ZTE5YjkyZTdjNzFiODM0MDcwYzhhZWU0NGY4NyIsInRhcmdldElkIjpudWxsLCJyZXNvbHV0aW9uIjoidW5yZXNvbHZlZCIsImV2aWRlbmNlIjp7ImZpbGVQYXRoIjoidW5rbm93bi5janMiLCJsaW5lIjoyLCJ0ZXh0IjoidW5zYWZlLmhlbHBlcigpIn0sInJlYXNvbiI6IkNvbW1vbkpTIG1vZHVsZSBtb2RlLCBuYW1lc3BhY2UgaWRlbnRpdHksIG9yIGV4cG9ydCBzdGFiaWxpdHkgaXMgbm90IGVzdGFibGlzaGVkIn1dLCJyZWxhdGVkTm9kZXMiOlt7ImlkIjoiZnVuY3Rpb246MTQ1OGUxOWI5MmU3YzcxYjgzNDA3MGM4YWVlNDRmODciLCJraW5kIjoiZnVuY3Rpb24iLCJkZWNsYXJhdGlvbktpbmQiOiJmdW5jdGlvbiIsIm5hbWUiOiJ1bnNhZmVDYWxsZXIiLCJxdWFsaWZpZWROYW1lIjoidW5zYWZlQ2FsbGVyIiwiZmlsZVBhdGgiOiJ1bmtub3duLmNqcyIsInBhcmVudElkIjoiZmlsZTo2MGEzMjdiNWU5OGQxNzYwMDJmYmVmZjY3MTdhMjQ3OCIsImxhbmd1YWdlIjoiamF2YXNjcmlwdCIsInNpZ25hdHVyZSI6ImZ1bmN0aW9uIHVuc2FmZUNhbGxlcigpIiwic3RhcnRMaW5lIjoyLCJlbmRMaW5lIjoyLCJleHBvcnRlZCI6dHJ1ZX1dLCJ0b3RhbEluY29taW5nIjowLCJ0b3RhbE91dGdvaW5nIjoxLCJ0cnVuY2F0ZWQiOmZhbHNlLCJvZmZzZXQiOjAsImxpbWl0Ijo1MCwic25hcHNob3RJZCI6InNuYXBzaG90OmIwZTcwMDNkYzA2ODQ1MzU3MzNjMDFlZWQzMmY5YmMzIiwiZGF0YVNvdXJjZSI6ImNvZGUifSwibGFuZ3VhZ2VzIjpbInpoIiwiZW4iXSwiY29waWVkTG9jYXRpb24iOiJsZWFmLWEuY2pzOjIiLCJlcnJvcnMiOltdLCJleHRlcm5hbCI6WyJodHRwczovL2V4YW1wbGUuaW52YWxpZC9hdGxhcy1vZmZsaW5lLXByb2JlIl0sInByb3RvY29sRXJyb3JzIjpbXSwidGFyZ2V0Tm90RXhlY3V0ZWQiOnRydWUsIm9mZmxpbmVQcm9iZSI6eyJ1cmwiOiJodHRwczovL2V4YW1wbGUuaW52YWxpZC9hdGxhcy1vZmZsaW5lLXByb2JlIiwiYmxvY2tlZFJlYXNvbiI6Im5ldDo6RVJSX0JMT0NLRURfQllfQ0xJRU5UIiwidW5leHBlY3RlZEV4dGVybmFsUmVxdWVzdHMiOjB9LCJvYnNlcnZlZEF0IjoiMjAyNi0xMC0xMFQxNjo0Mjo1Mi43MzRaIn0="
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "bb4b73df3f683ee9eb2d-720d76203acd3ce82500",
+          "file": "forwarding.spec.ts",
+          "line": 21,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "graph-inspection.spec.ts",
+      "file": "graph-inspection.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "inspection preserves the camera, uniquely previews repeated calls, and funnel dragging survives pages while maps navigate",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 10171,
+                  "errors": [],
+                  "stdout": [
+                    {
+                      "text": "{\"viewportWidth\":1900,\"canvasWidth\":1190,\"capturedDock\":\"inspection-overlay dock-side\",\"panelsFit\":true,\"navigation\":\"zoom, drag, wheel, key pan, click changed camera\"}\n"
+                    },
+                    {
+                      "text": "{\"viewportWidth\":1600,\"canvasWidth\":930,\"capturedDock\":\"inspection-overlay dock-side\",\"panelsFit\":true,\"navigation\":\"zoom, drag, wheel, key pan, click changed camera\"}\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T16:42:52.890Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "b24f4b19ad038557a735-a159522f2a9bd95a3456",
+          "file": "graph-inspection.spec.ts",
+          "line": 43,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "groups-collapse.spec.ts",
+      "file": "groups-collapse.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "group collapse preserves shared function aliases, true external call endpoints, layout and view across owned restart",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 8234,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T16:43:03.108Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "e02b0daa253942a5b29f-8713b97a0a0abcb3373e",
+          "file": "groups-collapse.spec.ts",
+          "line": 17,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "groups.spec.ts",
+      "file": "groups.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "circle groups edit cross-directory shared functions and persist across owned-server restart without changing source",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4772,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T16:43:11.379Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1593cb28a9d1bc213d09-0d03f1472c6270f7fb3f",
+          "file": "groups.spec.ts",
+          "line": 17,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "pending-plans.spec.ts",
+      "file": "pending-plans.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "待审入口打开实际变更，选择改动与显式批准分别生效",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2872,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T16:43:16.167Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "306dbdd2df8cc7b6d3b2-2cb95f0aa4e92ee86007",
+          "file": "pending-plans.spec.ts",
+          "line": 11,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "planning.spec.mjs",
+      "file": "planning.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "production UI and SDK share the complete planning, approval, persistence and verification flow offline",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 14389,
+                  "errors": [],
+                  "stdout": [
+                    {
+                      "text": "{\"requestedRelation\":\"plan:new-call\",\"clickedRoute\":{\"x\":672.3078819538932,\"y\":343.609326839447,\"visualRoute\":\"rf__edge-plan:new-call\"}}\n"
+                    },
+                    {
+                      "text": "{\"requestedRelation\":\"fact:relation:d1a0c7bdac4cb97a93a0f695205b933b\",\"clickedRoute\":{\"x\":972.4308697181241,\"y\":258.5739788824079,\"visualRoute\":\"rf__edge-group-edge:fact:relation:d1a0c7bdac4cb97a93a0f695205b933b:0\"}}\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T16:43:19.058Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "joint-flow-evidence",
+                      "contentType": "application/json",
+                      "body": "ewogICJlcnJvcnMiOiBbXSwKICAiZXh0ZXJuYWwiOiBbXSwKICAiY2xpcGJvYXJkIjogImFjdHVhbCBuYXZpZ2F0b3IuY2xpcGJvYXJkLnJlYWRUZXh0IGluIENocm9taXVtIiwKICAiYXBwcm92YWwiOiB7CiAgICAiaWQiOiAiNjQ4Nzk0NTYtMTE2Yi00OTViLWIyOTktNWFlOTFlNDczM2RkIiwKICAgICJwbGFuSWQiOiAiYWEyZGM5ZDMtNzdlZC00YTNjLTlmNzItZTk3YTQxNzI3NDlhIiwKICAgICJyZXZpc2lvbiI6IDE2LAogICAgInNlbWFudGljSGFzaCI6ICJlNTYzOGQzZTk1YTM2YmRjMzQ0YWY0ZDNhNTE5YzgwZjI5ZTg2Y2JmOWY1MWJjN2U4NGNjODIxMTdkMTY4NDNhIiwKICAgICJiYXNlbGluZVNuYXBzaG90SWQiOiAic25hcHNob3Q6YzI1Yjc1NGI4ZDM1OTFlYzJjOThiNDYxODU4N2Y0OGEiLAogICAgImJhc2VsaW5lQ29udGVudEhhc2giOiAiZmIxZmE0ZTNlOGI3NzI1ZjU4Y2RjM2JlMDE2YmU1MmI5N2UwOWE3ZThmM2I4NjFhOTJhNjg5NGQyZDIwMDNlNSIsCiAgICAiYXBwcm92ZWRBdCI6ICIyMDI2LTEwLTEwVDE2OjQzOjI4LjY5OVoiLAogICAgImFjdG9yIjogInVzZXIiCiAgfSwKICAiZXhwb3J0SlNPTiI6IHsKICAgICJieXRlcyI6IDM4MjgsCiAgICAibmFtZSI6ICJwbGFuLWFhMmRjOWQzLTc3ZWQtNGEzYy05ZjcyLWU5N2E0MTcyNzQ5YS1yMTYuanNvbiIKICB9LAogICJleHBvcnRNYXJrZG93biI6IHsKICAgICJieXRlcyI6IDQwMTYsCiAgICAibmFtZSI6ICJwbGFuLWFhMmRjOWQzLTc3ZWQtNGEzYy05ZjcyLWU5N2E0MTcyNzQ5YS1yMTYubWQiCiAgfSwKICAic2F0aXNmaWVkIjogewogICAgInBsYW5JZCI6ICJhYTJkYzlkMy03N2VkLTRhM2MtOWY3Mi1lOTdhNDE3Mjc0OWEiLAogICAgInJldmlzaW9uIjogMTYsCiAgICAic25hcHNob3RJZCI6ICJzbmFwc2hvdDo1ZTg2ZDI2OWRhOTFjODk2NDhjNGZkMTRhNDFmZTlhOCIsCiAgICAiaXRlbXMiOiBbCiAgICAgIHsKICAgICAgICAib3BlcmF0aW9uSW5kZXgiOiAwLAogICAgICAgICJzdGF0dXMiOiAic2F0aXNmaWVkIiwKICAgICAgICAibWVzc2FnZSI6ICJQbGFubmVkIGZ1bmN0aW9uIGV4aXN0cyBhdCB0aGUgdGFyZ2V0IHBhdGguIiwKICAgICAgICAiZXZpZGVuY2UiOiBbCiAgICAgICAgICAic2VydmljZXMvbm90ZXMudHM6MiIKICAgICAgICBdCiAgICAgIH0sCiAgICAgIHsKICAgICAgICAib3BlcmF0aW9uSW5kZXgiOiAxLAogICAgICAgICJzdGF0dXMiOiAic2F0aXNmaWVkIiwKICAgICAgICAibWVzc2FnZSI6ICJUaGUgcmVxdWlyZWQgcmVsYXRpb24gZXhpc3RzLiIsCiAgICAgICAgImV2aWRlbmNlIjogWwogICAgICAgICAgInNlcnZpY2VzL25vdGVzLnRzOjIgcmVxdWVzdFdpdGhSZXRyeSgpIgogICAgICAgIF0KICAgICAgfSwKICAgICAgewogICAgICAgICJvcGVyYXRpb25JbmRleCI6IDIsCiAgICAgICAgInN0YXR1cyI6ICJ1bmtub3duIiwKICAgICAgICAibWVzc2FnZSI6ICJBbm5vdGF0aW9uIHNlbWFudGljcyByZXF1aXJlIGh1bWFuIHJldmlldy4iLAogICAgICAgICJldmlkZW5jZSI6IFtdCiAgICAgIH0sCiAgICAgIHsKICAgICAgICAib3BlcmF0aW9uSW5kZXgiOiAzLAogICAgICAgICJzdGF0dXMiOiAic2F0aXNmaWVkIiwKICAgICAgICAibWVzc2FnZSI6ICJUaGUgb3JpZ2luYWwgcmVsYXRpb24gaXMgYWJzZW50LiIsCiAgICAgICAgImV2aWRlbmNlIjogWwogICAgICAgICAgIm1haW4udHM6MiIsCiAgICAgICAgICAicmVxdWVzdHMudHM6MSIKICAgICAgICBdCiAgICAgIH0sCiAgICAgIHsKICAgICAgICAib3BlcmF0aW9uSW5kZXgiOiA0LAogICAgICAgICJzdGF0dXMiOiAic2F0aXNmaWVkIiwKICAgICAgICAibWVzc2FnZSI6ICJUaGUgcmVxdWlyZWQgcmVsYXRpb24gZXhpc3RzLiIsCiAgICAgICAgImV2aWRlbmNlIjogWwogICAgICAgICAgIm1haW4udHM6MiByZXF1ZXN0V2l0aFJldHJ5KCkiCiAgICAgICAgXQogICAgICB9CiAgICBdCiAgfSwKICAiYnlwYXNzIjogewogICAgInBsYW5JZCI6ICJhYTJkYzlkMy03N2VkLTRhM2MtOWY3Mi1lOTdhNDE3Mjc0OWEiLAogICAgInJldmlzaW9uIjogMTYsCiAgICAic25hcHNob3RJZCI6ICJzbmFwc2hvdDo4YWZmMTMzYmFlNjdlOGNhZjM0MjY5NjAzNzliNGI5OCIsCiAgICAiaXRlbXMiOiBbCiAgICAgIHsKICAgICAgICAib3BlcmF0aW9uSW5kZXgiOiAwLAogICAgICAgICJzdGF0dXMiOiAic2F0aXNmaWVkIiwKICAgICAgICAibWVzc2FnZSI6ICJQbGFubmVkIGZ1bmN0aW9uIGV4aXN0cyBhdCB0aGUgdGFyZ2V0IHBhdGguIiwKICAgICAgICAiZXZpZGVuY2UiOiBbCiAgICAgICAgICAic2VydmljZXMvbm90ZXMudHM6MiIKICAgICAgICBdCiAgICAgIH0sCiAgICAgIHsKICAgICAgICAib3BlcmF0aW9uSW5kZXgiOiAxLAogICAgICAgICJzdGF0dXMiOiAidW5tZXQiLAogICAgICAgICJtZXNzYWdlIjogIk5vIGRpcmVjdCBjYWxsIHRvIHRoZSByZXF1aXJlZCB0YXJnZXQgd2FzIGZvdW5kLiIsCiAgICAgICAgImV2aWRlbmNlIjogWwogICAgICAgICAgInNlcnZpY2VzL25vdGVzLnRzOjIiLAogICAgICAgICAgInJlcXVlc3RzLnRzOjIiCiAgICAgICAgXQogICAgICB9LAogICAgICB7CiAgICAgICAgIm9wZXJhdGlvbkluZGV4IjogMiwKICAgICAgICAic3RhdHVzIjogInVua25vd24iLAogICAgICAgICJtZXNzYWdlIjogIkFubm90YXRpb24gc2VtYW50aWNzIHJlcXVpcmUgaHVtYW4gcmV2aWV3LiIsCiAgICAgICAgImV2aWRlbmNlIjogW10KICAgICAgfSwKICAgICAgewogICAgICAgICJvcGVyYXRpb25JbmRleCI6IDMsCiAgICAgICAgInN0YXR1cyI6ICJzYXRpc2ZpZWQiLAogICAgICAgICJtZXNzYWdlIjogIlRoZSBvcmlnaW5hbCByZWxhdGlvbiBpcyBhYnNlbnQuIiwKICAgICAgICAiZXZpZGVuY2UiOiBbCiAgICAgICAgICAibWFpbi50czoyIiwKICAgICAgICAgICJyZXF1ZXN0cy50czoxIgogICAgICAgIF0KICAgICAgfSwKICAgICAgewogICAgICAgICJvcGVyYXRpb25JbmRleCI6IDQsCiAgICAgICAgInN0YXR1cyI6ICJzYXRpc2ZpZWQiLAogICAgICAgICJtZXNzYWdlIjogIlRoZSByZXF1aXJlZCByZWxhdGlvbiBleGlzdHMuIiwKICAgICAgICAiZXZpZGVuY2UiOiBbCiAgICAgICAgICAibWFpbi50czoyIHJlcXVlc3RXaXRoUmV0cnkoKSIKICAgICAgICBdCiAgICAgIH0KICAgIF0KICB9LAogICJ1bmtub3duIjogewogICAgInBsYW5JZCI6ICJhYTJkYzlkMy03N2VkLTRhM2MtOWY3Mi1lOTdhNDE3Mjc0OWEiLAogICAgInJldmlzaW9uIjogMTYsCiAgICAic25hcHNob3RJZCI6ICJzbmFwc2hvdDphNTBiY2JkYzYwNTIwZjliZWZkODUyNmRjMDQ3ODhmMyIsCiAgICAiaXRlbXMiOiBbCiAgICAgIHsKICAgICAgICAib3BlcmF0aW9uSW5kZXgiOiAwLAogICAgICAgICJzdGF0dXMiOiAic2F0aXNmaWVkIiwKICAgICAgICAibWVzc2FnZSI6ICJQbGFubmVkIGZ1bmN0aW9uIGV4aXN0cyBhdCB0aGUgdGFyZ2V0IHBhdGguIiwKICAgICAgICAiZXZpZGVuY2UiOiBbCiAgICAgICAgICAic2VydmljZXMvbm90ZXMudHM6MSIKICAgICAgICBdCiAgICAgIH0sCiAgICAgIHsKICAgICAgICAib3BlcmF0aW9uSW5kZXgiOiAxLAogICAgICAgICJzdGF0dXMiOiAidW5rbm93biIsCiAgICAgICAgIm1lc3NhZ2UiOiAiRHluYW1pYyBvciB1bnJlc29sdmVkIHJlbGF0aW9ucyBwcmV2ZW50IGEgZGVmaW5pdGl2ZSBhYnNlbmNlIGNoZWNrLiIsCiAgICAgICAgImV2aWRlbmNlIjogWwogICAgICAgICAgInNlcnZpY2VzL25vdGVzLnRzOjEgZm4oKSIKICAgICAgICBdCiAgICAgIH0sCiAgICAgIHsKICAgICAgICAib3BlcmF0aW9uSW5kZXgiOiAyLAogICAgICAgICJzdGF0dXMiOiAidW5rbm93biIsCiAgICAgICAgIm1lc3NhZ2UiOiAiQW5ub3RhdGlvbiBzZW1hbnRpY3MgcmVxdWlyZSBodW1hbiByZXZpZXcuIiwKICAgICAgICAiZXZpZGVuY2UiOiBbXQogICAgICB9LAogICAgICB7CiAgICAgICAgIm9wZXJhdGlvbkluZGV4IjogMywKICAgICAgICAic3RhdHVzIjogInNhdGlzZmllZCIsCiAgICAgICAgIm1lc3NhZ2UiOiAiVGhlIG9yaWdpbmFsIHJlbGF0aW9uIGlzIGFic2VudC4iLAogICAgICAgICJldmlkZW5jZSI6IFsKICAgICAgICAgICJtYWluLnRzOjIiLAogICAgICAgICAgInJlcXVlc3RzLnRzOjEiCiAgICAgICAgXQogICAgICB9LAogICAgICB7CiAgICAgICAgIm9wZXJhdGlvbkluZGV4IjogNCwKICAgICAgICAic3RhdHVzIjogInNhdGlzZmllZCIsCiAgICAgICAgIm1lc3NhZ2UiOiAiVGhlIHJlcXVpcmVkIHJlbGF0aW9uIGV4aXN0cy4iLAogICAgICAgICJldmlkZW5jZSI6IFsKICAgICAgICAgICJtYWluLnRzOjIgcmVxdWVzdFdpdGhSZXRyeSgpIgogICAgICAgIF0KICAgICAgfQogICAgXQogIH0KfQ=="
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "29288311451816bbf8b3-6832f790e4a8238f5b69",
+          "file": "planning.spec.mjs",
+          "line": 18,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "tsconfig.spec.ts",
+      "file": "tsconfig.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "production browser displays captured configuration coverage truthfully in Chinese and English",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 2925,
+                  "error": {
+                    "message": "Error: locator.click: Error: strict mode violation: locator('.navigation details').filter({ has: locator('summary').filter({ hasText: '静态分析诊断' }) }).locator('summary') resolved to 6 elements:\n    1) <summary>静态分析诊断 (0)</summary> aka getByText('静态分析诊断 (0)')\n    2) <summary>配置项目图</summary> aka getByText('配置项目图')\n    3) <summary>…</summary> aka getByText('项目根配置 (1/1)')\n    4) <summary>…</summary> aka getByText('已观察项目 (1/1)')\n    5) <summary>…</summary> aka getByText('项目引用 (0/0)')\n    6) <summary>…</summary> aka getByText('源码归属样本 (6/6)')\n\nCall log:\n\u001b[2m  - waiting for locator('.navigation details').filter({ has: locator('summary').filter({ hasText: '静态分析诊断' }) }).locator('summary')\u001b[22m\n",
+                    "stack": "Error: locator.click: Error: strict mode violation: locator('.navigation details').filter({ has: locator('summary').filter({ hasText: '静态分析诊断' }) }).locator('summary') resolved to 6 elements:\n    1) <summary>静态分析诊断 (0)</summary> aka getByText('静态分析诊断 (0)')\n    2) <summary>配置项目图</summary> aka getByText('配置项目图')\n    3) <summary>…</summary> aka getByText('项目根配置 (1/1)')\n    4) <summary>…</summary> aka getByText('已观察项目 (1/1)')\n    5) <summary>…</summary> aka getByText('项目引用 (0/0)')\n    6) <summary>…</summary> aka getByText('源码归属样本 (6/6)')\n\nCall log:\n\u001b[2m  - waiting for locator('.navigation details').filter({ has: locator('summary').filter({ hasText: '静态分析诊断' }) }).locator('summary')\u001b[22m\n\n    at /tmp/atlas-idx03-clean-20261010-wn3h_oyv/workspace/tests/e2e/tsconfig.spec.ts:103:44",
+                    "location": {
+                      "file": "/tmp/atlas-idx03-clean-20261010-wn3h_oyv/workspace/tests/e2e/tsconfig.spec.ts",
+                      "column": 44,
+                      "line": 103
+                    },
+                    "snippet": "  101 |         .locator(\".navigation details\")\n  102 |         .filter({ has: page.locator(\"summary\", { hasText: \"静态分析诊断\" }) });\n> 103 |       await diagnostics.locator(\"summary\").click();\n      |                                            ^\n  104 |       const coverage = diagnostics.getByRole(\"region\", {\n  105 |         name: \"配置输入\",\n  106 |         exact: true,"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/tmp/atlas-idx03-clean-20261010-wn3h_oyv/workspace/tests/e2e/tsconfig.spec.ts",
+                        "column": 44,
+                        "line": 103
+                      },
+                      "message": "Error: locator.click: Error: strict mode violation: locator('.navigation details').filter({ has: locator('summary').filter({ hasText: '静态分析诊断' }) }).locator('summary') resolved to 6 elements:\n    1) <summary>静态分析诊断 (0)</summary> aka getByText('静态分析诊断 (0)')\n    2) <summary>配置项目图</summary> aka getByText('配置项目图')\n    3) <summary>…</summary> aka getByText('项目根配置 (1/1)')\n    4) <summary>…</summary> aka getByText('已观察项目 (1/1)')\n    5) <summary>…</summary> aka getByText('项目引用 (0/0)')\n    6) <summary>…</summary> aka getByText('源码归属样本 (6/6)')\n\nCall log:\n\u001b[2m  - waiting for locator('.navigation details').filter({ has: locator('summary').filter({ hasText: '静态分析诊断' }) }).locator('summary')\u001b[22m\n\n\n  101 |         .locator(\".navigation details\")\n  102 |         .filter({ has: page.locator(\"summary\", { hasText: \"静态分析诊断\" }) });\n> 103 |       await diagnostics.locator(\"summary\").click();\n      |                                            ^\n  104 |       const coverage = diagnostics.getByRole(\"region\", {\n  105 |         name: \"配置输入\",\n  106 |         exact: true,\n    at /tmp/atlas-idx03-clean-20261010-wn3h_oyv/workspace/tests/e2e/tsconfig.spec.ts:103:44"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T16:43:33.479Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/tmp/atlas-idx03-clean-20261010-wn3h_oyv/workspace/artifacts/e2e/results/tsconfig-production-browse-5fae5-ully-in-Chinese-and-English/test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/tmp/atlas-idx03-clean-20261010-wn3h_oyv/workspace/artifacts/e2e/results/tsconfig-production-browse-5fae5-ully-in-Chinese-and-English/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/tmp/atlas-idx03-clean-20261010-wn3h_oyv/workspace/artifacts/e2e/results/tsconfig-production-browse-5fae5-ully-in-Chinese-and-English/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/tmp/atlas-idx03-clean-20261010-wn3h_oyv/workspace/tests/e2e/tsconfig.spec.ts",
+                    "column": 44,
+                    "line": 103
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "dcf8f1ef5b79c2a37fbc-c5db55b0e62b632390d6",
+          "file": "tsconfig.spec.ts",
+          "line": 17,
+          "column": 3
+        },
+        {
+          "title": "production browser displays unrecorded legacy configuration coverage truthfully in Chinese and English",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 3691,
+                  "error": {
+                    "message": "Error: locator.click: Error: strict mode violation: locator('.navigation details').filter({ has: locator('summary').filter({ hasText: '静态分析诊断' }) }).locator('summary') resolved to 6 elements:\n    1) <summary>静态分析诊断 (0)</summary> aka getByText('静态分析诊断 (0)')\n    2) <summary>配置项目图</summary> aka getByText('配置项目图')\n    3) <summary>…</summary> aka getByText('项目根配置 (1/1)')\n    4) <summary>…</summary> aka getByText('已观察项目 (1/1)')\n    5) <summary>…</summary> aka getByText('项目引用 (0/0)')\n    6) <summary>…</summary> aka getByText('源码归属样本 (6/6)')\n\nCall log:\n\u001b[2m  - waiting for locator('.navigation details').filter({ has: locator('summary').filter({ hasText: '静态分析诊断' }) }).locator('summary')\u001b[22m\n",
+                    "stack": "Error: locator.click: Error: strict mode violation: locator('.navigation details').filter({ has: locator('summary').filter({ hasText: '静态分析诊断' }) }).locator('summary') resolved to 6 elements:\n    1) <summary>静态分析诊断 (0)</summary> aka getByText('静态分析诊断 (0)')\n    2) <summary>配置项目图</summary> aka getByText('配置项目图')\n    3) <summary>…</summary> aka getByText('项目根配置 (1/1)')\n    4) <summary>…</summary> aka getByText('已观察项目 (1/1)')\n    5) <summary>…</summary> aka getByText('项目引用 (0/0)')\n    6) <summary>…</summary> aka getByText('源码归属样本 (6/6)')\n\nCall log:\n\u001b[2m  - waiting for locator('.navigation details').filter({ has: locator('summary').filter({ hasText: '静态分析诊断' }) }).locator('summary')\u001b[22m\n\n    at /tmp/atlas-idx03-clean-20261010-wn3h_oyv/workspace/tests/e2e/tsconfig.spec.ts:103:44",
+                    "location": {
+                      "file": "/tmp/atlas-idx03-clean-20261010-wn3h_oyv/workspace/tests/e2e/tsconfig.spec.ts",
+                      "column": 44,
+                      "line": 103
+                    },
+                    "snippet": "  101 |         .locator(\".navigation details\")\n  102 |         .filter({ has: page.locator(\"summary\", { hasText: \"静态分析诊断\" }) });\n> 103 |       await diagnostics.locator(\"summary\").click();\n      |                                            ^\n  104 |       const coverage = diagnostics.getByRole(\"region\", {\n  105 |         name: \"配置输入\",\n  106 |         exact: true,"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/tmp/atlas-idx03-clean-20261010-wn3h_oyv/workspace/tests/e2e/tsconfig.spec.ts",
+                        "column": 44,
+                        "line": 103
+                      },
+                      "message": "Error: locator.click: Error: strict mode violation: locator('.navigation details').filter({ has: locator('summary').filter({ hasText: '静态分析诊断' }) }).locator('summary') resolved to 6 elements:\n    1) <summary>静态分析诊断 (0)</summary> aka getByText('静态分析诊断 (0)')\n    2) <summary>配置项目图</summary> aka getByText('配置项目图')\n    3) <summary>…</summary> aka getByText('项目根配置 (1/1)')\n    4) <summary>…</summary> aka getByText('已观察项目 (1/1)')\n    5) <summary>…</summary> aka getByText('项目引用 (0/0)')\n    6) <summary>…</summary> aka getByText('源码归属样本 (6/6)')\n\nCall log:\n\u001b[2m  - waiting for locator('.navigation details').filter({ has: locator('summary').filter({ hasText: '静态分析诊断' }) }).locator('summary')\u001b[22m\n\n\n  101 |         .locator(\".navigation details\")\n  102 |         .filter({ has: page.locator(\"summary\", { hasText: \"静态分析诊断\" }) });\n> 103 |       await diagnostics.locator(\"summary\").click();\n      |                                            ^\n  104 |       const coverage = diagnostics.getByRole(\"region\", {\n  105 |         name: \"配置输入\",\n  106 |         exact: true,\n    at /tmp/atlas-idx03-clean-20261010-wn3h_oyv/workspace/tests/e2e/tsconfig.spec.ts:103:44"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T16:43:37.127Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/tmp/atlas-idx03-clean-20261010-wn3h_oyv/workspace/artifacts/e2e/results/tsconfig-production-browse-6d832-ully-in-Chinese-and-English/test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/tmp/atlas-idx03-clean-20261010-wn3h_oyv/workspace/artifacts/e2e/results/tsconfig-production-browse-6d832-ully-in-Chinese-and-English/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/tmp/atlas-idx03-clean-20261010-wn3h_oyv/workspace/artifacts/e2e/results/tsconfig-production-browse-6d832-ully-in-Chinese-and-English/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/tmp/atlas-idx03-clean-20261010-wn3h_oyv/workspace/tests/e2e/tsconfig.spec.ts",
+                    "column": 44,
+                    "line": 103
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "dcf8f1ef5b79c2a37fbc-79ad3f612ec95949efb1",
+          "file": "tsconfig.spec.ts",
+          "line": 17,
+          "column": 3
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-10-10T16:41:56.837Z",
+    "duration": 104270.989,
+    "expected": 14,
+    "skipped": 0,
+    "unexpected": 5,
+    "flaky": 0
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "base": "619c39a82a4a9d6d3d8c8dec2a8846f7f00d52f2",
+  "exclusiveFiles": [
+    "packages/indexer/src/commonjs.ts",
+    "packages/indexer/src/configCapture.ts",
+    "packages/indexer/src/configResolution.ts",
+    "packages/indexer/src/index.ts",
+    "packages/indexer/src/typescript.ts",
+    "packages/indexer/src/projectReferenceGraph.ts",
+    "packages/indexer/src/projectReferenceTypes.ts",
+    "packages/indexer/src/projectReferences.ts",
+    "packages/indexer/src/projectReferencesCapture.test.ts",
+    "packages/indexer/src/projectReferencesFreshness.test.ts",
+    "packages/indexer/src/projectReferencesResolution.test.ts",
+    "packages/indexer/src/projectReferencesReview.test.ts",
+    "packages/core/src/projectReferenceSchema.test.ts",
+    "apps/web/src/app/ConfigurationProjectGraphPanel.tsx",
+    "apps/web/src/app/ConfigurationProjectGraphPanel.test.tsx",
+    "tests/support/idx03-validate.mjs",
+    "tests/support/idx03-express-validate.mjs",
+    "tests/support/idx03-visual-evidence.mjs"
+  ],
+  "sharedCorePatch": "docs/superpowers/reviews/idx03-2026-10-10/idx03-shared-core-only.patch",
+  "sharedUiPatch": "docs/superpowers/reviews/idx03-2026-10-10/idx03-frozen-ui-only.patch",
+  "exclusiveDocumentation": [
+    "docs/superpowers/specs/2026-10-10-idx03-design.md",
+    "docs/superpowers/plans/2026-10-10-idx03.md",
+    "docs/superpowers/reviews/idx03-2026-10-10/"
+  ],
+  "frozenBlobDirectory": "docs/superpowers/reviews/idx03-2026-10-10/final-source-blobs",
+  "frozenBlobCount": 40,
+  "exclusions": [
+    "AGENTS.md",
+    "packages/core/src/index.ts",
+    "RecordKind annotations line",
+    "all KN/POL schemas/modules/tests",
+    "all FS01 later UI hunks",
+    "shared state/tickets/README",
+    "root package-lock changes"
+  ],
+  "note": "Original freeze includes KN annotations line because shared core build had complete sibling exports; core-only patch removes that unrelated line. Original raw freeze/archive retained without rewriting."
+}

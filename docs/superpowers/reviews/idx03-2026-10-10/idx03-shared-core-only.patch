@@ -1,0 +1,184 @@
+diff --git a/packages/core/src/model.ts b/packages/core/src/model.ts
+--- a/packages/core/src/model.ts
++++ b/packages/core/src/model.ts
+@@ -22,6 +22,45 @@
+   evidence: { filePath: string; line: number; text?: string };
+   reason?: string;
+ };
++export type ConfigurationScopeStatus =
++  "resolved" | "unconfigured" | "ambiguous" | "invalid";
++export type ConfigurationProjectGraph = {
++  version: 1;
++  status: "complete" | "partial";
++  counts: {
++    observedRoots: number;
++    observedProjects: number;
++    observedReferences: number;
++    sourceScopes: number;
++    resolved: number;
++    unconfigured: number;
++    ambiguous: number;
++    invalid: number;
++  };
++  roots: string[];
++  projects: { configPath: string; status: "resolved" | "invalid" }[];
++  references: {
++    sourceConfigPath: string;
++    referencePathPreview: string;
++    targetConfigPath?: string;
++    status: "resolved" | "invalid" | "unavailable" | "cycle" | "budget";
++    reason?: string;
++    referencePathTruncated: boolean;
++    reasonTruncated: boolean;
++  }[];
++  scopes: {
++    sourcePath: string;
++    configPath?: string;
++    status: ConfigurationScopeStatus;
++  }[];
++  truncated: {
++    roots: boolean;
++    projects: boolean;
++    references: boolean;
++    scopes: boolean;
++  };
++};
++
+ export type CodeSnapshot = {
+   id: string;
+   projectId: string;
+@@ -34,6 +73,7 @@
+   coverage: {
+     files: string[];
+     configurationFiles?: string[];
++    configurationProjectGraph?: ConfigurationProjectGraph;
+     packageFiles?: string[];
+     excludedPatterns: string[];
+     unresolvedCount: number;
+diff --git a/packages/core/src/validation.ts b/packages/core/src/validation.ts
+--- a/packages/core/src/validation.ts
++++ b/packages/core/src/validation.ts
+@@ -129,6 +129,115 @@
+     text: z.string(),
+   }),
+ ]) satisfies z.ZodType<Operation>;
++const configurationGraphPath = path.refine(
++  (value) => value.length <= 2048,
++  "Configuration graph path exceeds 2048 characters",
++);
++const configurationGraphCount = z
++  .number()
++  .int()
++  .nonnegative()
++  .max(Number.MAX_SAFE_INTEGER);
++const configurationProjectGraphSchema = z
++  .strictObject({
++    version: z.literal(1),
++    status: z.enum(["complete", "partial"]),
++    counts: z.strictObject({
++      observedRoots: configurationGraphCount,
++      observedProjects: configurationGraphCount,
++      observedReferences: configurationGraphCount,
++      sourceScopes: configurationGraphCount,
++      resolved: configurationGraphCount,
++      unconfigured: configurationGraphCount,
++      ambiguous: configurationGraphCount,
++      invalid: configurationGraphCount,
++    }),
++    roots: z.array(configurationGraphPath).max(50),
++    projects: z
++      .array(
++        z.strictObject({
++          configPath: configurationGraphPath,
++          status: z.enum(["resolved", "invalid"]),
++        }),
++      )
++      .max(50),
++    references: z
++      .array(
++        z
++          .strictObject({
++            sourceConfigPath: configurationGraphPath,
++            referencePathPreview: z.string().max(256),
++            targetConfigPath: configurationGraphPath.optional(),
++            status: z.enum([
++              "resolved",
++              "invalid",
++              "unavailable",
++              "cycle",
++              "budget",
++            ]),
++            reason: z.string().max(512).optional(),
++            referencePathTruncated: z.boolean(),
++            reasonTruncated: z.boolean(),
++          })
++          .refine(
++            (edge) => edge.reason !== undefined || !edge.reasonTruncated,
++            "Missing reason cannot be truncated",
++          ),
++      )
++      .max(100),
++    scopes: z
++      .array(
++        z.strictObject({
++          sourcePath: configurationGraphPath,
++          configPath: configurationGraphPath.optional(),
++          status: z.enum(["resolved", "unconfigured", "ambiguous", "invalid"]),
++        }),
++      )
++      .max(50),
++    truncated: z.strictObject({
++      roots: z.boolean(),
++      projects: z.boolean(),
++      references: z.boolean(),
++      scopes: z.boolean(),
++    }),
++  })
++  .superRefine((graph, ctx) => {
++    const reject = (message: string) =>
++      ctx.addIssue({ code: "custom", message });
++    const { counts } = graph;
++    if (
++      counts.resolved +
++        counts.unconfigured +
++        counts.ambiguous +
++        counts.invalid !==
++      counts.sourceScopes
++    )
++      reject("Scope category totals must equal sourceScopes");
++    for (const [collection, observed] of [
++      ["roots", counts.observedRoots],
++      ["projects", counts.observedProjects],
++      ["references", counts.observedReferences],
++      ["scopes", counts.sourceScopes],
++    ] as const) {
++      const returned = graph[collection].length;
++      if (returned > observed)
++        reject(`Returned ${collection} exceed observed count`);
++      if (graph.truncated[collection] !== observed > returned)
++        reject(`Contradictory ${collection} truncation flag`);
++    }
++    for (const category of [
++      "resolved",
++      "unconfigured",
++      "ambiguous",
++      "invalid",
++    ] as const)
++      if (
++        graph.scopes.filter((scope) => scope.status === category).length >
++        counts[category]
++      )
++        reject(`Returned ${category} scopes exceed total category count`);
++  });
++
+ export const snapshotSchema = z.strictObject({
+   id,
+   projectId: id,
+@@ -147,6 +256,7 @@
+   coverage: z.strictObject({
+     files: z.array(path),
+     configurationFiles: z.array(path).optional(),
++    configurationProjectGraph: configurationProjectGraphSchema.optional(),
+     packageFiles: z.array(path).optional(),
+     excludedPatterns: z.array(z.string()),
+     unresolvedCount: z.number().int().nonnegative(),

@@ -1,0 +1,79 @@
+diff --git a/apps/web/src/app/Navigation.tsx b/apps/web/src/app/Navigation.tsx
+--- a/apps/web/src/app/Navigation.tsx
++++ b/apps/web/src/app/Navigation.tsx
+@@ -1,3 +1,4 @@
++import { ConfigurationProjectGraphPanel } from "./ConfigurationProjectGraphPanel.js";
+ import { useState } from "react";
+ import { ChatPanel } from "../features/chat/ChatPanel.js";
+ import type { ChatSessions } from "../features/chat/sessions.js";
+@@ -202,6 +203,9 @@
+                   </ul>
+                 )}
+               </section>
++              <ConfigurationProjectGraphPanel
++                graph={summary.coverage.configurationProjectGraph}
++              />
+               <section aria-label={zh.packageManifests}>
+                 <h3>
+                   {zh.packageManifests}
+diff --git a/apps/web/src/i18n/en.ts b/apps/web/src/i18n/en.ts
+--- a/apps/web/src/i18n/en.ts
++++ b/apps/web/src/i18n/en.ts
+@@ -204,6 +204,28 @@
+   included: "Indexed files",
+   packageManifests: "Package manifests",
+   packageUnrecorded: "Package manifests were not recorded for this snapshot",
++  configurationGraph: "Configuration project graph",
++  configurationGraphUnrecorded:
++    "Configuration project graph was not recorded for this snapshot",
++  configurationGraphPartial: "Partial captured graph",
++  configurationGraphComplete: "Captured graph complete",
++  configurationGraphRoots: "Project roots",
++  configurationGraphProjects: "Observed projects",
++  configurationGraphReferences: "Project references",
++  configurationGraphScopes: "Source scopes",
++  configurationGraphScopeSamples: "Source scope samples",
++  configurationGraphResolved: "Resolved",
++  configurationGraphUnconfigured: "Unconfigured",
++  configurationGraphAmbiguous: "Ambiguous",
++  configurationGraphInvalid: "Invalid",
++  configurationGraphUnavailable: "Unavailable",
++  configurationGraphCycle: "Cycle",
++  configurationGraphBudget: "Budget exceeded",
++  configurationGraphSample:
++    "A sample was returned; some recorded items are not listed.",
++  configurationGraphScopeSample:
++    "A sample was returned; omitted sources retain their recorded scope.",
++  configurationGraphTextTruncated: "Text truncated",
+   configurationInputs: "Configuration inputs",
+   configurationUnrecorded:
+     "Configuration inputs were not recorded for this snapshot",
+diff --git a/apps/web/src/i18n/zh.ts b/apps/web/src/i18n/zh.ts
+--- a/apps/web/src/i18n/zh.ts
++++ b/apps/web/src/i18n/zh.ts
+@@ -192,6 +192,25 @@
+   included: "已索引文件",
+   packageManifests: "包配置",
+   packageUnrecorded: "此快照未记录包配置",
++  configurationGraph: "配置项目图",
++  configurationGraphUnrecorded: "此快照未记录配置项目图",
++  configurationGraphPartial: "捕获图存在限制",
++  configurationGraphComplete: "捕获图已完整记录",
++  configurationGraphRoots: "项目根配置",
++  configurationGraphProjects: "已观察项目",
++  configurationGraphReferences: "项目引用",
++  configurationGraphScopes: "源码归属",
++  configurationGraphScopeSamples: "源码归属样本",
++  configurationGraphResolved: "已确定",
++  configurationGraphUnconfigured: "未配置",
++  configurationGraphAmbiguous: "归属不唯一",
++  configurationGraphInvalid: "无效",
++  configurationGraphUnavailable: "不可用",
++  configurationGraphCycle: "循环引用",
++  configurationGraphBudget: "超出预算",
++  configurationGraphSample: "当前返回样本，部分已记录项目未列出。",
++  configurationGraphScopeSample: "当前返回样本，未列出的源码仍保留已记录归属。",
++  configurationGraphTextTruncated: "文本已截断",
+   configurationInputs: "配置输入",
+   configurationUnrecorded: "此快照未记录配置输入",
+   excluded: "排除规则",

@@ -1,0 +1,124 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90m/home/agent/projects/AtlasMode[39m
+
+ [31m❯[39m apps/web/src/app/ConfigurationProjectGraphPanel.test.tsx [2m([22m[2m7 tests[22m[2m | [22m[31m7 failed[39m[2m)[22m[32m 29[2mms[22m[39m
+[31m     [31m×[31m states legacy metadata was not recorded rather than claiming zero[39m[32m 16[2mms[22m[39m
+[31m     [31m×[31m renders actual counts, partial status and bounded returned scope sample[39m[32m 2[2mms[22m[39m
+[31m     [31m×[31m preserves authored paths and original failed-edge reason in both languages[39m[32m 2[2mms[22m[39m
+[31m     [31m×[31m translates graph controls and statuses without translating authored paths[39m[32m 1[2mms[22m[39m
+[31m     [31m×[31m shows explicit preview and reason truncation[39m[32m 3[2mms[22m[39m
+[31m     [31m×[31m discloses every collection omission separately[39m[32m 1[2mms[22m[39m
+[31m     [31m×[31m keeps recorded complete status separate from individual scope uncertainty[39m[32m 2[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 7 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/app/ConfigurationProjectGraphPanel.test.tsx[2m > [22mIDX03 configuration project graph disclosure[2m > [22mstates legacy metadata was not recorded rather than claiming zero
+[31m[1mAssertionError[22m: expected '' to contain 'Configuration project graph was not r…'[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- Configuration project graph was not recorded[39m
+
+[36m [2m❯[22m apps/web/src/app/ConfigurationProjectGraphPanel.test.tsx:[2m18:36[22m[39m
+    [90m 16|[39m [34mdescribe[39m([32m"IDX03 configuration project graph disclosure"[39m[33m,[39m()[33m=>[39m{
+    [90m 17|[39m  it("states legacy metadata was not recorded rather than claiming zero…
+    [90m 18|[39m   const html=render();expect(html).toContain("Configuration project gr…
+    [90m   |[39m                                    [31m^[39m
+    [90m 19|[39m  })[33m;[39m
+    [90m 20|[39m  it("renders actual counts, partial status and bounded returned scope …
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/7]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/app/ConfigurationProjectGraphPanel.test.tsx[2m > [22mIDX03 configuration project graph disclosure[2m > [22mrenders actual counts, partial status and bounded returned scope sample
+[31m[1mAssertionError[22m: expected '' to contain 'Partial captured graph'[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- Partial captured graph[39m
+
+[36m [2m❯[22m apps/web/src/app/ConfigurationProjectGraphPanel.test.tsx:[2m21:41[22m[39m
+
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/7]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/app/ConfigurationProjectGraphPanel.test.tsx[2m > [22mIDX03 configuration project graph disclosure[2m > [22mpreserves authored paths and original failed-edge reason in both languages
+[31m[1mAssertionError[22m: expected '' to contain 'app/原名.ts'[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- app/原名.ts[39m
+
+[36m [2m❯[22m apps/web/src/app/ConfigurationProjectGraphPanel.test.tsx:[2m24:90[22m[39m
+
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/7]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/app/ConfigurationProjectGraphPanel.test.tsx[2m > [22mIDX03 configuration project graph disclosure[2m > [22mtranslates graph controls and statuses without translating authored paths
+[31m[1mAssertionError[22m: expected '' to contain 'Configuration project graph'[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- Configuration project graph[39m
+
+[36m [2m❯[22m apps/web/src/app/ConfigurationProjectGraphPanel.test.tsx:[2m27:25[22m[39m
+    [90m 25|[39m  })[33m;[39m
+    [90m 26|[39m  it("translates graph controls and statuses without translating author…
+    [90m 27|[39m   [34mexpect[39m([34mrender[39m(graph))[33m.[39m[34mtoContain[39m([32m"Configuration project graph"[39m)[33m;[39m
+    [90m   |[39m                         [31m^[39m
+    [90m 28|[39m   [34mexpect[39m([34mrender[39m(graph[33m,[39m[32m"zh"[39m))[33m.[39m[34mtoContain[39m([32m"配置项目图"[39m)[33m;[39m
+    [90m 29|[39m   [34mexpect[39m([34mrender[39m(graph[33m,[39m[32m"zh"[39m))[33m.[39m[34mtoContain[39m([32m"未配置"[39m)[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/7]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/app/ConfigurationProjectGraphPanel.test.tsx[2m > [22mIDX03 configuration project graph disclosure[2m > [22mshows explicit preview and reason truncation
+[31m[1mAssertionError[22m: Target cannot be null or undefined.[39m
+[36m [2m❯[22m apps/web/src/app/ConfigurationProjectGraphPanel.test.tsx:[2m34:50[22m[39m
+    [90m 32|[39m  [34mit[39m([32m"shows explicit preview and reason truncation"[39m[33m,[39m()[33m=>[39m{
+    [90m 33|[39m   const value=structuredClone(graph);value.references[0]!.referencePat…
+    [90m 34|[39m   [34mexpect[39m([34mrender[39m(value)[33m.[39m[34mmatch[39m([36m/Text truncated/g[39m))[33m.[39m[34mtoHaveLength[39m([34m2[39m)[33m;[39m
+    [90m   |[39m                                                  [31m^[39m
+    [90m 35|[39m  })[33m;[39m
+    [90m 36|[39m  [34mit[39m([32m"discloses every collection omission separately"[39m[33m,[39m()[33m=>[39m{
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/7]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/app/ConfigurationProjectGraphPanel.test.tsx[2m > [22mIDX03 configuration project graph disclosure[2m > [22mdiscloses every collection omission separately
+[31m[1mAssertionError[22m: Target cannot be null or undefined.[39m
+[36m [2m❯[22m apps/web/src/app/ConfigurationProjectGraphPanel.test.tsx:[2m38:57[22m[39m
+    [90m 36|[39m  [34mit[39m([32m"discloses every collection omission separately"[39m[33m,[39m()[33m=>[39m{
+    [90m 37|[39m   const value=structuredClone(graph);value.truncated={roots:true,proje…
+    [90m 38|[39m   expect(render(value).match(/A sample was returned/g)).toHaveLength(4…
+    [90m   |[39m                                                         [31m^[39m
+    [90m 39|[39m  })[33m;[39m
+    [90m 40|[39m  it("keeps recorded complete status separate from individual scope unc…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/7]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/app/ConfigurationProjectGraphPanel.test.tsx[2m > [22mIDX03 configuration project graph disclosure[2m > [22mkeeps recorded complete status separate from individual scope uncertainty
+[31m[1mAssertionError[22m: expected '' to contain 'Captured graph complete'[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- Captured graph complete[39m
+
+[36m [2m❯[22m apps/web/src/app/ConfigurationProjectGraphPanel.test.tsx:[2m42:41[22m[39m
+    [90m 40|[39m  it("keeps recorded complete status separate from individual scope unc…
+    [90m 41|[39m   const value=structuredClone(graph);value.status="complete";value.sco…
+    [90m 42|[39m   const html=render(value);expect(html).toContain("Captured graph comp…
+    [90m   |[39m                                         [31m^[39m
+    [90m 43|[39m  })[33m;[39m
+    [90m 44|[39m })[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/7]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m7 failed[39m[22m[90m (7)[39m
+[2m   Start at [22m 16:07:17
+[2m   Duration [22m 537ms[2m (transform 134ms, setup 0ms, import 223ms, tests 29ms, environment 0ms)[22m
+

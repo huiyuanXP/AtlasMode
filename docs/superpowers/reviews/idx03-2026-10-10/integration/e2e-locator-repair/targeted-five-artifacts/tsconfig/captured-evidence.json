@@ -1,0 +1,106 @@
+{
+  "legacy": false,
+  "snapshotId": "snapshot:e2c4663a13d1981f0fd9746da494fe03",
+  "coverage": {
+    "files": [
+      "entry.ts",
+      "main.ts",
+      "never-execute.ts",
+      "requests.ts",
+      "targetA.ts",
+      "targetB.ts"
+    ],
+    "configurationFiles": [
+      "config/shared.json",
+      "tsconfig.json"
+    ],
+    "configurationProjectGraph": {
+      "version": 1,
+      "status": "complete",
+      "counts": {
+        "observedRoots": 1,
+        "observedProjects": 1,
+        "observedReferences": 0,
+        "sourceScopes": 6,
+        "resolved": 6,
+        "unconfigured": 0,
+        "ambiguous": 0,
+        "invalid": 0
+      },
+      "roots": [
+        "tsconfig.json"
+      ],
+      "projects": [
+        {
+          "configPath": "tsconfig.json",
+          "status": "resolved"
+        }
+      ],
+      "references": [],
+      "scopes": [
+        {
+          "sourcePath": "entry.ts",
+          "configPath": "tsconfig.json",
+          "status": "resolved"
+        },
+        {
+          "sourcePath": "main.ts",
+          "configPath": "tsconfig.json",
+          "status": "resolved"
+        },
+        {
+          "sourcePath": "never-execute.ts",
+          "configPath": "tsconfig.json",
+          "status": "resolved"
+        },
+        {
+          "sourcePath": "requests.ts",
+          "configPath": "tsconfig.json",
+          "status": "resolved"
+        },
+        {
+          "sourcePath": "targetA.ts",
+          "configPath": "tsconfig.json",
+          "status": "resolved"
+        },
+        {
+          "sourcePath": "targetB.ts",
+          "configPath": "tsconfig.json",
+          "status": "resolved"
+        }
+      ],
+      "truncated": {
+        "roots": false,
+        "projects": false,
+        "references": false,
+        "scopes": false
+      }
+    },
+    "packageFiles": [],
+    "excludedPatterns": [
+      "**/.git/**",
+      "**/node_modules/**",
+      "**/dist/**",
+      "**/build/**",
+      "**/coverage/**",
+      "**/__pycache__/**",
+      "**/.venv/**",
+      "**/venv/**",
+      "**/.agents/**",
+      "**/.superpowers/**",
+      "**/.next/**",
+      "**/.cache/**",
+      "**/vendor/**"
+    ],
+    "unresolvedCount": 2,
+    "availability": {
+      "complete": true,
+      "unavailablePaths": [],
+      "excludedPaths": []
+    }
+  },
+  "errors": [],
+  "external": [],
+  "protocolErrors": [],
+  "targetNotExecuted": true
+}

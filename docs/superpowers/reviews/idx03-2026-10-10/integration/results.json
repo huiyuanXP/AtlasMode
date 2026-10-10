@@ -1,0 +1,70 @@
+[
+  {
+    "gate": "npm-ci",
+    "command": [
+      "npm",
+      "ci"
+    ],
+    "exit": 0,
+    "durationSeconds": 8.392
+  },
+  {
+    "gate": "build",
+    "command": [
+      "npm",
+      "run",
+      "build"
+    ],
+    "exit": 0,
+    "durationSeconds": 14.264
+  },
+  {
+    "gate": "typecheck",
+    "command": [
+      "npm",
+      "run",
+      "typecheck"
+    ],
+    "exit": 0,
+    "durationSeconds": 23.931
+  },
+  {
+    "gate": "lint",
+    "command": [
+      "npm",
+      "run",
+      "lint"
+    ],
+    "exit": 0,
+    "durationSeconds": 3.609
+  },
+  {
+    "gate": "test",
+    "command": [
+      "npm",
+      "test"
+    ],
+    "exit": 0,
+    "durationSeconds": 64.083
+  },
+  {
+    "gate": "smoke",
+    "command": [
+      "npm",
+      "run",
+      "smoke"
+    ],
+    "exit": 0,
+    "durationSeconds": 3.119
+  },
+  {
+    "gate": "e2e",
+    "command": [
+      "npm",
+      "run",
+      "test:e2e"
+    ],
+    "exit": 1,
+    "durationSeconds": 104.895
+  }
+]

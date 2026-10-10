@@ -1,0 +1,4128 @@
+diff --git a/apps/web/src/app/Navigation.tsx b/apps/web/src/app/Navigation.tsx
+index 86c2578..3519d2f 100644
+--- a/apps/web/src/app/Navigation.tsx
++++ b/apps/web/src/app/Navigation.tsx
+@@ -1,3 +1,4 @@
++import { ConfigurationProjectGraphPanel } from "./ConfigurationProjectGraphPanel.js";
+ import { useState } from "react";
+ import { ChatPanel } from "../features/chat/ChatPanel.js";
+ import type { ChatSessions } from "../features/chat/sessions.js";
+@@ -202,6 +203,9 @@ export function Navigation({
+                   </ul>
+                 )}
+               </section>
++              <ConfigurationProjectGraphPanel
++                graph={summary.coverage.configurationProjectGraph}
++              />
+               <section aria-label={zh.packageManifests}>
+                 <h3>
+                   {zh.packageManifests}
+diff --git a/apps/web/src/i18n/en.ts b/apps/web/src/i18n/en.ts
+index 245a266..12192aa 100644
+--- a/apps/web/src/i18n/en.ts
++++ b/apps/web/src/i18n/en.ts
+@@ -204,6 +204,28 @@ export const en: Record<keyof typeof zh, string> = {
+   included: "Indexed files",
+   packageManifests: "Package manifests",
+   packageUnrecorded: "Package manifests were not recorded for this snapshot",
++  configurationGraph: "Configuration project graph",
++  configurationGraphUnrecorded:
++    "Configuration project graph was not recorded for this snapshot",
++  configurationGraphPartial: "Partial captured graph",
++  configurationGraphComplete: "Captured graph complete",
++  configurationGraphRoots: "Project roots",
++  configurationGraphProjects: "Observed projects",
++  configurationGraphReferences: "Project references",
++  configurationGraphScopes: "Source scopes",
++  configurationGraphScopeSamples: "Source scope samples",
++  configurationGraphResolved: "Resolved",
++  configurationGraphUnconfigured: "Unconfigured",
++  configurationGraphAmbiguous: "Ambiguous",
++  configurationGraphInvalid: "Invalid",
++  configurationGraphUnavailable: "Unavailable",
++  configurationGraphCycle: "Cycle",
++  configurationGraphBudget: "Budget exceeded",
++  configurationGraphSample:
++    "A sample was returned; some recorded items are not listed.",
++  configurationGraphScopeSample:
++    "A sample was returned; omitted sources retain their recorded scope.",
++  configurationGraphTextTruncated: "Text truncated",
+   configurationInputs: "Configuration inputs",
+   configurationUnrecorded:
+     "Configuration inputs were not recorded for this snapshot",
+diff --git a/apps/web/src/i18n/zh.ts b/apps/web/src/i18n/zh.ts
+index 09a1540..be91ef8 100644
+--- a/apps/web/src/i18n/zh.ts
++++ b/apps/web/src/i18n/zh.ts
+@@ -192,6 +192,25 @@ export const zh = {
+   included: "已索引文件",
+   packageManifests: "包配置",
+   packageUnrecorded: "此快照未记录包配置",
++  configurationGraph: "配置项目图",
++  configurationGraphUnrecorded: "此快照未记录配置项目图",
++  configurationGraphPartial: "捕获图存在限制",
++  configurationGraphComplete: "捕获图已完整记录",
++  configurationGraphRoots: "项目根配置",
++  configurationGraphProjects: "已观察项目",
++  configurationGraphReferences: "项目引用",
++  configurationGraphScopes: "源码归属",
++  configurationGraphScopeSamples: "源码归属样本",
++  configurationGraphResolved: "已确定",
++  configurationGraphUnconfigured: "未配置",
++  configurationGraphAmbiguous: "归属不唯一",
++  configurationGraphInvalid: "无效",
++  configurationGraphUnavailable: "不可用",
++  configurationGraphCycle: "循环引用",
++  configurationGraphBudget: "超出预算",
++  configurationGraphSample: "当前返回样本，部分已记录项目未列出。",
++  configurationGraphScopeSample: "当前返回样本，未列出的源码仍保留已记录归属。",
++  configurationGraphTextTruncated: "文本已截断",
+   configurationInputs: "配置输入",
+   configurationUnrecorded: "此快照未记录配置输入",
+   excluded: "排除规则",
+diff --git a/packages/core/src/model.ts b/packages/core/src/model.ts
+index 562fe9f..b9147c0 100644
+--- a/packages/core/src/model.ts
++++ b/packages/core/src/model.ts
+@@ -22,6 +22,45 @@ export type Relation = {
+   evidence: { filePath: string; line: number; text?: string };
+   reason?: string;
+ };
++export type ConfigurationScopeStatus =
++  "resolved" | "unconfigured" | "ambiguous" | "invalid";
++export type ConfigurationProjectGraph = {
++  version: 1;
++  status: "complete" | "partial";
++  counts: {
++    observedRoots: number;
++    observedProjects: number;
++    observedReferences: number;
++    sourceScopes: number;
++    resolved: number;
++    unconfigured: number;
++    ambiguous: number;
++    invalid: number;
++  };
++  roots: string[];
++  projects: { configPath: string; status: "resolved" | "invalid" }[];
++  references: {
++    sourceConfigPath: string;
++    referencePathPreview: string;
++    targetConfigPath?: string;
++    status: "resolved" | "invalid" | "unavailable" | "cycle" | "budget";
++    reason?: string;
++    referencePathTruncated: boolean;
++    reasonTruncated: boolean;
++  }[];
++  scopes: {
++    sourcePath: string;
++    configPath?: string;
++    status: ConfigurationScopeStatus;
++  }[];
++  truncated: {
++    roots: boolean;
++    projects: boolean;
++    references: boolean;
++    scopes: boolean;
++  };
++};
++
+ export type CodeSnapshot = {
+   id: string;
+   projectId: string;
+@@ -34,6 +73,7 @@ export type CodeSnapshot = {
+   coverage: {
+     files: string[];
+     configurationFiles?: string[];
++    configurationProjectGraph?: ConfigurationProjectGraph;
+     packageFiles?: string[];
+     excludedPatterns: string[];
+     unresolvedCount: number;
+@@ -159,6 +199,7 @@ export type RecordKind =
+   | "routes"
+   | "views"
+   | "groups"
++  | "annotations"
+   | "policies"
+   | "settings";
+ export interface IndexerPort {
+diff --git a/packages/core/src/validation.ts b/packages/core/src/validation.ts
+index d699465..3bb6a58 100644
+--- a/packages/core/src/validation.ts
++++ b/packages/core/src/validation.ts
+@@ -129,6 +129,115 @@ export const operationSchema = z.discriminatedUnion("kind", [
+     text: z.string(),
+   }),
+ ]) satisfies z.ZodType<Operation>;
++const configurationGraphPath = path.refine(
++  (value) => value.length <= 2048,
++  "Configuration graph path exceeds 2048 characters",
++);
++const configurationGraphCount = z
++  .number()
++  .int()
++  .nonnegative()
++  .max(Number.MAX_SAFE_INTEGER);
++const configurationProjectGraphSchema = z
++  .strictObject({
++    version: z.literal(1),
++    status: z.enum(["complete", "partial"]),
++    counts: z.strictObject({
++      observedRoots: configurationGraphCount,
++      observedProjects: configurationGraphCount,
++      observedReferences: configurationGraphCount,
++      sourceScopes: configurationGraphCount,
++      resolved: configurationGraphCount,
++      unconfigured: configurationGraphCount,
++      ambiguous: configurationGraphCount,
++      invalid: configurationGraphCount,
++    }),
++    roots: z.array(configurationGraphPath).max(50),
++    projects: z
++      .array(
++        z.strictObject({
++          configPath: configurationGraphPath,
++          status: z.enum(["resolved", "invalid"]),
++        }),
++      )
++      .max(50),
++    references: z
++      .array(
++        z
++          .strictObject({
++            sourceConfigPath: configurationGraphPath,
++            referencePathPreview: z.string().max(256),
++            targetConfigPath: configurationGraphPath.optional(),
++            status: z.enum([
++              "resolved",
++              "invalid",
++              "unavailable",
++              "cycle",
++              "budget",
++            ]),
++            reason: z.string().max(512).optional(),
++            referencePathTruncated: z.boolean(),
++            reasonTruncated: z.boolean(),
++          })
++          .refine(
++            (edge) => edge.reason !== undefined || !edge.reasonTruncated,
++            "Missing reason cannot be truncated",
++          ),
++      )
++      .max(100),
++    scopes: z
++      .array(
++        z.strictObject({
++          sourcePath: configurationGraphPath,
++          configPath: configurationGraphPath.optional(),
++          status: z.enum(["resolved", "unconfigured", "ambiguous", "invalid"]),
++        }),
++      )
++      .max(50),
++    truncated: z.strictObject({
++      roots: z.boolean(),
++      projects: z.boolean(),
++      references: z.boolean(),
++      scopes: z.boolean(),
++    }),
++  })
++  .superRefine((graph, ctx) => {
++    const reject = (message: string) =>
++      ctx.addIssue({ code: "custom", message });
++    const { counts } = graph;
++    if (
++      counts.resolved +
++        counts.unconfigured +
++        counts.ambiguous +
++        counts.invalid !==
++      counts.sourceScopes
++    )
++      reject("Scope category totals must equal sourceScopes");
++    for (const [collection, observed] of [
++      ["roots", counts.observedRoots],
++      ["projects", counts.observedProjects],
++      ["references", counts.observedReferences],
++      ["scopes", counts.sourceScopes],
++    ] as const) {
++      const returned = graph[collection].length;
++      if (returned > observed)
++        reject(`Returned ${collection} exceed observed count`);
++      if (graph.truncated[collection] !== observed > returned)
++        reject(`Contradictory ${collection} truncation flag`);
++    }
++    for (const category of [
++      "resolved",
++      "unconfigured",
++      "ambiguous",
++      "invalid",
++    ] as const)
++      if (
++        graph.scopes.filter((scope) => scope.status === category).length >
++        counts[category]
++      )
++        reject(`Returned ${category} scopes exceed total category count`);
++  });
++
+ export const snapshotSchema = z.strictObject({
+   id,
+   projectId: id,
+@@ -147,6 +256,7 @@ export const snapshotSchema = z.strictObject({
+   coverage: z.strictObject({
+     files: z.array(path),
+     configurationFiles: z.array(path).optional(),
++    configurationProjectGraph: configurationProjectGraphSchema.optional(),
+     packageFiles: z.array(path).optional(),
+     excludedPatterns: z.array(z.string()),
+     unresolvedCount: z.number().int().nonnegative(),
+diff --git a/packages/indexer/src/commonjs.ts b/packages/indexer/src/commonjs.ts
+index 500fbf3..8592a22 100644
+--- a/packages/indexer/src/commonjs.ts
++++ b/packages/indexer/src/commonjs.ts
+@@ -4,6 +4,8 @@ export type CommonJsMode = "commonjs" | "esm" | "unknown";
+ export type ModuleModeProvider = (sourcePath: string) => CommonJsMode;
+ export type CommonJsCallClassification = {
+   targetId?: string;
++  modulePath?: string;
++  exportName?: string;
+   externalName?: string;
+   reason?: string;
+ };
+@@ -600,7 +602,8 @@ export function createCommonJsAnalyzer(
+       return {
+         ...binding,
+         property: binding.property ?? "",
+-        nestedProperty: binding.nestedProperty || binding.property !== undefined,
++        nestedProperty:
++          binding.nestedProperty || binding.property !== undefined,
+         dynamicProperty:
+           binding.dynamicProperty ||
+           (binding.property === undefined && key === undefined),
+@@ -846,10 +849,22 @@ export function createCommonJsAnalyzer(
+     }
+   }
+   const exportedDeclarationIds = new Set<string>();
++  const exportedBindings: {
++    modulePath: string;
++    exportName?: string;
++    declarationId: string;
++  }[] = [];
+   for (const mod of modules.values())
+     if (!mod.invalid)
+       for (const [key, id] of mod.exports)
+-        if (id && !mod.rejected.has(key)) exportedDeclarationIds.add(id);
++        if (id && !mod.rejected.has(key)) {
++          exportedDeclarationIds.add(id);
++          exportedBindings.push({
++            modulePath: pathOf((canonicalModule.get(mod) ?? mod).source),
++            ...(typeof key === "string" ? { exportName: key } : {}),
++            declarationId: id,
++          });
++        }
+   function classify(binding: Binding): CommonJsCallClassification {
+     if (binding.reason) return { reason: binding.reason };
+     if (binding.cyclicInitialization)
+@@ -872,7 +887,11 @@ export function createCommonJsAnalyzer(
+       };
+     const id = (canonicalModule.get(mod) ?? mod).exports.get(key);
+     return id && !mod.rejected.has(key)
+-      ? { targetId: id }
++      ? {
++          targetId: id,
++          modulePath: pathOf((canonicalModule.get(mod) ?? mod).source),
++          ...(typeof key === "string" ? { exportName: key } : {}),
++        }
+       : {
+           reason: `CommonJS export ${String(key)} has no unique stable captured implementation`,
+         };
+@@ -915,5 +934,27 @@ export function createCommonJsAnalyzer(
+       };
+     return undefined;
+   }
+-  return { exportedDeclarationIds, classifyCall, moduleImports };
++  const moduleRejections = new Map<
++    string,
++    {
++      invalid: boolean;
++      rejectedExports: readonly string[];
++      defaultRejected: boolean;
++    }
++  >();
++  for (const mod of modules.values())
++    moduleRejections.set(pathOf(mod.source), {
++      invalid: mod.invalid,
++      rejectedExports: [...mod.rejected].filter(
++        (key): key is string => typeof key === "string",
++      ),
++      defaultRejected: mod.rejected.has(defaultExport),
++    });
++  return {
++    exportedDeclarationIds,
++    exportedBindings,
++    moduleRejections,
++    classifyCall,
++    moduleImports,
++  };
+ }
+diff --git a/packages/indexer/src/configCapture.ts b/packages/indexer/src/configCapture.ts
+index 68f7007..07d6fc9 100644
+--- a/packages/indexer/src/configCapture.ts
++++ b/packages/indexer/src/configCapture.ts
+@@ -4,6 +4,8 @@ import { normalizeRepoPath, type CodeSnapshot } from "@codemap/core";
+ import type { SourceFile } from "./scan.js";
+ import { createMetadataReader, type MetadataReader } from "./metadataRead.js";
+ 
++import { configurationReferences } from "./projectReferences.js";
++
+ const depthLimit = 16;
+ 
+ /** Metadata capture from paths the scanner has already made eligible.
+@@ -16,6 +18,8 @@ export async function captureConfigurations(
+ ): Promise<{ files: SourceFile[]; diagnostics: CodeSnapshot["diagnostics"] }> {
+   const allowed = new Set(allowedPaths.map((p) => normalizeRepoPath(p)));
+   const inheritance = new Map<string, string[]>();
++  const references = new Map<string, string[]>();
++  let observedReferences = 0;
+   const expanded = new Set<string>();
+   const diagnostics: CodeSnapshot["diagnostics"] = [];
+   const reported = new Set<string>();
+@@ -104,12 +108,78 @@ export async function captureConfigurations(
+     return sorted;
+   }
+ 
++  function targets(file: SourceFile): string[] {
++    if (references.has(file.path)) return references.get(file.path)!;
++    const targets: string[] = [];
++    references.set(file.path, targets);
++    const parsed = ts.parseConfigFileTextToJson(
++      file.path,
++      file.bytes.toString("utf8"),
++    );
++    if (
++      parsed.error ||
++      !parsed.config ||
++      typeof parsed.config !== "object" ||
++      Array.isArray(parsed.config)
++    )
++      return targets;
++    const result = configurationReferences(
++      file.path,
++      parsed.config.references,
++      Math.max(0, 2048 - observedReferences),
++    );
++    observedReferences += result.entries.length;
++    if (result.reason)
++      diagnose(
++        file.path,
++        `Configuration references rejected: ${result.reason}`,
++      );
++    if (result.truncated)
++      diagnose(
++        file.path,
++        "Configuration references exceed the 2048 entry budget",
++      );
++    for (const entry of result.entries) {
++      if (entry.reason)
++        diagnose(
++          file.path,
++          `Configuration references rejected: ${entry.reason}`,
++        );
++      else if (!allowed.has(entry.target!))
++        diagnose(
++          file.path,
++          `Configuration reference input ${entry.target} is missing or unavailable in the allowed scan (excluded, ignored or symlinked)`,
++        );
++      else targets.push(entry.target!);
++    }
++    const sorted = [...new Set(targets)].sort();
++    references.set(file.path, sorted);
++    return sorted;
++  }
++
+   async function visit(
+     path: string,
+     depth: number,
+     stack: ReadonlySet<string>,
+     owner: string,
++    followReferences = true,
++    referenceDepth = 1,
++    referenceStack: ReadonlySet<string> = new Set(),
+   ) {
++    if (followReferences && referenceStack.has(path)) {
++      diagnose(
++        owner,
++        "Configuration references cycle; no configuration options may be applied",
++      );
++      return;
++    }
++    if (followReferences && referenceDepth > depthLimit) {
++      diagnose(
++        owner,
++        "Configuration references depth exceeds 16 levels; no configuration options may be applied",
++      );
++      return;
++    }
+     if (stack.has(path)) {
+       diagnose(
+         owner,
+@@ -126,14 +196,35 @@ export async function captureConfigurations(
+     }
+     const file = await read(path);
+     if (!file) return;
+-    const key = JSON.stringify([path, depth]);
++    const key = JSON.stringify([path, depth, followReferences, referenceDepth]);
+     // Bound repeated shared DAG traversal to 512 paths × 16 depths. Cycle and
+     // depth checks precede memoization; bytes are never re-read.
+     if (expanded.has(key)) return;
+     expanded.add(key);
+     const next = new Set(stack).add(path);
+     for (const parent of parents(file))
+-      await visit(parent, depth + 1, next, path);
++      await visit(
++        parent,
++        depth + 1,
++        next,
++        path,
++        false,
++        referenceDepth,
++        referenceStack,
++      );
++    if (followReferences) {
++      const referenced = new Set(referenceStack).add(path);
++      for (const target of targets(file))
++        await visit(
++          target,
++          1,
++          new Set(),
++          path,
++          true,
++          referenceDepth + 1,
++          referenced,
++        );
++    }
+   }
+   for (const path of [...allowed]
+     .filter((p) => /^tsconfig.*\.json$/.test(basename(p)))
+diff --git a/packages/indexer/src/configResolution.ts b/packages/indexer/src/configResolution.ts
+index 673dc0b..f7c17ae 100644
+--- a/packages/indexer/src/configResolution.ts
++++ b/packages/indexer/src/configResolution.ts
+@@ -10,6 +10,12 @@ import { normalizeRepoPath, type CodeSnapshot } from "@codemap/core";
+ import type { SourceFile } from "./scan.js";
+ import type { WorkspaceResolver } from "./workspaceResolution.js";
+ 
++import { createCapturedReferenceGraph } from "./projectReferenceGraph.js";
++import type {
++  ConfigurationProjectGraph,
++  SourceConfigurationScope,
++} from "./projectReferenceTypes.js";
++
+ const virtualRoot = "/__codemap_captured__";
+ const virtualPath = (path: string) => virtualRoot + "/" + path;
+ 
+@@ -29,6 +35,15 @@ export function createConfigurationResolver(
+   resolutionHost: ResolutionHostFactory;
+   diagnostics: CodeSnapshot["diagnostics"];
+   configuredAlias(sourcePath: string, specifier: string): boolean;
++  scopeFor(sourcePath: string): SourceConfigurationScope;
++  projectGraph: ConfigurationProjectGraph;
++  isolationEnabled: boolean;
++  ownedGroup(sourcePath: string): string;
++  canResolve(
++    sourcePath: string,
++    targetPath: string,
++    bindingProof: boolean,
++  ): boolean;
+ } {
+   const diagnostics: CodeSnapshot["diagnostics"] = [];
+   const reported = new Set<string>();
+@@ -93,11 +108,6 @@ export function createConfigurationResolver(
+       Array.isArray(parsed.config)
+     )
+       return reject("invalid JSONC");
+-    if (parsed.config.references !== undefined)
+-      diagnose(
+-        path,
+-        "Configuration project references are not expanded; only nearest tsconfig.json membership applies",
+-      );
+     const value: unknown = parsed.config.extends;
+     if (value === undefined) {
+       validated.add(key);
+@@ -158,21 +168,92 @@ export function createConfigurationResolver(
+     scopes.set(path, scope);
+     return scope;
+   }
++  const referenceGraph = createCapturedReferenceGraph(
++    inputs,
++    [...candidates],
++    (path, referenced) => {
++      const scope = parse(path);
++      if (!scope) return false;
++      if (
++        referenced &&
++        scope.members.size &&
++        scope.options.composite !== true
++      ) {
++        diagnose(
++          path,
++          "Referenced implementation configuration requires composite: true",
++        );
++        return false;
++      }
++      return true;
++    },
++  );
++  diagnostics.push(...referenceGraph.diagnostics);
+   const bySource = new Map<string, Scope | undefined>();
++  const sourceScopes = new Map<string, SourceConfigurationScope>();
+   for (const file of sources) {
+     let directory = posix.dirname(file.path);
++    let anchor: string | undefined;
+     while (true) {
+       const candidate = posix.join(directory, "tsconfig.json");
+       if (candidates.has(candidate)) {
+-        const scope = parse(candidate);
+-        if (scope?.members.has(virtualPath(file.path)))
+-          bySource.set("/" + file.path, scope);
++        anchor = candidate;
+         break;
+       }
+       if (directory === ".") break;
+       directory = posix.dirname(directory);
+     }
++    let assignment: SourceConfigurationScope = {
++      sourcePath: file.path,
++      status: "unconfigured",
++    };
++    if (anchor) {
++      const discovered = referenceGraph.reachable(anchor);
++      const members = discovered.filter((path) =>
++        parse(path)?.members.has(virtualPath(file.path)),
++      );
++      const valid = members.filter((path) => referenceGraph.valid(path));
++      if (valid.length === 1) {
++        assignment = {
++          sourcePath: file.path,
++          configPath: valid[0],
++          status: "resolved",
++        };
++        bySource.set("/" + file.path, parse(valid[0]!));
++      } else if (valid.length > 1) assignment.status = "ambiguous";
++      else if (members.length || !parse(anchor)) assignment.status = "invalid";
++    }
++    sourceScopes.set(file.path, assignment);
+   }
++  const scopeFor = (path: string): SourceConfigurationScope =>
++    sourceScopes.get(path.replace(/^\//, "")) ?? {
++      sourcePath: path.replace(/^\//, ""),
++      status: "unconfigured",
++    };
++  const isolationEnabled = referenceGraph.hasReferences();
++  const canResolve = (
++    source: string,
++    target: string,
++    bindingProof: boolean,
++  ) => {
++    if (!isolationEnabled) return true;
++    const from = scopeFor(source),
++      to = scopeFor(target);
++    if (
++      [from.status, to.status].some(
++        (status) => status === "invalid" || status === "ambiguous",
++      )
++    )
++      return false;
++    if (from.sourcePath === to.sourcePath) return true;
++    if (
++      from.status === "resolved" &&
++      to.status === "resolved" &&
++      from.configPath === to.configPath
++    )
++      return true;
++    return bindingProof;
++  };
+   function configurationAlias(sourcePath: string, specifier: string): boolean {
+     const scope = bySource.get(
+       sourcePath.startsWith("/") ? sourcePath : "/" + sourcePath,
+@@ -290,6 +371,18 @@ export function createConfigurationResolver(
+   return {
+     resolutionHost,
+     diagnostics,
++    scopeFor,
++    projectGraph: referenceGraph.view([...sourceScopes.values()]),
++    isolationEnabled,
++    ownedGroup: (path) => {
++      const scope = scopeFor(path);
++      return isolationEnabled
++        ? scope.status === "resolved"
++          ? scope.configPath!
++          : "source:" + scope.sourcePath
++        : "";
++    },
++    canResolve,
+     configuredAlias: (path, specifier) =>
+       configurationAlias(path, specifier) || !!workspace?.recognizes(specifier),
+   };
+diff --git a/packages/indexer/src/index.ts b/packages/indexer/src/index.ts
+index 43bfc98..590514e 100644
+--- a/packages/indexer/src/index.ts
++++ b/packages/indexer/src/index.ts
+@@ -25,7 +25,7 @@ export class SourceIndexer implements IndexerPort {
+       graph = new Graph(projectId);
+     graph.diagnostics.push(...capture.diagnostics);
+     for (const f of capture.files) graph.file(f.path);
+-    indexTypeScript(
++    const configurationProjectGraph = indexTypeScript(
+       capture.files.filter((f) => !f.path.endsWith(".py")),
+       graph,
+       capture.configurations,
+@@ -55,6 +55,7 @@ export class SourceIndexer implements IndexerPort {
+       coverage: {
+         files: capture.files.map((f) => f.path),
+         configurationFiles: capture.configurations.map((f) => f.path),
++        configurationProjectGraph,
+         packageFiles: capture.manifests.map((f) => f.path),
+         excludedPatterns: capture.excludedPatterns,
+         availability: capture.availability,
+diff --git a/packages/indexer/src/typescript.ts b/packages/indexer/src/typescript.ts
+index 78776d4..645bdf7 100644
+--- a/packages/indexer/src/typescript.ts
++++ b/packages/indexer/src/typescript.ts
+@@ -1,4 +1,4 @@
+-import { Project, ts } from "ts-morph";
++import { InMemoryFileSystemHost, Project, ts } from "ts-morph";
+ import type { CodeSnapshot } from "@codemap/core";
+ import { createCommonJsAnalyzer, type ModuleModeProvider } from "./commonjs.js";
+ import { createConfigurationResolver } from "./configResolution.js";
+@@ -22,7 +22,6 @@ export function indexTypeScript(
+   modeForPath?: ModuleModeProvider,
+   manifests: readonly SourceFile[] = [],
+ ) {
+-  if (!files.length) return;
+   const workspace = createWorkspaceResolver(
+     files,
+     manifests,
+@@ -34,6 +33,7 @@ export function indexTypeScript(
+     captureDiagnostics,
+     workspace,
+   );
++  if (!files.length) return configuration.projectGraph;
+   const project = new Project({
+     resolutionHost: configuration.resolutionHost,
+     useInMemoryFileSystem: true,
+@@ -50,10 +50,9 @@ export function indexTypeScript(
+   });
+   for (const file of files)
+     project.createSourceFile("/" + file.path, decode(file.bytes));
+-  const program = project.getProgram().compilerObject,
+-    checker = program.getTypeChecker();
++  const extractionProgram = project.getProgram().compilerObject;
+   const filePaths = new Set(files.map((f) => "/" + f.path));
+-  const sources = program
++  const sources = extractionProgram
+     .getSourceFiles()
+     .filter((s) => filePaths.has(s.fileName));
+   const declarations = new Map<ts.Node, string>();
+@@ -175,7 +174,7 @@ export function indexTypeScript(
+       } else ts.forEachChild(node, (c) => collect(c, ownerId, ownerName));
+     }
+     collect(source, file.id, "");
+-    for (const d of program.getSyntacticDiagnostics(source))
++    for (const d of extractionProgram.getSyntacticDiagnostics(source))
+       graph.diagnostics.push({
+         filePath: path,
+         ...(d.start === undefined
+@@ -184,311 +183,468 @@ export function indexTypeScript(
+         message: ts.flattenDiagnosticMessageText(d.messageText, "\n"),
+       });
+   }
+-  const commonjs = createCommonJsAnalyzer(
+-    checker,
+-    sources,
+-    declarations,
+-    modeForPath,
+-    configuration.configuredAlias,
++  const nodeKey = (node: ts.Node) =>
++    JSON.stringify([
++      node.getSourceFile().fileName,
++      node.pos,
++      node.end,
++      node.kind,
++    ]);
++  const declarationIds = new Map(
++    [...declarations].map(([node, id]) => [nodeKey(node), id]),
+   );
+-  for (const id of commonjs.exportedDeclarationIds) {
+-    const node = graph.nodes.get(id);
+-    if (node) node.exported = true;
++  const groups = new Map<string, SourceFile[]>();
++  for (const file of files) {
++    const key = configuration.ownedGroup(file.path);
++    const group = groups.get(key) ?? [];
++    group.push(file);
++    groups.set(key, group);
+   }
+-  for (const imported of commonjs.moduleImports) {
+-    const target = imported.targetPath
+-      ? graph.file(imported.targetPath).id
+-      : imported.external
+-        ? graph.external(imported.specifier).id
+-        : null;
+-    graph.edge(
+-      "imports",
+-      graph.file(imported.sourcePath).id,
+-      target,
+-      imported.targetPath
+-        ? "resolved"
+-        : imported.external
+-          ? "external"
+-          : "unresolved",
+-      imported.sourcePath,
+-      imported.line,
+-      imported.text,
+-      imported.reason,
++  const analyses: {
++    checker: ts.TypeChecker;
++    sources: ts.SourceFile[];
++    ownedPaths: Set<string>;
++    ownedSources: ts.SourceFile[];
++    declarations: Map<ts.Node, string>;
++    commonjs: ReturnType<typeof createCommonJsAnalyzer>;
++  }[] = [];
++  for (const ownedFiles of groups.values()) {
++    let program = extractionProgram;
++    if (configuration.isolationEnabled) {
++      const capturedFs = new InMemoryFileSystemHost();
++      for (const file of files)
++        capturedFs.writeFileSync("/" + file.path, decode(file.bytes));
++      const isolated = new Project({
++        fileSystem: capturedFs,
++        resolutionHost: configuration.resolutionHost,
++        skipAddingFilesFromTsConfig: true,
++        compilerOptions: {
++          allowJs: true,
++          checkJs: true,
++          jsx: ts.JsxEmit.Preserve,
++          target: ts.ScriptTarget.ESNext,
++          module: ts.ModuleKind.NodeNext,
++          moduleResolution: ts.ModuleResolutionKind.NodeNext,
++          noLib: true,
++        },
++      });
++      // Only owned files become roots. Captured literal module dependencies
++      // can be loaded by the read-only compiler host; reference globals cannot.
++      for (const file of ownedFiles)
++        isolated.addSourceFileAtPath("/" + file.path);
++      isolated.resolveSourceFileDependencies();
++      program = isolated.getProgram().compilerObject;
++    }
++    const checker = program.getTypeChecker();
++    const sources = program
++      .getSourceFiles()
++      .filter((source) => filePaths.has(source.fileName));
++    const ownedPaths = new Set(ownedFiles.map((file) => "/" + file.path));
++    const ownedSources = sources.filter((source) =>
++      ownedPaths.has(source.fileName),
+     );
++    const declarations = new Map<ts.Node, string>();
++    for (const source of sources) {
++      const map = (node: ts.Node) => {
++        const id = declarationIds.get(nodeKey(node));
++        if (id) declarations.set(node, id);
++        ts.forEachChild(node, map);
++      };
++      map(source);
++    }
++    const commonjs = createCommonJsAnalyzer(
++      checker,
++      sources,
++      declarations,
++      modeForPath,
++      configuration.configuredAlias,
++    );
++    analyses.push({
++      checker,
++      sources,
++      ownedPaths,
++      ownedSources,
++      declarations,
++      commonjs,
++    });
+   }
+-  // Module imports and re-exports must use the checker-selected source file.
+-  for (const source of sources) {
+-    const path = pathOf(source);
+-    for (const statement of source.statements) {
+-      if (
+-        !(
+-          ts.isImportDeclaration(statement) || ts.isExportDeclaration(statement)
+-        ) ||
+-        !statement.moduleSpecifier ||
+-        !ts.isStringLiteral(statement.moduleSpecifier)
+-      )
+-        continue;
+-      const spec = statement.moduleSpecifier.text,
+-        symbol = checker.getSymbolAtLocation(statement.moduleSpecifier);
+-      const targetSource = symbol?.declarations?.find(ts.isSourceFile);
+-      const local =
+-        targetSource && sources.includes(targetSource)
+-          ? graph.file(pathOf(targetSource)).id
++  // Every captured scope contributes only physical namespace veto facts.
++  // Other scopes' global symbols are never roots in a consumer's checker.
++  const vetoes = new Map<
++    string,
++    { invalid: boolean; rejectedExports: Set<string>; defaultRejected: boolean }
++  >();
++  for (const { commonjs } of analyses)
++    for (const [path, rejection] of commonjs.moduleRejections) {
++      const veto = vetoes.get(path) ?? {
++        invalid: false,
++        rejectedExports: new Set<string>(),
++        defaultRejected: false,
++      };
++      veto.invalid ||= rejection.invalid;
++      veto.defaultRejected ||= rejection.defaultRejected;
++      for (const name of rejection.rejectedExports)
++        veto.rejectedExports.add(name);
++      vetoes.set(path, veto);
++    }
++  const rejectedExport = (path: string, name?: string) => {
++    const veto = vetoes.get(path);
++    return (
++      !!veto &&
++      (veto.invalid ||
++        (name === undefined
++          ? veto.defaultRejected
++          : veto.rejectedExports.has(name)))
++    );
++  };
++  for (const {
++    checker,
++    sources,
++    ownedPaths,
++    ownedSources,
++    declarations,
++    commonjs,
++  } of analyses) {
++    for (const binding of commonjs.exportedBindings) {
++      if (rejectedExport(binding.modulePath, binding.exportName)) continue;
++      const node = graph.nodes.get(binding.declarationId);
++      if (node) node.exported = true;
++    }
++    for (const imported of commonjs.moduleImports) {
++      if (!ownedPaths.has("/" + imported.sourcePath)) continue;
++      const target = imported.targetPath
++        ? graph.file(imported.targetPath).id
++        : imported.external
++          ? graph.external(imported.specifier).id
+           : null;
+-      const external =
+-        !local &&
+-        !spec.startsWith(".") &&
+-        !spec.startsWith("/") &&
+-        !configuration.configuredAlias(path, spec);
+-      const targetId = local ?? (external ? graph.external(spec).id : null);
+       graph.edge(
+         "imports",
+-        graph.file(path).id,
+-        targetId,
+-        local ? "resolved" : external ? "external" : "unresolved",
+-        path,
+-        lineOf(statement),
+-        statement.getText(),
+-        targetId
+-          ? undefined
+-          : configuration.configuredAlias(path, spec)
+-            ? `Configured alias ${spec} has no target within captured sources; see configuration diagnostics for the owning scope and boundary`
+-            : `Module ${spec} was not included or could not be resolved`,
++        graph.file(imported.sourcePath).id,
++        target,
++        imported.targetPath
++          ? "resolved"
++          : imported.external
++            ? "external"
++            : "unresolved",
++        imported.sourcePath,
++        imported.line,
++        imported.text,
++        imported.reason,
+       );
+-      if (
+-        external &&
+-        ts.isImportDeclaration(statement) &&
+-        statement.importClause
+-      ) {
+-        const clause = statement.importClause;
+-        const identifiers: ts.Identifier[] = [];
+-        if (clause.name) identifiers.push(clause.name);
+-        if (clause.namedBindings && ts.isNamespaceImport(clause.namedBindings))
+-          identifiers.push(clause.namedBindings.name);
+-        if (clause.namedBindings && ts.isNamedImports(clause.namedBindings))
+-          identifiers.push(...clause.namedBindings.elements.map((e) => e.name));
+-        for (const ident of identifiers) {
+-          const sym = checker.getSymbolAtLocation(ident);
+-          if (sym)
+-            externalBindings.set(
+-              sym,
+-              `${spec}:${ident.parent && ts.isImportSpecifier(ident.parent) ? (ident.parent.propertyName ?? ident).text : ident.text}`,
+-            );
+-        }
+-      }
+     }
+-  }
+-  function typeOnlySymbol(symbol: ts.Symbol | undefined): boolean {
+-    const visited = new Set<ts.Symbol>();
+-    for (
+-      let current = symbol;
+-      current;
+-      current =
+-        current.flags & ts.SymbolFlags.Alias &&
+-        current.declarations?.some(
+-          (d) =>
+-            ts.isImportSpecifier(d) ||
+-            ts.isImportClause(d) ||
+-            ts.isNamespaceImport(d) ||
+-            ts.isImportEqualsDeclaration(d) ||
+-            ts.isExportSpecifier(d),
++    // Module imports and re-exports must use the checker-selected source file.
++    for (const source of ownedSources) {
++      const path = pathOf(source);
++      for (const statement of source.statements) {
++        if (
++          !(
++            ts.isImportDeclaration(statement) ||
++            ts.isExportDeclaration(statement)
++          ) ||
++          !statement.moduleSpecifier ||
++          !ts.isStringLiteral(statement.moduleSpecifier)
+         )
+-          ? checker.getImmediateAliasedSymbol(current)
+-          : undefined
+-    ) {
+-      if (visited.has(current) || visited.size >= 16) return true;
+-      visited.add(current);
+-      for (const declaration of current.declarations ?? []) {
+-        for (
+-          let node: ts.Node | undefined = declaration;
+-          node && !ts.isSourceFile(node);
+-          node = node.parent
++          continue;
++        const spec = statement.moduleSpecifier.text,
++          symbol = checker.getSymbolAtLocation(statement.moduleSpecifier);
++        const targetSource = symbol?.declarations?.find(ts.isSourceFile);
++        const local =
++          targetSource && sources.includes(targetSource)
++            ? graph.file(pathOf(targetSource)).id
++            : null;
++        const external =
++          !local &&
++          !spec.startsWith(".") &&
++          !spec.startsWith("/") &&
++          !configuration.configuredAlias(path, spec);
++        const targetId = local ?? (external ? graph.external(spec).id : null);
++        graph.edge(
++          "imports",
++          graph.file(path).id,
++          targetId,
++          local ? "resolved" : external ? "external" : "unresolved",
++          path,
++          lineOf(statement),
++          statement.getText(),
++          targetId
++            ? undefined
++            : configuration.configuredAlias(path, spec)
++              ? `Configured alias ${spec} has no target within captured sources; see configuration diagnostics for the owning scope and boundary`
++              : `Module ${spec} was not included or could not be resolved`,
++        );
++        if (
++          external &&
++          ts.isImportDeclaration(statement) &&
++          statement.importClause
+         ) {
++          const clause = statement.importClause;
++          const identifiers: ts.Identifier[] = [];
++          if (clause.name) identifiers.push(clause.name);
+           if (
+-            (ts.isImportSpecifier(node) ||
+-              ts.isImportClause(node) ||
+-              ts.isImportEqualsDeclaration(node) ||
+-              ts.isExportSpecifier(node) ||
+-              ts.isExportDeclaration(node)) &&
+-            node.isTypeOnly
++            clause.namedBindings &&
++            ts.isNamespaceImport(clause.namedBindings)
+           )
+-            return true;
++            identifiers.push(clause.namedBindings.name);
++          if (clause.namedBindings && ts.isNamedImports(clause.namedBindings))
++            identifiers.push(
++              ...clause.namedBindings.elements.map((e) => e.name),
++            );
++          for (const ident of identifiers) {
++            const sym = checker.getSymbolAtLocation(ident);
++            if (sym)
++              externalBindings.set(
++                sym,
++                `${spec}:${ident.parent && ts.isImportSpecifier(ident.parent) ? (ident.parent.propertyName ?? ident).text : ident.text}`,
++              );
++          }
+         }
+       }
+     }
+-    return false;
+-  }
+-  function typeOnlyExport(
+-    source: ts.SourceFile,
+-    name: string,
+-    seen = new Set<string>(),
+-  ): boolean {
+-    const key = JSON.stringify([source.fileName, name]);
+-    if (seen.has(key) || seen.size >= 16) return true;
+-    seen = new Set(seen).add(key);
+-    for (const declaration of source.statements) {
+-      if (!ts.isExportDeclaration(declaration) || !declaration.moduleSpecifier)
+-        continue;
+-      const module = checker.getSymbolAtLocation(declaration.moduleSpecifier);
+-      const target = module?.declarations?.find(ts.isSourceFile);
+-      if (!target || !filePaths.has(target.fileName)) continue;
+-      const clause = declaration.exportClause;
+-      if (clause && ts.isNamedExports(clause)) {
+-        for (const element of clause.elements) {
+-          if (element.name.text !== name) continue;
+-          if (
+-            declaration.isTypeOnly ||
+-            element.isTypeOnly ||
+-            typeOnlyExport(
+-              target,
+-              element.propertyName?.text ?? element.name.text,
+-              seen,
+-            )
++    function typeOnlySymbol(symbol: ts.Symbol | undefined): boolean {
++      const visited = new Set<ts.Symbol>();
++      for (
++        let current = symbol;
++        current;
++        current =
++          current.flags & ts.SymbolFlags.Alias &&
++          current.declarations?.some(
++            (d) =>
++              ts.isImportSpecifier(d) ||
++              ts.isImportClause(d) ||
++              ts.isNamespaceImport(d) ||
++              ts.isImportEqualsDeclaration(d) ||
++              ts.isExportSpecifier(d),
+           )
+-            return true;
++            ? checker.getImmediateAliasedSymbol(current)
++            : undefined
++      ) {
++        if (visited.has(current) || visited.size >= 16) return true;
++        visited.add(current);
++        for (const declaration of current.declarations ?? []) {
++          for (
++            let node: ts.Node | undefined = declaration;
++            node && !ts.isSourceFile(node);
++            node = node.parent
++          ) {
++            if (
++              (ts.isImportSpecifier(node) ||
++                ts.isImportClause(node) ||
++                ts.isImportEqualsDeclaration(node) ||
++                ts.isExportSpecifier(node) ||
++                ts.isExportDeclaration(node)) &&
++              node.isTypeOnly
++            )
++              return true;
++          }
+         }
+-      } else if (!clause) {
+-        // TypeScript may collapse export-star aliases directly to a leaf symbol.
++      }
++      return false;
++    }
++    function typeOnlyExport(
++      source: ts.SourceFile,
++      name: string,
++      seen = new Set<string>(),
++    ): boolean {
++      const key = JSON.stringify([source.fileName, name]);
++      if (seen.has(key) || seen.size >= 16) return true;
++      seen = new Set(seen).add(key);
++      for (const declaration of source.statements) {
+         if (
+-          declaration.isTypeOnly &&
+-          module &&
+-          checker.getExportsOfModule(module).some((s) => s.name === name)
++          !ts.isExportDeclaration(declaration) ||
++          !declaration.moduleSpecifier
+         )
++          continue;
++        const module = checker.getSymbolAtLocation(declaration.moduleSpecifier);
++        const target = module?.declarations?.find(ts.isSourceFile);
++        if (!target || !filePaths.has(target.fileName)) continue;
++        const clause = declaration.exportClause;
++        if (clause && ts.isNamedExports(clause)) {
++          for (const element of clause.elements) {
++            if (element.name.text !== name) continue;
++            if (
++              declaration.isTypeOnly ||
++              element.isTypeOnly ||
++              typeOnlyExport(
++                target,
++                element.propertyName?.text ?? element.name.text,
++                seen,
++              )
++            )
++              return true;
++          }
++        } else if (!clause) {
++          // TypeScript may collapse export-star aliases directly to a leaf symbol.
++          if (
++            declaration.isTypeOnly &&
++            module &&
++            checker.getExportsOfModule(module).some((s) => s.name === name)
++          )
++            return true;
++          if (!declaration.isTypeOnly && typeOnlyExport(target, name, seen))
++            return true;
++        } else if (clause.name.text === name && declaration.isTypeOnly)
+           return true;
+-        if (!declaration.isTypeOnly && typeOnlyExport(target, name, seen))
+-          return true;
+-      } else if (clause.name.text === name && declaration.isTypeOnly)
+-        return true;
+-    }
+-    return false;
+-  }
+-  function typeOnlyCall(
+-    expression: ts.Expression,
+-    symbol: ts.Symbol | undefined,
+-  ): boolean {
+-    if (typeOnlySymbol(symbol)) return true;
+-    let root = expression;
+-    let member: string | undefined;
+-    while (
+-      ts.isPropertyAccessExpression(root) ||
+-      ts.isElementAccessExpression(root)
+-    ) {
+-      member = ts.isPropertyAccessExpression(root)
+-        ? root.name.text
+-        : root.argumentExpression &&
+-            ts.isStringLiteralLike(root.argumentExpression)
+-          ? root.argumentExpression.text
+-          : undefined;
+-      root = root.expression;
+-    }
+-    const rootSymbol = checker.getSymbolAtLocation(root);
+-    if (typeOnlySymbol(rootSymbol)) return true;
+-    for (const declaration of rootSymbol?.declarations ?? []) {
+-      let importedName: string | undefined;
+-      if (ts.isImportSpecifier(declaration))
+-        importedName = declaration.propertyName?.text ?? declaration.name.text;
+-      else if (ts.isNamespaceImport(declaration)) importedName = member;
+-      else if (ts.isImportClause(declaration)) importedName = "default";
+-      if (!importedName) continue;
+-      let importNode: ts.Node | undefined = declaration;
+-      while (importNode && !ts.isImportDeclaration(importNode))
+-        importNode = importNode.parent;
+-      if (!importNode || !ts.isImportDeclaration(importNode)) continue;
+-      const module = checker.getSymbolAtLocation(importNode.moduleSpecifier);
+-      const source = module?.declarations?.find(ts.isSourceFile);
+-      if (
+-        source &&
+-        filePaths.has(source.fileName) &&
+-        typeOnlyExport(source, importedName)
+-      )
+-        return true;
++      }
++      return false;
+     }
+-    return false;
+-  }
+-  function targetFromSymbol(symbol: ts.Symbol | undefined): string | undefined {
+-    if (!symbol) return undefined;
+-    if (typeOnlySymbol(symbol)) return;
+-    if (symbol.flags & ts.SymbolFlags.Alias)
+-      symbol = checker.getAliasedSymbol(symbol);
+-    for (const declaration of symbol.declarations ?? []) {
+-      if (
+-        ts.isGetAccessorDeclaration(declaration) ||
+-        ts.isSetAccessorDeclaration(declaration)
+-      )
+-        continue;
+-      const direct = declarations.get(declaration);
+-      if (direct) return direct;
+-      if (
+-        // An initializer is a stable callable identity only for a const
+-        // binding. let/var and object/class fields may have been overwritten;
+-        // the current analyzer does not establish flow-sensitive values.
+-        ts.isVariableDeclaration(declaration) &&
+-        ts.isVariableDeclarationList(declaration.parent) &&
+-        !!(declaration.parent.flags & ts.NodeFlags.Const)
++    function typeOnlyCall(
++      expression: ts.Expression,
++      symbol: ts.Symbol | undefined,
++    ): boolean {
++      if (typeOnlySymbol(symbol)) return true;
++      let root = expression;
++      let member: string | undefined;
++      while (
++        ts.isPropertyAccessExpression(root) ||
++        ts.isElementAccessExpression(root)
+       ) {
+-        const initializer = declaration.initializer;
+-        if (initializer) {
+-          const id = declarations.get(initializer);
+-          if (id) return id;
+-        }
++        member = ts.isPropertyAccessExpression(root)
++          ? root.name.text
++          : root.argumentExpression &&
++              ts.isStringLiteralLike(root.argumentExpression)
++            ? root.argumentExpression.text
++            : undefined;
++        root = root.expression;
+       }
++      const rootSymbol = checker.getSymbolAtLocation(root);
++      if (typeOnlySymbol(rootSymbol)) return true;
++      for (const declaration of rootSymbol?.declarations ?? []) {
++        let importedName: string | undefined;
++        if (ts.isImportSpecifier(declaration))
++          importedName =
++            declaration.propertyName?.text ?? declaration.name.text;
++        else if (ts.isNamespaceImport(declaration)) importedName = member;
++        else if (ts.isImportClause(declaration)) importedName = "default";
++        if (!importedName) continue;
++        let importNode: ts.Node | undefined = declaration;
++        while (importNode && !ts.isImportDeclaration(importNode))
++          importNode = importNode.parent;
++        if (!importNode || !ts.isImportDeclaration(importNode)) continue;
++        const module = checker.getSymbolAtLocation(importNode.moduleSpecifier);
++        const source = module?.declarations?.find(ts.isSourceFile);
++        if (
++          source &&
++          filePaths.has(source.fileName) &&
++          typeOnlyExport(source, importedName)
++        )
++          return true;
++      }
++      return false;
+     }
+-    return undefined;
+-  }
+-  for (const source of sources) {
+-    const path = pathOf(source);
+-    function visit(node: ts.Node, ownerId: string) {
+-      const mapped = declarations.get(node);
+-      if (mapped) ownerId = mapped;
+-      if (ts.isCallExpression(node) || ts.isNewExpression(node)) {
+-        const expression = node.expression;
+-        // Only declaration symbols identify implementations. A callable type's
+-        // signature alone cannot prove a parameter's runtime target.
+-        const symbol = checker.getSymbolAtLocation(
+-          ts.isPropertyAccessExpression(expression)
+-            ? expression.name
+-            : expression,
+-        );
+-        const classification = commonjs.classifyCall(expression);
+-        const target = typeOnlyCall(expression, symbol)
+-          ? undefined
+-          : classification
+-            ? classification.targetId
+-            : targetFromSymbol(symbol);
+-        let root: ts.Expression = expression;
+-        while (
+-          ts.isPropertyAccessExpression(root) ||
+-          ts.isElementAccessExpression(root)
++    function targetFromSymbol(
++      symbol: ts.Symbol | undefined,
++    ): string | undefined {
++      if (!symbol) return undefined;
++      if (typeOnlySymbol(symbol)) return;
++      if (symbol.flags & ts.SymbolFlags.Alias)
++        symbol = checker.getAliasedSymbol(symbol);
++      for (const declaration of symbol.declarations ?? []) {
++        if (
++          ts.isGetAccessorDeclaration(declaration) ||
++          ts.isSetAccessorDeclaration(declaration)
+         )
+-          root = root.expression;
+-        const rootSymbol = checker.getSymbolAtLocation(root),
+-          externalName = classification
++          continue;
++        const direct = declarations.get(declaration);
++        if (direct) return direct;
++        if (
++          // An initializer is a stable callable identity only for a const
++          // binding. let/var and object/class fields may have been overwritten;
++          // the current analyzer does not establish flow-sensitive values.
++          ts.isVariableDeclaration(declaration) &&
++          ts.isVariableDeclarationList(declaration.parent) &&
++          !!(declaration.parent.flags & ts.NodeFlags.Const)
++        ) {
++          const initializer = declaration.initializer;
++          if (initializer) {
++            const id = declarations.get(initializer);
++            if (id) return id;
++          }
++        }
++      }
++      return undefined;
++    }
++    for (const source of ownedSources) {
++      const path = pathOf(source);
++      function visit(node: ts.Node, ownerId: string) {
++        const mapped = declarations.get(node);
++        if (mapped) ownerId = mapped;
++        if (ts.isCallExpression(node) || ts.isNewExpression(node)) {
++          const expression = node.expression;
++          // Only declaration symbols identify implementations. A callable type's
++          // signature alone cannot prove a parameter's runtime target.
++          const symbol = checker.getSymbolAtLocation(
++            ts.isPropertyAccessExpression(expression)
++              ? expression.name
++              : expression,
++          );
++          let classification = commonjs.classifyCall(expression);
++          if (
++            classification?.targetId &&
++            classification.modulePath &&
++            rejectedExport(classification.modulePath, classification.exportName)
++          )
++            classification = {
++              reason:
++                "CommonJS physical namespace has captured mutation or escape in another scope",
++            };
++          let target = typeOnlyCall(expression, symbol)
++            ? undefined
++            : classification
++              ? classification.targetId
++              : targetFromSymbol(symbol);
++          let root: ts.Expression = expression;
++          while (
++            ts.isPropertyAccessExpression(root) ||
++            ts.isElementAccessExpression(root)
++          )
++            root = root.expression;
++          const rootSymbol = checker.getSymbolAtLocation(root);
++          const bindingProof =
++            !!classification?.targetId ||
++            !!rootSymbol?.declarations?.some(
++              (declaration) =>
++                ts.isImportSpecifier(declaration) ||
++                ts.isNamespaceImport(declaration) ||
++                ts.isImportClause(declaration) ||
++                ts.isImportEqualsDeclaration(declaration),
++            );
++          const targetPath = target
++            ? graph.nodes.get(target)?.filePath
++            : undefined;
++          if (
++            targetPath &&
++            !configuration.canResolve(path, targetPath, bindingProof)
++          )
++            target = undefined;
++          const externalName = classification
+             ? classification.externalName
+             : rootSymbol && externalBindings.get(rootSymbol);
+-        const external = !target && externalName;
+-        graph.edge(
+-          "calls",
+-          ownerId,
+-          target ??
+-            (external
+-              ? graph.external(`${externalName}:${expression.getText()}`).id
+-              : null),
+-          target ? "resolved" : external ? "external" : "unresolved",
+-          path,
+-          lineOf(node),
+-          node.getText(),
+-          target || external
+-            ? undefined
+-            : (classification?.reason ??
+-                "No unique indexed implementation for this call (dynamic, ambient, or excluded target)"),
+-        );
++          const external = !target && externalName;
++          graph.edge(
++            "calls",
++            ownerId,
++            target ??
++              (external
++                ? graph.external(`${externalName}:${expression.getText()}`).id
++                : null),
++            target ? "resolved" : external ? "external" : "unresolved",
++            path,
++            lineOf(node),
++            node.getText(),
++            target || external
++              ? undefined
++              : (classification?.reason ??
++                  "No unique indexed implementation for this call (dynamic, ambient, or excluded target)"),
++          );
++        }
++        ts.forEachChild(node, (child) => visit(child, ownerId));
+       }
+-      ts.forEachChild(node, (child) => visit(child, ownerId));
++      visit(source, graph.file(path).id);
+     }
+-    visit(source, graph.file(path).id);
+   }
+   graph.diagnostics.push(
+     ...configuration.diagnostics,
+     ...workspace.diagnostics,
+   );
++  return configuration.projectGraph;
+ }
+diff --git a/packages/indexer/src/projectReferenceGraph.ts b/packages/indexer/src/projectReferenceGraph.ts
+new file mode 100644
+index 0000000..47d76b0
+--- /dev/null
++++ b/packages/indexer/src/projectReferenceGraph.ts
+@@ -0,0 +1,270 @@
++import ts from "typescript";
++import { configurationReferences } from "./projectReferences.js";
++import type {
++  ConfigurationProjectGraph,
++  SourceConfigurationScope,
++} from "./projectReferenceTypes.js";
++
++type Reference = {
++  source: string;
++  raw: string;
++  target?: string;
++  status: ConfigurationProjectGraph["references"][number]["status"];
++  reason?: string;
++};
++type Project = { path: string; ownValid: boolean; references: Reference[] };
++export function createCapturedReferenceGraph(
++  inputs: ReadonlyMap<string, string>,
++  roots: readonly string[],
++  ownValid: (path: string, referenced: boolean) => boolean,
++) {
++  const nodes = new Map<string, Project>();
++  const edges: Reference[] = [];
++  const diagnostics: { filePath: string; message: string }[] = [];
++  let hasReferences = false;
++  function visit(
++    path: string,
++    depth: number,
++    stack: Set<string>,
++    referenced: boolean,
++  ) {
++    const existing = nodes.get(path);
++    if (existing) {
++      if (referenced && !ownValid(path, true)) existing.ownValid = false;
++      return;
++    }
++    if (nodes.size >= 512) {
++      diagnostics.push({
++        filePath: path,
++        message:
++          "Configuration project references exceed the 512 project budget",
++      });
++      return;
++    }
++    const node: Project = {
++      path,
++      ownValid: ownValid(path, referenced),
++      references: [],
++    };
++    nodes.set(path, node);
++    const text = inputs.get(path);
++    if (text === undefined) {
++      node.ownValid = false;
++      return;
++    }
++    const parsed = ts.parseConfigFileTextToJson(path, text);
++    if (
++      parsed.error ||
++      !parsed.config ||
++      typeof parsed.config !== "object" ||
++      Array.isArray(parsed.config)
++    ) {
++      node.ownValid = false;
++      return;
++    }
++    if (parsed.config.references !== undefined) hasReferences = true;
++    const references = configurationReferences(
++      path,
++      parsed.config.references,
++      Math.max(0, 2048 - edges.length),
++    );
++    if (references.reason || references.truncated) {
++      node.ownValid = false;
++      diagnostics.push({
++        filePath: path,
++        message: `Configuration project references rejected: ${references.reason ?? "2048 entry budget exceeded"}`,
++      });
++    }
++    const next = new Set(stack).add(path);
++    for (const entry of references.entries) {
++      // Child recursion consumes the same global budget before this parent resumes.
++      if (edges.length >= 2048) {
++        node.ownValid = false;
++        diagnostics.push({
++          filePath: path,
++          message:
++            "Configuration project references exceed the 2048 entry budget",
++        });
++        break;
++      }
++      const edge: Reference = {
++        source: path,
++        raw: entry.raw,
++        target: entry.target,
++        status: "resolved",
++      };
++      node.references.push(edge);
++      edges.push(edge);
++      if (entry.reason) {
++        edge.status = "invalid";
++        edge.reason = entry.reason;
++      } else if (next.has(entry.target!)) {
++        edge.status = "cycle";
++        edge.reason = "Configuration references cycle";
++      } else if (!nodes.has(entry.target!) && nodes.size >= 512) {
++        edge.status = "budget";
++        edge.reason = "Configuration references depth/file budget exceeded";
++      } else if (!inputs.has(entry.target!)) {
++        edge.status = "unavailable";
++        edge.reason =
++          "Reference configuration unavailable in captured inputs (missing, excluded, ignored, symlinked or unreadable)";
++      } else {
++        visit(entry.target!, depth + 1, next, true);
++        if (!nodes.get(entry.target!)?.ownValid) {
++          edge.status = "invalid";
++          edge.reason =
++            "Referenced configuration own options/membership/composite are invalid";
++        }
++      }
++    }
++  }
++  for (const root of [...roots].sort()) visit(root, 1, new Set(), false);
++
++  // Closure validation starts independently at each configuration. A shallow
++  // valid owner must not inherit another root's longer path or traversal order.
++  const valid = new Map<string, boolean>();
++  function closure(
++    path: string,
++    depth: number,
++    stack: Set<string>,
++    memo: Map<string, boolean>,
++  ): boolean {
++    if (depth > 16 || stack.has(path)) return false;
++    const key = JSON.stringify([path, depth]);
++    if (memo.has(key)) return memo.get(key)!;
++    const node = nodes.get(path);
++    const next = new Set(stack).add(path);
++    const accepted =
++      !!node?.ownValid &&
++      node.references.every(
++        (edge) =>
++          edge.status === "resolved" &&
++          !!edge.target &&
++          closure(edge.target, depth + 1, next, memo),
++      );
++    memo.set(key, accepted);
++    return accepted;
++  }
++  for (const path of nodes.keys()) {
++    const accepted = closure(path, 1, new Set(), new Map());
++    valid.set(path, accepted);
++    if (!accepted && nodes.get(path)!.ownValid)
++      diagnostics.push({
++        filePath: path,
++        message:
++          "Configuration project references closure invalid (cycle, dependency or 16 level depth budget)",
++      });
++  }
++  for (const edge of edges) {
++    if (edge.status === "resolved" && !valid.get(edge.target!)) {
++      edge.status = "invalid";
++      edge.reason = "Referenced configuration closure is invalid";
++    }
++    if (edge.status !== "resolved")
++      diagnostics.push({
++        filePath: edge.source,
++        message: `Configuration project references rejected: ${edge.reason}`,
++      });
++  }
++  function reachable(root: string): string[] {
++    const seen = new Map<string, number>();
++    function walk(path: string, depth: number) {
++      if (
++        depth > 16 ||
++        (seen.get(path) ?? Infinity) <= depth ||
++        !nodes.has(path)
++      )
++        return;
++      seen.set(path, depth);
++      for (const edge of nodes.get(path)!.references)
++        if (edge.target && edge.status !== "budget" && edge.status !== "cycle")
++          walk(edge.target, depth + 1);
++    }
++    walk(root, 1);
++    return [...seen.keys()].sort();
++  }
++  function view(
++    scopes: readonly SourceConfigurationScope[],
++  ): ConfigurationProjectGraph {
++    const projects = [...nodes.keys()].sort().map((configPath) => ({
++      configPath,
++      status: valid.get(configPath)
++        ? ("resolved" as const)
++        : ("invalid" as const),
++    }));
++    const references = [...edges]
++      .sort(
++        (a, b) =>
++          a.source.localeCompare(b.source) || a.raw.localeCompare(b.raw),
++      )
++      .map((edge) => ({
++        sourceConfigPath: edge.source,
++        referencePathPreview: edge.raw.slice(0, 256),
++        ...(edge.target ? { targetConfigPath: edge.target } : {}),
++        status: edge.status,
++        ...(edge.reason ? { reason: edge.reason.slice(0, 512) } : {}),
++        referencePathTruncated: edge.raw.length > 256,
++        reasonTruncated: (edge.reason?.length ?? 0) > 512,
++      }));
++    const sortedScopes = [...scopes].sort((a, b) =>
++      a.sourcePath.localeCompare(b.sourcePath),
++    );
++    const counts = {
++      observedRoots: roots.length,
++      observedProjects: nodes.size,
++      observedReferences: edges.length,
++      sourceScopes: scopes.length,
++      resolved: 0,
++      unconfigured: 0,
++      ambiguous: 0,
++      invalid: 0,
++    };
++    for (const scope of scopes) counts[scope.status]++;
++    const publicRoots = [...roots]
++      .sort()
++      .filter((path) => path.length <= 2048)
++      .slice(0, 50);
++    const publicProjects = projects
++      .filter((p) => p.configPath.length <= 2048)
++      .slice(0, 50);
++    const publicReferences = references
++      .filter(
++        (e) =>
++          e.sourceConfigPath.length <= 2048 &&
++          (!e.targetConfigPath || e.targetConfigPath.length <= 2048),
++      )
++      .slice(0, 100);
++    const publicScopes = sortedScopes
++      .filter(
++        (s) =>
++          s.sourcePath.length <= 2048 &&
++          (!s.configPath || s.configPath.length <= 2048),
++      )
++      .slice(0, 50);
++    return {
++      version: 1,
++      status:
++        projects.some((p) => p.status === "invalid") || diagnostics.length
++          ? "partial"
++          : "complete",
++      counts,
++      roots: publicRoots,
++      projects: publicProjects,
++      references: publicReferences,
++      scopes: publicScopes,
++      truncated: {
++        roots: roots.length > publicRoots.length,
++        projects: nodes.size > publicProjects.length,
++        references: edges.length > publicReferences.length,
++        scopes: scopes.length > publicScopes.length,
++      },
++    };
++  }
++  return {
++    hasReferences: () => hasReferences,
++    valid: (path: string) => !!valid.get(path),
++    reachable,
++    diagnostics,
++    view,
++  };
++}
+diff --git a/packages/indexer/src/projectReferenceTypes.ts b/packages/indexer/src/projectReferenceTypes.ts
+new file mode 100644
+index 0000000..a2415da
+--- /dev/null
++++ b/packages/indexer/src/projectReferenceTypes.ts
+@@ -0,0 +1,10 @@
++export type {
++  ConfigurationScopeStatus,
++  ConfigurationProjectGraph,
++} from "@codemap/core";
++import type { ConfigurationScopeStatus } from "@codemap/core";
++export type SourceConfigurationScope = {
++  sourcePath: string;
++  configPath?: string;
++  status: ConfigurationScopeStatus;
++};
+diff --git a/packages/indexer/src/projectReferences.ts b/packages/indexer/src/projectReferences.ts
+new file mode 100644
+index 0000000..2e2a88d
+--- /dev/null
++++ b/packages/indexer/src/projectReferences.ts
+@@ -0,0 +1,77 @@
++import { posix } from "node:path";
++import { normalizeRepoPath } from "@codemap/core";
++
++/** Reject raw filesystem syntax before joining: join must never hide an absolute input. */
++export function referenceTarget(
++  sourcePath: string,
++  raw: string,
++): { path?: string; reason?: string } {
++  if (
++    !raw ||
++    raw.includes("\0") ||
++    raw.startsWith("/") ||
++    raw.startsWith("\\") ||
++    /^[a-zA-Z]:/.test(raw) ||
++    /^[a-zA-Z][a-zA-Z\d+.-]*:/.test(raw)
++  )
++    return {
++      reason:
++        "references require a relative path without absolute, drive, UNC, URL/scheme or NUL syntax",
++    };
++  const relative = raw.replaceAll("\\", "/");
++  if (posix.extname(relative) && !relative.endsWith(".json"))
++    return {
++      reason:
++        "reference target must be a directory or explicit .json configuration",
++    };
++  try {
++    const target = posix.join(posix.dirname(sourcePath), relative);
++    return {
++      path: normalizeRepoPath(
++        relative.endsWith(".json")
++          ? target
++          : posix.join(target, "tsconfig.json"),
++      ),
++    };
++  } catch {
++    return { reason: "reference path escapes outside the repository" };
++  }
++}
++
++export type ReferenceEntry = { raw: string; target?: string; reason?: string };
++export function configurationReferences(
++  sourcePath: string,
++  value: unknown,
++  limit: number,
++): {
++  entries: ReferenceEntry[];
++  reason?: string;
++  truncated: boolean;
++} {
++  if (value === undefined) return { entries: [], truncated: false };
++  if (!Array.isArray(value))
++    return {
++      entries: [],
++      reason: "references must be a static array",
++      truncated: false,
++    };
++  const entries = value
++    .slice(0, limit)
++    .map((entry: unknown): ReferenceEntry => {
++      if (
++        !entry ||
++        typeof entry !== "object" ||
++        Array.isArray(entry) ||
++        !("path" in entry) ||
++        typeof entry.path !== "string" ||
++        !entry.path
++      )
++        return {
++          raw: "",
++          reason: "reference entry must contain a nonempty static string path",
++        };
++      const target = referenceTarget(sourcePath, entry.path);
++      return { raw: entry.path, target: target.path, reason: target.reason };
++    });
++  return { entries, truncated: value.length > limit };
++}
+diff --git a/packages/indexer/src/projectReferencesCapture.test.ts b/packages/indexer/src/projectReferencesCapture.test.ts
+new file mode 100644
+index 0000000..a34fbef
+--- /dev/null
++++ b/packages/indexer/src/projectReferencesCapture.test.ts
+@@ -0,0 +1,193 @@
++import { afterEach, describe, expect, it } from "vitest";
++import { mkdtemp, mkdir, writeFile, rm, symlink } from "node:fs/promises";
++import { tmpdir } from "node:os";
++import { dirname, join } from "node:path";
++import { captureConfigurations } from "./configCapture.js";
++import { scan } from "./scan.js";
++
++const temps: string[] = [];
++async function fixture(inputs: Record<string, unknown>) {
++  const root = await mkdtemp(join(tmpdir(), "codemap-idx03-"));
++  temps.push(root);
++  for (const [path, value] of Object.entries(inputs)) {
++    await mkdir(dirname(join(root, path)), { recursive: true });
++    await writeFile(
++      join(root, path),
++      typeof value === "string" ? value : JSON.stringify(value),
++    );
++  }
++  return root;
++}
++afterEach(async () => {
++  await Promise.all(
++    temps.splice(0).map((root) => rm(root, { recursive: true, force: true })),
++  );
++});
++const paths = (capture: Awaited<ReturnType<typeof captureConfigurations>>) =>
++  capture.files.map((f) => f.path);
++
++describe("IDX03 captured reference discovery", () => {
++  it("captures directory and arbitrary named targets plus their extends from JSONC once", async () => {
++    const inputs = {
++      "tsconfig.json":
++        '{ // solution\n "files": [], "references": [{"path":"./lib"},{"path":"configs/client.json"},{"path":"configs\\\\client.json"}], }',
++      "lib/tsconfig.json": {
++        compilerOptions: { composite: true },
++        references: [{ path: "../configs/client.json" }],
++      },
++      "configs/client.json": {
++        extends: "../base.json",
++        compilerOptions: { composite: true },
++      },
++      "base.json": {},
++      "unrelated.json": { sentinel: "never a configuration input" },
++    };
++    const root = await fixture(inputs);
++    const result = await captureConfigurations(
++      root,
++      Object.keys(inputs).reverse(),
++    );
++    expect(paths(result)).toEqual([
++      "base.json",
++      "configs/client.json",
++      "lib/tsconfig.json",
++      "tsconfig.json",
++    ]);
++    expect(result.diagnostics).toEqual([]);
++  });
++  it("does not inherit a base configuration's references", async () => {
++    const inputs = {
++      "tsconfig.json": { extends: "./base.json" },
++      "base.json": { references: [{ path: "./hidden.json" }] },
++      "hidden.json": {},
++    };
++    const root = await fixture(inputs);
++    expect(
++      paths(await captureConfigurations(root, Object.keys(inputs))),
++    ).toEqual(["base.json", "tsconfig.json"]);
++  });
++  it.each([
++    ["./missing", /missing|unavailable/i],
++    ["../../outside.json", /escape|outside/i],
++    ["/configs/client.json", /absolute|relative/i],
++    ["C:configs/client.json", /drive|relative/i],
++    ["C:\\configs\\client.json", /drive|relative/i],
++    ["\\\\host\\client.json", /UNC|relative/i],
++    ["//host/client.json", /UNC|relative/i],
++    ["https://host/client.json", /URL|scheme|relative/i],
++    ["./client\0.json", /NUL|relative/i],
++    ["./client.ts", /suffix|\.json|directory/i],
++  ])(
++    "rejects reference path %s before mapping to an allowed input",
++    async (path, reason) => {
++      const inputs = {
++        "tsconfig.json": { references: [{ path }] },
++        "configs/client.json": {},
++      };
++      const root = await fixture(inputs);
++      const result = await captureConfigurations(root, Object.keys(inputs));
++      expect(paths(result)).toEqual(["tsconfig.json"]);
++      expect(
++        result.diagnostics.some(
++          (d) => d.filePath === "tsconfig.json" && reason.test(d.message),
++        ),
++      ).toBe(true);
++    },
++  );
++  it.each([42, "dynamic", {}, [null], [{ path: 2 }], [{ path: "" }]])(
++    "reports malformed reference structure %j",
++    async (references) => {
++      const root = await fixture({ "tsconfig.json": { references } });
++      const result = await captureConfigurations(root, ["tsconfig.json"]);
++      expect(result.diagnostics.some((d) => /reference/i.test(d.message))).toBe(
++        true,
++      );
++    },
++  );
++  it("keeps valid named branch captured when another branch is missing", async () => {
++    const inputs = {
++      "tsconfig.json": {
++        files: [],
++        references: [{ path: "./configs/client.json" }, { path: "./missing" }],
++      },
++      "configs/client.json": {
++        compilerOptions: { composite: true },
++        include: ["../src/client"],
++      },
++    };
++    const root = await fixture(inputs);
++    const result = await captureConfigurations(root, Object.keys(inputs));
++    expect(paths(result)).toEqual(["configs/client.json", "tsconfig.json"]);
++    expect(
++      result.diagnostics.some((d) => /missing|unavailable/i.test(d.message)),
++    ).toBe(true);
++  });
++  it("reports reference cycles even with shared captured inputs", async () => {
++    const inputs = {
++      "tsconfig.json": { references: [{ path: "./client.json" }] },
++      "client.json": { references: [{ path: "./tsconfig.json" }] },
++    };
++    const root = await fixture(inputs);
++    const result = await captureConfigurations(root, Object.keys(inputs));
++    expect(paths(result)).toEqual(["client.json", "tsconfig.json"]);
++    expect(
++      result.diagnostics.some((d) => /reference.*cycle/i.test(d.message)),
++    ).toBe(true);
++  });
++  it.each([16, 17])("bounds reference depth at %i", async (count) => {
++    const inputs: Record<string, unknown> = {};
++    for (let i = 1; i <= count; i++)
++      inputs[i === 1 ? "tsconfig.json" : `level${i}.json`] =
++        i === count ? {} : { references: [{ path: `./level${i + 1}.json` }] };
++    const root = await fixture(inputs);
++    const result = await captureConfigurations(root, Object.keys(inputs));
++    expect(result.files).toHaveLength(16);
++    expect(
++      result.diagnostics.some((d) => /reference.*depth/i.test(d.message)),
++    ).toBe(count === 17);
++  });
++  it("bounds reference entry traversal at 2048 without reading the extra target", async () => {
++    const inputs = {
++      "tsconfig.json": {
++        references: [
++          ...Array.from({ length: 2048 }, () => ({ path: "./shared.json" })),
++          { path: "./extra.json" },
++        ],
++      },
++      "shared.json": {},
++      "extra.json": {},
++    };
++    const root = await fixture(inputs);
++    const result = await captureConfigurations(root, Object.keys(inputs));
++    expect(paths(result)).toEqual(["shared.json", "tsconfig.json"]);
++    expect(
++      result.diagnostics.some((d) =>
++        /reference.*2048|reference.*budget/i.test(d.message),
++      ),
++    ).toBe(true);
++  });
++  it("does not capture ignored, excluded or symlinked reference bytes", async () => {
++    const sentinel = "PRIVATE_IDX03_SENTINEL";
++    const outside = await fixture({ "config.json": sentinel });
++    const root = await fixture({
++      "tsconfig.json": {
++        references: [
++          { path: "./ignored.json" },
++          { path: "./node_modules/pkg" },
++          { path: "./link.json" },
++        ],
++      },
++      ".gitignore": "ignored.json\n",
++      "ignored.json": sentinel,
++      "node_modules/pkg/tsconfig.json": sentinel,
++      "entry.ts": "export function entry() {}",
++    });
++    await symlink(join(outside, "config.json"), join(root, "link.json"));
++    const result = await scan(root);
++    expect(result.configurations.map((f) => f.path)).toEqual(["tsconfig.json"]);
++    expect(
++      result.diagnostics.filter((d) => d.filePath === "tsconfig.json"),
++    ).toHaveLength(3);
++    expect(JSON.stringify(result.diagnostics)).not.toContain(sentinel);
++  });
++});
+diff --git a/packages/indexer/src/projectReferencesFreshness.test.ts b/packages/indexer/src/projectReferencesFreshness.test.ts
+new file mode 100644
+index 0000000..f7ec4e2
+--- /dev/null
++++ b/packages/indexer/src/projectReferencesFreshness.test.ts
+@@ -0,0 +1,139 @@
++import { afterEach, describe, expect, it } from "vitest";
++import { mkdtemp, mkdir, writeFile, rm } from "node:fs/promises";
++import { tmpdir } from "node:os";
++import { dirname, join } from "node:path";
++import { scan } from "./scan.js";
++import { Graph } from "./graph.js";
++import { indexTypeScript } from "./typescript.js";
++import { createCapturedReferenceGraph } from "./projectReferenceGraph.js";
++
++const temps: string[] = [];
++afterEach(async () => {
++  await Promise.all(
++    temps.splice(0).map((root) => rm(root, { recursive: true, force: true })),
++  );
++});
++describe("IDX03 captured freshness and public graph omission", () => {
++  it("uses captured named configuration bytes after disk changes and changes hash only on fresh capture", async () => {
++    const root = await mkdtemp(join(tmpdir(), "codemap-idx03-fresh-"));
++    temps.push(root);
++    const config = {
++      compilerOptions: {
++        composite: true,
++        baseUrl: "../lib",
++        paths: { "@leaf": ["main.ts"] },
++      },
++      include: ["../app"],
++      references: [{ path: "./lib.json" }],
++    };
++    const inputs: Record<string, string> = {
++      "tsconfig.json": JSON.stringify({
++        files: [],
++        references: [{ path: "./configs/app.json" }],
++      }),
++      "configs/app.json": JSON.stringify(config),
++      "configs/lib.json": JSON.stringify({
++        compilerOptions: { composite: true },
++        include: ["../lib"],
++      }),
++      "app/entry.ts":
++        'import {helper} from "@leaf"; export function entry(){helper();}',
++      "lib/main.ts": "export function helper(){}",
++      "lib/other.ts": "export function helper(){}",
++    };
++    for (const [path, text] of Object.entries(inputs)) {
++      await mkdir(dirname(join(root, path)), { recursive: true });
++      await writeFile(join(root, path), text);
++    }
++    const before = await scan(root);
++    await writeFile(
++      join(root, "configs/app.json"),
++      JSON.stringify({
++        ...config,
++        compilerOptions: {
++          ...config.compilerOptions,
++          paths: { "@leaf": ["other.ts"] },
++        },
++      }),
++    );
++    const old = new Graph("fresh");
++    indexTypeScript(
++      before.files,
++      old,
++      before.configurations,
++      before.diagnostics,
++    );
++    const target = (graph: Graph) =>
++      graph.nodes.get(
++        graph.relations.find(
++          (r) => r.type === "calls" && r.evidence.filePath === "app/entry.ts",
++        )!.targetId!,
++      )?.filePath;
++    expect(target(old)).toBe("lib/main.ts");
++    const fresh = await scan(root),
++      current = new Graph("fresh");
++    indexTypeScript(
++      fresh.files,
++      current,
++      fresh.configurations,
++      fresh.diagnostics,
++    );
++    expect(fresh.contentHash).not.toBe(before.contentHash);
++    expect(target(current)).toBe("lib/other.ts");
++    expect(before.files).toEqual(fresh.files);
++    expect([...old.nodes.keys()].sort()).toEqual(
++      [...current.nodes.keys()].sort(),
++    );
++    await writeFile(
++      join(root, "tsconfig.json"),
++      JSON.stringify({
++        files: [],
++        references: [{ path: "./configs/app.json" }, { path: "./missing" }],
++      }),
++    );
++    const afterReferences = await scan(root);
++    expect(afterReferences.contentHash).not.toBe(fresh.contentHash);
++    expect(afterReferences.files).toEqual(fresh.files);
++  });
++  it("omits overlong rows with accurate observed totals and all collection flags", () => {
++    const config = "a".repeat(2049) + ".json",
++      source = "s".repeat(2049) + ".ts";
++    const result = createCapturedReferenceGraph(
++      new Map([[config, "{}"]]),
++      [config],
++      () => true,
++    );
++    const graph = result.view([
++      { sourcePath: source, configPath: config, status: "resolved" },
++    ]);
++    expect(graph.counts).toMatchObject({
++      observedRoots: 1,
++      observedProjects: 1,
++      sourceScopes: 1,
++      resolved: 1,
++    });
++    expect(graph.roots).toEqual([]);
++    expect(graph.projects).toEqual([]);
++    expect(graph.scopes).toEqual([]);
++    expect(graph.truncated).toMatchObject({
++      roots: true,
++      projects: true,
++      scopes: true,
++    });
++  });
++  it("keeps configuration graph internal project storage within 512 even with additional unavailable roots", () => {
++    const roots = Array.from(
++      { length: 513 },
++      (_, i) => "root" + i + "/tsconfig.json",
++    );
++    const inputs = new Map(roots.map((path) => [path, "{}"]));
++    const graph = createCapturedReferenceGraph(inputs, roots, () => true).view(
++      [],
++    );
++    expect(graph.counts.observedRoots).toBe(513);
++    expect(graph.counts.observedProjects).toBe(512);
++    expect(graph.status).toBe("partial");
++    expect(graph.projects).toHaveLength(50);
++    expect(graph.truncated.projects).toBe(true);
++  });
++});
+diff --git a/packages/indexer/src/projectReferencesResolution.test.ts b/packages/indexer/src/projectReferencesResolution.test.ts
+new file mode 100644
+index 0000000..fe583ce
+--- /dev/null
++++ b/packages/indexer/src/projectReferencesResolution.test.ts
+@@ -0,0 +1,267 @@
++import { describe, expect, it } from "vitest";
++import { createConfigurationResolver } from "./configResolution.js";
++import { indexTypeScript } from "./typescript.js";
++import { Graph } from "./graph.js";
++import type { SourceFile } from "./scan.js";
++
++const capture = (inputs: Record<string, unknown>): SourceFile[] =>
++  Object.entries(inputs).map(([path, value]) => ({
++    path,
++    bytes: Buffer.from(
++      typeof value === "string" ? value : JSON.stringify(value),
++    ),
++  }));
++const libConfig = { compilerOptions: { composite: true }, include: ["../lib"] };
++const appConfig = {
++  compilerOptions: { composite: true },
++  include: ["../app"],
++  references: [{ path: "./lib.json" }],
++};
++const configInputs = {
++  "tsconfig.json": { files: [], references: [{ path: "./configs/app.json" }] },
++  "configs/app.json": appConfig,
++  "configs/lib.json": libConfig,
++};
++const sources = {
++  "app/no-import.ts": "export function noImport(){ helper(); }",
++  "app/side-effect.ts":
++    'import "../lib/global.js"; export function sideEffect(){ helper(); }',
++  "app/import.ts":
++    'import { helper } from "../lib/module.js"; export function imported(){ helper(); }',
++  "lib/global.ts": "function helper(){ return 1; }",
++  "lib/module.ts": "export function helper(){ return 2; }",
++};
++function analyze(
++  inputs = sources,
++  configs: Record<string, unknown> = configInputs,
++) {
++  const graph = new Graph("idx03");
++  indexTypeScript(capture(inputs), graph, capture(configs));
++  return graph;
++}
++const call = (graph: Graph, path: string) =>
++  graph.relations.find(
++    (r) =>
++      r.type === "calls" &&
++      r.evidence.filePath === path &&
++      r.evidence.text === "helper()",
++  )!;
++function resolver(
++  inputs = sources,
++  configs: Record<string, unknown> = configInputs,
++) {
++  return createConfigurationResolver(capture(inputs), capture(configs));
++}
++describe("IDX03 captured project references scope", () => {
++  it("assigns actual referenced named project members independently without option inheritance", () => {
++    const result = resolver();
++    expect(result.scopeFor("app/import.ts")).toEqual({
++      sourcePath: "app/import.ts",
++      configPath: "configs/app.json",
++      status: "resolved",
++    });
++    expect(result.scopeFor("lib/module.ts").configPath).toBe(
++      "configs/lib.json",
++    );
++    expect(result.projectGraph.counts).toMatchObject({
++      observedRoots: 1,
++      observedProjects: 3,
++      observedReferences: 2,
++      sourceScopes: 5,
++      resolved: 5,
++    });
++    expect(result.projectGraph.status).toBe("complete");
++  });
++  it("never resolves a no-import callable to a referenced global script", () => {
++    expect(call(analyze(), "app/no-import.ts")).toMatchObject({
++      resolution: "unresolved",
++      targetId: null,
++    });
++  });
++  it("never uses side-effect-only import as a callable binding proof", () => {
++    expect(call(analyze(), "app/side-effect.ts")).toMatchObject({
++      resolution: "unresolved",
++      targetId: null,
++    });
++  });
++  it("resolves a named binding module import to the exact referenced captured implementation", () => {
++    const graph = analyze();
++    const edge = call(graph, "app/import.ts");
++    expect(edge.resolution).toBe("resolved");
++    expect(graph.nodes.get(edge.targetId!)?.filePath).toBe("lib/module.ts");
++  });
++  it("does not mix global symbols between independent owned scopes", () => {
++    const inputs = {
++      ...sources,
++      "other/tsconfig.json": "",
++      "other/global.ts": "function helper(){ return 9; }",
++    };
++    delete inputs["other/tsconfig.json"];
++    const graph = analyze(inputs, {
++      ...configInputs,
++      "other/tsconfig.json": { include: ["*.ts"] },
++    });
++    expect(call(graph, "app/no-import.ts").targetId).toBeNull();
++  });
++  it("keeps a valid named leaf ownership and own aliases when solution root also references missing configuration", () => {
++    const configs = {
++      "tsconfig.json": {
++        files: [],
++        compilerOptions: { baseUrl: ".", paths: { "@leaf": ["wrong.ts"] } },
++        references: [{ path: "./configs/client.json" }, { path: "./missing" }],
++      },
++      "configs/client.json": {
++        compilerOptions: {
++          composite: true,
++          baseUrl: "../src/client",
++          paths: { "@leaf": ["helper.ts"] },
++        },
++        include: ["../src/client"],
++      },
++    };
++    const inputs = {
++      "src/client/entry.ts":
++        'import { helper } from "@leaf"; export function entry(){ helper(); }',
++      "src/client/helper.ts": "export function helper(){}",
++    };
++    const result = resolver(inputs, configs);
++    expect(result.scopeFor("src/client/entry.ts")).toMatchObject({
++      status: "resolved",
++      configPath: "configs/client.json",
++    });
++    expect(result.projectGraph.status).toBe("partial");
++    expect(
++      result.projectGraph.projects.find((p) => p.configPath === "tsconfig.json")
++        ?.status,
++    ).toBe("invalid");
++    const graph = analyze(inputs, configs);
++    expect(
++      graph.nodes.get(call(graph, "src/client/entry.ts").targetId!)?.filePath,
++    ).toBe("src/client/helper.ts");
++  });
++  it("invalidates failing root's own members while preserving the valid leaf", () => {
++    const configs = {
++      ...configInputs,
++      "tsconfig.json": {
++        files: ["root.ts"],
++        references: [{ path: "./configs/app.json" }, { path: "./missing" }],
++      },
++    };
++    const inputs = {
++      ...sources,
++      "root.ts": "function helper(){} function root(){helper();}",
++    };
++    const result = resolver(inputs, configs);
++    expect(result.scopeFor("root.ts").status).toBe("invalid");
++    expect(result.scopeFor("app/import.ts").status).toBe("resolved");
++    expect(call(analyze(inputs, configs), "root.ts").resolution).toBe(
++      "unresolved",
++    );
++  });
++  it("rejects overlap rather than picking a candidate by topology order", () => {
++    const configs = {
++      ...configInputs,
++      "configs/lib.json": { ...libConfig, include: ["../app", "../lib"] },
++    };
++    expect(resolver(sources, configs).scopeFor("app/import.ts").status).toBe(
++      "ambiguous",
++    );
++    expect(call(analyze(sources, configs), "app/import.ts").resolution).toBe(
++      "unresolved",
++    );
++  });
++  it("does not guess standalone named configuration ownership", () => {
++    const result = resolver(sources, {
++      "configs/standalone.json": { include: ["../app"] },
++    });
++    expect(result.scopeFor("app/import.ts").status).toBe("unconfigured");
++    expect(result.projectGraph.counts.observedProjects).toBe(0);
++  });
++  it("honors nearest failed configuration barrier without ancestor fallback", () => {
++    const configs = {
++      ...configInputs,
++      "app/tsconfig.json": { extends: "./missing.json" },
++    };
++    const result = resolver(sources, configs);
++    expect(result.scopeFor("app/import.ts").status).toBe("invalid");
++    expect(call(analyze(sources, configs), "app/import.ts").resolution).toBe(
++      "unresolved",
++    );
++  });
++  it("marks cycle closure invalid without invalidating an independent valid reachable branch", () => {
++    const configs = {
++      ...configInputs,
++      "configs/lib.json": {
++        ...libConfig,
++        references: [{ path: "./app.json" }],
++      },
++      "configs/independent.json": {
++        compilerOptions: { composite: true },
++        include: ["../valid"],
++      },
++      "tsconfig.json": {
++        files: [],
++        references: [
++          { path: "./configs/app.json" },
++          { path: "./configs/independent.json" },
++        ],
++      },
++    };
++    const result = resolver(
++      { ...sources, "valid/file.ts": "export function valid(){}" },
++      configs,
++    );
++    expect(result.scopeFor("app/import.ts").status).toBe("invalid");
++    expect(result.scopeFor("valid/file.ts")).toMatchObject({
++      status: "resolved",
++      configPath: "configs/independent.json",
++    });
++    expect(
++      result.projectGraph.references.some((e) => e.status === "cycle"),
++    ).toBe(true);
++  });
++  it("rejects referenced non-composite implementation authorization", () => {
++    const configs = {
++      ...configInputs,
++      "configs/lib.json": { include: ["../lib"] },
++    };
++    const result = resolver(sources, configs);
++    expect(result.scopeFor("lib/module.ts").status).toBe("invalid");
++    expect(result.scopeFor("app/import.ts").status).toBe("invalid");
++  });
++  it("keeps excluded sources unconfigured rather than falling back to ancestor options", () => {
++    const configs = {
++      "tsconfig.json": { include: ["app"] },
++      "app/tsconfig.json": { files: ["import.ts"] },
++    };
++    expect(resolver(sources, configs).scopeFor("app/no-import.ts").status).toBe(
++      "unconfigured",
++    );
++  });
++  it("records all scope counts while returning bounded stable samples without altering ownership", () => {
++    const inputs = Object.fromEntries(
++      Array.from({ length: 72 }, (_, i) => [
++        `app/file${String(i).padStart(3, "0")}.ts`,
++        "export function item(){}",
++      ]),
++    );
++    const result = resolver(inputs, { "tsconfig.json": { include: ["app"] } });
++    expect(result.projectGraph.counts).toMatchObject({
++      sourceScopes: 72,
++      resolved: 72,
++    });
++    expect(result.projectGraph.scopes).toHaveLength(50);
++    expect(result.projectGraph.truncated.scopes).toBe(true);
++    expect(result.scopeFor("app/file071.ts").status).toBe("resolved");
++  });
++  it("preserves legacy no-reference same-scope global callable behavior", () => {
++    const graph = analyze(
++      {
++        "one.ts": "function helper(){}",
++        "two.ts": "function entry(){helper();}",
++      },
++      { "tsconfig.json": { include: ["*.ts"] } },
++    );
++    expect(call(graph, "two.ts").resolution).toBe("resolved");
++  });
++});
+diff --git a/packages/indexer/src/projectReferencesReview.test.ts b/packages/indexer/src/projectReferencesReview.test.ts
+new file mode 100644
+index 0000000..d7a2991
+--- /dev/null
++++ b/packages/indexer/src/projectReferencesReview.test.ts
+@@ -0,0 +1,153 @@
++import { describe, expect, it } from "vitest";
++import { createCapturedReferenceGraph } from "./projectReferenceGraph.js";
++import { Graph } from "./graph.js";
++import { indexTypeScript } from "./typescript.js";
++
++const captured = (inputs: Record<string, unknown>) =>
++  Object.entries(inputs).map(([path, value]) => ({
++    path,
++    bytes: Buffer.from(
++      typeof value === "string" ? value : JSON.stringify(value),
++    ),
++  }));
++const inputsMap = (inputs: Record<string, unknown>) =>
++  new Map(
++    Object.entries(inputs).map(([path, value]) => [
++      path,
++      JSON.stringify(value),
++    ]),
++  );
++describe("IDX03 independent review boundary regressions", () => {
++  it("keeps the global 2048 reference budget across recursive parent resumes", () => {
++    const inputs = {
++      "tsconfig.json": {
++        references: Array.from({ length: 2048 }, () => ({
++          path: "./shared.json",
++        })),
++      },
++      "shared.json": {
++        references: Array.from({ length: 2048 }, () => ({
++          path: "./leaf.json",
++        })),
++      },
++      "leaf.json": {},
++    };
++    const result = createCapturedReferenceGraph(
++      inputsMap(inputs),
++      ["tsconfig.json"],
++      () => true,
++    );
++    const graph = result.view([]);
++    expect(graph.counts.observedReferences).toBeLessThanOrEqual(2048);
++    expect(graph.status).toBe("partial");
++  });
++  it.each([
++    ["a", "z"],
++    ["z", "a"],
++  ])(
++    "checks deep reused paths when shallow root is %s and deep root %s",
++    (shallow, deep) => {
++      const inputs: Record<string, unknown> = {
++        [shallow + "/tsconfig.json"]: {
++          references: [{ path: "../shared.json" }],
++        },
++        [deep + "/tsconfig.json"]: { references: [{ path: "../level1.json" }] },
++        "shared.json": { references: [{ path: "./leaf.json" }] },
++        "leaf.json": {},
++      };
++      for (let i = 1; i <= 14; i++)
++        inputs["level" + i + ".json"] = {
++          references: [
++            {
++              path: i === 14 ? "./shared.json" : "./level" + (i + 1) + ".json",
++            },
++          ],
++        };
++      const result = createCapturedReferenceGraph(
++        inputsMap(inputs),
++        [shallow + "/tsconfig.json", deep + "/tsconfig.json"],
++        () => true,
++      );
++      expect(result.valid(shallow + "/tsconfig.json")).toBe(true);
++      expect(result.valid(deep + "/tsconfig.json")).toBe(false);
++      expect(result.reachable(shallow + "/tsconfig.json")).toContain(
++        "leaf.json",
++      );
++      expect(result.reachable(deep + "/tsconfig.json")).not.toContain(
++        "leaf.json",
++      );
++    },
++  );
++  it("shares a leaf veto through a forwarding namespace in another scope", () => {
++    const files = {
++      "app/entry.cjs":
++        'const lib=require("../forward/index.cjs"); function entry(){lib.helper();} exports.entry=entry;',
++      "forward/index.cjs": 'module.exports=require("../lib/main.cjs");',
++      "lib/main.cjs": "function helper(){} exports.helper=helper;",
++      "mutator/change.cjs":
++        'const lib=require("../lib/main.cjs"); lib.helper=()=>9;',
++    };
++    const configs: Record<string, unknown> = {
++      "tsconfig.json": {
++        files: [],
++        references: ["app", "forward", "lib", "mutator"].map((name) => ({
++          path: "./configs/" + name + ".json",
++        })),
++      },
++    };
++    for (const name of ["app", "forward", "lib", "mutator"])
++      configs["configs/" + name + ".json"] = {
++        compilerOptions: { composite: true, allowJs: true },
++        include: ["../" + name],
++      };
++    const graph = new Graph("idx03-review-forward");
++    indexTypeScript(captured(files), graph, captured(configs));
++    expect(
++      graph.relations.find(
++        (r) =>
++          r.type === "calls" &&
++          r.evidence.filePath === "app/entry.cjs" &&
++          r.evidence.text === "lib.helper()",
++      ),
++    ).toMatchObject({ resolution: "unresolved", targetId: null });
++  });
++  it.each(["write", "escape"])(
++    "vetoes an independent scope's CommonJS namespace %s before another consumer call",
++    (hazard) => {
++      const sources = {
++        "app/entry.cjs":
++          'const {helper}=require("../lib/main.cjs"); function entry(){helper();} exports.entry=entry;',
++        "lib/main.cjs": "function helper(){} exports.helper=helper;",
++        "mutator/change.cjs":
++          hazard === "write"
++            ? 'const mod=require("../lib/main.cjs"); mod.helper=()=>9;'
++            : 'const mod=require("../lib/main.cjs"); function consume(x){} consume(mod);',
++      };
++      const configs: Record<string, unknown> = {
++        "tsconfig.json": {
++          files: [],
++          references: [
++            { path: "./configs/app.json" },
++            { path: "./configs/lib.json" },
++            { path: "./configs/mutator.json" },
++          ],
++        },
++      };
++      for (const name of ["app", "lib", "mutator"])
++        configs["configs/" + name + ".json"] = {
++          compilerOptions: { composite: true, allowJs: true },
++          include: ["../" + name],
++        };
++      const graph = new Graph("idx03-review");
++      indexTypeScript(captured(sources), graph, captured(configs));
++      expect(
++        graph.relations.find(
++          (r) =>
++            r.type === "calls" &&
++            r.evidence.filePath === "app/entry.cjs" &&
++            r.evidence.text === "helper()",
++        ),
++      ).toMatchObject({ resolution: "unresolved", targetId: null });
++    },
++  );
++});
+diff --git a/packages/core/src/projectReferenceSchema.test.ts b/packages/core/src/projectReferenceSchema.test.ts
+new file mode 100644
+index 0000000..2922d2f
+--- /dev/null
++++ b/packages/core/src/projectReferenceSchema.test.ts
+@@ -0,0 +1,181 @@
++import { describe, expect, it } from "vitest";
++import { snapshotSchema } from "./validation.js";
++
++const snapshot = {
++  id: "snapshot",
++  projectId: "project",
++  createdAt: "2026-10-10T00:00:00.000Z",
++  gitRevision: null,
++  contentHash: "hash",
++  nodes: [],
++  relations: [],
++  diagnostics: [],
++  coverage: { files: [], excludedPatterns: [], unresolvedCount: 0 },
++};
++function graph() {
++  return {
++    version: 1,
++    status: "complete",
++    counts: {
++      observedRoots: 1,
++      observedProjects: 1,
++      observedReferences: 1,
++      sourceScopes: 1,
++      resolved: 1,
++      unconfigured: 0,
++      ambiguous: 0,
++      invalid: 0,
++    },
++    roots: ["tsconfig.json"],
++    projects: [{ configPath: "tsconfig.json", status: "resolved" }],
++    references: [
++      {
++        sourceConfigPath: "tsconfig.json",
++        referencePathPreview: "./child",
++        targetConfigPath: "child/tsconfig.json",
++        status: "resolved",
++        referencePathTruncated: false,
++        reasonTruncated: false,
++      },
++    ],
++    scopes: [
++      {
++        sourcePath: "src/a.ts",
++        configPath: "tsconfig.json",
++        status: "resolved",
++      },
++    ],
++    truncated: {
++      roots: false,
++      projects: false,
++      references: false,
++      scopes: false,
++    },
++  };
++}
++const parse = (value: unknown) =>
++  snapshotSchema.safeParse({
++    ...snapshot,
++    coverage: { ...snapshot.coverage, configurationProjectGraph: value },
++  });
++describe("IDX03 bounded configuration project graph schema", () => {
++  it("accepts legacy missing field", () =>
++    expect(snapshotSchema.safeParse(snapshot).success).toBe(true));
++  it("accepts the exact optional graph and preserves it", () => {
++    const result = parse(graph());
++    expect(result.success).toBe(true);
++    if (result.success)
++      expect(result.data.coverage.configurationProjectGraph).toEqual(graph());
++  });
++  it("accepts a bounded sample with accurate larger counts", () => {
++    const value = graph();
++    value.counts.sourceScopes = value.counts.resolved = 72;
++    value.truncated.scopes = true;
++    expect(parse(value).success).toBe(true);
++  });
++  it.each(["roots", "projects", "references", "scopes"] as const)(
++    "rejects over-limit %s array even with consistent totals",
++    (key) => {
++      const value = graph(),
++        limit = key === "references" ? 100 : 50;
++      value[key] = Array.from(
++        { length: limit + 1 },
++        () => value[key][0],
++      ) as never;
++      if (key === "roots") value.counts.observedRoots = limit + 1;
++      if (key === "projects") value.counts.observedProjects = limit + 1;
++      if (key === "references") value.counts.observedReferences = limit + 1;
++      if (key === "scopes")
++        value.counts.sourceScopes = value.counts.resolved = limit + 1;
++      expect(parse(value).success).toBe(false);
++    },
++  );
++  it.each([-1, 0.5, Number.MAX_SAFE_INTEGER + 1])(
++    "rejects nonnegative safeinteger count violation %s",
++    (count) => {
++      const value = graph();
++      value.counts.observedProjects = count;
++      expect(parse(value).success).toBe(false);
++    },
++  );
++  it("rejects scope category totals that disagree with all sources", () => {
++    const value = graph();
++    value.counts.invalid = 1;
++    expect(parse(value).success).toBe(false);
++  });
++  it.each(["roots", "projects", "references", "scopes"] as const)(
++    "rejects returned %s greater than observed",
++    (key) => {
++      const value = graph();
++      if (key === "roots") value.counts.observedRoots = 0;
++      if (key === "projects") value.counts.observedProjects = 0;
++      if (key === "references") value.counts.observedReferences = 0;
++      if (key === "scopes")
++        value.counts.sourceScopes = value.counts.resolved = 0;
++      expect(parse(value).success).toBe(false);
++    },
++  );
++  it.each(["roots", "projects", "references", "scopes"] as const)(
++    "rejects contradictory %s truncated flag",
++    (key) => {
++      const value = graph();
++      value.truncated[key] = true;
++      expect(parse(value).success).toBe(false);
++    },
++  );
++  it("rejects returned scope categories greater than complete category counts", () => {
++    const value = graph();
++    value.counts.resolved = 0;
++    value.counts.invalid = 1;
++    expect(parse(value).success).toBe(false);
++  });
++  it("rejects missing reason with reasonTruncated true", () => {
++    const value = graph();
++    value.references[0]!.reasonTruncated = true;
++    expect(parse(value).success).toBe(false);
++  });
++  it.each([
++    "root",
++    "project",
++    "referenceSource",
++    "referenceTarget",
++    "source",
++    "scopeConfig",
++  ])("rejects overlong %s public path", (key) => {
++    const value = graph();
++    const path = "a".repeat(2049);
++    if (key === "root") value.roots[0] = path;
++    if (key === "project") value.projects[0]!.configPath = path;
++    if (key === "referenceSource") value.references[0]!.sourceConfigPath = path;
++    if (key === "referenceTarget") value.references[0]!.targetConfigPath = path;
++    if (key === "source") value.scopes[0]!.sourcePath = path;
++    if (key === "scopeConfig") value.scopes[0]!.configPath = path;
++    expect(parse(value).success).toBe(false);
++  });
++  it("rejects overlong preview and reason strings", () => {
++    const value = graph();
++    value.references[0]!.referencePathPreview = "a".repeat(257);
++    expect(parse(value).success).toBe(false);
++    value.references[0]!.referencePathPreview = "./child";
++    Object.assign(value.references[0]!, { reason: "a".repeat(513) });
++    expect(parse(value).success).toBe(false);
++  });
++  it("accepts budget partial status and explicit string truncation", () => {
++    const value = graph();
++    value.status = "partial";
++    Object.assign(value.references[0]!, {
++      status: "budget",
++      reason: "a".repeat(512),
++      reasonTruncated: true,
++      referencePathPreview: "a".repeat(256),
++      referencePathTruncated: true,
++    });
++    expect(parse(value).success).toBe(true);
++  });
++  it("rejects invalid paths and unknown fields", () => {
++    const value = graph();
++    value.roots[0] = "../escape.json";
++    expect(parse(value).success).toBe(false);
++    expect(parse({ ...graph(), hidden: true }).success).toBe(false);
++  });
++});
+diff --git a/apps/web/src/app/ConfigurationProjectGraphPanel.tsx b/apps/web/src/app/ConfigurationProjectGraphPanel.tsx
+new file mode 100644
+index 0000000..58cb536
+--- /dev/null
++++ b/apps/web/src/app/ConfigurationProjectGraphPanel.tsx
+@@ -0,0 +1,137 @@
++import type { ConfigurationProjectGraph } from "@codemap/core";
++import { useStrings } from "../i18n/index.js";
++
++/** Read-only bounded capture facts; transport omissions never imply unknown ownership. */
++export function ConfigurationProjectGraphPanel({
++  graph,
++}: {
++  graph?: ConfigurationProjectGraph;
++}) {
++  const strings = useStrings();
++  const labels = {
++    resolved: strings.configurationGraphResolved,
++    unconfigured: strings.configurationGraphUnconfigured,
++    ambiguous: strings.configurationGraphAmbiguous,
++    invalid: strings.configurationGraphInvalid,
++    unavailable: strings.configurationGraphUnavailable,
++    cycle: strings.configurationGraphCycle,
++    budget: strings.configurationGraphBudget,
++  };
++  const omission = (truncated: boolean, scopes = false) =>
++    truncated && (
++      <p className="warning">
++        {scopes
++          ? strings.configurationGraphScopeSample
++          : strings.configurationGraphSample}
++      </p>
++    );
++  return (
++    <details data-testid="configuration-project-graph">
++      <summary>{strings.configurationGraph}</summary>
++      {!graph ? (
++        <p className="muted">{strings.configurationGraphUnrecorded}</p>
++      ) : (
++        <>
++          <p className={graph.status === "partial" ? "warning" : "muted"}>
++            {graph.status === "partial"
++              ? strings.configurationGraphPartial
++              : strings.configurationGraphComplete}
++          </p>
++          <p>
++            {strings.configurationGraphProjects}:{" "}
++            {graph.counts.observedProjects} ·{" "}
++            {strings.configurationGraphReferences}:{" "}
++            {graph.counts.observedReferences} ·{" "}
++            {strings.configurationGraphScopes}: {graph.counts.sourceScopes}
++          </p>
++          <p>
++            {labels.resolved}: {graph.counts.resolved} · {labels.unconfigured}:{" "}
++            {graph.counts.unconfigured} · {labels.ambiguous}:{" "}
++            {graph.counts.ambiguous} · {labels.invalid}: {graph.counts.invalid}
++          </p>
++          <details>
++            <summary>
++              {strings.configurationGraphRoots} ({graph.roots.length}/
++              {graph.counts.observedRoots})
++            </summary>
++            <ul>
++              {graph.roots.map((path) => (
++                <li key={path}>
++                  <code className="path">{path}</code>
++                </li>
++              ))}
++            </ul>
++            {omission(graph.truncated.roots)}
++          </details>
++          <details>
++            <summary>
++              {strings.configurationGraphProjects} ({graph.projects.length}/
++              {graph.counts.observedProjects})
++            </summary>
++            <ul>
++              {graph.projects.map((project) => (
++                <li key={project.configPath}>
++                  <code className="path">{project.configPath}</code> ·{" "}
++                  {labels[project.status]}
++                </li>
++              ))}
++            </ul>
++            {omission(graph.truncated.projects)}
++          </details>
++          <details>
++            <summary>
++              {strings.configurationGraphReferences} ({graph.references.length}/
++              {graph.counts.observedReferences})
++            </summary>
++            <ul>
++              {graph.references.map((edge, index) => (
++                <li key={index}>
++                  <code className="path">{edge.sourceConfigPath}</code> ·{" "}
++                  <code className="path">{edge.referencePathPreview}</code>
++                  {edge.referencePathTruncated && (
++                    <small className="warning">
++                      {" "}
++                      · {strings.configurationGraphTextTruncated}
++                    </small>
++                  )}
++                  {" → "}
++                  <code className="path">
++                    {edge.targetConfigPath ?? "—"}
++                  </code> · {labels[edge.status]}
++                  {edge.reason && (
++                    <p className="warning">
++                      {edge.reason}
++                      {edge.reasonTruncated && (
++                        <small>
++                          {" "}
++                          · {strings.configurationGraphTextTruncated}
++                        </small>
++                      )}
++                    </p>
++                  )}
++                </li>
++              ))}
++            </ul>
++            {omission(graph.truncated.references)}
++          </details>
++          <details>
++            <summary>
++              {strings.configurationGraphScopeSamples} ({graph.scopes.length}/
++              {graph.counts.sourceScopes})
++            </summary>
++            <ul>
++              {graph.scopes.map((scope) => (
++                <li key={scope.sourcePath}>
++                  <code className="path">{scope.sourcePath}</code> →{" "}
++                  <code className="path">{scope.configPath ?? "—"}</code> ·{" "}
++                  {labels[scope.status]}
++                </li>
++              ))}
++            </ul>
++            {omission(graph.truncated.scopes, true)}
++          </details>
++        </>
++      )}
++    </details>
++  );
++}
+diff --git a/apps/web/src/app/ConfigurationProjectGraphPanel.test.tsx b/apps/web/src/app/ConfigurationProjectGraphPanel.test.tsx
+new file mode 100644
+index 0000000..aae313a
+--- /dev/null
++++ b/apps/web/src/app/ConfigurationProjectGraphPanel.test.tsx
+@@ -0,0 +1,111 @@
++import { describe, expect, it } from "vitest";
++import { renderToStaticMarkup } from "react-dom/server";
++import { LocaleProvider } from "../i18n/index.js";
++import { ConfigurationProjectGraphPanel } from "./ConfigurationProjectGraphPanel.js";
++import type { ConfigurationProjectGraph } from "@codemap/core";
++
++const graph: ConfigurationProjectGraph = {
++  version: 1,
++  status: "partial",
++  counts: {
++    observedRoots: 1,
++    observedProjects: 2,
++    observedReferences: 1,
++    sourceScopes: 63,
++    resolved: 62,
++    unconfigured: 1,
++    ambiguous: 0,
++    invalid: 0,
++  },
++  roots: ["tsconfig.json"],
++  projects: [
++    { configPath: "tsconfig.json", status: "invalid" },
++    { configPath: "configs/原名.json", status: "resolved" },
++  ],
++  references: [
++    {
++      sourceConfigPath: "tsconfig.json",
++      referencePathPreview: "./missing",
++      targetConfigPath: "missing/tsconfig.json",
++      status: "unavailable",
++      reason: "Original captured diagnosis",
++      referencePathTruncated: false,
++      reasonTruncated: false,
++    },
++  ],
++  scopes: [
++    {
++      sourcePath: "app/原名.ts",
++      configPath: "configs/原名.json",
++      status: "resolved",
++    },
++  ],
++  truncated: { roots: false, projects: false, references: false, scopes: true },
++};
++const render = (
++  value?: ConfigurationProjectGraph,
++  locale: "en" | "zh" = "en",
++) =>
++  renderToStaticMarkup(
++    <LocaleProvider locale={locale}>
++      <ConfigurationProjectGraphPanel graph={value} />
++    </LocaleProvider>,
++  );
++describe("IDX03 configuration project graph disclosure", () => {
++  it("states legacy metadata was not recorded rather than claiming zero", () => {
++    const html = render();
++    expect(html).toContain("Configuration project graph was not recorded");
++    expect(html).not.toContain("0/0");
++  });
++  it("renders actual counts, partial status and bounded returned scope sample", () => {
++    const html = render(graph);
++    expect(html).toContain("Partial captured graph");
++    expect(html).toContain("63");
++    expect(html).toContain("62");
++    expect(html).toContain("1/63");
++    expect(html).toContain("Source scope samples");
++    expect(html).toContain(
++      "A sample was returned; omitted sources retain their recorded scope.",
++    );
++  });
++  it("preserves authored paths and original failed-edge reason in both languages", () => {
++    for (const locale of ["en", "zh"] as const) {
++      const html = render(graph, locale);
++      expect(html).toContain("app/原名.ts");
++      expect(html).toContain("Original captured diagnosis");
++      expect(html).toContain("missing/tsconfig.json");
++    }
++  });
++  it("translates graph controls and statuses without translating authored paths", () => {
++    expect(render(graph)).toContain("Configuration project graph");
++    expect(render(graph, "zh")).toContain("配置项目图");
++    expect(render(graph, "zh")).toContain("未配置");
++    expect(render(graph, "zh")).toContain("不可用");
++  });
++  it("shows explicit preview and reason truncation", () => {
++    const value = structuredClone(graph);
++    value.references[0]!.referencePathTruncated = true;
++    value.references[0]!.reasonTruncated = true;
++    expect(render(value).match(/Text truncated/g)).toHaveLength(2);
++  });
++  it("discloses every collection omission separately", () => {
++    const value = structuredClone(graph);
++    value.truncated = {
++      roots: true,
++      projects: true,
++      references: true,
++      scopes: true,
++    };
++    expect(render(value).match(/A sample was returned/g)).toHaveLength(4);
++  });
++  it("keeps recorded complete status separate from individual scope uncertainty", () => {
++    const value = structuredClone(graph);
++    value.status = "complete";
++    value.scopes = [{ sourcePath: "a.ts", status: "ambiguous" }];
++    value.counts.ambiguous = 1;
++    value.counts.resolved = 61;
++    const html = render(value);
++    expect(html).toContain("Captured graph complete");
++    expect(html).toContain("Ambiguous");
++  });
++});
+diff --git a/tests/support/idx03-validate.mjs b/tests/support/idx03-validate.mjs
+new file mode 100644
+index 0000000..5cf8aae
+--- /dev/null
++++ b/tests/support/idx03-validate.mjs
+@@ -0,0 +1,578 @@
++import assert from "node:assert/strict";
++import {
++  mkdtemp,
++  mkdir,
++  writeFile,
++  readFile,
++  access,
++  rm,
++} from "node:fs/promises";
++import { tmpdir } from "node:os";
++import { join, resolve } from "node:path";
++import { createHash } from "node:crypto";
++import { chromium, expect } from "@playwright/test";
++import { SqliteStorage } from "@codemap/storage";
++import { SourceIndexer } from "@codemap/indexer";
++import {
++  startProduction,
++  connectMcp,
++  http,
++  denyExternalRequests,
++} from "./production.mjs";
++
++const out = resolve("docs/superpowers/reviews/idx03-2026-10-10");
++await mkdir(out, { recursive: true });
++const target = await mkdtemp(join(tmpdir(), "atlasmode-idx03-fixture-"));
++const otherTarget = await mkdtemp(join(tmpdir(), "atlasmode-idx03-isolated-"));
++const runtime = await mkdtemp(join(tmpdir(), "atlasmode-idx03-runtime-"));
++const marker = join(target, "TARGET_EXECUTED");
++const rootConfiguration = {
++  files: [],
++  references: [
++    { path: "./configs/app.json" },
++    { path: "./configs/bulk.json" },
++    { path: "./configs/mutator.json" },
++    { path: "./missing" },
++  ],
++};
++const appConfiguration = {
++  compilerOptions: {
++    composite: true,
++    allowJs: true,
++    baseUrl: "../lib",
++    paths: { "@leaf": ["main.ts"] },
++  },
++  include: ["../app"],
++  references: [{ path: "./lib.json" }, { path: "./cjslib.json" }],
++};
++const inputs = {
++  "tsconfig.json": JSON.stringify(rootConfiguration, null, 2),
++  "configs/app.json": JSON.stringify(appConfiguration, null, 2),
++  "configs/lib.json": JSON.stringify(
++    { compilerOptions: { composite: true }, include: ["../lib"] },
++    null,
++    2,
++  ),
++  "configs/bulk.json": JSON.stringify(
++    { compilerOptions: { composite: true }, include: ["../bulk"] },
++    null,
++    2,
++  ),
++  "configs/cjslib.json": JSON.stringify(
++    {
++      compilerOptions: { composite: true, allowJs: true },
++      include: ["../cjslib"],
++    },
++    null,
++    2,
++  ),
++  "configs/mutator.json": JSON.stringify(
++    {
++      compilerOptions: { composite: true, allowJs: true },
++      include: ["../mutator"],
++    },
++    null,
++    2,
++  ),
++  "app/cjs-entry.cjs":
++    'const {helper}=require("../cjslib/main.cjs"); function cjsEntry(){helper();} exports.cjsEntry=cjsEntry;',
++  "cjslib/main.cjs": "function helper(){} exports.helper=helper;",
++  "mutator/change.cjs":
++    'const mod=require("../cjslib/main.cjs"); mod.helper=()=>9;',
++  "app/entry.ts":
++    'import {helper} from "@leaf";\nexport function entry(){ return helper(); }\n',
++  "app/no-import.ts": "export function noImport(){ return helper(); }\n",
++  "app/side-effect.ts":
++    'import "../lib/global.js";\nexport function sideEffect(){ return helper(); }\n',
++  "lib/global.ts": 'function helper(){ return "global"; }\n',
++  "lib/main.ts": 'export function helper(){ return "main"; }\n',
++  "lib/other.ts": 'export function helper(){ return "other"; }\n',
++  ...Object.fromEntries(
++    Array.from({ length: 56 }, (_, i) => [
++      `bulk/file${String(i).padStart(3, "0")}.ts`,
++      `export function item${i}(){return ${i};}\n`,
++    ]),
++  ),
++  "never-execute.ts":
++    'import {writeFileSync} from "node:fs";\nwriteFileSync(' +
++    JSON.stringify(marker) +
++    ', "executed");\nthrow new Error("Target source must never execute");\n',
++};
++for (const dir of [target, otherTarget])
++  for (const [file, bytes] of Object.entries(inputs)) {
++    await mkdir(join(dir, file, ".."), { recursive: true });
++    await writeFile(join(dir, file), bytes);
++  }
++const hash = (bytes) => createHash("sha256").update(bytes).digest("hex");
++const save = (file, value) =>
++  writeFile(join(out, file), JSON.stringify(value, null, 2));
++await save("fixture-source.json", {
++  target,
++  otherTarget,
++  inputs,
++  sha256: Object.fromEntries(
++    Object.entries(inputs).map(([f, b]) => [f, hash(b)]),
++  ),
++});
++let server, mcp, browser, page;
++const errors = [],
++  external = [],
++  protocolErrors = [];
++const observations = {
++  status: "pending",
++  target,
++  otherTarget,
++  scope:
++    "Actual built HTTP/MCP/Chromium; only captured source is analyzed; target modules and scripts never execute.",
++};
++try {
++  server = await startProduction(join(runtime, "data"));
++  const api = (path, method = "GET", body) =>
++    http(server.url, path, method, body);
++  mcp = await connectMcp(server.url);
++  mcp.client.onerror = (e) => protocolErrors.push(String(e));
++  browser = await chromium.launch();
++  const context = await browser.newContext({
++    viewport: { width: 1600, height: 1000 },
++  });
++  await denyExternalRequests(context, external);
++  page = await context.newPage();
++  page.on("pageerror", (e) => errors.push(String(e)));
++  page.on("console", (m) => {
++    if (m.type() === "error") errors.push(m.text());
++  });
++  await page.goto(server.url);
++  if (await page.locator(".welcome").count())
++    await page
++      .locator(".welcome")
++      .getByRole("button", { name: "选择本地项目", exact: true })
++      .click();
++  await page.getByRole("textbox", { name: "本地项目路径" }).fill(target);
++  const opened = page.waitForResponse(
++    (r) => r.url().endsWith("/api/projects") && r.request().method() === "POST",
++  );
++  await page.getByRole("button", { name: "打开并索引", exact: true }).click();
++  const response = await opened;
++  assert.equal(response.ok(), true);
++  const project = await response.json(),
++    base = "/api/projects/" + project.id,
++    args = { projectId: project.id };
++  await page.getByRole("combobox", { name: "界面语言" }).selectOption("en");
++  const original = await api(base + "/snapshot");
++  const node = (snapshot, name, file) => {
++    const found = snapshot.nodes.find(
++      (n) => n.kind === "function" && n.name === name && n.filePath === file,
++    );
++    assert.ok(found, file + ":" + name);
++    return found;
++  };
++  const entry = node(original, "entry", "app/entry.ts"),
++    leaf = node(original, "helper", "lib/main.ts"),
++    alternate = node(original, "helper", "lib/other.ts");
++  const functionContext = async (n) => {
++    const value = await api(base + "/functions/" + n.id);
++    assert.deepEqual(
++      await mcp.call("get_function_context", {
++        ...args,
++        nodeId: n.id,
++        limit: 50,
++      }),
++      value,
++    );
++    return value;
++  };
++  const context0 = await functionContext(entry);
++  assert.equal(context0.totalOutgoing, 1);
++  assert.equal(context0.outgoing[0].targetId, leaf.id);
++  assert.equal(context0.outgoing[0].resolution, "resolved");
++  const negativeContexts = {};
++  for (const [name, file] of [
++    ["noImport", "app/no-import.ts"],
++    ["sideEffect", "app/side-effect.ts"],
++    ["cjsEntry", "app/cjs-entry.cjs"],
++  ]) {
++    const ctx = await functionContext(node(original, name, file));
++    negativeContexts[name] = ctx;
++    assert.equal(ctx.outgoing[0].targetId, null);
++    assert.equal(ctx.outgoing[0].resolution, "unresolved");
++  }
++  const graph0 = original.coverage.configurationProjectGraph;
++  assert.equal(graph0.status, "partial");
++  assert.equal(graph0.counts.sourceScopes, 66);
++  assert.equal(graph0.counts.resolved, 65);
++  assert.equal(graph0.counts.unconfigured, 1);
++  assert.equal(graph0.scopes.length, 50);
++  assert.equal(graph0.truncated.scopes, true);
++  assert.ok(
++    graph0.projects.some(
++      (p) => p.configPath === "configs/app.json" && p.status === "resolved",
++    ),
++  );
++  assert.ok(
++    graph0.references.some(
++      (e) =>
++        e.targetConfigPath === "missing/tsconfig.json" &&
++        e.status === "unavailable",
++    ),
++  );
++  const sources = {};
++  for (const [file, bytes] of Object.entries(inputs))
++    if (/\.(?:ts|cjs)$/.test(file)) {
++      const source = await api(
++        base + "/source?filePath=" + encodeURIComponent(file),
++      );
++      assert.equal(source.content, bytes);
++      sources[file] = source;
++    }
++  const summary = await api(base + "/summary");
++  assert.deepEqual(await mcp.call("get_project_summary", args), summary);
++  async function show(name, file) {
++    await page.getByRole("textbox", { name: "Search functions" }).fill(name);
++    const searched = page.waitForResponse((r) =>
++      r.url().includes("/functions?"),
++    );
++    await page.getByRole("button", { name: "Search", exact: true }).click();
++    await searched;
++    const selected = page
++      .locator(".navigation .compact-search .node-list button")
++      .filter({ has: page.getByText("ƒ " + name, { exact: true }) })
++      .filter({ has: page.getByText(file, { exact: true }) });
++    await selected.last().click();
++    const tab = page
++      .locator(".inspector .tabs")
++      .getByRole("button", { name: "View source", exact: true });
++    if (await tab.count()) await tab.click();
++    await expect(page.getByTestId("source-snippet")).toContainText(name);
++  }
++  await show("entry", "app/entry.ts");
++  await page
++    .getByRole("button", { name: "Expand one level", exact: true })
++    .click();
++  await expect(
++    page.locator('.react-flow__node[data-id="fact:' + leaf.id + '"]'),
++  ).toBeVisible();
++  await page.screenshot({
++    path: join(out, "references-before.png"),
++    fullPage: true,
++  });
++  async function showProjectGraph(snapshot) {
++    const graph = snapshot.coverage.configurationProjectGraph;
++    const advanced = page.getByRole("button", {
++      name: "Advanced controls",
++      exact: true,
++    });
++    if ((await advanced.getAttribute("aria-expanded")) !== "true")
++      await advanced.click();
++    const diagnostics = page.locator(".advanced-navigation-content > details");
++    if ((await diagnostics.getAttribute("open")) === null)
++      await diagnostics.locator(":scope > summary").click();
++    const panel = page.getByTestId("configuration-project-graph");
++    if ((await panel.getAttribute("open")) === null)
++      await panel.locator(":scope > summary").click();
++    await expect(panel).toContainText("Partial captured graph");
++    await expect(panel).toContainText(
++      "Source scopes: " + graph.counts.sourceScopes,
++    );
++    const refs = panel
++      .locator("details")
++      .filter({
++        has: page.getByText(
++          "Project references (" +
++            graph.references.length +
++            "/" +
++            graph.counts.observedReferences +
++            ")",
++          { exact: true },
++        ),
++      });
++    if ((await refs.getAttribute("open")) === null)
++      await refs.locator(":scope > summary").click();
++    await expect(
++      refs.getByText("missing/tsconfig.json", { exact: true }),
++    ).toBeVisible();
++    await expect(refs).toContainText("Unavailable");
++    await expect(refs).toContainText("Reference configuration unavailable");
++    const samples = panel
++      .locator("details")
++      .filter({
++        has: page.getByText(
++          "Source scope samples (" +
++            graph.scopes.length +
++            "/" +
++            graph.counts.sourceScopes +
++            ")",
++          { exact: true },
++        ),
++      });
++    if ((await samples.getAttribute("open")) === null)
++      await samples.locator(":scope > summary").click();
++    await expect(samples).toContainText(
++      "omitted sources retain their recorded scope",
++    );
++    await expect(
++      samples.getByText("app/entry.ts", { exact: true }),
++    ).toBeVisible();
++    await panel.scrollIntoViewIfNeeded();
++  }
++  await showProjectGraph(original);
++  await page.screenshot({
++    path: join(out, "references-graph-before.png"),
++    fullPage: true,
++  });
++  const plan = await mcp.call("propose_plan", {
++    ...args,
++    baselineSnapshotId: original.id,
++    title: "IDX03 configured workspace reuse",
++    operations: [
++      {
++        kind: "add_relation",
++        id: "reuse",
++        sourceId: entry.id,
++        targetId: leaf.id,
++        type: "must_reuse",
++      },
++    ],
++  });
++  const approved = await api(
++    "/api/plans/" + plan.plan.id + "/approve",
++    "POST",
++    { expectedRevision: plan.plan.revision },
++  );
++  assert.equal(approved.valid, true);
++  const route = await mcp.call("propose_route", {
++    ...args,
++    snapshotId: original.id,
++    title: "Workspace actual leaf",
++    description: "IDX03 作者原文",
++    kind: "call_chain",
++    steps: [
++      { nodeId: entry.id, note: "entry" },
++      {
++        nodeId: leaf.id,
++        note: "captured source",
++        relationId: context0.outgoing[0].id,
++      },
++    ],
++  });
++  assert.equal((await mcp.call("get_routes", args)).items[0].stale, false);
++  const changedApp = {
++    ...appConfiguration,
++    compilerOptions: {
++      ...appConfiguration.compilerOptions,
++      paths: { "@leaf": ["other.ts"] },
++    },
++  };
++  await writeFile(
++    join(target, "configs/app.json"),
++    JSON.stringify(changedApp, null, 2),
++  );
++  await mcp.call("refresh_index", args);
++  const afterOptions = await api(base + "/snapshot");
++  assert.notEqual(afterOptions.id, original.id);
++  assert.notEqual(afterOptions.contentHash, original.contentHash);
++  const context1 = await functionContext(entry);
++  assert.equal(context1.outgoing[0].targetId, alternate.id);
++  assert.deepEqual(
++    afterOptions.nodes
++      .filter((n) => n.kind === "function")
++      .map((n) => n.id)
++      .sort(),
++    original.nodes
++      .filter((n) => n.kind === "function")
++      .map((n) => n.id)
++      .sort(),
++  );
++  const stale = await api("/api/plans/" + plan.plan.id);
++  assert.deepEqual(
++    await mcp.call("get_approved_plan", { ...args, planId: plan.plan.id }),
++    stale,
++  );
++  assert.equal(stale.valid, false);
++  assert.equal(stale.plan.status, "stale");
++  assert.deepEqual(stale.approval, approved.approval);
++  assert.deepEqual(stale.plan.operations, approved.plan.operations);
++  assert.deepEqual(await api(base + "/routes"), [route]);
++  assert.equal((await mcp.call("get_routes", args)).items[0].stale, true);
++  await page.reload();
++  await show("helper", "lib/other.ts");
++  await expect(page.getByTestId("source-snippet")).toContainText('"other"');
++  await page.screenshot({
++    path: join(out, "references-after-options.png"),
++    fullPage: true,
++  });
++  await showProjectGraph(afterOptions);
++  await page.screenshot({
++    path: join(out, "references-graph-after-options.png"),
++    fullPage: true,
++  });
++  const changedRoot = {
++    ...rootConfiguration,
++    references: [...rootConfiguration.references, { path: "../../outside" }],
++  };
++  await writeFile(
++    join(target, "tsconfig.json"),
++    JSON.stringify(changedRoot, null, 2),
++  );
++  await mcp.call("refresh_index", args);
++  const afterReferences = await api(base + "/snapshot"),
++    context2 = await functionContext(entry);
++  assert.notEqual(afterReferences.id, afterOptions.id);
++  assert.notEqual(afterReferences.contentHash, afterOptions.contentHash);
++  assert.equal(context2.outgoing[0].targetId, alternate.id);
++  assert.equal(context2.outgoing[0].resolution, "resolved");
++  assert.equal(
++    afterReferences.coverage.configurationProjectGraph.counts
++      .observedReferences,
++    graph0.counts.observedReferences + 1,
++  );
++  for (const [file, bytes] of Object.entries(inputs))
++    if (file !== "tsconfig.json" && file !== "configs/app.json")
++      assert.equal(await readFile(join(target, file), "utf8"), bytes);
++  const isolated = await api("/api/projects", "POST", { path: otherTarget }),
++    isolatedBase = "/api/projects/" + isolated.id;
++  const isolatedSnapshot = await api(isolatedBase + "/snapshot");
++  const isolatedEntry = node(isolatedSnapshot, "entry", "app/entry.ts"),
++    isolatedLeaf = node(isolatedSnapshot, "helper", "lib/main.ts");
++  assert.notEqual(isolatedEntry.id, entry.id);
++  assert.notEqual(isolatedLeaf.id, leaf.id);
++  const isolatedContext = await mcp.call("get_function_context", {
++    projectId: isolated.id,
++    nodeId: isolatedEntry.id,
++  });
++  assert.equal(isolatedContext.outgoing[0].targetId, isolatedLeaf.id);
++  const cross = await mcp.client.callTool({
++    name: "get_function_context",
++    arguments: { projectId: isolated.id, nodeId: entry.id },
++  });
++  assert.equal(cross.isError, true);
++  const wrong = await fetch(
++    server.url + isolatedBase + "/functions/" + entry.id,
++  );
++  assert.equal(wrong.status, 404);
++  await assert.rejects(access(marker));
++  await mcp.client.close();
++  await server.stop();
++  const store = new SqliteStorage(join(runtime, "data", "atlasmode.sqlite"));
++  let history;
++  try {
++    for (const snap of [original, afterOptions, afterReferences])
++      assert.deepEqual(store.get("snapshots", snap.id), snap);
++    assert.deepEqual(store.list("approvals"), [approved.approval]);
++    assert.deepEqual(store.get("routes", route.id), route);
++    history = {
++      snapshotIds: [original.id, afterOptions.id, afterReferences.id],
++      immutableSnapshots: true,
++      approvalUnchanged: true,
++      routeUnchanged: true,
++    };
++  } finally {
++    store.close();
++  }
++  server = await startProduction(join(runtime, "data"));
++  mcp = await connectMcp(server.url);
++  mcp.client.onerror = (e) => protocolErrors.push(String(e));
++  assert.deepEqual(await api(base + "/snapshot"), afterReferences);
++  assert.deepEqual(
++    await mcp.call("get_function_context", {
++      ...args,
++      nodeId: entry.id,
++      limit: 50,
++    }),
++    context2,
++  );
++  assert.deepEqual(
++    await mcp.call("get_approved_plan", { ...args, planId: plan.plan.id }),
++    stale,
++  );
++  assert.equal((await mcp.call("get_routes", args)).items[0].stale, true);
++  history.restartConfirmed = true;
++  const actual = await new SourceIndexer().index(
++    resolve("."),
++    "idx03-readonly-atlasmode",
++  );
++  const workspaceDiagnostics = actual.diagnostics.filter(
++    (d) =>
++      d.message.startsWith("WORKSPACE_MAPPING_UNAVAILABLE:") &&
++      d.message.includes("@codemap/"),
++  );
++  assert.ok(workspaceDiagnostics.length > 0);
++  assert.ok(
++    workspaceDiagnostics.some((d) =>
++      d.message.includes("exact captured implementation"),
++    ),
++  );
++  await save("atlasmode-readonly.json", {
++    status: "captured",
++    path: resolve("."),
++    id: actual.id,
++    contentHash: actual.contentHash,
++    coverage: actual.coverage,
++    workspaceDiagnostics,
++    scope:
++      "No dist-to-src inference: existing package exports name excluded dist. This remains unknown, not a successful source mapping.",
++  });
++  assert.deepEqual(errors, []);
++  assert.deepEqual(external, []);
++  assert.deepEqual(protocolErrors, []);
++  assert.equal(mcp.stderr(), "");
++  await assert.rejects(access(marker));
++  Object.assign(observations, {
++    status: "passed",
++    observedAt: new Date().toISOString(),
++    project,
++    summary,
++    original,
++    afterOptions,
++    afterReferences,
++    contexts: [context0, context1, context2],
++    negativeContexts,
++    sources,
++    approved,
++    stale,
++    route,
++    history,
++    isolated: {
++      project: isolated,
++      entry: isolatedEntry,
++      leaf: isolatedLeaf,
++      context: isolatedContext,
++      crossProjectMcp: cross,
++      httpStatus: wrong.status,
++    },
++    changedConfigurations: { options: changedApp, references: changedRoot },
++    targetNeverExecuted: true,
++    errors,
++    external,
++    protocolErrors,
++  });
++  await save("references-product.json", observations);
++  console.log(
++    JSON.stringify({
++      status: observations.status,
++      counts: summary.counts,
++      snapshots: history.snapshotIds,
++      history,
++      sourceFiles: Object.keys(sources).length,
++      projectGraph: original.coverage.configurationProjectGraph,
++      atlasmodeWorkspaceUnknowns: workspaceDiagnostics.length,
++      errors,
++      external,
++      protocolErrors,
++    }),
++  );
++} catch (error) {
++  Object.assign(observations, {
++    status: "failed",
++    error: String(error),
++    errors,
++    external,
++    protocolErrors,
++  });
++  await save("references-product-fail.json", observations);
++  throw error;
++} finally {
++  await browser?.close();
++  await mcp?.client.close();
++  await server?.stop();
++  await rm(runtime, { recursive: true, force: true });
++}
+diff --git a/tests/support/idx03-express-validate.mjs b/tests/support/idx03-express-validate.mjs
+new file mode 100644
+index 0000000..0882ac2
+--- /dev/null
++++ b/tests/support/idx03-express-validate.mjs
+@@ -0,0 +1,400 @@
++// Read-only product acceptance for an already checked out, fixed public target.
++import assert from "node:assert/strict";
++import { repositoryProvenance } from "../../scripts/repository-provenance.mjs";
++import { mkdtemp, mkdir, writeFile, rm, access } from "node:fs/promises";
++import { tmpdir } from "node:os";
++import { join, resolve } from "node:path";
++import { parseArgs } from "node:util";
++import { chromium, expect } from "@playwright/test";
++import {
++  startProduction,
++  connectMcp,
++  http,
++  denyExternalRequests,
++} from "./production.mjs";
++const { values } = parseArgs({
++  options: {
++    ...Object.fromEntries(
++      ["path", "commit", "symbol", "file", "label"].map((key) => [
++        key,
++        { type: "string" },
++      ]),
++    ),
++    "require-entry": { type: "boolean", default: false },
++  },
++});
++for (const key of ["path", "commit", "symbol", "file", "label"])
++  assert.ok(values[key], `Required --${key}`);
++assert.match(values.label, /^[a-z0-9-]+$/);
++const beforeCapture = repositoryProvenance(values.path, values.commit);
++const { gitRevision } = beforeCapture;
++const root = await mkdtemp(join(tmpdir(), "atlas-target-")),
++  out = resolve("docs/superpowers/reviews/idx03-2026-10-10");
++await mkdir(out, { recursive: true });
++let server, mcp, browser, page, failureCapture;
++let entryCriterion = {
++  requested: values["require-entry"],
++  status: values["require-entry"] ? "pending" : "not-requested",
++};
++const errors = [],
++  external = [],
++  protocolErrors = [];
++try {
++  server = await startProduction(join(root, "data"));
++  mcp = await connectMcp(server.url);
++  mcp.client.onerror = (error) => protocolErrors.push(String(error));
++  browser = await chromium.launch({
++    ...(process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE
++      ? { executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE }
++      : {}),
++  });
++  const context = await browser.newContext({
++    viewport: { width: 1600, height: 1000 },
++  });
++  page = await context.newPage();
++  page.on("pageerror", (e) => errors.push(`pageerror: ${e.message}`));
++  page.on("console", (m) => {
++    if (m.type() === "error") errors.push(`console: ${m.text()}`);
++  });
++  await denyExternalRequests(context, external);
++  await page.goto(server.url);
++  if (await page.locator(".welcome").count())
++    await page
++      .locator(".welcome")
++      .getByRole("button", { name: "选择本地项目", exact: true })
++      .click();
++  await page.getByRole("textbox", { name: "本地项目路径" }).fill(values.path);
++  const start = performance.now();
++  const opened = page.waitForResponse(
++    (r) => r.url().endsWith("/api/projects") && r.request().method() === "POST",
++  );
++  await page.getByRole("button", { name: "打开并索引", exact: true }).click();
++  const response = await opened;
++  assert.equal(response.ok(), true);
++  const project = await response.json();
++  const openMilliseconds = Math.round(performance.now() - start);
++  await page.getByRole("combobox", { name: "界面语言" }).selectOption("en");
++  const args = { projectId: project.id };
++  const summary = await mcp.call("get_project_summary", args);
++  const httpSummary = await http(
++    server.url,
++    `/api/projects/${project.id}/summary`,
++  );
++  assert.deepEqual(summary, httpSummary);
++  const search = await mcp.call("search_functions", {
++    ...args,
++    q: values.symbol,
++    limit: 200,
++  });
++  const node = search.items.find(
++    (n) => n.name === values.symbol && n.filePath === values.file,
++  );
++  assert.ok(node, "Expected real source sample");
++  const contextResult = await mcp.call("get_function_context", {
++    ...args,
++    nodeId: node.id,
++    limit: 200,
++  });
++  const contextPages = [contextResult];
++  for (
++    let offset = 200;
++    offset < Math.max(contextResult.totalIncoming, contextResult.totalOutgoing);
++    offset += 200
++  )
++    contextPages.push(
++      await mcp.call("get_function_context", {
++        ...args,
++        nodeId: node.id,
++        offset,
++        limit: 200,
++      }),
++    );
++  const allIncoming = contextPages.flatMap((p) => p.incoming);
++  const allOutgoing = contextPages.flatMap((p) => p.outgoing);
++  assert.equal(allIncoming.length, contextResult.totalIncoming);
++  assert.equal(allOutgoing.length, contextResult.totalOutgoing);
++  const completeContext = {
++    pages: contextPages,
++    incoming: allIncoming,
++    outgoing: allOutgoing,
++  };
++  const bounded = await mcp.call("get_subgraph", {
++    ...args,
++    nodeIds: [node.id],
++    budget: 1,
++    depth: 2,
++  });
++  assert.equal(bounded.truncated, true);
++  assert.equal(bounded.nodes.length, 1);
++  const graph = await mcp.call("get_subgraph", {
++    ...args,
++    nodeIds: [node.id],
++    budget: 80,
++    depth: 1,
++  });
++  assert.ok(graph.nodes.length <= 80);
++  assert.ok(graph.relations.length <= 240);
++  const source = await http(
++    server.url,
++    `/api/projects/${project.id}/source?filePath=${encodeURIComponent(values.file)}`,
++  );
++  assert.ok(source.content.includes(values.symbol));
++  for (const relation of [...allIncoming, ...allOutgoing]) {
++    const text = (
++      await http(
++        server.url,
++        `/api/projects/${project.id}/source?filePath=${encodeURIComponent(relation.evidence.filePath)}`,
++      )
++    ).content;
++    assert.ok(
++      text.split(/\r?\n/)[relation.evidence.line - 1]?.trim(),
++      "Evidence resolves to an actual source line",
++    );
++  }
++  failureCapture = {
++    summary,
++    sample: { node, context: contextResult, completeContext, source },
++    bounded,
++  };
++  await page
++    .getByRole("textbox", { name: "Search functions" })
++    .fill(values.symbol);
++  const initialSearch = page.waitForResponse((r) =>
++    r.url().includes("/functions?"),
++  );
++  await page.getByRole("button", { name: "Search", exact: true }).click();
++  await initialSearch;
++  await expect(
++    page.getByRole("button", { name: "Search", exact: true }),
++  ).toBeEnabled();
++  const result = page
++    .locator(".navigation .compact-search .node-list button")
++    .filter({ has: page.getByText(`ƒ ${values.symbol}`, { exact: true }) })
++    .filter({ has: page.getByText(values.file, { exact: true }) });
++  for (
++    let pageNumber = 0;
++    !(await result.count()) && pageNumber < 20;
++    pageNumber++
++  ) {
++    const next = page.getByRole("button", { name: "Next page", exact: true });
++    await expect(next).toBeEnabled();
++    const searched = page.waitForResponse((r) =>
++      r.url().includes("/functions?"),
++    );
++    await next.click();
++    await searched;
++    await expect(
++      page.getByRole("button", { name: "Search", exact: true }),
++    ).toBeEnabled();
++  }
++  await result.last().click();
++  const viewSource = page
++    .locator(".inspector .tabs")
++    .getByRole("button", { name: "View source", exact: true });
++  if (await viewSource.count()) await viewSource.click();
++  await expect(page.getByTestId("source-snippet")).toContainText(values.symbol);
++  await page
++    .getByRole("button", { name: "Expand one level", exact: true })
++    .click();
++  await expect(
++    page.locator(`.react-flow__node[data-id="fact:${node.id}"]`),
++  ).toBeVisible();
++  // Keep the selected source readable instead of shrinking all 80 nodes into one viewport.
++  const focused = page.locator(`.react-flow__node[data-id="fact:${node.id}"]`);
++  await expect(focused).toBeInViewport();
++  await expect
++    .poll(async () => (await focused.boundingBox())?.width ?? 0)
++    .toBeGreaterThan(200);
++  await expect(page.locator(".graph-area footer")).not.toContainText(
++    "Working…",
++  );
++  await page.screenshot({
++    path: join(out, `${values.label}-product.png`),
++    fullPage: true,
++  });
++  failureCapture = {
++    summary,
++    sample: {
++      node,
++      context: contextResult,
++      completeContext,
++      source,
++      sourceExcerpt: source.content
++        .split(/\r?\n/)
++        .slice(node.startLine - 1, Math.min(node.endLine, node.startLine + 20))
++        .join("\n"),
++    },
++    bounded,
++    expansion: {
++      nodes: graph.nodes.length,
++      relations: graph.relations.length,
++      truncated: graph.truncated,
++    },
++  };
++  if (values["require-entry"]) {
++    const returnedEntryIds = summary.entrypoints.map((entry) => entry.id);
++    entryCriterion = {
++      requested: true,
++      status: "failed",
++      sampleId: node.id,
++      sampleExported: node.exported,
++      returnedEntryIds,
++      sampleInReturnedEntries: returnedEntryIds.includes(node.id),
++      entrypointTotal: summary.entrypointTotal,
++      returnedCount: returnedEntryIds.length,
++      entrypointsTruncated: summary.entrypointsTruncated,
++    };
++    assert.equal(
++      node.exported,
++      true,
++      "Required sample must be an exported entry",
++    );
++    assert.ok(
++      returnedEntryIds.length <= 50,
++      "Entry response respects its 50-node cap",
++    );
++    assert.ok(
++      summary.entrypointTotal >= returnedEntryIds.length,
++      "Entry total accounts for returned nodes",
++    );
++    assert.equal(
++      summary.entrypointsTruncated,
++      summary.entrypointTotal > returnedEntryIds.length,
++      "Entry truncation agrees with total and returned count",
++    );
++    assert.ok(
++      returnedEntryIds.includes(node.id),
++      "Required sample ID must occur in the actual returned entry list (truncated lists do not waive acceptance)",
++    );
++    entryCriterion.status = "passed";
++  }
++  assert.deepEqual(errors, []);
++  assert.deepEqual(external, []);
++  assert.deepEqual(protocolErrors, []);
++  assert.equal(mcp.stderr(), "");
++  const afterCapture = repositoryProvenance(values.path, gitRevision);
++  const evidence = {
++    provenance: { beforeCapture, afterCapture },
++    target: {
++      path: values.path,
++      gitRevision,
++      symbol: values.symbol,
++      file: values.file,
++    },
++    observedAt: new Date().toISOString(),
++    status: "passed",
++    entryCriterion,
++    openMilliseconds,
++    summary,
++    search: { total: search.total, limit: search.limit },
++    sample: {
++      node,
++      context: contextResult,
++      completeContext,
++      source,
++      sourceExcerpt: source.content
++        .split(/\r?\n/)
++        .slice(node.startLine - 1, Math.min(node.endLine, node.startLine + 20))
++        .join("\n"),
++    },
++    bounded,
++    expansion: {
++      nodes: graph.nodes.length,
++      relations: graph.relations.length,
++      truncated: graph.truncated,
++    },
++    errors,
++    external,
++    protocolErrors,
++    scope:
++      "Actual compiled API/web + Chromium open/search/source/expand + SDK stdio summary/search/context/subgraph. Source endpoint is HTTP; MCP supplies source locations/call evidence, no read_source tool. Whole supported checkout indexed; target code and upstream tests never executed.",
++  };
++  await writeFile(
++    join(out, `${values.label}-product.json`),
++    JSON.stringify(evidence, null, 2),
++  );
++  console.log(
++    JSON.stringify({
++      label: values.label,
++      gitRevision,
++      openMilliseconds,
++      counts: summary.counts,
++      diagnostics: summary.diagnostics.length,
++      entrypointTotal: summary.entrypointTotal,
++      entrypointsTruncated: summary.entrypointsTruncated,
++      entryCriterion,
++      expansion: evidence.expansion,
++      errors,
++      external,
++    }),
++  );
++} catch (error) {
++  try {
++    if (page && !page.isClosed())
++      await page.screenshot({
++        path: join(out, `${values.label}-product.png`),
++        fullPage: true,
++      });
++  } catch (captureError) {
++    errors.push(`Failure screenshot: ${captureError}`);
++  }
++  let afterCapture;
++  try {
++    afterCapture = repositoryProvenance(values.path, gitRevision);
++  } catch (captureError) {
++    afterCapture = { error: String(captureError) };
++  }
++  try {
++    await writeFile(
++      join(out, `${values.label}-product.json`),
++      JSON.stringify(
++        {
++          status: "failed",
++          observedAt: new Date().toISOString(),
++          target: {
++            path: values.path,
++            gitRevision,
++            symbol: values.symbol,
++            file: values.file,
++          },
++          provenance: {
++            beforeCapture,
++            afterCapture,
++          },
++          entryCriterion,
++          ...failureCapture,
++          error: String(error),
++          errors,
++          external,
++          protocolErrors,
++          scope:
++            "Actual compiled read-only product validation; target code and upstream tests never executed.",
++        },
++        null,
++        2,
++      ),
++    );
++  } catch (captureError) {
++    console.error(`Failure evidence: ${captureError}`);
++  }
++  throw error;
++} finally {
++  const mcpPid = mcp?.transport.pid;
++  try {
++    await browser?.close();
++  } finally {
++    try {
++      await mcp?.client.close();
++    } finally {
++      try {
++        await server?.stop();
++      } finally {
++        await rm(root, { recursive: true, force: true });
++      }
++    }
++  }
++  if (mcpPid) assert.throws(() => process.kill(mcpPid, 0), { code: "ESRCH" });
++  if (server)
++    assert.throws(() => process.kill(server.child.pid, 0), { code: "ESRCH" });
++  await assert.rejects(access(root));
++}
+diff --git a/tests/support/idx03-visual-evidence.mjs b/tests/support/idx03-visual-evidence.mjs
+new file mode 100644
+index 0000000..eb3baba
+--- /dev/null
++++ b/tests/support/idx03-visual-evidence.mjs
+@@ -0,0 +1,60 @@
++import assert from "node:assert/strict";
++import {readFile,writeFile,mkdtemp,rm} from "node:fs/promises";
++import {join,resolve} from "node:path";
++import {tmpdir} from "node:os";
++import {chromium,expect} from "@playwright/test";
++import {startProduction,http,denyExternalRequests} from "./production.mjs";
++const out=resolve("docs/superpowers/reviews/idx03-2026-10-10");
++const previous=JSON.parse(await readFile(join(out,"references-product.json"),"utf8"));
++assert.equal(previous.status,"passed");
++const runtime=await mkdtemp(join(tmpdir(),"atlasmode-idx03-visual-"));
++let server,browser;
++const errors=[],external=[];
++try{
++ server=await startProduction(join(runtime,"data"));
++ browser=await chromium.launch();
++ const context=await browser.newContext({viewport:{width:1600,height:1000}});
++ await denyExternalRequests(context,external);
++ const page=await context.newPage();
++ page.on("pageerror",error=>errors.push(String(error)));page.on("console",message=>{if(message.type()==="error")errors.push(message.text());});
++ await page.goto(server.url);
++ if(await page.locator(".welcome").count())await page.locator(".welcome").getByRole("button",{name:"选择本地项目",exact:true}).click();
++ await page.getByRole("textbox",{name:"本地项目路径"}).fill(previous.target);
++ const opened=page.waitForResponse(response=>response.url().endsWith("/api/projects")&&response.request().method()==="POST");
++ await page.getByRole("button",{name:"打开并索引",exact:true}).click();
++ const project=await (await opened).json(),base="/api/projects/"+project.id;
++ const snapshot=await http(server.url,base+"/snapshot");
++ assert.equal(snapshot.contentHash,previous.afterReferences.contentHash);
++ await page.getByRole("combobox",{name:"界面语言"}).selectOption("en");
++ await page.getByRole("button",{name:"Advanced controls",exact:true}).click();
++ await page.locator(".advanced-navigation-content > details > summary").click();
++ const panel=page.getByTestId("configuration-project-graph");
++ await panel.locator(":scope > summary").click();
++ await expect(panel).toContainText("Partial captured graph");
++ await expect(panel).toContainText("Source scopes: 66");
++ await panel.getByText("Observed projects (6/6)",{exact:true}).click();
++ const align=()=>panel.evaluate(element=>{
++   const nav=element.closest(".navigation");
++   nav.scrollTop+=element.getBoundingClientRect().top-nav.getBoundingClientRect().top-16;
++ });
++ await align();
++ await page.screenshot({path:join(out,"references-graph-overview.png"),fullPage:true});
++ await page.getByRole("textbox",{name:"Search functions"}).fill("noImport");
++ const searched=page.waitForResponse(response=>response.url().includes("/functions?"));
++ await page.getByRole("button",{name:"Search",exact:true}).click();await searched;
++ await page.locator(".navigation .compact-search .node-list button").filter({has:page.getByText("ƒ noImport",{exact:true})}).click();
++ const sourceTab=page.locator(".inspector .tabs").getByRole("button",{name:"View source",exact:true});if(await sourceTab.count())await sourceTab.click();
++ await expect(page.getByTestId("source-snippet")).toContainText("helper()");
++ await expect(page.locator(".inspector")).toContainText("Unresolved");
++ await align();
++ await page.screenshot({path:join(out,"references-no-import-unknown.png"),fullPage:true});
++ await page.getByRole("combobox",{name:"Interface language"}).selectOption("zh");
++ await expect(panel.locator(":scope > summary")).toHaveText("配置项目图");
++ await expect(panel).toContainText("源码归属: 66");
++ await expect(panel).toContainText("configs/app.json");
++ await align();
++ await page.screenshot({path:join(out,"references-graph-zh.png"),fullPage:true});
++ assert.deepEqual(errors,[]);assert.deepEqual(external,[]);
++ await writeFile(join(out,"supplementary-visual.json"),JSON.stringify({status:"passed",stage:"same compiled graph final-state visual evidence",project,contentHash:snapshot.contentHash,sourceTarget:previous.target,coverage:snapshot.coverage,errors,external},null,2));
++ console.log(JSON.stringify({status:"passed",contentHash:snapshot.contentHash,errors,external}));
++}finally{await browser?.close();await server?.stop();await rm(runtime,{recursive:true,force:true});}

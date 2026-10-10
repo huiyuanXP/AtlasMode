@@ -1,0 +1,12 @@
+packages/indexer/src/configCapture.ts 220ms
+packages/indexer/src/configResolution.ts 110ms
+packages/indexer/src/typescript.ts 110ms
+packages/indexer/src/index.ts 18ms (unchanged)
+packages/indexer/src/projectReferences.ts 11ms
+packages/indexer/src/projectReferenceTypes.ts 3ms
+packages/indexer/src/projectReferenceGraph.ts 45ms
+packages/indexer/src/projectReferencesCapture.test.ts 39ms
+packages/indexer/src/projectReferencesResolution.test.ts 35ms
+packages/core/src/model.ts 29ms
+packages/core/src/validation.ts 93ms
+packages/core/src/projectReferenceSchema.test.ts 33ms

@@ -1,0 +1,21 @@
+packages/indexer/src/commonjs.ts 347ms
+packages/indexer/src/configCapture.ts 48ms (unchanged)
+packages/indexer/src/configResolution.ts 65ms (unchanged)
+packages/indexer/src/typescript.ts 119ms
+packages/indexer/src/index.ts 29ms (unchanged)
+packages/indexer/src/projectReferencesCapture.test.ts 60ms (unchanged)
+packages/indexer/src/projectReferencesFreshness.test.ts 33ms
+packages/indexer/src/projectReferencesResolution.test.ts 51ms (unchanged)
+packages/indexer/src/projectReferencesReview.test.ts 45ms
+packages/indexer/src/projectReferences.ts 17ms (unchanged)
+packages/indexer/src/projectReferenceGraph.ts 53ms
+packages/indexer/src/projectReferenceTypes.ts 5ms (unchanged)
+packages/core/src/model.ts 41ms (unchanged)
+packages/core/src/validation.ts 152ms (unchanged)
+packages/core/src/projectReferenceSchema.test.ts 37ms (unchanged)
+apps/web/src/app/Navigation.tsx 94ms
+apps/web/src/app/ConfigurationProjectGraphPanel.tsx 29ms
+apps/web/src/app/ConfigurationProjectGraphPanel.test.tsx 19ms
+apps/web/src/i18n/en.ts 23ms
+apps/web/src/i18n/zh.ts 25ms (unchanged)
+tests/support/idx03-validate.mjs 171ms

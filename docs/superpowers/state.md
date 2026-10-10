@@ -3,7 +3,7 @@
 ## 当前工作（2026-10-10 UTC）
 
 首用离线路径、AI渐进披露、可读初始图与手动规划入口已实现并独立审查通过；精确证据见 [验收](reviews/first-use-2026-10-10/README.md)。
-GitHub真实7个Issue均open；本地36票18DONE/18未完成；SEC-01已DONE，AG-05为PARTIAL，GRP-02已完成；IDX-03与POL-01设计独立复审通过、限定文件TDD实施中；KN-01设计复审通过、新模块实施中；FS-01设计复审通过、UI窗口待交接，AG-02设计通过但源码writer未实施，其余待办按依赖推进。不能用本地状态代替远端结案。IDX-02静态workspace/exports映射已通过393/9、真实HTTP/MCP/浏览器与freshness/history/restart/crossproject，独立复审APPROVE，见 [验收](reviews/idx02-2026-10-10/README.md)。IDX-01完整Express入口已通过，见 [证据](reviews/idx01-2026-10-10/README.md)，保留历史FAIL。
+GitHub真实7个Issue均open；本地36票18DONE/18未完成；SEC-01已DONE，AG-05为PARTIAL，GRP-02已完成；IDX-03本地验收与clean集成完成、状态REVIEW待新CI；POL-01模块修复复审APPROVE，服务/HTTP接线中；KN-01设计复审通过、新模块实施中；FS-01设计复审通过、真实归属/路径与冲突保护接线中，AG-02设计通过但源码writer未实施，其余待办按依赖推进。不能用本地状态代替远端结案。IDX-02静态workspace/exports映射已通过393/9、真实HTTP/MCP/浏览器与freshness/history/restart/crossproject，独立复审APPROVE，见 [验收](reviews/idx02-2026-10-10/README.md)。IDX-01完整Express入口已通过，见 [证据](reviews/idx01-2026-10-10/README.md)，保留历史FAIL。
 提交7528f78远端CI38064184377四job（Ubuntu/Windows/macOS native、Chromium）全部SUCCESS；同冻结clean快照全根build/typecheck/lint、781/65测试、smoke、18/18浏览器及安装审计0通过。SEC-01已DONE；GRP02不在该旧快照；其新独立集成795/72、smoke与浏览器18初次PASS+planning定向1PASS、独立复审已通过。AG-05本地HTTP/SDK/SQLite/浏览器协议闭环已通过独立复审，真实外部Provider配置/最小调用授权仍待答复，保持PARTIAL。历史CI失败与首次复用产物TS2349日志及未确定根因保留。详见 [CI报告](reviews/ci-repair-2026-10-10/README.md)。
 当前分支fix/first-use-20261010，保留已有AGENTS修改。用户最新授权按阶段同步文档后commit/push；不授权merge、生产部署或权限修改。下面旧阶段“不push”仅记录当时状态。
 neat-freak v3.0.0已配置并应用；生成记忆未写，临时预览已关闭，工作区与证据保留。
@@ -449,4 +449,10 @@ cfda22b已推送IDX02；与地图独立patch冻结联合快照fefda8e后，clean
 
 ## 2026-10-10 GRP02收尾
 
-15项冻结产品SHA与暂存/隔离归档一致，clean安装审计0，全根build/typecheck/lint、795/72、smoke通过。整套浏览器首次18/19，唯一旧fact定位改成同真实domain镜像/真实关系route后完整planning场景1/1通过，独立high限定复审APPROVE；不声称单次19/19。新远端CI提交后确认。源码改动与其原始失败、诊断99点、最终收据见 [GRP02](reviews/grp02-2026-10-10/README.md)。IDX03/POL01/KN01当前未完成候选不包含于GRP02提交。
+15项冻结产品SHA与暂存/隔离归档一致，clean安装审计0，全根build/typecheck/lint、795/72、smoke通过。整套浏览器首次18/19，唯一旧fact定位改成同真实domain镜像/真实关系route后完整planning场景1/1通过，独立high限定复审APPROVE；不声称单次19/19。提交6566717的真实CI38067062352四job全部SUCCESS，远端浏览器单次19/19通过；原本地18/19失败及1/1重测仍保留。源码改动与其原始失败、诊断99点、最终收据见 [GRP02](reviews/grp02-2026-10-10/README.md)。IDX03/POL01/KN01当前未完成候选不包含于GRP02提交。
+
+## 2026-10-10 有界阶段进度
+
+619c39a已提交推送独立high审查APPROVE的dev fixture readiness/owned-process退出清理修复，Linux9/9通过；新真实CI38068334046四job全部SUCCESS，Windows/macOS/Linux native与browser均已确认，独立原始head/jobs JSON保留。IDX03定向483/16、真实HTTP/MCP/SQLite/restart/诊断面板、完整固定Express142files3070functions35/35与独立code审查通过，主控正构造排除其他未完成源码的clean集成。KN01独立模块80测试通过但审查提出readonly WAL辅助文件不变性I1，待定向修复；POL01模块48测试通过但审查发现inline retry幂等与未知I/O恢复问题，待定向修复。两票产品接线及真实UI验收均未完成。FS01实际UI接线进行中，未完成票不冒称DONE。
+
+IDX03独立clean tree d034dcd（无KN/POL/FS候选）安装审计0、全根build/typecheck/lint、882/78与smoke PASS。真实浏览器初次14/19，旧嵌套diagnostics定位五项strictmode失败保留；仅两spec修复后同候选完整五项5/5，源码122/compiled146不变。当前REVIEW待新远端CI，不冒称本地单次19/19。

@@ -1,0 +1,157 @@
+{
+  "snapshotId": "snapshot:b0e7003dc0684535733c01eed32f9bc3",
+  "entryContext": {
+    "node": {
+      "id": "function:b093af2b5c9bbc049fd45ea4b9c65c82",
+      "kind": "function",
+      "declarationKind": "function",
+      "name": "entry",
+      "qualifiedName": "entry",
+      "filePath": "entry.cjs",
+      "parentId": "file:8d67a10d199b1d641093199773f8e844",
+      "language": "javascript",
+      "signature": "function entry()",
+      "startLine": 2,
+      "endLine": 2,
+      "exported": true
+    },
+    "incoming": [],
+    "outgoing": [
+      {
+        "id": "relation:57304514264056940bca8893015f7e34",
+        "type": "calls",
+        "sourceId": "function:b093af2b5c9bbc049fd45ea4b9c65c82",
+        "targetId": "function:6d53d038887c2ee7983d06167684e0cc",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "entry.cjs",
+          "line": 2,
+          "text": "mod.helper()"
+        }
+      }
+    ],
+    "relatedNodes": [
+      {
+        "id": "function:b093af2b5c9bbc049fd45ea4b9c65c82",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "entry",
+        "qualifiedName": "entry",
+        "filePath": "entry.cjs",
+        "parentId": "file:8d67a10d199b1d641093199773f8e844",
+        "language": "javascript",
+        "signature": "function entry()",
+        "startLine": 2,
+        "endLine": 2,
+        "exported": true
+      },
+      {
+        "id": "function:6d53d038887c2ee7983d06167684e0cc",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "helper",
+        "qualifiedName": "helper",
+        "filePath": "leaf-a.cjs",
+        "parentId": "file:c08dfb030aebc044a43efc65d711e3a4",
+        "language": "javascript",
+        "signature": "function helper()",
+        "startLine": 2,
+        "endLine": 2,
+        "exported": true
+      }
+    ],
+    "totalIncoming": 0,
+    "totalOutgoing": 1,
+    "truncated": false,
+    "offset": 0,
+    "limit": 50,
+    "snapshotId": "snapshot:b0e7003dc0684535733c01eed32f9bc3",
+    "dataSource": "code"
+  },
+  "leaf": {
+    "id": "function:6d53d038887c2ee7983d06167684e0cc",
+    "kind": "function",
+    "declarationKind": "function",
+    "name": "helper",
+    "qualifiedName": "helper",
+    "filePath": "leaf-a.cjs",
+    "parentId": "file:c08dfb030aebc044a43efc65d711e3a4",
+    "language": "javascript",
+    "signature": "function helper()",
+    "startLine": 2,
+    "endLine": 2,
+    "exported": true
+  },
+  "unknownContext": {
+    "node": {
+      "id": "function:1458e19b92e7c71b834070c8aee44f87",
+      "kind": "function",
+      "declarationKind": "function",
+      "name": "unsafeCaller",
+      "qualifiedName": "unsafeCaller",
+      "filePath": "unknown.cjs",
+      "parentId": "file:60a327b5e98d176002fbeff6717a2478",
+      "language": "javascript",
+      "signature": "function unsafeCaller()",
+      "startLine": 2,
+      "endLine": 2,
+      "exported": true
+    },
+    "incoming": [],
+    "outgoing": [
+      {
+        "id": "relation:53f5e4f168052c057d832bd43c0828c3",
+        "type": "calls",
+        "sourceId": "function:1458e19b92e7c71b834070c8aee44f87",
+        "targetId": null,
+        "resolution": "unresolved",
+        "evidence": {
+          "filePath": "unknown.cjs",
+          "line": 2,
+          "text": "unsafe.helper()"
+        },
+        "reason": "CommonJS module mode, namespace identity, or export stability is not established"
+      }
+    ],
+    "relatedNodes": [
+      {
+        "id": "function:1458e19b92e7c71b834070c8aee44f87",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "unsafeCaller",
+        "qualifiedName": "unsafeCaller",
+        "filePath": "unknown.cjs",
+        "parentId": "file:60a327b5e98d176002fbeff6717a2478",
+        "language": "javascript",
+        "signature": "function unsafeCaller()",
+        "startLine": 2,
+        "endLine": 2,
+        "exported": true
+      }
+    ],
+    "totalIncoming": 0,
+    "totalOutgoing": 1,
+    "truncated": false,
+    "offset": 0,
+    "limit": 50,
+    "snapshotId": "snapshot:b0e7003dc0684535733c01eed32f9bc3",
+    "dataSource": "code"
+  },
+  "languages": [
+    "zh",
+    "en"
+  ],
+  "copiedLocation": "leaf-a.cjs:2",
+  "errors": [],
+  "external": [
+    "https://example.invalid/atlas-offline-probe"
+  ],
+  "protocolErrors": [],
+  "targetNotExecuted": true,
+  "offlineProbe": {
+    "url": "https://example.invalid/atlas-offline-probe",
+    "blockedReason": "net::ERR_BLOCKED_BY_CLIENT",
+    "unexpectedExternalRequests": 0
+  },
+  "observedAt": "2026-10-10T16:42:52.734Z"
+}

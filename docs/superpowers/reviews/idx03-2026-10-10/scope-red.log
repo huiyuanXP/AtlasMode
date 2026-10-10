@@ -1,0 +1,215 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90m/home/agent/projects/AtlasMode[39m
+
+ [31m❯[39m packages/indexer/src/projectReferencesResolution.test.ts [2m([22m[2m15 tests[22m[2m | [22m[31m13 failed[39m[2m)[22m[32m 249[2mms[22m[39m
+[31m     [31m×[31m assigns actual referenced named project members independently without option inheritance[39m[32m 25[2mms[22m[39m
+[31m     [31m×[31m never resolves a no-import callable to a referenced global script[39m[32m 91[2mms[22m[39m
+[31m     [31m×[31m never uses side-effect-only import as a callable binding proof[39m[32m 20[2mms[22m[39m
+     [32m✓[39m resolves a named binding module import to the exact referenced captured implementation[32m 17[2mms[22m[39m
+[31m     [31m×[31m does not mix global symbols between independent owned scopes[39m[32m 36[2mms[22m[39m
+[31m     [31m×[31m keeps a valid named leaf ownership and own aliases when solution root also references missing configuration[39m[32m 4[2mms[22m[39m
+[31m     [31m×[31m invalidates failing root's own members while preserving the valid leaf[39m[32m 3[2mms[22m[39m
+[31m     [31m×[31m rejects overlap rather than picking a candidate by topology order[39m[32m 4[2mms[22m[39m
+[31m     [31m×[31m does not guess standalone named configuration ownership[39m[32m 1[2mms[22m[39m
+[31m     [31m×[31m honors nearest failed configuration barrier without ancestor fallback[39m[32m 4[2mms[22m[39m
+[31m     [31m×[31m marks cycle closure invalid without invalidating an independent valid reachable branch[39m[32m 3[2mms[22m[39m
+[31m     [31m×[31m rejects referenced non-composite implementation authorization[39m[32m 3[2mms[22m[39m
+[31m     [31m×[31m keeps excluded sources unconfigured rather than falling back to ancestor options[39m[32m 8[2mms[22m[39m
+[31m     [31m×[31m records all scope counts while returning bounded stable samples without altering ownership[39m[32m 20[2mms[22m[39m
+     [32m✓[39m preserves legacy no-reference same-scope global callable behavior[32m 7[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 13 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m packages/indexer/src/projectReferencesResolution.test.ts[2m > [22mIDX03 captured project references scope[2m > [22massigns actual referenced named project members independently without option inheritance
+[31m[1mTypeError[22m: result.scopeFor is not a function[39m
+[36m [2m❯[22m packages/indexer/src/projectReferencesResolution.test.ts:[2m36:19[22m[39m
+    [90m 34|[39m   it("assigns actual referenced named project members independently wi…
+    [90m 35|[39m     [35mconst[39m result [33m=[39m [34mresolver[39m()[33m;[39m
+    [90m 36|[39m     expect(result.scopeFor("app/import.ts")).toEqual({ sourcePath: "ap…
+    [90m   |[39m                   [31m^[39m
+    [90m 37|[39m     expect(result.scopeFor("lib/module.ts").configPath).toBe("configs/…
+    [90m 38|[39m     expect(result.projectGraph.counts).toMatchObject({ observedRoots: …
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/13]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m packages/indexer/src/projectReferencesResolution.test.ts[2m > [22mIDX03 captured project references scope[2m > [22mnever resolves a no-import callable to a referenced global script
+[31m[1mAssertionError[22m: expected { …(6) } to match object { resolution: 'unresolved', …(1) }
+(7 matching properties omitted from actual)[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[32m-   "resolution": "unresolved",[39m
+[32m-   "targetId": null,[39m
+[31m+   "resolution": "resolved",[39m
+[31m+   "targetId": "function:aeb542e619043c5dfd1ff4d43e6437a5",[39m
+[2m  }[22m
+
+[36m [2m❯[22m packages/indexer/src/projectReferencesResolution.test.ts:[2m42:49[22m[39m
+    [90m 40|[39m   })[33m;[39m
+    [90m 41|[39m   it("never resolves a no-import callable to a referenced global scrip…
+    [90m 42|[39m     expect(call(analyze(), "app/no-import.ts")).toMatchObject({ resolu…
+    [90m   |[39m                                                 [31m^[39m
+    [90m 43|[39m   })[33m;[39m
+    [90m 44|[39m   it("never uses side-effect-only import as a callable binding proof",…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/13]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m packages/indexer/src/projectReferencesResolution.test.ts[2m > [22mIDX03 captured project references scope[2m > [22mnever uses side-effect-only import as a callable binding proof
+[31m[1mAssertionError[22m: expected { …(6) } to match object { resolution: 'unresolved', …(1) }
+(7 matching properties omitted from actual)[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[32m-   "resolution": "unresolved",[39m
+[32m-   "targetId": null,[39m
+[31m+   "resolution": "resolved",[39m
+[31m+   "targetId": "function:aeb542e619043c5dfd1ff4d43e6437a5",[39m
+[2m  }[22m
+
+[36m [2m❯[22m packages/indexer/src/projectReferencesResolution.test.ts:[2m45:51[22m[39m
+    [90m 43|[39m   })[33m;[39m
+    [90m 44|[39m   it("never uses side-effect-only import as a callable binding proof",…
+    [90m 45|[39m     expect(call(analyze(), "app/side-effect.ts")).toMatchObject({ reso…
+    [90m   |[39m                                                   [31m^[39m
+    [90m 46|[39m   })[33m;[39m
+    [90m 47|[39m   it("resolves a named binding module import to the exact referenced c…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/13]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m packages/indexer/src/projectReferencesResolution.test.ts[2m > [22mIDX03 captured project references scope[2m > [22mdoes not mix global symbols between independent owned scopes
+[31m[1mAssertionError[22m: expected 'function:aeb542e619043c5dfd1ff4d43e64…' to be null[39m
+
+[32m- Expected:[39m
+null
+
+[31m+ Received:[39m
+"function:aeb542e619043c5dfd1ff4d43e6437a5"
+
+[36m [2m❯[22m packages/indexer/src/projectReferencesResolution.test.ts:[2m57:54[22m[39m
+    [90m 55|[39m     [35mdelete[39m inputs[[32m"other/tsconfig.json"[39m][33m;[39m
+    [90m 56|[39m     const graph = analyze(inputs, { ...configInputs, "other/tsconfig.j…
+    [90m 57|[39m     [34mexpect[39m([34mcall[39m(graph[33m,[39m [32m"app/no-import.ts"[39m)[33m.[39mtargetId)[33m.[39m[34mtoBeNull[39m()[33m;[39m
+    [90m   |[39m                                                      [31m^[39m
+    [90m 58|[39m   })[33m;[39m
+    [90m 59|[39m   it("keeps a valid named leaf ownership and own aliases when solution…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/13]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m packages/indexer/src/projectReferencesResolution.test.ts[2m > [22mIDX03 captured project references scope[2m > [22mkeeps a valid named leaf ownership and own aliases when solution root also references missing configuration
+[31m[1mTypeError[22m: result.scopeFor is not a function[39m
+[36m [2m❯[22m packages/indexer/src/projectReferencesResolution.test.ts:[2m66:19[22m[39m
+    [90m 64|[39m     const inputs = { "src/client/entry.ts": 'import { helper } from "@…
+    [90m 65|[39m     [35mconst[39m result [33m=[39m [34mresolver[39m(inputs[33m,[39m configs)[33m;[39m
+    [90m 66|[39m     expect(result.scopeFor("src/client/entry.ts")).toMatchObject({ sta…
+    [90m   |[39m                   [31m^[39m
+    [90m 67|[39m     [34mexpect[39m(result[33m.[39mprojectGraph[33m.[39mstatus)[33m.[39m[34mtoBe[39m([32m"partial"[39m)[33m;[39m
+    [90m 68|[39m     expect(result.projectGraph.projects.find(p => p.configPath === "ts…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/13]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m packages/indexer/src/projectReferencesResolution.test.ts[2m > [22mIDX03 captured project references scope[2m > [22minvalidates failing root's own members while preserving the valid leaf
+[31m[1mTypeError[22m: result.scopeFor is not a function[39m
+[36m [2m❯[22m packages/indexer/src/projectReferencesResolution.test.ts:[2m79:19[22m[39m
+    [90m 77|[39m     const inputs = { ...sources, "root.ts": "function helper(){} funct…
+    [90m 78|[39m     [35mconst[39m result [33m=[39m [34mresolver[39m(inputs[33m,[39m configs)[33m;[39m
+    [90m 79|[39m     [34mexpect[39m(result[33m.[39m[34mscopeFor[39m([32m"root.ts"[39m)[33m.[39mstatus)[33m.[39m[34mtoBe[39m([32m"invalid"[39m)[33m;[39m
+    [90m   |[39m                   [31m^[39m
+    [90m 80|[39m     [34mexpect[39m(result[33m.[39m[34mscopeFor[39m([32m"app/import.ts"[39m)[33m.[39mstatus)[33m.[39m[34mtoBe[39m([32m"resolved"[39m)[33m;[39m
+    [90m 81|[39m     expect(call(analyze(inputs, configs), "root.ts").resolution).toBe(…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/13]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m packages/indexer/src/projectReferencesResolution.test.ts[2m > [22mIDX03 captured project references scope[2m > [22mrejects overlap rather than picking a candidate by topology order
+[31m[1mTypeError[22m: resolver(...).scopeFor is not a function[39m
+[36m [2m❯[22m packages/indexer/src/projectReferencesResolution.test.ts:[2m85:39[22m[39m
+    [90m 83|[39m   it("rejects overlap rather than picking a candidate by topology orde…
+    [90m 84|[39m     const configs = { ...configInputs, "configs/lib.json": { ...libCon…
+    [90m 85|[39m     expect(resolver(sources, configs).scopeFor("app/import.ts").status…
+    [90m   |[39m                                       [31m^[39m
+    [90m 86|[39m     expect(call(analyze(sources, configs), "app/import.ts").resolution…
+    [90m 87|[39m   })[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/13]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m packages/indexer/src/projectReferencesResolution.test.ts[2m > [22mIDX03 captured project references scope[2m > [22mdoes not guess standalone named configuration ownership
+[31m[1mTypeError[22m: result.scopeFor is not a function[39m
+[36m [2m❯[22m packages/indexer/src/projectReferencesResolution.test.ts:[2m90:19[22m[39m
+    [90m 88|[39m   [34mit[39m([32m"does not guess standalone named configuration ownership"[39m[33m,[39m () [33m=>[39m {
+    [90m 89|[39m     const result = resolver(sources, { "configs/standalone.json": { in…
+    [90m 90|[39m     expect(result.scopeFor("app/import.ts").status).toBe("unconfigured…
+    [90m   |[39m                   [31m^[39m
+    [90m 91|[39m     [34mexpect[39m(result[33m.[39mprojectGraph[33m.[39mcounts[33m.[39mobservedProjects)[33m.[39m[34mtoBe[39m([34m0[39m)[33m;[39m
+    [90m 92|[39m   })[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/13]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m packages/indexer/src/projectReferencesResolution.test.ts[2m > [22mIDX03 captured project references scope[2m > [22mhonors nearest failed configuration barrier without ancestor fallback
+[31m[1mTypeError[22m: result.scopeFor is not a function[39m
+[36m [2m❯[22m packages/indexer/src/projectReferencesResolution.test.ts:[2m96:19[22m[39m
+    [90m 94|[39m     const configs = { ...configInputs, "app/tsconfig.json": { extends:…
+    [90m 95|[39m     [35mconst[39m result [33m=[39m [34mresolver[39m(sources[33m,[39m configs)[33m;[39m
+    [90m 96|[39m     [34mexpect[39m(result[33m.[39m[34mscopeFor[39m([32m"app/import.ts"[39m)[33m.[39mstatus)[33m.[39m[34mtoBe[39m([32m"invalid"[39m)[33m;[39m
+    [90m   |[39m                   [31m^[39m
+    [90m 97|[39m     expect(call(analyze(sources, configs), "app/import.ts").resolution…
+    [90m 98|[39m   })[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/13]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m packages/indexer/src/projectReferencesResolution.test.ts[2m > [22mIDX03 captured project references scope[2m > [22mmarks cycle closure invalid without invalidating an independent valid reachable branch
+[31m[1mTypeError[22m: result.scopeFor is not a function[39m
+[36m [2m❯[22m packages/indexer/src/projectReferencesResolution.test.ts:[2m107:19[22m[39m
+    [90m105|[39m     }[33m;[39m
+    [90m106|[39m     const result = resolver({ ...sources, "valid/file.ts": "export fun…
+    [90m107|[39m     [34mexpect[39m(result[33m.[39m[34mscopeFor[39m([32m"app/import.ts"[39m)[33m.[39mstatus)[33m.[39m[34mtoBe[39m([32m"invalid"[39m)[33m;[39m
+    [90m   |[39m                   [31m^[39m
+    [90m108|[39m     expect(result.scopeFor("valid/file.ts")).toMatchObject({ status: "…
+    [90m109|[39m     expect(result.projectGraph.references.some(e => e.status === "cycl…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/13]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m packages/indexer/src/projectReferencesResolution.test.ts[2m > [22mIDX03 captured project references scope[2m > [22mrejects referenced non-composite implementation authorization
+[31m[1mTypeError[22m: result.scopeFor is not a function[39m
+[36m [2m❯[22m packages/indexer/src/projectReferencesResolution.test.ts:[2m114:19[22m[39m
+    [90m112|[39m     const configs = { ...configInputs, "configs/lib.json": { include: …
+    [90m113|[39m     [35mconst[39m result [33m=[39m [34mresolver[39m(sources[33m,[39m configs)[33m;[39m
+    [90m114|[39m     [34mexpect[39m(result[33m.[39m[34mscopeFor[39m([32m"lib/module.ts"[39m)[33m.[39mstatus)[33m.[39m[34mtoBe[39m([32m"invalid"[39m)[33m;[39m
+    [90m   |[39m                   [31m^[39m
+    [90m115|[39m     [34mexpect[39m(result[33m.[39m[34mscopeFor[39m([32m"app/import.ts"[39m)[33m.[39mstatus)[33m.[39m[34mtoBe[39m([32m"invalid"[39m)[33m;[39m
+    [90m116|[39m   })[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/13]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m packages/indexer/src/projectReferencesResolution.test.ts[2m > [22mIDX03 captured project references scope[2m > [22mkeeps excluded sources unconfigured rather than falling back to ancestor options
+[31m[1mTypeError[22m: resolver(...).scopeFor is not a function[39m
+[36m [2m❯[22m packages/indexer/src/projectReferencesResolution.test.ts:[2m119:39[22m[39m
+    [90m117|[39m   it("keeps excluded sources unconfigured rather than falling back to …
+    [90m118|[39m     const configs = { "tsconfig.json": { include: ["app"] }, "app/tsco…
+    [90m119|[39m     expect(resolver(sources, configs).scopeFor("app/no-import.ts").sta…
+    [90m   |[39m                                       [31m^[39m
+    [90m120|[39m   })[33m;[39m
+    [90m121|[39m   it("records all scope counts while returning bounded stable samples …
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/13]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m packages/indexer/src/projectReferencesResolution.test.ts[2m > [22mIDX03 captured project references scope[2m > [22mrecords all scope counts while returning bounded stable samples without altering ownership
+[31m[1mTypeError[22m: Cannot read properties of undefined (reading 'counts')[39m
+[36m [2m❯[22m packages/indexer/src/projectReferencesResolution.test.ts:[2m124:32[22m[39m
+    [90m122|[39m     const inputs = Object.fromEntries(Array.from({ length: 72 }, (_, i…
+    [90m123|[39m     const result = resolver(inputs, { "tsconfig.json": { include: ["ap…
+    [90m124|[39m     expect(result.projectGraph.counts).toMatchObject({ sourceScopes: 7…
+    [90m   |[39m                                [31m^[39m
+    [90m125|[39m     [34mexpect[39m(result[33m.[39mprojectGraph[33m.[39mscopes)[33m.[39m[34mtoHaveLength[39m([34m50[39m)[33m;[39m
+    [90m126|[39m     [34mexpect[39m(result[33m.[39mprojectGraph[33m.[39mtruncated[33m.[39mscopes)[33m.[39m[34mtoBe[39m([35mtrue[39m)[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/13]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m13 failed[39m[22m[2m | [22m[1m[32m2 passed[39m[22m[90m (15)[39m
+[2m   Start at [22m 15:52:26
+[2m   Duration [22m 1.35s[2m (transform 270ms, setup 0ms, import 886ms, tests 249ms, environment 0ms)[22m
+

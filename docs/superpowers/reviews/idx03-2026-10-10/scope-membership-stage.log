@@ -1,0 +1,143 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90m/home/agent/projects/AtlasMode[39m
+
+ [31m❯[39m packages/indexer/src/projectReferencesResolution.test.ts [2m([22m[2m15 tests[22m[2m | [22m[31m6 failed[39m[2m)[22m[32m 253[2mms[22m[39m
+     [32m✓[39m assigns actual referenced named project members independently without option inheritance[32m 52[2mms[22m[39m
+[31m     [31m×[31m never resolves a no-import callable to a referenced global script[39m[32m 47[2mms[22m[39m
+[31m     [31m×[31m never uses side-effect-only import as a callable binding proof[39m[32m 16[2mms[22m[39m
+     [32m✓[39m resolves a named binding module import to the exact referenced captured implementation[32m 25[2mms[22m[39m
+[31m     [31m×[31m does not mix global symbols between independent owned scopes[39m[32m 11[2mms[22m[39m
+     [32m✓[39m keeps a valid named leaf ownership and own aliases when solution root also references missing configuration[32m 10[2mms[22m[39m
+[31m     [31m×[31m invalidates failing root's own members while preserving the valid leaf[39m[32m 16[2mms[22m[39m
+[31m     [31m×[31m rejects overlap rather than picking a candidate by topology order[39m[32m 22[2mms[22m[39m
+     [32m✓[39m does not guess standalone named configuration ownership[32m 1[2mms[22m[39m
+[31m     [31m×[31m honors nearest failed configuration barrier without ancestor fallback[39m[32m 21[2mms[22m[39m
+     [32m✓[39m marks cycle closure invalid without invalidating an independent valid reachable branch[32m 7[2mms[22m[39m
+     [32m✓[39m rejects referenced non-composite implementation authorization[32m 5[2mms[22m[39m
+     [32m✓[39m keeps excluded sources unconfigured rather than falling back to ancestor options[32m 3[2mms[22m[39m
+     [32m✓[39m records all scope counts while returning bounded stable samples without altering ownership[32m 10[2mms[22m[39m
+     [32m✓[39m preserves legacy no-reference same-scope global callable behavior[32m 5[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 6 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m packages/indexer/src/projectReferencesResolution.test.ts[2m > [22mIDX03 captured project references scope[2m > [22mnever resolves a no-import callable to a referenced global script
+[31m[1mAssertionError[22m: expected { …(6) } to match object { resolution: 'unresolved', …(1) }
+(7 matching properties omitted from actual)[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[32m-   "resolution": "unresolved",[39m
+[32m-   "targetId": null,[39m
+[31m+   "resolution": "resolved",[39m
+[31m+   "targetId": "function:aeb542e619043c5dfd1ff4d43e6437a5",[39m
+[2m  }[22m
+
+[36m [2m❯[22m packages/indexer/src/projectReferencesResolution.test.ts:[2m42:49[22m[39m
+    [90m 40|[39m   })[33m;[39m
+    [90m 41|[39m   it("never resolves a no-import callable to a referenced global scrip…
+    [90m 42|[39m     expect(call(analyze(), "app/no-import.ts")).toMatchObject({ resolu…
+    [90m   |[39m                                                 [31m^[39m
+    [90m 43|[39m   })[33m;[39m
+    [90m 44|[39m   it("never uses side-effect-only import as a callable binding proof",…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m packages/indexer/src/projectReferencesResolution.test.ts[2m > [22mIDX03 captured project references scope[2m > [22mnever uses side-effect-only import as a callable binding proof
+[31m[1mAssertionError[22m: expected { …(6) } to match object { resolution: 'unresolved', …(1) }
+(7 matching properties omitted from actual)[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[32m-   "resolution": "unresolved",[39m
+[32m-   "targetId": null,[39m
+[31m+   "resolution": "resolved",[39m
+[31m+   "targetId": "function:aeb542e619043c5dfd1ff4d43e6437a5",[39m
+[2m  }[22m
+
+[36m [2m❯[22m packages/indexer/src/projectReferencesResolution.test.ts:[2m45:51[22m[39m
+    [90m 43|[39m   })[33m;[39m
+    [90m 44|[39m   it("never uses side-effect-only import as a callable binding proof",…
+    [90m 45|[39m     expect(call(analyze(), "app/side-effect.ts")).toMatchObject({ reso…
+    [90m   |[39m                                                   [31m^[39m
+    [90m 46|[39m   })[33m;[39m
+    [90m 47|[39m   it("resolves a named binding module import to the exact referenced c…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m packages/indexer/src/projectReferencesResolution.test.ts[2m > [22mIDX03 captured project references scope[2m > [22mdoes not mix global symbols between independent owned scopes
+[31m[1mAssertionError[22m: expected 'function:aeb542e619043c5dfd1ff4d43e64…' to be null[39m
+
+[32m- Expected:[39m
+null
+
+[31m+ Received:[39m
+"function:aeb542e619043c5dfd1ff4d43e6437a5"
+
+[36m [2m❯[22m packages/indexer/src/projectReferencesResolution.test.ts:[2m57:54[22m[39m
+    [90m 55|[39m     [35mdelete[39m inputs[[32m"other/tsconfig.json"[39m][33m;[39m
+    [90m 56|[39m     const graph = analyze(inputs, { ...configInputs, "other/tsconfig.j…
+    [90m 57|[39m     [34mexpect[39m([34mcall[39m(graph[33m,[39m [32m"app/no-import.ts"[39m)[33m.[39mtargetId)[33m.[39m[34mtoBeNull[39m()[33m;[39m
+    [90m   |[39m                                                      [31m^[39m
+    [90m 58|[39m   })[33m;[39m
+    [90m 59|[39m   it("keeps a valid named leaf ownership and own aliases when solution…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m packages/indexer/src/projectReferencesResolution.test.ts[2m > [22mIDX03 captured project references scope[2m > [22minvalidates failing root's own members while preserving the valid leaf
+[31m[1mAssertionError[22m: expected 'resolved' to be 'unresolved' // Object.is equality[39m
+
+Expected: [32m"[7mun[27mresolved"[39m
+Received: [31m"resolved"[39m
+
+[36m [2m❯[22m packages/indexer/src/projectReferencesResolution.test.ts:[2m81:66[22m[39m
+    [90m 79|[39m     [34mexpect[39m(result[33m.[39m[34mscopeFor[39m([32m"root.ts"[39m)[33m.[39mstatus)[33m.[39m[34mtoBe[39m([32m"invalid"[39m)[33m;[39m
+    [90m 80|[39m     [34mexpect[39m(result[33m.[39m[34mscopeFor[39m([32m"app/import.ts"[39m)[33m.[39mstatus)[33m.[39m[34mtoBe[39m([32m"resolved"[39m)[33m;[39m
+    [90m 81|[39m     expect(call(analyze(inputs, configs), "root.ts").resolution).toBe(…
+    [90m   |[39m                                                                  [31m^[39m
+    [90m 82|[39m   })[33m;[39m
+    [90m 83|[39m   it("rejects overlap rather than picking a candidate by topology orde…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m packages/indexer/src/projectReferencesResolution.test.ts[2m > [22mIDX03 captured project references scope[2m > [22mrejects overlap rather than picking a candidate by topology order
+[31m[1mAssertionError[22m: expected 'resolved' to be 'unresolved' // Object.is equality[39m
+
+Expected: [32m"[7mun[27mresolved"[39m
+Received: [31m"resolved"[39m
+
+[36m [2m❯[22m packages/indexer/src/projectReferencesResolution.test.ts:[2m86:73[22m[39m
+    [90m 84|[39m     const configs = { ...configInputs, "configs/lib.json": { ...libCon…
+    [90m 85|[39m     expect(resolver(sources, configs).scopeFor("app/import.ts").status…
+    [90m 86|[39m     expect(call(analyze(sources, configs), "app/import.ts").resolution…
+    [90m   |[39m                                                                         [31m^[39m
+    [90m 87|[39m   })[33m;[39m
+    [90m 88|[39m   [34mit[39m([32m"does not guess standalone named configuration ownership"[39m[33m,[39m () [33m=>[39m {
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m packages/indexer/src/projectReferencesResolution.test.ts[2m > [22mIDX03 captured project references scope[2m > [22mhonors nearest failed configuration barrier without ancestor fallback
+[31m[1mAssertionError[22m: expected 'resolved' to be 'unresolved' // Object.is equality[39m
+
+Expected: [32m"[7mun[27mresolved"[39m
+Received: [31m"resolved"[39m
+
+[36m [2m❯[22m packages/indexer/src/projectReferencesResolution.test.ts:[2m97:73[22m[39m
+    [90m 95|[39m     [35mconst[39m result [33m=[39m [34mresolver[39m(sources[33m,[39m configs)[33m;[39m
+    [90m 96|[39m     [34mexpect[39m(result[33m.[39m[34mscopeFor[39m([32m"app/import.ts"[39m)[33m.[39mstatus)[33m.[39m[34mtoBe[39m([32m"invalid"[39m)[33m;[39m
+    [90m 97|[39m     expect(call(analyze(sources, configs), "app/import.ts").resolution…
+    [90m   |[39m                                                                         [31m^[39m
+    [90m 98|[39m   })[33m;[39m
+    [90m 99|[39m   it("marks cycle closure invalid without invalidating an independent …
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/6]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m6 failed[39m[22m[2m | [22m[1m[32m9 passed[39m[22m[90m (15)[39m
+[2m   Start at [22m 15:54:29
+[2m   Duration [22m 1.17s[2m (transform 272ms, setup 0ms, import 785ms, tests 253ms, environment 0ms)[22m
+

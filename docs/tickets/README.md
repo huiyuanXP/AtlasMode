@@ -16,7 +16,7 @@
 | [QA-01](QA-01.md) | 项目内真实 MCP 接入 Test | P0 | UI-04、AG-04 | DONE |
 | [IDX-01](IDX-01.md) | Express严格入口保守失效修复 | P1 | 无 | DONE |
 | [IDX-02](IDX-02.md) | workspace包及exports源码映射 | P1 | IDX-01 | DONE |
-| [IDX-03](IDX-03.md) | tsconfig references 项目图 | P1 | IDX-02 | CLAIMED |
+| [IDX-03](IDX-03.md) | tsconfig references 项目图 | P1 | IDX-02 | REVIEW |
 | [GRP-01](GRP-01.md) | 功能集圈选和成员编辑 | P1 | UI-04 | DONE |
 | [GRP-02](GRP-02.md) | 功能集折叠及外部端点 | P1 | GRP-01 | DONE |
 | [FS-01](FS-01.md) | 文件目录归属拖入和路径预览 | P1 | UI-03 | TODO |

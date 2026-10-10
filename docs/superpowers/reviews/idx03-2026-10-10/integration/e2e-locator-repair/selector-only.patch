@@ -1,0 +1,79 @@
+diff --git a/tests/e2e/commonjs.spec.ts b/tests/e2e/commonjs.spec.ts
+index e083f02..44b1b56 100644
+--- a/tests/e2e/commonjs.spec.ts
++++ b/tests/e2e/commonjs.spec.ts
+@@ -90,10 +90,12 @@ for (const legacy of [false, true]) {
+         "true",
+       );
+       await openAdvancedNavigation(page);
+-      const diagnostics = page
+-        .locator(".navigation details")
+-        .filter({ has: page.locator("summary", { hasText: "静态分析诊断" }) });
+-      await diagnostics.locator("summary").click();
++      const diagnostics = page.locator(".navigation details").filter({
++        has: page.locator(":scope > summary", {
++          hasText: /静态分析诊断|Static analysis diagnostics/,
++        }),
++      });
++      await diagnostics.locator(":scope > summary").click();
+       const coverage = diagnostics.getByRole("region", {
+         name: "包配置",
+         exact: true,
+@@ -136,9 +138,7 @@ for (const legacy of [false, true]) {
+       await expect(page.getByTestId("source-snippet")).toContainText(
+         'return "中文 helper"',
+       );
+-      await expect(page.locator(".navigation details").last()).toContainText(
+-        "Indexed files: 5",
+-      );
++      await expect(diagnostics).toContainText("Indexed files: 5");
+       await english.scrollIntoViewIfNeeded();
+       await page.screenshot({
+         path: join(out, `${legacy ? "legacy" : "captured"}-en.png`),
+@@ -249,8 +249,12 @@ test("recorded zero manifests is distinct from unrecorded coverage", async ({
+     await openAdvancedNavigation(page);
+     await page
+       .locator(".navigation details")
+-      .filter({ has: page.locator("summary", { hasText: "静态分析诊断" }) })
+-      .locator("summary")
++      .filter({
++        has: page.locator(":scope > summary", {
++          hasText: /静态分析诊断|Static analysis diagnostics/,
++        }),
++      })
++      .locator(":scope > summary")
+       .click();
+     await expect(
+       page.getByRole("region", { name: "包配置", exact: true }),
+diff --git a/tests/e2e/tsconfig.spec.ts b/tests/e2e/tsconfig.spec.ts
+index edf7d4a..491257b 100644
+--- a/tests/e2e/tsconfig.spec.ts
++++ b/tests/e2e/tsconfig.spec.ts
+@@ -97,10 +97,12 @@ for (const legacy of [false, true]) {
+         "true",
+       );
+       await openAdvancedNavigation(page);
+-      const diagnostics = page
+-        .locator(".navigation details")
+-        .filter({ has: page.locator("summary", { hasText: "静态分析诊断" }) });
+-      await diagnostics.locator("summary").click();
++      const diagnostics = page.locator(".navigation details").filter({
++        has: page.locator(":scope > summary", {
++          hasText: /静态分析诊断|Static analysis diagnostics/,
++        }),
++      });
++      await diagnostics.locator(":scope > summary").click();
+       const coverage = diagnostics.getByRole("region", {
+         name: "配置输入",
+         exact: true,
+@@ -145,9 +147,7 @@ for (const legacy of [false, true]) {
+       await expect(page.getByTestId("source-snippet")).toContainText(
+         'return "A 原文"',
+       );
+-      await expect(page.locator(".navigation details").last()).toContainText(
+-        "Indexed files: 6",
+-      );
++      await expect(diagnostics).toContainText("Indexed files: 6");
+       await english.scrollIntoViewIfNeeded();
+       await page.screenshot({
+         path: join(out, `${legacy ? "legacy" : "captured"}-en.png`),

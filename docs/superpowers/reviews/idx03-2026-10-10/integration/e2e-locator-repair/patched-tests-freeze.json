@@ -1,0 +1,8 @@
+{
+  "stage": "before-targeted-5-case-rerun",
+  "candidate": "/tmp/atlas-idx03-clean-20261010-wn3h_oyv/workspace",
+  "testHashes": {
+    "tests/e2e/commonjs.spec.ts": "209881d280c7e4557f31a6c22bdc3b65ee511e8c9e8e0249dd453ce6f29508e4",
+    "tests/e2e/tsconfig.spec.ts": "bf48e82bad323c869a868b7a0b8034a595c94398d77c3dac70b0dd01dfc78c99"
+  }
+}

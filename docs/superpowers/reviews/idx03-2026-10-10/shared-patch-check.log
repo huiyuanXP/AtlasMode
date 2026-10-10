@@ -1,0 +1,2 @@
+PASS: git apply --cached --check against throwaway GIT_INDEX_FILE initialized with 619c39a82a4a9d6d3d8c8dec2a8846f7f00d52f2
+No actual index/staging or objects modified.

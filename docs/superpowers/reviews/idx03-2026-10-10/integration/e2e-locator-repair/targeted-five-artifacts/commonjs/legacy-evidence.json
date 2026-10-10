@@ -1,0 +1,208 @@
+{
+  "legacy": true,
+  "snapshotId": "legacy-package-snapshot:ede920b6ba7a847cf66a1f61f4f18211",
+  "coverage": {
+    "files": [
+      "entry.js",
+      "helper.js",
+      "never-execute.cjs",
+      "overwritten.js",
+      "unknown.js"
+    ],
+    "configurationFiles": [],
+    "configurationProjectGraph": {
+      "version": 1,
+      "status": "complete",
+      "counts": {
+        "observedRoots": 0,
+        "observedProjects": 0,
+        "observedReferences": 0,
+        "sourceScopes": 5,
+        "resolved": 0,
+        "unconfigured": 5,
+        "ambiguous": 0,
+        "invalid": 0
+      },
+      "roots": [],
+      "projects": [],
+      "references": [],
+      "scopes": [
+        {
+          "sourcePath": "entry.js",
+          "status": "unconfigured"
+        },
+        {
+          "sourcePath": "helper.js",
+          "status": "unconfigured"
+        },
+        {
+          "sourcePath": "never-execute.cjs",
+          "status": "unconfigured"
+        },
+        {
+          "sourcePath": "overwritten.js",
+          "status": "unconfigured"
+        },
+        {
+          "sourcePath": "unknown.js",
+          "status": "unconfigured"
+        }
+      ],
+      "truncated": {
+        "roots": false,
+        "projects": false,
+        "references": false,
+        "scopes": false
+      }
+    },
+    "excludedPatterns": [
+      "**/.git/**",
+      "**/node_modules/**",
+      "**/dist/**",
+      "**/build/**",
+      "**/coverage/**",
+      "**/__pycache__/**",
+      "**/.venv/**",
+      "**/venv/**",
+      "**/.agents/**",
+      "**/.superpowers/**",
+      "**/.next/**",
+      "**/.cache/**",
+      "**/vendor/**"
+    ],
+    "unresolvedCount": 8,
+    "availability": {
+      "complete": true,
+      "unavailablePaths": [],
+      "excludedPaths": []
+    }
+  },
+  "errors": [],
+  "external": [],
+  "protocolErrors": [],
+  "unknownContext": {
+    "node": {
+      "id": "function:412604094172f6a173e494e196875c4c",
+      "kind": "function",
+      "declarationKind": "function",
+      "name": "overwritten",
+      "qualifiedName": "overwritten",
+      "filePath": "unknown.js",
+      "parentId": "file:c30c7996cc28b6ebd246f2558882c6b4",
+      "language": "javascript",
+      "signature": "function overwritten()",
+      "startLine": 2,
+      "endLine": 2,
+      "exported": true
+    },
+    "incoming": [],
+    "outgoing": [
+      {
+        "id": "relation:c8b98a0e6f4934c26db95792b4c9ab58",
+        "type": "calls",
+        "sourceId": "function:412604094172f6a173e494e196875c4c",
+        "targetId": null,
+        "resolution": "unresolved",
+        "evidence": {
+          "filePath": "unknown.js",
+          "line": 2,
+          "text": "mod.helper()"
+        },
+        "reason": "CommonJS export helper has no unique stable captured implementation"
+      }
+    ],
+    "relatedNodes": [
+      {
+        "id": "function:412604094172f6a173e494e196875c4c",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "overwritten",
+        "qualifiedName": "overwritten",
+        "filePath": "unknown.js",
+        "parentId": "file:c30c7996cc28b6ebd246f2558882c6b4",
+        "language": "javascript",
+        "signature": "function overwritten()",
+        "startLine": 2,
+        "endLine": 2,
+        "exported": true
+      }
+    ],
+    "totalIncoming": 0,
+    "totalOutgoing": 1,
+    "truncated": false,
+    "offset": 0,
+    "limit": 50,
+    "snapshotId": "legacy-package-snapshot:ede920b6ba7a847cf66a1f61f4f18211",
+    "dataSource": "code"
+  },
+  "shadowContext": {
+    "node": {
+      "id": "function:4fac7f03a3d2ee05e53e7c17415bb638",
+      "kind": "function",
+      "declarationKind": "function",
+      "name": "shadowed",
+      "qualifiedName": "shadowed",
+      "filePath": "unknown.js",
+      "parentId": "file:c30c7996cc28b6ebd246f2558882c6b4",
+      "language": "javascript",
+      "signature": "function shadowed(require)",
+      "startLine": 3,
+      "endLine": 3,
+      "exported": true
+    },
+    "incoming": [],
+    "outgoing": [
+      {
+        "id": "relation:bb5258409b7157354829aba15fc7b5ff",
+        "type": "calls",
+        "sourceId": "function:4fac7f03a3d2ee05e53e7c17415bb638",
+        "targetId": null,
+        "resolution": "unresolved",
+        "evidence": {
+          "filePath": "unknown.js",
+          "line": 3,
+          "text": "require(\"./helper\")"
+        },
+        "reason": "No unique indexed implementation for this call (dynamic, ambient, or excluded target)"
+      },
+      {
+        "id": "relation:bb525cd5347157354829aba161aaa558",
+        "type": "calls",
+        "sourceId": "function:4fac7f03a3d2ee05e53e7c17415bb638",
+        "targetId": null,
+        "resolution": "unresolved",
+        "evidence": {
+          "filePath": "unknown.js",
+          "line": 3,
+          "text": "local.helper()"
+        },
+        "reason": "CommonJS require is lexically shadowed"
+      }
+    ],
+    "relatedNodes": [
+      {
+        "id": "function:4fac7f03a3d2ee05e53e7c17415bb638",
+        "kind": "function",
+        "declarationKind": "function",
+        "name": "shadowed",
+        "qualifiedName": "shadowed",
+        "filePath": "unknown.js",
+        "parentId": "file:c30c7996cc28b6ebd246f2558882c6b4",
+        "language": "javascript",
+        "signature": "function shadowed(require)",
+        "startLine": 3,
+        "endLine": 3,
+        "exported": true
+      }
+    ],
+    "totalIncoming": 0,
+    "totalOutgoing": 2,
+    "truncated": false,
+    "offset": 0,
+    "limit": 50,
+    "snapshotId": "legacy-package-snapshot:ede920b6ba7a847cf66a1f61f4f18211",
+    "dataSource": "code"
+  },
+  "observedAt": "2026-10-10T16:47:43.973Z",
+  "targetNotExecuted": true
+}

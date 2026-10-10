@@ -1,0 +1,30 @@
+{
+  "tracked": [
+    "packages/indexer/src/commonjs.ts",
+    "packages/indexer/src/configCapture.ts",
+    "packages/indexer/src/configResolution.ts",
+    "packages/indexer/src/index.ts",
+    "packages/indexer/src/typescript.ts",
+    "packages/core/src/model.ts",
+    "packages/core/src/validation.ts",
+    "apps/web/src/app/Navigation.tsx",
+    "apps/web/src/i18n/en.ts",
+    "apps/web/src/i18n/zh.ts"
+  ],
+  "new": [
+    "packages/indexer/src/projectReferenceGraph.ts",
+    "packages/indexer/src/projectReferenceTypes.ts",
+    "packages/indexer/src/projectReferences.ts",
+    "packages/indexer/src/projectReferencesCapture.test.ts",
+    "packages/indexer/src/projectReferencesFreshness.test.ts",
+    "packages/indexer/src/projectReferencesResolution.test.ts",
+    "packages/indexer/src/projectReferencesReview.test.ts",
+    "packages/core/src/projectReferenceSchema.test.ts",
+    "apps/web/src/app/ConfigurationProjectGraphPanel.tsx",
+    "apps/web/src/app/ConfigurationProjectGraphPanel.test.tsx",
+    "tests/support/idx03-validate.mjs",
+    "tests/support/idx03-express-validate.mjs",
+    "tests/support/idx03-visual-evidence.mjs"
+  ],
+  "note": "core/model RecordKind annotations line is the explicit KN01 dependency; not IDX03 behavior. UI/source frozen before final gate; visual helper added for supplemental readonly screenshots."
+}

@@ -1,0 +1,2 @@
+tests/e2e/commonjs.spec.ts 307ms
+tests/e2e/tsconfig.spec.ts 86ms
