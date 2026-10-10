@@ -1,0 +1,212 @@
+
+Running 7 tests using 1 worker
+
+  ✘  1 tests/e2e/commonjs.spec.ts:22:3 › production browser displays captured package coverage truthfully in Chinese and English (13.4s)
+  ✘  2 tests/e2e/commonjs.spec.ts:22:3 › production browser displays unrecorded legacy package coverage truthfully in Chinese and English (14.7s)
+  ✓  3 tests/e2e/commonjs.spec.ts:217:1 › recorded zero manifests is distinct from unrecorded coverage (2.8s)
+  ✘  4 tests/e2e/forwarding.spec.ts:21:1 › production browser follows a two-hop entry to the real leaf, preserves authored source in both languages and exposes unsafe forwarding reason (13.1s)
+  ✓  5 tests/e2e/graph-inspection.spec.ts:23:1 › inspection preserves the camera, uniquely previews repeated calls, and funnel dragging survives pages while maps navigate (7.7s)
+  ✘  6 tests/e2e/tsconfig.spec.ts:17:3 › production browser displays captured configuration coverage truthfully in Chinese and English (12.7s)
+  ✘  7 tests/e2e/tsconfig.spec.ts:17:3 › production browser displays unrecorded legacy configuration coverage truthfully in Chinese and English (16.2s)
+
+
+  1) tests/e2e/commonjs.spec.ts:22:3 › production browser displays captured package coverage truthfully in Chinese and English 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: getByTestId('source-snippet')
+    Expected substring: "return \"中文 helper\""
+    Timeout: 10000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toContainText" getByTestId('source-snippet') with timeout 10000ms
+      - waiting for getByTestId('source-snippet')
+        3 × locator resolved to <pre class="source-code" data-testid="source-snippet">2  function entry() { return mod.helper(); }</pre>
+          - unexpected value "2  function entry() { return mod.helper(); }"
+
+
+      75 |       await targetCard.click();
+      76 |       await openSourceDrawer(page);
+    > 77 |       await expect(page.getByTestId("source-snippet")).toContainText(
+         |                                                        ^
+      78 |         'return "中文 helper"',
+      79 |       );
+      80 |       await expect(page.locator(".inspector code.path")).toHaveText(
+        at /home/agent/projects/AtlasMode/tests/e2e/commonjs.spec.ts:77:56
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../../../tmp/atlas-ci-repair-red/results/commonjs-production-browse-39ad5-ully-in-Chinese-and-English/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../../../tmp/atlas-ci-repair-red/results/commonjs-production-browse-39ad5-ully-in-Chinese-and-English/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../../../tmp/atlas-ci-repair-red/results/commonjs-production-browse-39ad5-ully-in-Chinese-and-English/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../../../tmp/atlas-ci-repair-red/results/commonjs-production-browse-39ad5-ully-in-Chinese-and-English/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) tests/e2e/commonjs.spec.ts:22:3 › production browser displays unrecorded legacy package coverage truthfully in Chinese and English 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: getByTestId('source-snippet')
+    Expected substring: "return \"中文 helper\""
+    Timeout: 10000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toContainText" getByTestId('source-snippet') with timeout 10000ms
+      - waiting for getByTestId('source-snippet')
+        - locator resolved to <pre class="source-code" data-testid="source-snippet">2  function entry() { return mod.helper(); }</pre>
+        - unexpected value "2  function entry() { return mod.helper(); }"
+
+
+      75 |       await targetCard.click();
+      76 |       await openSourceDrawer(page);
+    > 77 |       await expect(page.getByTestId("source-snippet")).toContainText(
+         |                                                        ^
+      78 |         'return "中文 helper"',
+      79 |       );
+      80 |       await expect(page.locator(".inspector code.path")).toHaveText(
+        at /home/agent/projects/AtlasMode/tests/e2e/commonjs.spec.ts:77:56
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../../../tmp/atlas-ci-repair-red/results/commonjs-production-browse-3768a-ully-in-Chinese-and-English/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../../../tmp/atlas-ci-repair-red/results/commonjs-production-browse-3768a-ully-in-Chinese-and-English/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../../../tmp/atlas-ci-repair-red/results/commonjs-production-browse-3768a-ully-in-Chinese-and-English/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../../../tmp/atlas-ci-repair-red/results/commonjs-production-browse-3768a-ully-in-Chinese-and-English/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) tests/e2e/forwarding.spec.ts:21:1 › production browser follows a two-hop entry to the real leaf, preserves authored source in both languages and exposes unsafe forwarding reason 
+
+    Error: expect(locator).toHaveText(expected) failed
+
+    Locator: getByTestId('source-snippet')
+    Expected: "2  function helper() { return \"中文 leaf A\"; }"
+    Timeout: 10000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toHaveText" getByTestId('source-snippet') with timeout 10000ms
+      - waiting for getByTestId('source-snippet')
+
+
+       98 |       ).toBeVisible();
+       99 |       await openSourceDrawer(page);
+    > 100 |       await expect(page.getByTestId("source-snippet")).toHaveText(
+          |                                                        ^
+      101 |         '2  function helper() { return "中文 leaf A"; }',
+      102 |       );
+      103 |       await openSourceDrawer(page);
+        at /home/agent/projects/AtlasMode/tests/e2e/forwarding.spec.ts:100:56
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../../../tmp/atlas-ci-repair-red/results/forwarding-production-brow-26ed3-es-unsafe-forwarding-reason/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../../../tmp/atlas-ci-repair-red/results/forwarding-production-brow-26ed3-es-unsafe-forwarding-reason/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../../../tmp/atlas-ci-repair-red/results/forwarding-production-brow-26ed3-es-unsafe-forwarding-reason/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../../../tmp/atlas-ci-repair-red/results/forwarding-production-brow-26ed3-es-unsafe-forwarding-reason/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4) tests/e2e/tsconfig.spec.ts:17:3 › production browser displays captured configuration coverage truthfully in Chinese and English 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: getByTestId('source-snippet')
+    Expected substring: "return \"A 原文\""
+    Timeout: 10000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toContainText" getByTestId('source-snippet') with timeout 10000ms
+      - waiting for getByTestId('source-snippet')
+        4 × locator resolved to <pre class="source-code" data-testid="source-snippet">2  export function entry() { return target(); }</pre>
+          - unexpected value "2  export function entry() { return target(); }"
+
+
+      82 |       await targetCard.click();
+      83 |       await openSourceDrawer(page);
+    > 84 |       await expect(page.getByTestId("source-snippet")).toContainText(
+         |                                                        ^
+      85 |         'return "A 原文"',
+      86 |       );
+      87 |       await expect(page.locator(".inspector code.path")).toHaveText(
+        at /home/agent/projects/AtlasMode/tests/e2e/tsconfig.spec.ts:84:56
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../../../tmp/atlas-ci-repair-red/results/tsconfig-production-browse-5fae5-ully-in-Chinese-and-English/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../../../tmp/atlas-ci-repair-red/results/tsconfig-production-browse-5fae5-ully-in-Chinese-and-English/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../../../tmp/atlas-ci-repair-red/results/tsconfig-production-browse-5fae5-ully-in-Chinese-and-English/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../../../tmp/atlas-ci-repair-red/results/tsconfig-production-browse-5fae5-ully-in-Chinese-and-English/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  5) tests/e2e/tsconfig.spec.ts:17:3 › production browser displays unrecorded legacy configuration coverage truthfully in Chinese and English 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: getByTestId('source-snippet')
+    Expected substring: "return \"A 原文\""
+    Timeout: 10000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toContainText" getByTestId('source-snippet') with timeout 10000ms
+      - waiting for getByTestId('source-snippet')
+        3 × locator resolved to <pre class="source-code" data-testid="source-snippet">2  export function entry() { return target(); }</pre>
+          - unexpected value "2  export function entry() { return target(); }"
+
+
+      82 |       await targetCard.click();
+      83 |       await openSourceDrawer(page);
+    > 84 |       await expect(page.getByTestId("source-snippet")).toContainText(
+         |                                                        ^
+      85 |         'return "A 原文"',
+      86 |       );
+      87 |       await expect(page.locator(".inspector code.path")).toHaveText(
+        at /home/agent/projects/AtlasMode/tests/e2e/tsconfig.spec.ts:84:56
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../../../tmp/atlas-ci-repair-red/results/tsconfig-production-browse-6d832-ully-in-Chinese-and-English/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../../../tmp/atlas-ci-repair-red/results/tsconfig-production-browse-6d832-ully-in-Chinese-and-English/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../../../tmp/atlas-ci-repair-red/results/tsconfig-production-browse-6d832-ully-in-Chinese-and-English/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../../../tmp/atlas-ci-repair-red/results/tsconfig-production-browse-6d832-ully-in-Chinese-and-English/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  5 failed
+    tests/e2e/commonjs.spec.ts:22:3 › production browser displays captured package coverage truthfully in Chinese and English 
+    tests/e2e/commonjs.spec.ts:22:3 › production browser displays unrecorded legacy package coverage truthfully in Chinese and English 
+    tests/e2e/forwarding.spec.ts:21:1 › production browser follows a two-hop entry to the real leaf, preserves authored source in both languages and exposes unsafe forwarding reason 
+    tests/e2e/tsconfig.spec.ts:17:3 › production browser displays captured configuration coverage truthfully in Chinese and English 
+    tests/e2e/tsconfig.spec.ts:17:3 › production browser displays unrecorded legacy configuration coverage truthfully in Chinese and English 
+  2 passed (1.5m)

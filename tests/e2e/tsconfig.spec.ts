@@ -80,6 +80,10 @@ for (const legacy of [false, true]) {
       );
       await expect(targetCard).toBeVisible();
       await targetCard.click();
+      // A card single-click waits for the double-click window before selecting.
+      await expect(page.locator(".inspector code.path")).toHaveText(
+        "targetA.ts:2",
+      );
       await openSourceDrawer(page);
       await expect(page.getByTestId("source-snippet")).toContainText(
         'return "A 原文"',

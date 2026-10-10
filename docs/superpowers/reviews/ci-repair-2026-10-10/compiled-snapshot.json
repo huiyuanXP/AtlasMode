@@ -1,0 +1,11 @@
+{
+  "recordedAt": "2026-10-10 UTC",
+  "baseCommit": "078fa84",
+  "testTarget": "shared fix/first-use-20261010 working tree including GRP changes",
+  "originalRun": "https://github.com/huiyuanXP/AtlasMode/actions/runs/38059730657",
+  "compiled": {
+    "apps/server/dist/index.js": "0daaba18e88e951b1ef67bdb3274af28717f0b2078b1d2baf17b8ca6ec787ab6",
+    "apps/mcp/dist/index.js": "ce27aa23da77bb00e5fcaec932b034d5e7c0ba95feaf72f62b3a175b7fadccb5",
+    "apps/web/dist/index.html": "5b4a2386032d825feb083138dcbc121a1f32d62d1ef4896c40d7b735cdea3a44"
+  }
+}

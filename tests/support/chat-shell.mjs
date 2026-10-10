@@ -8,8 +8,9 @@ export async function openSourceDrawer(page) {
   const button = page
     .locator(".inspector")
     .getByRole("button", { name: /^(View source|查看源码)$/ });
-  if ((await button.getAttribute("aria-pressed")) !== "true")
-    await button.click();
+  // This action loads the selected source even when its tab is already open.
+  // Selecting another card clears the previous source independently of tab state.
+  await button.click();
 }
 export async function openAdvancedNavigation(page) {
   const button = page.getByRole("button", {

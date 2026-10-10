@@ -1,7 +1,14 @@
 import { afterEach, expect, test } from "vitest";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { mkdtemp, readFile, rm } from "node:fs/promises";
+import {
+  mkdtemp,
+  readFile,
+  rm,
+  symlink,
+  realpath,
+  access,
+} from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import * as processBridge from "./process.js";
 const fixture = fileURLToPath(
@@ -13,10 +20,16 @@ const cleanup: (() => Promise<void>)[] = [];
 afterEach(async () => {
   for (const fn of cleanup.splice(0).reverse()) await fn();
 });
-async function start(mode: string, options: Record<string, unknown> = {}) {
+async function start(
+  mode: string,
+  options: Record<string, unknown> = {},
+  linked = false,
+) {
   expect(processBridge.startProcess).toBeTypeOf("function");
-  const cwd = await mkdtemp(join(tmpdir(), "atlas-agent-test-"));
-  cleanup.push(() => rm(cwd, { recursive: true, force: true }));
+  const directory = await mkdtemp(join(tmpdir(), "atlas-agent-test-"));
+  cleanup.push(() => rm(directory, { recursive: true, force: true }));
+  const cwd = linked ? join(directory, "linked-cwd") : directory;
+  if (linked) await symlink(directory, cwd, "dir");
   const events: processBridge.AgentEvent[] = [];
   const run = processBridge.startProcess(
     {
@@ -32,20 +45,26 @@ async function start(mode: string, options: Record<string, unknown> = {}) {
   cleanup.push(() => run.stop());
   return { run, events, cwd };
 }
-posixTest(
-  "stdin text and argument arrays stay literal; split JSONL produces final public text",
-  async () => {
-    const { run, events, cwd } = await start("echo", {
-      args: [fixture, "echo", "$(touch sentinel)"],
-    });
+posixTest.each([false, true])(
+  "stdin text and argument arrays stay literal through linked cwd=%s; split JSONL produces final public text",
+  async (linked) => {
+    const { run, events, cwd } = await start(
+      "echo",
+      { args: [fixture, "echo", "$(touch sentinel)"] },
+      linked,
+    );
     expect(await run.done).toEqual({ ok: true });
     const e = events.find((e) => e.type === "message");
     expect(e?.type).toBe("message");
     const value = JSON.parse(e && "text" in e ? e.text : "");
-    expect(value).toEqual({
+    // macOS /var and symlink fixtures may be reported by their physical path.
+    expect({ ...value, cwd: await realpath(value.cwd) }).toEqual({
       prompt: "$(touch sentinel); `echo pwned` 中文",
       args: ["$(touch sentinel)"],
-      cwd,
+      cwd: await realpath(cwd),
+    });
+    await expect(access(join(cwd, "sentinel"))).rejects.toMatchObject({
+      code: "ENOENT",
     });
   },
 );

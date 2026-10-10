@@ -11,14 +11,34 @@ async function transform(card: Locator) {
   return card.evaluate((e) => (e as HTMLElement).style.transform);
 }
 async function dragCard(page: Page, card: Locator, dx: number, dy: number) {
+  // Resolve a stable hit target; a stale box during layout can drag the pane
+  // while the layout animation falsely looks like a successful card drag.
+  await card.hover();
   const box = await card.boundingBox();
   if (!box) throw new Error("Card has no screen bounds");
   await page.mouse.move(box.x + box.width * 0.4, box.y + 30);
   await page.mouse.down();
-  await page.mouse.move(box.x + box.width * 0.4 + dx, box.y + 30 + dy, {
-    steps: 12,
-  });
+  // Cross React Flow's drag threshold, then measure displacement from drag start.
+  const startX = box.x + box.width * 0.4 + 4,
+    startY = box.y + 34;
+  await page.mouse.move(startX, startY);
+  await expect(card).toHaveClass(/dragging/);
+  const dragStart = await card.boundingBox();
+  if (!dragStart) throw new Error("Dragging card has no screen bounds");
+  await page.mouse.move(startX + dx, startY + dy, { steps: 12 });
+  await expect(card).toHaveClass(/dragging/);
   await page.mouse.up();
+  await expect
+    .poll(async () => {
+      const moved = await card.boundingBox();
+      return moved
+        ? Math.max(
+            Math.abs(moved.x - dragStart.x - dx),
+            Math.abs(moved.y - dragStart.y - dy),
+          )
+        : Infinity;
+    })
+    .toBeLessThan(2);
 }
 test("inspection preserves the camera, uniquely previews repeated calls, and funnel dragging survives pages while maps navigate", async ({
   page,
@@ -152,13 +172,14 @@ test("inspection preserves the camera, uniquely previews repeated calls, and fun
       "Dependencies 6",
     );
     await expect(card(selected.id)).toHaveClass(/draggable/);
-    // Take control while the 300ms funnel transition may still be running.
+    // Verify an actual card drag rather than accepting layout animation as motion.
     const before = await transform(card(selected.id));
     await dragCard(page, card(selected.id), 55, 30);
     const moved = await transform(card(selected.id));
     expect(moved).not.toBe(before);
     await page.waitForTimeout(500);
     expect(await transform(card(selected.id))).toBe(moved);
+    await expect(detail).toBeVisible();
     const view = await http(server.url, `/api/projects/${project.id}/view`);
     expect(view.positions).toEqual({});
     await page
@@ -224,6 +245,7 @@ test("inspection preserves the camera, uniquely previews repeated calls, and fun
     await expect(map).toContainText("Currently loaded");
     await page.keyboard.press("Escape");
     await expect(map).toHaveClass(/collapsed/);
+    await expect(detail).toBeVisible();
     // Escape closes detail first and then exits the funnel.
     await page.keyboard.press("Escape");
     await expect(detail).toHaveCount(0);

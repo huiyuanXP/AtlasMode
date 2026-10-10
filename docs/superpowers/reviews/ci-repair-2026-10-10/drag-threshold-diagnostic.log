@@ -1,0 +1,42 @@
+
+Running 1 test using 1 worker
+
+  ✘  1 tests/e2e/graph-inspection.spec.ts:38:1 › inspection preserves the camera, uniquely previews repeated calls, and funnel dragging survives pages while maps navigate (16.4s)
+
+
+  1) tests/e2e/graph-inspection.spec.ts:38:1 › inspection preserves the camera, uniquely previews repeated calls, and funnel dragging survives pages while maps navigate 
+
+    Error: expect(received).toBeLessThan(expected)
+
+    Expected: < 2
+    Received:   5
+
+    Call Log:
+    - Timeout 10000ms exceeded while waiting on the predicate
+
+      34 |         : Infinity;
+      35 |     })
+    > 36 |     .toBeLessThan(2);
+         |      ^
+      37 | }
+      38 | test("inspection preserves the camera, uniquely previews repeated calls, and funnel dragging survives pages while maps navigate", async ({
+      39 |   page,
+        at dragCard (/home/agent/projects/AtlasMode/tests/e2e/graph-inspection.spec.ts:36:6)
+        at /home/agent/projects/AtlasMode/tests/e2e/graph-inspection.spec.ts:172:5
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../../../tmp/atlas-ci-repair-drag/results/graph-inspection-inspectio-63d93-s-pages-while-maps-navigate/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../../../tmp/atlas-ci-repair-drag/results/graph-inspection-inspectio-63d93-s-pages-while-maps-navigate/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../../../tmp/atlas-ci-repair-drag/results/graph-inspection-inspectio-63d93-s-pages-while-maps-navigate/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../../../tmp/atlas-ci-repair-drag/results/graph-inspection-inspectio-63d93-s-pages-while-maps-navigate/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests/e2e/graph-inspection.spec.ts:38:1 › inspection preserves the camera, uniquely previews repeated calls, and funnel dragging survives pages while maps navigate 

@@ -1,0 +1,49 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90m/home/agent/projects/AtlasMode[39m
+
+ [31m❯[39m apps/server/src/agent/process.test.ts [2m([22m[2m11 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[33m 1180[2mms[22m[39m
+   [32m✓[39m stdin text and argument arrays stay literal through linked cwd=false; split JSONL produces final public text[32m 104[2mms[22m[39m
+[31m   [31m×[31m stdin text and argument arrays stay literal through linked cwd=true; split JSONL produces final public text[39m[32m 115[2mms[22m[39m
+   [32m✓[39m normalizes Codex tool status and Claude text without duplicate final result[32m 128[2mms[22m[39m
+   [32m✓[39m fails closed on invalid without exposing stderr[32m 76[2mms[22m[39m
+   [32m✓[39m fails closed on oversize without exposing stderr[32m 131[2mms[22m[39m
+   [32m✓[39m fails closed on auth without exposing stderr[32m 74[2mms[22m[39m
+   [32m✓[39m fails closed on native without exposing stderr[32m 74[2mms[22m[39m
+   [32m✓[39m native metadata fallback notice is private while actual item errors still fail[32m 189[2mms[22m[39m
+   [32m✓[39m missing executable and timeout return safe errors[32m 77[2mms[22m[39m
+   [32m✓[39m cancel waits for owned grandchild termination[32m 128[2mms[22m[39m
+   [32m✓[39m malformed Claude JSON blocks fail safely without throwing into the HTTP process[32m 81[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m apps/server/src/agent/process.test.ts[2m > [22mstdin text and argument arrays stay literal through linked cwd=true; split JSONL produces final public text
+[31m[1mAssertionError[22m: expected { …(3) } to deeply equal { …(3) }[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[2m    "args": [[22m
+[2m      "$(touch sentinel)",[22m
+[2m    ],[22m
+[32m-   "cwd": "/tmp/atlas-agent-test-5nBxwe/linked-cwd",[39m
+[31m+   "cwd": "/tmp/atlas-agent-test-5nBxwe",[39m
+[2m    "prompt": "$(touch sentinel); `echo pwned` 中文",[22m
+[2m  }[22m
+
+[36m [2m❯[22m apps/server/src/agent/process.test.ts:[2m53:19[22m[39m
+    [90m 51|[39m     [34mexpect[39m(e[33m?.[39mtype)[33m.[39m[34mtoBe[39m([32m"message"[39m)[33m;[39m
+    [90m 52|[39m     [35mconst[39m value [33m=[39m [33mJSON[39m[33m.[39m[34mparse[39m(e [33m&&[39m [32m"text"[39m [35min[39m e [33m?[39m e[33m.[39mtext [33m:[39m [32m""[39m)[33m;[39m
+    [90m 53|[39m     [34mexpect[39m(value)[33m.[39m[34mtoEqual[39m({
+    [90m   |[39m                   [31m^[39m
+    [90m 54|[39m       prompt[33m:[39m [32m"$(touch sentinel); `echo pwned` 中文"[39m[33m,[39m
+    [90m 55|[39m       args[33m:[39m [[32m"$(touch sentinel)"[39m][33m,[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m10 passed[39m[22m[90m (11)[39m
+[2m   Start at [22m 14:40:20
+[2m   Duration [22m 1.56s[2m (transform 103ms, setup 0ms, import 137ms, tests 1.18s, environment 0ms)[22m
+

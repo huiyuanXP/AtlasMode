@@ -1,0 +1,462 @@
+browser	Run npm run test:e2e	﻿2026-10-10T14:29:14.7685409Z ##[group]Run npm run test:e2e
+browser	Run npm run test:e2e	2026-10-10T14:29:14.7685677Z [36;1mnpm run test:e2e[0m
+browser	Run npm run test:e2e	2026-10-10T14:29:14.7742360Z shell: /usr/bin/bash -e {0}
+browser	Run npm run test:e2e	2026-10-10T14:29:14.7742579Z env:
+browser	Run npm run test:e2e	2026-10-10T14:29:14.7742806Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.15/x64
+browser	Run npm run test:e2e	2026-10-10T14:29:14.7743165Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib/pkgconfig
+browser	Run npm run test:e2e	2026-10-10T14:29:14.7743500Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+browser	Run npm run test:e2e	2026-10-10T14:29:14.7743970Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+browser	Run npm run test:e2e	2026-10-10T14:29:14.7744269Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+browser	Run npm run test:e2e	2026-10-10T14:29:14.7744563Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib
+browser	Run npm run test:e2e	2026-10-10T14:29:14.7744822Z ##[endgroup]
+browser	Run npm run test:e2e	2026-10-10T14:29:14.8510920Z 
+browser	Run npm run test:e2e	2026-10-10T14:29:14.8511527Z > atlasmode@0.1.0 test:e2e
+browser	Run npm run test:e2e	2026-10-10T14:29:14.8511938Z > playwright test
+browser	Run npm run test:e2e	2026-10-10T14:29:14.8512057Z 
+browser	Run npm run test:e2e	2026-10-10T14:29:16.3920217Z 
+browser	Run npm run test:e2e	2026-10-10T14:29:16.3920813Z Running 16 tests using 1 worker
+browser	Run npm run test:e2e	2026-10-10T14:29:16.3921206Z 
+browser	Run npm run test:e2e	2026-10-10T14:29:19.7123508Z   ✓   1 tests/e2e/agent-chat.spec.ts:26:1 › actual disconnected provider shows conversation shell and retains failed input; source and advanced controls are opt-in (2.3s)
+browser	Run npm run test:e2e	2026-10-10T14:29:23.7371360Z   ✓   2 tests/e2e/agent-chat.spec.ts:170:1 › labeled trusted test adapter streams through real bridge, journals drafts, focuses changes, cancels partial work and isolates projects (4.0s)
+browser	Run npm run test:e2e	2026-10-10T14:29:29.4434049Z   ✓   3 tests/e2e/breadcrumb-navigation.spec.ts:33:1 › breadcrumbs navigate function, indexed file, folders, root and truthful planned paths, superseding stale scope responses (5.7s)
+browser	Run npm run test:e2e	2026-10-10T14:29:41.8072919Z   ✘   4 tests/e2e/commonjs.spec.ts:22:3 › production browser displays captured package coverage truthfully in Chinese and English (12.1s)
+browser	Run npm run test:e2e	2026-10-10T14:29:55.4813113Z   ✘   5 tests/e2e/commonjs.spec.ts:22:3 › production browser displays unrecorded legacy package coverage truthfully in Chinese and English (13.0s)
+browser	Run npm run test:e2e	2026-10-10T14:29:57.3220433Z   ✓   6 tests/e2e/commonjs.spec.ts:217:1 › recorded zero manifests is distinct from unrecorded coverage (1.3s)
+browser	Run npm run test:e2e	2026-10-10T14:29:59.8695692Z   ✓   7 tests/e2e/first-use.spec.ts:10:1 › first use offers an offline path and preserves optional AI drafts through disclosure (2.5s)
+browser	Run npm run test:e2e	2026-10-10T14:30:04.9732965Z   ✓   8 tests/e2e/focus-navigation.spec.ts:35:1 › high-degree function and file funnels keep readable neighbor windows with truthful totals and restore overview (5.1s)
+browser	Run npm run test:e2e	2026-10-10T14:30:08.0817212Z   ✓   9 tests/e2e/focus-navigation.spec.ts:204:1 › semantic creation after overview and multi-change plan choice fit their affected cards (3.1s)
+browser	Run npm run test:e2e	2026-10-10T14:30:10.7251202Z   ✓  10 tests/e2e/focus-navigation.spec.ts:406:1 › double-click builds an animated directional funnel, restores overview and honors reduced motion for file dependencies (2.6s)
+browser	Run npm run test:e2e	2026-10-10T14:30:23.2681971Z   ✘  11 tests/e2e/forwarding.spec.ts:21:1 › production browser follows a two-hop entry to the real leaf, preserves authored source in both languages and exposes unsafe forwarding reason (12.4s)
+browser	Run npm run test:e2e	2026-10-10T14:30:39.0830303Z   ✘  12 tests/e2e/graph-inspection.spec.ts:23:1 › inspection preserves the camera, uniquely previews repeated calls, and funnel dragging survives pages while maps navigate (15.0s)
+browser	Run npm run test:e2e	2026-10-10T14:30:41.8377458Z   ✓  13 tests/e2e/pending-plans.spec.ts:11:1 › 待审入口打开实际变更，选择改动与显式批准分别生效 (2.2s)
+browser	Run npm run test:e2e	2026-10-10T14:30:53.4849301Z   ✓  14 tests/e2e/planning.spec.mjs:18:1 › production UI and SDK share the complete planning, approval, persistence and verification flow offline (11.6s)
+browser	Run npm run test:e2e	2026-10-10T14:31:05.5085102Z   ✘  15 tests/e2e/tsconfig.spec.ts:17:3 › production browser displays captured configuration coverage truthfully in Chinese and English (11.9s)
+browser	Run npm run test:e2e	2026-10-10T14:31:19.0775312Z   ✘  16 tests/e2e/tsconfig.spec.ts:17:3 › production browser displays unrecorded legacy configuration coverage truthfully in Chinese and English (12.9s)
+browser	Run npm run test:e2e	2026-10-10T14:31:19.0999449Z 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1003723Z 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1012910Z   1) tests/e2e/commonjs.spec.ts:22:3 › production browser displays captured package coverage truthfully in Chinese and English 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1014077Z 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1014372Z     Error: expect(locator).toContainText(expected) failed
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1014685Z 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1014881Z     Locator: getByTestId('source-snippet')
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1015472Z     Expected substring: "return \"中文 helper\""
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1016120Z     Timeout: 10000ms
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1016448Z     Error: element(s) not found
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1016654Z 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1016764Z     Call log:
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1017415Z       - Expect "toContainText" getByTestId('source-snippet') with timeout 10000ms
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1018026Z       - waiting for getByTestId('source-snippet')
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1019097Z         4 × locator resolved to <pre class="source-code" data-testid="source-snippet">2  function entry() { return mod.helper(); }</pre>
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1020084Z           - unexpected value "2  function entry() { return mod.helper(); }"
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1020468Z 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1020479Z 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1020660Z       75 |       await targetCard.click();
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1021067Z       76 |       await openSourceDrawer(page);
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1021599Z     > 77 |       await expect(page.getByTestId("source-snippet")).toContainText(
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1022245Z          |                                                        ^
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1022794Z       78 |         'return "中文 helper"',
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1023137Z       79 |       );
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1023592Z       80 |       await expect(page.locator(".inspector code.path")).toHaveText(
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1024292Z         at /home/runner/work/AtlasMode/AtlasMode/tests/e2e/commonjs.spec.ts:77:56
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1024699Z 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1025272Z     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1026257Z     artifacts/e2e/results/commonjs-production-browse-39ad5-ully-in-Chinese-and-English/test-failed-1.png
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1027438Z     ────────────────────────────────────────────────────────────────────────────────────────────────
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1027762Z 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1028346Z     Error Context: artifacts/e2e/results/commonjs-production-browse-39ad5-ully-in-Chinese-and-English/error-context.md
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1028988Z 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1029585Z     attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1030529Z     artifacts/e2e/results/commonjs-production-browse-39ad5-ully-in-Chinese-and-English/trace.zip
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1031182Z     Usage:
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1031326Z 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1031968Z         npx playwright show-trace artifacts/e2e/results/commonjs-production-browse-39ad5-ully-in-Chinese-and-English/trace.zip
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1032612Z 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1033103Z     ────────────────────────────────────────────────────────────────────────────────────────────────
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1033472Z 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1034248Z   2) tests/e2e/commonjs.spec.ts:22:3 › production browser displays unrecorded legacy package coverage truthfully in Chinese and English 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1034900Z 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1035133Z     Error: expect(locator).toContainText(expected) failed
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1035422Z 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1035581Z     Locator: getByTestId('source-snippet')
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1036463Z     Expected substring: "return \"中文 helper\""
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1036834Z     Timeout: 10000ms
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1037309Z     Error: element(s) not found
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1037505Z 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1037614Z     Call log:
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1038098Z       - Expect "toContainText" getByTestId('source-snippet') with timeout 10000ms
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1038707Z       - waiting for getByTestId('source-snippet')
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1039752Z         4 × locator resolved to <pre class="source-code" data-testid="source-snippet">2  function entry() { return mod.helper(); }</pre>
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1041159Z           - unexpected value "2  function entry() { return mod.helper(); }"
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1041552Z 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1041560Z 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1041790Z       75 |       await targetCard.click();
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1042375Z       76 |       await openSourceDrawer(page);
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1043012Z     > 77 |       await expect(page.getByTestId("source-snippet")).toContainText(
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1043935Z          |                                                        ^
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1044558Z       78 |         'return "中文 helper"',
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1045045Z       79 |       );
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1045601Z       80 |       await expect(page.locator(".inspector code.path")).toHaveText(
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1046356Z         at /home/runner/work/AtlasMode/AtlasMode/tests/e2e/commonjs.spec.ts:77:56
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1046943Z 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1048063Z     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1049210Z     artifacts/e2e/results/commonjs-production-browse-3768a-ully-in-Chinese-and-English/test-failed-1.png
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1050483Z     ────────────────────────────────────────────────────────────────────────────────────────────────
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1064484Z 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1065119Z     Error Context: artifacts/e2e/results/commonjs-production-browse-3768a-ully-in-Chinese-and-English/error-context.md
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1065796Z 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1066379Z     attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1067429Z     artifacts/e2e/results/commonjs-production-browse-3768a-ully-in-Chinese-and-English/trace.zip
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1068088Z     Usage:
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1068227Z 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1068828Z         npx playwright show-trace artifacts/e2e/results/commonjs-production-browse-3768a-ully-in-Chinese-and-English/trace.zip
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1069430Z 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1069785Z     ────────────────────────────────────────────────────────────────────────────────────────────────
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1070050Z 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1070786Z   3) tests/e2e/forwarding.spec.ts:21:1 › production browser follows a two-hop entry to the real leaf, preserves authored source in both languages and exposes unsafe forwarding reason 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1071274Z 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1071417Z     Error: expect(locator).toHaveText(expected) failed
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1071615Z 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1071735Z     Locator: getByTestId('source-snippet')
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1072092Z     Expected: "2  function helper() { return \"中文 leaf A\"; }"
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1072354Z     Timeout: 10000ms
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1072556Z     Error: element(s) not found
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1072690Z 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1072760Z     Call log:
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1073057Z       - Expect "toHaveText" getByTestId('source-snippet') with timeout 10000ms
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1073480Z       - waiting for getByTestId('source-snippet')
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1073864Z 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1073870Z 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1073973Z        98 |       ).toBeVisible();
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1074228Z        99 |       await openSourceDrawer(page);
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1074569Z     > 100 |       await expect(page.getByTestId("source-snippet")).toHaveText(
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1074910Z           |                                                        ^
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1075386Z       101 |         '2  function helper() { return "中文 leaf A"; }',
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1075643Z       102 |       );
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1075860Z       103 |       await openSourceDrawer(page);
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1076225Z         at /home/runner/work/AtlasMode/AtlasMode/tests/e2e/forwarding.spec.ts:100:56
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1076467Z 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1076781Z     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1078122Z     artifacts/e2e/results/forwarding-production-brow-26ed3-es-unsafe-forwarding-reason/test-failed-1.png
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1078758Z     ────────────────────────────────────────────────────────────────────────────────────────────────
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1078971Z 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1079318Z     Error Context: artifacts/e2e/results/forwarding-production-brow-26ed3-es-unsafe-forwarding-reason/error-context.md
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1079680Z 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1079981Z     attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1080549Z     artifacts/e2e/results/forwarding-production-brow-26ed3-es-unsafe-forwarding-reason/trace.zip
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1080941Z     Usage:
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1081033Z 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1081393Z         npx playwright show-trace artifacts/e2e/results/forwarding-production-brow-26ed3-es-unsafe-forwarding-reason/trace.zip
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1081771Z 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1082038Z     ────────────────────────────────────────────────────────────────────────────────────────────────
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1082255Z 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1082820Z   4) tests/e2e/graph-inspection.spec.ts:23:1 › inspection preserves the camera, uniquely previews repeated calls, and funnel dragging survives pages while maps navigate 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1083276Z 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1083400Z     Error: expect(locator).toBeVisible() failed
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1083555Z 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1083663Z     Locator: locator('.funnel-summary')
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1083888Z     Expected: visible
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1084077Z     Timeout: 10000ms
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1084276Z     Error: element(s) not found
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1084402Z 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1084475Z     Call log:
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1084752Z       - Expect "toBeVisible" locator('.funnel-summary') with timeout 10000ms
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1085088Z       - waiting for locator('.funnel-summary')
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1085303Z 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1085310Z 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1085479Z       228 |     await page.keyboard.press("Escape");
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1085857Z       229 |     await expect(detail).toHaveCount(0);
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1086314Z     > 230 |     await expect(page.locator(".funnel-summary")).toBeVisible();
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1086782Z           |                                                   ^
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1087345Z       231 |     await page.keyboard.press("Escape");
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1087884Z       232 |     await expect(page.locator(".funnel-summary")).toHaveCount(0);
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1088519Z       233 |     expect(
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1089049Z         at /home/runner/work/AtlasMode/AtlasMode/tests/e2e/graph-inspection.spec.ts:230:51
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1089461Z 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1089931Z     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1090776Z     artifacts/e2e/results/graph-inspection-inspectio-63d93-s-pages-while-maps-navigate/test-failed-1.png
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1091674Z     ────────────────────────────────────────────────────────────────────────────────────────────────
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1091996Z 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1092666Z     Error Context: artifacts/e2e/results/graph-inspection-inspectio-63d93-s-pages-while-maps-navigate/error-context.md
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1093222Z 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1093673Z     attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1094499Z     artifacts/e2e/results/graph-inspection-inspectio-63d93-s-pages-while-maps-navigate/trace.zip
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1095067Z     Usage:
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1095197Z 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1095790Z         npx playwright show-trace artifacts/e2e/results/graph-inspection-inspectio-63d93-s-pages-while-maps-navigate/trace.zip
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1096418Z 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1096858Z     ────────────────────────────────────────────────────────────────────────────────────────────────
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1097334Z 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1098022Z   5) tests/e2e/tsconfig.spec.ts:17:3 › production browser displays captured configuration coverage truthfully in Chinese and English 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1098621Z 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1098841Z     Error: expect(locator).toContainText(expected) failed
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1099113Z 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1099277Z     Locator: getByTestId('source-snippet')
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1099719Z     Expected substring: "return \"A 原文\""
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1100039Z     Timeout: 10000ms
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1100323Z     Error: element(s) not found
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1100522Z 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1100614Z     Call log:
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1101040Z       - Expect "toContainText" getByTestId('source-snippet') with timeout 10000ms
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1101578Z       - waiting for getByTestId('source-snippet')
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1102476Z         3 × locator resolved to <pre class="source-code" data-testid="source-snippet">2  export function entry() { return target(); }</pre>
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1103331Z           - unexpected value "2  export function entry() { return target(); }"
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1103702Z 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1103711Z 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1103878Z       82 |       await targetCard.click();
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1104290Z       83 |       await openSourceDrawer(page);
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1104838Z     > 84 |       await expect(page.getByTestId("source-snippet")).toContainText(
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1105384Z          |                                                        ^
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1105847Z       85 |         'return "A 原文"',
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1106315Z       86 |       );
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1106752Z       87 |       await expect(page.locator(".inspector code.path")).toHaveText(
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1107554Z         at /home/runner/work/AtlasMode/AtlasMode/tests/e2e/tsconfig.spec.ts:84:56
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1107941Z 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1108456Z     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1109376Z     artifacts/e2e/results/tsconfig-production-browse-5fae5-ully-in-Chinese-and-English/test-failed-1.png
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1110357Z     ────────────────────────────────────────────────────────────────────────────────────────────────
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1110860Z 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1111426Z     Error Context: artifacts/e2e/results/tsconfig-production-browse-5fae5-ully-in-Chinese-and-English/error-context.md
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1112045Z 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1112568Z     attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1113483Z     artifacts/e2e/results/tsconfig-production-browse-5fae5-ully-in-Chinese-and-English/trace.zip
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1114096Z     Usage:
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1114233Z 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1114847Z         npx playwright show-trace artifacts/e2e/results/tsconfig-production-browse-5fae5-ully-in-Chinese-and-English/trace.zip
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1115471Z 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1115926Z     ────────────────────────────────────────────────────────────────────────────────────────────────
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1116282Z 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1117158Z   6) tests/e2e/tsconfig.spec.ts:17:3 › production browser displays unrecorded legacy configuration coverage truthfully in Chinese and English 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1117837Z 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1118071Z     Error: expect(locator).toContainText(expected) failed
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1118370Z 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1118545Z     Locator: getByTestId('source-snippet')
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1119008Z     Expected substring: "return \"A 原文\""
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1119363Z     Timeout: 10000ms
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1119663Z     Error: element(s) not found
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1119867Z 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1119970Z     Call log:
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1120442Z       - Expect "toContainText" getByTestId('source-snippet') with timeout 10000ms
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1121026Z       - waiting for getByTestId('source-snippet')
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1122024Z         4 × locator resolved to <pre class="source-code" data-testid="source-snippet">2  export function entry() { return target(); }</pre>
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1122941Z           - unexpected value "2  export function entry() { return target(); }"
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1123311Z 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1123324Z 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1123487Z       82 |       await targetCard.click();
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1123884Z       83 |       await openSourceDrawer(page);
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1124415Z     > 84 |       await expect(page.getByTestId("source-snippet")).toContainText(
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1124911Z          |                                                        ^
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1125346Z       85 |         'return "A 原文"',
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1125625Z       86 |       );
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1126018Z       87 |       await expect(page.locator(".inspector code.path")).toHaveText(
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1126640Z         at /home/runner/work/AtlasMode/AtlasMode/tests/e2e/tsconfig.spec.ts:84:56
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1127103Z 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1127588Z     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1128558Z     artifacts/e2e/results/tsconfig-production-browse-6d832-ully-in-Chinese-and-English/test-failed-1.png
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1129669Z     ────────────────────────────────────────────────────────────────────────────────────────────────
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1130003Z 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1130549Z     Error Context: artifacts/e2e/results/tsconfig-production-browse-6d832-ully-in-Chinese-and-English/error-context.md
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1131115Z 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1131613Z     attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1132573Z     artifacts/e2e/results/tsconfig-production-browse-6d832-ully-in-Chinese-and-English/trace.zip
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1133148Z     Usage:
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1133271Z 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1133834Z         npx playwright show-trace artifacts/e2e/results/tsconfig-production-browse-6d832-ully-in-Chinese-and-English/trace.zip
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1134432Z 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1134861Z     ────────────────────────────────────────────────────────────────────────────────────────────────
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1135198Z 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1135293Z   6 failed
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1136052Z     tests/e2e/commonjs.spec.ts:22:3 › production browser displays captured package coverage truthfully in Chinese and English 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1137388Z     tests/e2e/commonjs.spec.ts:22:3 › production browser displays unrecorded legacy package coverage truthfully in Chinese and English 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1138912Z     tests/e2e/forwarding.spec.ts:21:1 › production browser follows a two-hop entry to the real leaf, preserves authored source in both languages and exposes unsafe forwarding reason 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1140567Z     tests/e2e/graph-inspection.spec.ts:23:1 › inspection preserves the camera, uniquely previews repeated calls, and funnel dragging survives pages while maps navigate 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1141941Z     tests/e2e/tsconfig.spec.ts:17:3 › production browser displays captured configuration coverage truthfully in Chinese and English 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1143280Z     tests/e2e/tsconfig.spec.ts:17:3 › production browser displays unrecorded legacy configuration coverage truthfully in Chinese and English 
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1144073Z   10 passed (2.1m)
+browser	Run npm run test:e2e	2026-10-10T14:31:19.1407802Z ##[error]Process completed with exit code 1.
+native (macos-latest)	Run npm test	﻿2026-10-10T14:29:56.5722830Z ##[group]Run npm test
+native (macos-latest)	Run npm test	2026-10-10T14:29:56.5723920Z [36;1mnpm test[0m
+native (macos-latest)	Run npm test	2026-10-10T14:29:56.5784260Z shell: /bin/bash -e {0}
+native (macos-latest)	Run npm test	2026-10-10T14:29:56.5784690Z env:
+native (macos-latest)	Run npm test	2026-10-10T14:29:56.5785140Z   pythonLocation: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+native (macos-latest)	Run npm test	2026-10-10T14:29:56.5785700Z   PKG_CONFIG_PATH: /Users/runner/hostedtoolcache/Python/3.12.10/arm64/lib/pkgconfig
+native (macos-latest)	Run npm test	2026-10-10T14:29:56.5786210Z   Python_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+native (macos-latest)	Run npm test	2026-10-10T14:29:56.5786890Z   Python2_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+native (macos-latest)	Run npm test	2026-10-10T14:29:56.5787350Z   Python3_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+native (macos-latest)	Run npm test	2026-10-10T14:29:56.5787760Z ##[endgroup]
+native (macos-latest)	Run npm test	2026-10-10T14:29:56.8796990Z 
+native (macos-latest)	Run npm test	2026-10-10T14:29:56.8797780Z > atlasmode@0.1.0 test
+native (macos-latest)	Run npm test	2026-10-10T14:29:56.8798250Z > vitest run
+native (macos-latest)	Run npm test	2026-10-10T14:29:56.8798600Z 
+native (macos-latest)	Run npm test	2026-10-10T14:29:57.3181230Z 
+native (macos-latest)	Run npm test	2026-10-10T14:29:57.3184100Z [1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90m/Users/runner/work/AtlasMode/AtlasMode[39m
+native (macos-latest)	Run npm test	2026-10-10T14:29:57.3184990Z 
+native (macos-latest)	Run npm test	2026-10-10T14:29:59.4781480Z  [32m✓[39m packages/indexer/src/commonjs.test.ts [2m([22m[2m183 tests[22m[2m)[22m[33m 1092[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:29:59.8981350Z  [32m✓[39m apps/web/src/app/workspace.test.ts [2m([22m[2m24 tests[22m[2m)[22m[32m 56[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:03.1053900Z  [32m✓[39m packages/indexer/src/index.test.ts [2m([22m[2m54 tests[22m[2m)[22m[33m 4474[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:04.1865360Z  [32m✓[39m tests/integration/workspace-lifecycle.test.ts [2m([22m[2m31 tests[22m[2m)[22m[33m 3516[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:04.1880520Z    [33m[2m✓[22m[39m removal absence depends on incomplete files in the symbol's language search scope [33m 303[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:07.3900710Z  [32m✓[39m apps/server/src/server.test.ts [2m([22m[2m15 tests[22m[2m)[22m[33m 1747[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:07.4004410Z    [33m[2m✓[22m[39m health and project opening expose real indexed projects without choosing cwd implicitly [33m 454[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:07.7431640Z  [32m✓[39m packages/core/src/validation.test.ts [2m([22m[2m71 tests[22m[2m)[22m[32m 30[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:10.1469740Z  [32m✓[39m packages/indexer/src/configCapture.test.ts [2m([22m[2m25 tests[22m[2m)[22m[33m 1888[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:10.1571940Z      [33m[2m✓[22m[39m enforces the 512 file limit for 512 eligible seeds [33m 693[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:10.1675550Z      [33m[2m✓[22m[39m enforces the 512 file limit for 513 eligible seeds [33m 575[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:12.4910650Z  [32m✓[39m packages/indexer/src/packageCapture.test.ts [2m([22m[2m24 tests[22m[2m)[22m[33m 1796[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:12.5013800Z      [33m[2m✓[22m[39m enforces count boundary with 512 files [33m 639[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:12.5114380Z      [33m[2m✓[22m[39m enforces count boundary with 513 files [33m 744[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:14.5847310Z  [32m✓[39m apps/server/src/agent/bridge.test.ts [2m([22m[2m6 tests[22m[2m)[22m[33m 1098[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:14.5967270Z    [33m[2m✓[22m[39m gateway rejects foreign valid plans, approvals, opening, traversal and channel planning drafts; journals real drafts [33m 515[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:14.8654660Z  [32m✓[39m packages/core/src/queries.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 11[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:15.1006800Z  [32m✓[39m apps/web/src/features/navigation/workspace-navigation.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 54[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:15.8431760Z  [32m✓[39m packages/indexer/src/configResolution.test.ts [2m([22m[2m31 tests[22m[2m)[22m[32m 279[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:16.2021220Z  [32m✓[39m packages/service/src/workspace.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 22[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:16.4125810Z  [32m✓[39m apps/web/src/features/chat/workspace-sync.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 36[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:16.6727950Z  [32m✓[39m apps/web/src/app/inspection-workspace.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 52[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:21.9684540Z  [32m✓[39m tests/integration/mcp-stdio.test.ts [2m([22m[2m12 tests[22m[2m)[22m[33m 18265[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:21.9801020Z    [33m[2m✓[22m[39m actual SDK discovers exactly the supported tools and pages opened projects from an unrelated cwd [33m 539[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:21.9913810Z    [33m[2m✓[22m[39m SDK query tools retain pagination, budgets, snapshot identity and unresolved call evidence [33m 345[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:22.0016190Z    [33m[2m✓[22m[39m HTTP user approval and SDK share the same revision/hash; draft edits revoke current approval and verification uses history [33m 573[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:22.0116620Z    [33m[2m✓[22m[39m get_approved_plan refreshes disk before trusting approval and stale explicit baselines conflict [33m 491[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:22.0219420Z    [33m[2m✓[22m[39m agent routes and new groups are validated, visible over HTTP, paged and marked stale after refresh [33m 504[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:22.0320000Z    [33m[2m✓[22m[39m schemas reject forged source/approval, absent baseline and invalid limits; HTTP domain conflicts remain actionable [33m 522[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:22.0422560Z    [33m[2m✓[22m[39m a newly connected SDK client reads retained approval/routes/groups after actual HTTP process restart [33m 1879[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:22.0526930Z    [33m[2m✓[22m[39m a real concurrent HTTP edit between create and update exposes the retained partial draft id/revision [33m 412[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:22.0627890Z    [33m[2m✓[22m[39m malformed stdio input and stdin EOF terminate cleanly with protocol-only stdout [33m 500[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:22.0730120Z    [33m[2m✓[22m[39m transport failure cancels an in-flight HTTP request instead of retaining the child until its timeout [33m 364[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:22.0832240Z    [33m[2m✓[22m[39m list_plans pages current project drafts and get_plan reads without reindex or foreign plan access [33m 821[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:22.4514060Z  [32m✓[39m apps/server/src/agent/profile.test.ts [2m([22m[2m6 tests[22m[2m)[22m[33m 315[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:25.3550470Z  [32m✓[39m apps/server/src/dev.test.ts [2m([22m[2m7 tests[22m[2m)[22m[33m 2748[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:25.3659580Z    [33m[2m✓[22m[39m dev builds prerequisites and reaps children through handler shutdown [33m 551[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:25.3767140Z    [33m[2m✓[22m[39m dev builds prerequisites and reaps children through aliased-parent shutdown [33m 515[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:25.3791790Z    [33m[2m✓[22m[39m dev builds prerequisites and reaps children through signal shutdown [33m 515[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:25.3896000Z    [33m[2m✓[22m[39m a development child failure exits with failure and stops the other child [33m 699[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:28.7651820Z  [32m✓[39m tests/integration/commonjs-resolution.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 3064[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:28.7745590Z    [33m[2m✓[22m[39m compiled HTTP and SDK stale package-only baselines without rewriting approval, symbols or historic SQLite snapshots [33m 3063[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:29.7863380Z  [32m✓[39m apps/server/src/index.test.ts [2m([22m[2m5 tests[22m[2m)[22m[33m 12902[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:29.7966210Z    [33m[2m✓[22m[39m CLI serves real data and closes SQLite through handler shutdown [33m 2554[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:29.8067320Z    [33m[2m✓[22m[39m CLI serves real data and closes SQLite through signal shutdown [33m 2100[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:29.8169830Z    [33m[2m✓[22m[39m CLI validates port before startup and reports launch failure cleanly [33m 2848[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:29.8279310Z    [33m[2m✓[22m[39m CLI opens an explicitly configured default workspace [33m 1696[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:29.8412730Z    [33m[2m✓[22m[39m CLI enforces listener authority and enables the explicit local development proxy only on opt-in [33m 3702[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:30.0324340Z  [32m✓[39m apps/web/src/features/chat/controller.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 13[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:32.9633660Z  [32m✓[39m tests/integration/forwarding-resolution.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 3876[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:32.9645260Z    [33m[2m✓[22m[39m compiled HTTP and SDK preserve real forwarding leaf identity and immutable approval/history after alias-only refresh and SQLite reopen [33m 3875[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:34.1953220Z  [32m✓[39m tests/integration/tsconfig-resolution.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 3464[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:34.2057420Z    [33m[2m✓[22m[39m compiled HTTP and SDK stale config-only baselines without rewriting approval, symbols or historic SQLite snapshots [33m 3462[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:35.6485830Z  [32m✓[39m apps/server/src/agent/routes.test.ts [2m([22m[2m5 tests[22m[2m)[22m[33m 1683[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:35.6588410Z    [33m[2m✓[22m[39m real process failure keeps committed draft without JSONL completion [33m 308[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:35.6690340Z    [33m[2m✓[22m[39m test-only native protocol runs actual production scoped stdio MCP against the owned HTTP gateway [33m 819[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:36.3498070Z [90mstdout[2m | tests/integration/server-shutdown.test.ts[2m > [22m[2mcompiled server shuts down with a raw connection
+native (macos-latest)	Run npm test	2026-10-10T14:30:36.3603030Z [22m[39m{"state":"raw","root":"/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/atlas-shutdown-408eh4","pid":7885,"localPort":49855,"bytesWritten":0,"openAtStop":true,"handlerEmittedAndIpcDisconnectedMs":4.99454199999991,"stopMs":21.980541999999787,"exitCode":0,"signalCode":null,"socketErrors":[],"cleaned":true}
+native (macos-latest)	Run npm test	2026-10-10T14:30:36.3701670Z 
+native (macos-latest)	Run npm test	2026-10-10T14:30:36.4408560Z  [32m✓[39m apps/web/src/i18n/locale.test.tsx [2m([22m[2m5 tests[22m[2m)[22m[33m 517[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:36.4512940Z    [33m[2m✓[22m[39m cached failure help follows current locale while backend diagnostics remain verbatim [33m 494[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:36.6480670Z  [32m✓[39m apps/web/src/features/graph/funnel.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 16[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:37.2913670Z [90mstdout[2m | tests/integration/server-shutdown.test.ts[2m > [22m[2mcompiled server shuts down with a partial headers connection
+native (macos-latest)	Run npm test	2026-10-10T14:30:37.3017260Z [22m[39m{"state":"partial headers","root":"/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/atlas-shutdown-17EaaW","pid":7948,"localPort":49879,"bytesWritten":49,"openAtStop":true,"handlerEmittedAndIpcDisconnectedMs":1.407959000000119,"stopMs":11.790583999999853,"exitCode":0,"signalCode":null,"socketErrors":[],"cleaned":true}
+native (macos-latest)	Run npm test	2026-10-10T14:30:37.3115810Z 
+native (macos-latest)	Run npm test	2026-10-10T14:30:37.6885000Z  [31m❯[39m apps/server/src/agent/process.test.ts [2m([22m[2m10 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[33m 870[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:37.6987190Z [31m   [31m×[31m stdin text and argument arrays stay literal; split JSONL produces final public text[39m[32m 72[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:37.7089330Z    [32m✓[39m normalizes Codex tool status and Claude text without duplicate final result[32m 105[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:37.7191270Z    [32m✓[39m fails closed on invalid without exposing stderr[32m 57[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:37.7300470Z    [32m✓[39m fails closed on oversize without exposing stderr[32m 115[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:37.7402470Z    [32m✓[39m fails closed on auth without exposing stderr[32m 72[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:37.7504040Z    [32m✓[39m fails closed on native without exposing stderr[32m 74[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:37.7607360Z    [32m✓[39m native metadata fallback notice is private while actual item errors still fail[32m 125[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:37.7709430Z    [32m✓[39m missing executable and timeout return safe errors[32m 73[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:37.7812480Z    [32m✓[39m cancel waits for owned grandchild termination[32m 107[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:37.7916850Z    [32m✓[39m malformed Claude JSON blocks fail safely without throwing into the HTTP process[32m 69[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:37.8722930Z  [32m✓[39m apps/web/src/features/graph/projection.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:38.1188110Z  [32m✓[39m apps/web/src/app/funnel-workspace.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 39[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:38.2299200Z [90mstdout[2m | tests/integration/server-shutdown.test.ts[2m > [22m[2mcompiled server shuts down with a partial body connection
+native (macos-latest)	Run npm test	2026-10-10T14:30:38.2402800Z [22m[39m{"state":"partial body","root":"/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/atlas-shutdown-u9yOgM","pid":7964,"localPort":49903,"bytesWritten":108,"openAtStop":true,"handlerEmittedAndIpcDisconnectedMs":1.9739159999999174,"stopMs":24.930582999999842,"exitCode":0,"signalCode":null,"socketErrors":[],"cleaned":true}
+native (macos-latest)	Run npm test	2026-10-10T14:30:38.2507620Z 
+native (macos-latest)	Run npm test	2026-10-10T14:30:38.3453530Z  [32m✓[39m packages/storage/src/sqlite.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 59[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:38.7355410Z  [32m✓[39m apps/mcp/src/scope.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 58[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:38.9773060Z  [32m✓[39m apps/server/src/agent/native.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 69[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:39.1476520Z  [32m✓[39m apps/web/src/features/graph/inspection.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:39.4258850Z  [32m✓[39m apps/server/src/navigation-query.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 18[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:39.6231220Z  [32m✓[39m apps/web/src/features/chat/panels.test.tsx [2m([22m[2m2 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:39.8158350Z  [32m✓[39m apps/web/src/features/planning/pending.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[32m 15[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:40.8615440Z  [32m✓[39m packages/indexer/src/declarations.test.ts [2m([22m[2m2 tests[22m[2m)[22m[33m 369[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:41.0446180Z  [32m✓[39m apps/server/src/funnel-query.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:43.3396190Z  [32m✓[39m tests/integration/repository-provenance.test.ts [2m([22m[2m4 tests[22m[2m)[22m[33m 2139[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:43.3398450Z    [33m[2m✓[22m[39m validator rejects modified supported source before capture [33m 597[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:43.3406930Z    [33m[2m✓[22m[39m validator rejects staged supported source before capture [33m 651[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:43.3408020Z    [33m[2m✓[22m[39m validator rejects untracked supported source before capture [33m 701[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:43.4788890Z  [32m✓[39m apps/web/src/features/planning/operations.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:43.6226590Z  [32m✓[39m apps/web/src/features/graph/nodeIdentity.test.tsx [2m([22m[2m3 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:43.7671190Z  [32m✓[39m apps/server/src/agent/platform-refusal.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 7[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:43.9349240Z  [32m✓[39m packages/indexer/src/packageMode.test.ts [2m([22m[2m13 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:44.2005540Z  [32m✓[39m apps/web/src/app/WorkspacePanels.test.tsx [2m([22m[2m1 test[22m[2m)[22m[32m 11[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:44.3889610Z  [32m✓[39m apps/web/src/features/navigation/path.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:44.5511320Z  [32m✓[39m apps/web/src/features/planning/history.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:44.5714700Z  [32m✓[39m tests/integration/server-shutdown.test.ts [2m([22m[2m4 tests[22m[2m)[22m[33m 9222[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:44.5821670Z    [33m[2m✓[22m[39m compiled server shuts down with a raw connection [33m 1000[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:44.5925260Z    [33m[2m✓[22m[39m compiled server shuts down with a partial headers connection [33m 942[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:44.6040310Z    [33m[2m✓[22m[39m compiled server shuts down with a partial body connection [33m 938[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:44.6142420Z    [33m[2m✓[22m[39m shutdown preserves slow complete requests before discarding incomplete pipelined bytes [33m 6341[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:44.7595690Z  [32m✓[39m apps/web/src/features/graph/InspectionCard.test.tsx [2m([22m[2m2 tests[22m[2m)[22m[32m 14[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:44.9058920Z  [32m✓[39m apps/web/src/api/scope.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:45.2174540Z  [32m✓[39m apps/web/src/features/chat/shell.test.tsx [2m([22m[2m1 test[22m[2m)[22m[32m 27[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:45.3860720Z  [32m✓[39m apps/web/src/features/groups/memberBindings.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 10[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:45.6056400Z  [32m✓[39m apps/web/src/features/chat/transport.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 29[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:45.9362630Z  [32m✓[39m tests/integration/preload-loader.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 1224[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:45.9433030Z    [33m[2m✓[22m[39m production preload loads from a checkout path containing spaces and a hash [33m 1222[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:46.1102350Z  [32m✓[39m apps/web/src/features/chat/sessions.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 3[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:30:46.2883460Z  [32m✓[39m apps/web/src/api/client.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 27[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:31:15.7929660Z  [32m✓[39m apps/mcp/src/client.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 30025[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:31:15.7946330Z    [33m[2m✓[22m[39m the 30 second deadline reports API_TIMEOUT while consuming a stalled JSON body [33m 30023[2mms[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:31:15.8101070Z 
+native (macos-latest)	Run npm test	2026-10-10T14:31:15.8102420Z [31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+native (macos-latest)	Run npm test	2026-10-10T14:31:15.8102910Z 
+native (macos-latest)	Run npm test	2026-10-10T14:31:15.8119620Z [41m[1m FAIL [22m[49m apps/server/src/agent/process.test.ts[2m > [22mstdin text and argument arrays stay literal; split JSONL produces final public text
+native (macos-latest)	Run npm test	2026-10-10T14:31:15.8122960Z [31m[1mAssertionError[22m: expected { …(3) } to deeply equal { …(3) }[39m
+native (macos-latest)	Run npm test	2026-10-10T14:31:15.8124000Z 
+native (macos-latest)	Run npm test	2026-10-10T14:31:15.8124690Z [32m- Expected[39m
+native (macos-latest)	Run npm test	2026-10-10T14:31:15.8125670Z [31m+ Received[39m
+native (macos-latest)	Run npm test	2026-10-10T14:31:15.8126360Z 
+native (macos-latest)	Run npm test	2026-10-10T14:31:15.8126940Z [2m  {[22m
+native (macos-latest)	Run npm test	2026-10-10T14:31:15.8127830Z [2m    "args": [[22m
+native (macos-latest)	Run npm test	2026-10-10T14:31:15.8129450Z [2m      "$(touch sentinel)",[22m
+native (macos-latest)	Run npm test	2026-10-10T14:31:15.8130640Z [2m    ],[22m
+native (macos-latest)	Run npm test	2026-10-10T14:31:15.8132390Z [32m-   "cwd": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/atlas-agent-test-odwnBc",[39m
+native (macos-latest)	Run npm test	2026-10-10T14:31:15.8134880Z [31m+   "cwd": "/private/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/atlas-agent-test-odwnBc",[39m
+native (macos-latest)	Run npm test	2026-10-10T14:31:15.8139790Z [2m    "prompt": "$(touch sentinel); `echo pwned` 中文",[22m
+native (macos-latest)	Run npm test	2026-10-10T14:31:15.8140930Z [2m  }[22m
+native (macos-latest)	Run npm test	2026-10-10T14:31:15.8143470Z 
+native (macos-latest)	Run npm test	2026-10-10T14:31:15.8144360Z [36m [2m❯[22m apps/server/src/agent/process.test.ts:[2m45:19[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:31:15.8182630Z     [90m 43|[39m     [34mexpect[39m(e[33m?.[39mtype)[33m.[39m[34mtoBe[39m([32m"message"[39m)[33m;[39m
+native (macos-latest)	Run npm test	2026-10-10T14:31:15.8184060Z 
+native (macos-latest)	Run npm test	2026-10-10T14:31:15.8186380Z     [90m 44|[39m     [35mconst[39m value [33m=[39m [33mJSON[39m[33m.[39m[34mparse[39m(e [33m&&[39m [32m"text"[39m [35min[39m e [33m?[39m e[33m.[39mtext [33m:[39m [32m""[39m)[33m;[39m
+native (macos-latest)	Run npm test	2026-10-10T14:31:15.8191190Z [2m Test Files [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m55 passed[39m[22m[90m (56)[39m
+native (macos-latest)	Run npm test	2026-10-10T14:31:15.8192930Z     [90m 45|[39m     [34mexpect[39m(value)[33m.[39m[34mtoEqual[39m({
+native (macos-latest)	Run npm test	2026-10-10T14:31:15.8194320Z     [90m   |[39m                   [31m^[39m
+native (macos-latest)	Run npm test	2026-10-10T14:31:15.8195810Z     [90m 46|[39m       prompt[33m:[39m [32m"$(touch sentinel); `echo pwned` 中文"[39m[33m,[39m
+native (macos-latest)	Run npm test	2026-10-10T14:31:15.8197480Z     [90m 47|[39m       args[33m:[39m [[32m"$(touch sentinel)"[39m][33m,[39m
+native (macos-latest)	Run npm test	2026-10-10T14:31:15.8198210Z 
+native (macos-latest)	Run npm test	2026-10-10T14:31:15.8198950Z [31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+native (macos-latest)	Run npm test	2026-10-10T14:31:15.8199540Z 
+native (macos-latest)	Run npm test	2026-10-10T14:31:15.8201020Z [2m      Tests [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m668 passed[39m[22m[90m (669)[39m
+native (macos-latest)	Run npm test	2026-10-10T14:31:15.8202000Z [2m   Start at [22m 14:29:57
+native (macos-latest)	Run npm test	2026-10-10T14:31:15.8202830Z [2m   Duration [22m 78.47s[2m (transform 2.49s, setup 0ms, import 11.39s, tests 107.30s, environment 5ms)[22m
+native (macos-latest)	Run npm test	2026-10-10T14:31:15.8203250Z 
+native (macos-latest)	Run npm test	2026-10-10T14:31:15.8214070Z 
+native (macos-latest)	Run npm test	2026-10-10T14:31:15.8284360Z ##[error]AssertionError: expected { …(3) } to deeply equal { …(3) }
+native (macos-latest)	Run npm test	
+native (macos-latest)	Run npm test	- Expected
+native (macos-latest)	Run npm test	+ Received
+native (macos-latest)	Run npm test	
+native (macos-latest)	Run npm test	  {
+native (macos-latest)	Run npm test	    "args": [
+native (macos-latest)	Run npm test	      "$(touch sentinel)",
+native (macos-latest)	Run npm test	    ],
+native (macos-latest)	Run npm test	-   "cwd": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/atlas-agent-test-odwnBc",
+native (macos-latest)	Run npm test	+   "cwd": "/private/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/atlas-agent-test-odwnBc",
+native (macos-latest)	Run npm test	    "prompt": "$(touch sentinel); `echo pwned` 中文",
+native (macos-latest)	Run npm test	  }
+native (macos-latest)	Run npm test	
+native (macos-latest)	Run npm test	 ❯ apps/server/src/agent/process.test.ts:45:19
+native (macos-latest)	Run npm test	
+native (macos-latest)	Run npm test	
+native (macos-latest)	Run npm test	2026-10-10T14:31:15.9268770Z ##[error]Process completed with exit code 1.

@@ -73,6 +73,10 @@ for (const legacy of [false, true]) {
       );
       await expect(targetCard).toBeVisible();
       await targetCard.click();
+      // A card single-click waits for the double-click window before selecting.
+      await expect(page.locator(".inspector code.path")).toHaveText(
+        "helper.js:2",
+      );
       await openSourceDrawer(page);
       await expect(page.getByTestId("source-snippet")).toContainText(
         'return "中文 helper"',
