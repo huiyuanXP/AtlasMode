@@ -1,0 +1,205 @@
+native (windows-latest)	Run npm test	﻿2026-10-10T15:55:17.5846223Z ##[group]Run npm test
+native (windows-latest)	Run npm test	2026-10-10T15:55:17.5846459Z [36;1mnpm test[0m
+native (windows-latest)	Run npm test	2026-10-10T15:55:17.5894946Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+native (windows-latest)	Run npm test	2026-10-10T15:55:17.5895175Z env:
+native (windows-latest)	Run npm test	2026-10-10T15:55:17.5895337Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-latest)	Run npm test	2026-10-10T15:55:17.5895604Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+native (windows-latest)	Run npm test	2026-10-10T15:55:17.5895877Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-latest)	Run npm test	2026-10-10T15:55:17.5896109Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-latest)	Run npm test	2026-10-10T15:55:17.5896336Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-latest)	Run npm test	2026-10-10T15:55:17.5896516Z ##[endgroup]
+native (windows-latest)	Run npm test	2026-10-10T15:55:18.1838500Z 
+native (windows-latest)	Run npm test	2026-10-10T15:55:18.1839052Z > atlasmode@0.1.0 test
+native (windows-latest)	Run npm test	2026-10-10T15:55:18.1839281Z > vitest run
+native (windows-latest)	Run npm test	2026-10-10T15:55:18.1839366Z 
+native (windows-latest)	Run npm test	2026-10-10T15:55:18.5432360Z 
+native (windows-latest)	Run npm test	2026-10-10T15:55:18.5433940Z [1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90mD:/a/AtlasMode/AtlasMode[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:18.5434266Z 
+native (windows-latest)	Run npm test	2026-10-10T15:55:18.9455636Z  [32m✓[39m apps/web/src/app/workspace.test.ts [2m([22m[2m24 tests[22m[2m)[22m[32m 57[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:20.6932618Z  [32m✓[39m packages/indexer/src/commonjs.test.ts [2m([22m[2m183 tests[22m[2m)[22m[33m 983[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:28.5430845Z  [32m✓[39m packages/indexer/src/index.test.ts [2m([22m[2m54 tests[22m[2m)[22m[33m 8563[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:28.5432028Z      [33m[2m✓[22m[39m indexes Python relative package aliases, nested functions and self calls without executing targets [33m 2978[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:28.5433345Z      [33m[2m✓[22m[39m detects Git revision read-only and rejects invalid roots [33m 415[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:28.5440024Z    [33m[2m✓[22m[39m changes snapshot identity when Python capability changes for identical source bytes [33m 391[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:29.1700068Z  [32m✓[39m tests/integration/workspace-lifecycle.test.ts [2m([22m[2m31 tests[22m[2m)[22m[33m 9118[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:29.1702249Z    [33m[2m✓[22m[39m opens projects idempotently and isolates plans, routes, groups, policies and views [33m 313[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:29.1708868Z    [33m[2m✓[22m[39m verification refreshes and checks the latest approved historical revision after draft edits [33m 319[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:29.1735882Z    [33m[2m✓[22m[39m new temporary functions bind by target path/name and ambiguous candidates stay unknown [33m 350[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:29.1737398Z    [33m[2m✓[22m[39m same-source capability refresh preserves original immutable snapshot and marks approval stale [33m 383[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:29.1738757Z    [33m[2m✓[22m[39m approval write failure rolls back history and approval together in actual SQLite [33m 314[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:29.1739847Z    [33m[2m✓[22m[39m verification selects the most recent approved revision, never an older approval [33m 339[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:29.1740941Z    [33m[2m✓[22m[39m an unimplemented move cannot disguise the still-existing relation as removed [33m 303[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:29.1742021Z    [33m[2m✓[22m[39m relocated symbols with multiple candidates stay unknown for removals and calls [33m 309[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:29.1743025Z    [33m[2m✓[22m[39m temporary function moves reject copies and accept a true move [33m 345[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:29.1744230Z    [33m[2m✓[22m[39m removal absence depends on incomplete files in the symbol's language search scope [33m 505[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:29.1745390Z    [33m[2m✓[22m[39m a unique differently implemented cross-file substitute cannot satisfy approved reuse without a move [33m 373[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:29.1746521Z    [33m[2m✓[22m[39m a reassigned callable's obsolete initializer cannot satisfy required reuse [33m 305[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:29.1758470Z    [33m[2m✓[22m[39m ignoring unchanged source src/ cannot prove approved function or relation removal [33m 382[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:29.1764006Z    [33m[2m✓[22m[39m unavailable source cannot prove an approved move, while unaffected positive facts remain usable [33m 430[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:35.5276320Z  [32m✓[39m apps/server/src/server.test.ts [2m([22m[2m15 tests[22m[2m)[22m[33m 5543[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:35.5277425Z    [33m[2m✓[22m[39m health and project opening expose real indexed projects without choosing cwd implicitly [33m 446[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:35.5278437Z    [33m[2m✓[22m[39m plan lifecycle preserves revision checks and verifies actually refreshed implementation [33m 350[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:35.5287356Z    [33m[2m✓[22m[39m domain failures map actionable unavailable errors and sanitize internal details [33m 1885[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:35.8302105Z  [32m✓[39m packages/core/src/validation.test.ts [2m([22m[2m71 tests[22m[2m)[22m[32m 26[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:36.8550241Z  [32m✓[39m tests/integration/mcp-stdio.test.ts [2m([22m[2m12 tests[22m[2m)[22m[33m 15873[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:36.8551322Z    [33m[2m✓[22m[39m actual SDK discovers exactly the supported tools and pages opened projects from an unrelated cwd [33m 483[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:36.8552248Z    [33m[2m✓[22m[39m SDK query tools retain pagination, budgets, snapshot identity and unresolved call evidence [33m 417[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:36.8553172Z    [33m[2m✓[22m[39m HTTP user approval and SDK share the same revision/hash; draft edits revoke current approval and verification uses history [33m 593[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:36.8554262Z    [33m[2m✓[22m[39m get_approved_plan refreshes disk before trusting approval and stale explicit baselines conflict [33m 415[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:36.8555144Z    [33m[2m✓[22m[39m agent routes and new groups are validated, visible over HTTP, paged and marked stale after refresh [33m 553[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:36.8556172Z    [33m[2m✓[22m[39m schemas reject forged source/approval, absent baseline and invalid limits; HTTP domain conflicts remain actionable [33m 351[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:36.8557275Z    [33m[2m✓[22m[39m a newly connected SDK client reads retained approval/routes/groups after actual HTTP process restart [33m 1548[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:36.8559155Z    [33m[2m✓[22m[39m a real concurrent HTTP edit between create and update exposes the retained partial draft id/revision [33m 328[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:36.8560206Z    [33m[2m✓[22m[39m malformed stdio input and stdin EOF terminate cleanly with protocol-only stdout [33m 433[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:36.8561223Z    [33m[2m✓[22m[39m transport failure cancels an in-flight HTTP request instead of retaining the child until its timeout [33m 307[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:36.8561914Z    [33m[2m✓[22m[39m list_plans pages current project drafts and get_plan reads without reindex or foreign plan access [33m 775[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:37.1498947Z  [32m✓[39m apps/server/src/agent/direct-loop.test.ts [2m([22m[2m22 tests[22m[2m)[22m[33m 7029[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:37.1500101Z    [33m[2m✓[22m[39m real HTTP Responses → SDK scoped MCP → SQLite draft loop, reasoning continuation and source sentinel [33m 565[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:37.1501226Z    [33m[2m✓[22m[39m partial SSE becomes one public message while run is active; cancel aborts owned HTTP [33m 315[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:37.1502110Z    [33m[2m✓[22m[39m draft journal survives cancel after a successful MCP mutation [32m 300[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:37.1502936Z    [33m[2m✓[22m[39m draft journal survives http-error after a successful MCP mutation [33m 308[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:37.1504390Z    [33m[2m✓[22m[39m MCP rejects invalid schema and returns bounded safe tool result to next provider turn [33m 362[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:37.1506203Z    [33m[2m✓[22m[39m provider/tool/request budgets stop without retry [33m 367[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:37.1506967Z    [33m[2m✓[22m[39m provider/tool/request budgets stop without retry [33m 308[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:37.1507769Z    [33m[2m✓[22m[39m timeout aborts stalled provider and returns safe terminal code [33m 366[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:37.1508708Z    [33m[2m✓[22m[39m concurrent direct runs keep existing per-channel and four-run global limits [33m 326[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:37.1509613Z    [33m[2m✓[22m[39m invalid duplicate complete batch rejects before any draft dispatch [33m 374[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:37.1510541Z    [33m[2m✓[22m[39m in-flight MCP timeout drains committed journal and never dispatches another tool [33m 479[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:37.7620565Z  [32m✓[39m packages/indexer/src/workspaceResolution.test.ts [2m([22m[2m44 tests[22m[2m)[22m[33m 469[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:39.6825344Z  [32m✓[39m packages/indexer/src/configCapture.test.ts [2m([22m[2m25 tests[22m[2m)[22m[33m 3378[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:39.6826002Z      [33m[2m✓[22m[39m enforces the 512 file limit for 512 eligible seeds [33m 1500[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:39.6826539Z      [33m[2m✓[22m[39m enforces the 512 file limit for 513 eligible seeds [33m 1315[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:39.9083020Z  [32m✓[39m packages/core/src/queries.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:40.1021872Z  [32m✓[39m apps/web/src/features/navigation/workspace-navigation.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 32[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:40.2368536Z  [32m✓[39m apps/server/src/agent/bridge.test.ts [2m([22m[2m6 tests[22m[2m)[22m[33m 1619[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:40.2370509Z    [33m[2m✓[22m[39m gateway rejects foreign valid plans, approvals, opening, traversal and channel planning drafts; journals real drafts [33m 634[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:40.5154079Z  [32m✓[39m packages/service/src/workspace.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 24[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:40.7304567Z  [32m✓[39m apps/web/src/app/inspection-workspace.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 31[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:40.9522765Z  [32m✓[39m packages/indexer/src/configResolution.test.ts [2m([22m[2m31 tests[22m[2m)[22m[33m 330[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:40.9648143Z  [32m✓[39m apps/web/src/features/chat/workspace-sync.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 40[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:41.5170578Z  [32m✓[39m packages/indexer/src/packageCapture.test.ts [2m([22m[2m24 tests[22m[2m)[22m[33m 3894[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:41.5178771Z      [33m[2m✓[22m[39m enforces count boundary with 512 files [33m 1505[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:41.5179740Z      [33m[2m✓[22m[39m enforces count boundary with 513 files [33m 1570[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:41.7960522Z  [32m✓[39m apps/server/src/agent/profile.test.ts [2m([22m[2m6 tests[22m[2m | [22m[33m1 skipped[39m[2m)[22m[32m 69[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:43.9362072Z  [31m❯[39m apps/server/src/dev.test.ts [2m([22m[2m6 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[33m 2790[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:43.9363269Z [31m   [31m×[31m dev builds prerequisites and reaps children through handler shutdown[39m[33m 584[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:43.9393693Z    [33m[2m✓[22m[39m dev builds prerequisites and reaps children through aliased-parent shutdown [33m 766[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:43.9412390Z    [33m[2m✓[22m[39m a development child failure exits with failure and stops the other child [33m 763[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:43.9413372Z    [32m✓[39m a failed prerequisite build aborts before launching runtime children[32m 156[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:43.9419750Z    [32m✓[39m shutdown during an active prerequisite build stops its live compiler before supervisor exit[32m 217[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:43.9422793Z    [33m[2m✓[22m[39m custom prerequisite build or lifecycle steps fail clearly instead of being bypassed [33m 303[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:46.0399765Z  [32m✓[39m tests/integration/commonjs-resolution.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 3852[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:46.0400864Z    [33m[2m✓[22m[39m compiled HTTP and SDK stale package-only baselines without rewriting approval, symbols or historic SQLite snapshots [33m 3851[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:46.2251095Z  [32m✓[39m apps/web/src/features/chat/controller.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 10[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:48.0442573Z  [32m✓[39m tests/integration/forwarding-resolution.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 3754[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:48.0443963Z    [33m[2m✓[22m[39m compiled HTTP and SDK preserve real forwarding leaf identity and immutable approval/history after alias-only refresh and SQLite reopen [33m 3753[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:48.2906458Z  [32m✓[39m apps/web/src/app/groups-workspace.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 82[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:49.6054360Z  [32m✓[39m apps/server/src/agent/routes.test.ts [2m([22m[2m5 tests[22m[2m | [22m[33m4 skipped[39m[2m)[22m[32m 280[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:50.2999969Z  [32m✓[39m tests/integration/tsconfig-resolution.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 3715[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:50.3010489Z    [33m[2m✓[22m[39m compiled HTTP and SDK stale config-only baselines without rewriting approval, symbols or historic SQLite snapshots [33m 3713[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:51.1082656Z  [32m✓[39m apps/web/src/i18n/locale.test.tsx [2m([22m[2m5 tests[22m[2m)[22m[33m 502[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:51.1083364Z    [33m[2m✓[22m[39m cached failure help follows current locale while backend diagnostics remain verbatim [33m 484[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:51.2792930Z  [2m[90m↓[39m[22m apps/server/src/agent/process.test.ts [2m([22m[2m11 tests[22m[2m | [22m[33m11 skipped[39m[2m)[22m
+native (windows-latest)	Run npm test	2026-10-10T15:55:51.4703339Z  [32m✓[39m apps/web/src/features/graph/funnel.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 15[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:51.6413123Z  [32m✓[39m apps/web/src/features/graph/projection.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:51.8222995Z  [32m✓[39m apps/web/src/app/funnel-workspace.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 24[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:51.8949085Z [90mstdout[2m | tests/integration/server-shutdown.test.ts[2m > [22m[2mcompiled server shuts down with a raw connection
+native (windows-latest)	Run npm test	2026-10-10T15:55:51.8951005Z [22m[39m{"state":"raw","root":"C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\atlas-shutdown-QxzpnG","pid":7932,"localPort":51129,"bytesWritten":0,"openAtStop":true,"handlerEmittedAndIpcDisconnectedMs":3.708100000000286,"stopMs":54.34760000000006,"exitCode":0,"signalCode":null,"socketErrors":[],"cleaned":true}
+native (windows-latest)	Run npm test	2026-10-10T15:55:51.8952487Z 
+native (windows-latest)	Run npm test	2026-10-10T15:55:52.1312028Z  [32m✓[39m apps/server/src/index.test.ts [2m([22m[2m4 tests[22m[2m)[22m[33m 10970[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:52.1313135Z    [33m[2m✓[22m[39m CLI serves real data and closes SQLite through handler shutdown [33m 2072[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:52.1314018Z    [33m[2m✓[22m[39m CLI validates port before startup and reports launch failure cleanly [33m 3154[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:52.1324793Z    [33m[2m✓[22m[39m CLI opens an explicitly configured default workspace [33m 1893[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:52.1325654Z    [33m[2m✓[22m[39m CLI enforces listener authority and enables the explicit local development proxy only on opt-in [33m 3850[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:52.4212260Z  [32m✓[39m packages/storage/src/sqlite.test.ts [2m([22m[2m6 tests[22m[2m)[22m[33m 420[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:52.9067814Z  [32m✓[39m packages/indexer/src/idx01.test.ts [2m([22m[2m17 tests[22m[2m)[22m[33m 323[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:52.9647346Z  [32m✓[39m apps/mcp/src/scope.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 83[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:52.9961174Z [90mstdout[2m | tests/integration/server-shutdown.test.ts[2m > [22m[2mcompiled server shuts down with a partial headers connection
+native (windows-latest)	Run npm test	2026-10-10T15:55:52.9963221Z [22m[39m{"state":"partial headers","root":"C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\atlas-shutdown-1wyYQ9","pid":5948,"localPort":51160,"bytesWritten":49,"openAtStop":true,"handlerEmittedAndIpcDisconnectedMs":2.8910000000000764,"stopMs":71.26719999999978,"exitCode":0,"signalCode":null,"socketErrors":[],"cleaned":true}
+native (windows-latest)	Run npm test	2026-10-10T15:55:52.9965071Z 
+native (windows-latest)	Run npm test	2026-10-10T15:55:53.0881787Z  [32m✓[39m apps/server/src/agent/native.test.ts [2m([22m[2m4 tests[22m[2m | [22m[33m2 skipped[39m[2m)[22m[32m 6[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:53.1672245Z  [32m✓[39m apps/server/src/agent/responses-stream.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 35[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:53.2647453Z  [32m✓[39m apps/web/src/features/graph/inspection.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:53.4008063Z  [32m✓[39m apps/server/src/navigation-query.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 12[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:53.4821467Z  [32m✓[39m apps/web/src/features/chat/panels.test.tsx [2m([22m[2m2 tests[22m[2m)[22m[32m 13[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:53.6208577Z  [32m✓[39m apps/web/src/features/planning/pending.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[32m 12[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:53.8613246Z  [32m✓[39m apps/server/src/funnel-query.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:54.0801408Z [90mstdout[2m | tests/integration/server-shutdown.test.ts[2m > [22m[2mcompiled server shuts down with a partial body connection
+native (windows-latest)	Run npm test	2026-10-10T15:55:54.0806227Z [22m[39m{"state":"partial body","root":"C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\atlas-shutdown-nyGtt6","pid":4324,"localPort":51185,"bytesWritten":108,"openAtStop":true,"handlerEmittedAndIpcDisconnectedMs":1.5565999999998894,"stopMs":44.51890000000003,"exitCode":0,"signalCode":null,"socketErrors":[],"cleaned":true}
+native (windows-latest)	Run npm test	2026-10-10T15:55:54.0807509Z 
+native (windows-latest)	Run npm test	2026-10-10T15:55:54.4680725Z  [32m✓[39m packages/indexer/src/declarations.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 293[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:54.6123112Z  [32m✓[39m apps/web/src/features/planning/operations.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:54.7664880Z  [32m✓[39m apps/web/src/features/graph/nodeIdentity.test.tsx [2m([22m[2m3 tests[22m[2m)[22m[32m 10[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:54.9065096Z  [32m✓[39m apps/server/src/agent/platform-refusal.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 7[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:55.0907732Z  [32m✓[39m packages/indexer/src/packageMode.test.ts [2m([22m[2m13 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:55.3621887Z  [32m✓[39m apps/web/src/app/WorkspacePanels.test.tsx [2m([22m[2m1 test[22m[2m)[22m[32m 11[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:55.4928374Z  [32m✓[39m apps/web/src/features/navigation/path.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:55.6165521Z  [32m✓[39m apps/web/src/features/planning/history.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:56.6729488Z  [32m✓[39m tests/integration/repository-provenance.test.ts [2m([22m[2m4 tests[22m[2m)[22m[33m 2645[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:56.6730754Z    [33m[2m✓[22m[39m validator rejects modified supported source before capture [33m 736[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:56.6731327Z    [33m[2m✓[22m[39m validator rejects staged supported source before capture [33m 727[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:56.6734503Z    [33m[2m✓[22m[39m validator rejects untracked supported source before capture [33m 713[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:56.6735377Z    [33m[2m✓[22m[39m clean provenance is recorded and completion rejects intervening source or revision changes [33m 467[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:56.8398171Z  [32m✓[39m apps/web/src/features/graph/InspectionCard.test.tsx [2m([22m[2m2 tests[22m[2m)[22m[32m 13[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:56.9605885Z  [32m✓[39m tests/integration/preload-loader.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 1212[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:56.9606885Z    [33m[2m✓[22m[39m production preload loads from a checkout path containing spaces and a hash [33m 1211[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:56.9863102Z  [32m✓[39m apps/web/src/api/scope.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:57.1367635Z  [32m✓[39m apps/web/src/features/groups/GroupsPanel.test.tsx [2m([22m[2m2 tests[22m[2m)[22m[32m 12[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:57.2558672Z  [32m✓[39m apps/web/src/features/chat/shell.test.tsx [2m([22m[2m1 test[22m[2m)[22m[32m 23[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:57.4311623Z  [32m✓[39m apps/server/src/agent/direct.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:57.4412159Z  [32m✓[39m apps/web/src/features/groups/memberBindings.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 43[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:57.5624931Z  [32m✓[39m apps/web/src/features/groups/selection.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:57.5871309Z  [32m✓[39m apps/web/src/features/chat/transport.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 23[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:57.7372342Z  [32m✓[39m apps/web/src/features/chat/direct-panel.test.tsx [2m([22m[2m1 test[22m[2m)[22m[32m 9[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:57.8578146Z  [32m✓[39m apps/web/src/features/chat/sessions.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 2[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:55:57.9909127Z  [32m✓[39m apps/web/src/api/client.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 18[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:56:00.4288428Z  [32m✓[39m tests/integration/server-shutdown.test.ts [2m([22m[2m4 tests[22m[2m)[22m[33m 9688[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:56:00.4289292Z    [33m[2m✓[22m[39m compiled server shuts down with a raw connection [33m 1152[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:56:00.4289732Z    [33m[2m✓[22m[39m compiled server shuts down with a partial headers connection [33m 1102[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:56:00.4290176Z    [33m[2m✓[22m[39m compiled server shuts down with a partial body connection [33m 1084[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:56:00.4290693Z    [33m[2m✓[22m[39m shutdown preserves slow complete requests before discarding incomplete pipelined bytes [33m 6348[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:56:27.7500991Z  [32m✓[39m apps/mcp/src/client.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 30018[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:56:27.7502272Z    [33m[2m✓[22m[39m the 30 second deadline reports API_TIMEOUT while consuming a stalled JSON body [33m 30016[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:56:27.7550348Z 
+native (windows-latest)	Run npm test	2026-10-10T15:56:27.7550958Z [31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+native (windows-latest)	Run npm test	2026-10-10T15:56:27.7551261Z 
+native (windows-latest)	Run npm test	2026-10-10T15:56:27.7553465Z [41m[1m FAIL [22m[49m apps/server/src/dev.test.ts[2m > [22mdev builds prerequisites and reaps children through handler shutdown
+native (windows-latest)	Run npm test	2026-10-10T15:56:27.7559211Z [31m[1mAssertionError[22m: expected '' to be '1' // Object.is equality[39m
+native (windows-latest)	Run npm test	2026-10-10T15:56:27.7559850Z 
+native (windows-latest)	Run npm test	2026-10-10T15:56:27.7560009Z [32m- Expected[39m
+native (windows-latest)	Run npm test	2026-10-10T15:56:27.7560243Z [31m+ Received[39m
+native (windows-latest)	Run npm test	2026-10-10T15:56:27.7560318Z 
+native (windows-latest)	Run npm test	2026-10-10T15:56:27.7560387Z [32m- 1[39m
+native (windows-latest)	Run npm test	2026-10-10T15:56:27.7560460Z 
+native (windows-latest)	Run npm test	2026-10-10T15:56:27.7560640Z [36m [2m❯[22m apps/server/src/dev.test.ts:[2m171:68[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:56:27.7601597Z     [90m169|[39m       [34mjoin[39m(run[33m.[39mroot[33m,[39m [32m"apps/web"[39m)[33m,[39m
+native (windows-latest)	Run npm test	2026-10-10T15:56:27.7602505Z     [90m170|[39m     )[33m;[39m
+native (windows-latest)	Run npm test	2026-10-10T15:56:27.7603062Z     [90m171|[39m     expect(await readFile(join(run.root, "server.proxy"), "utf8")).toB…
+native (windows-latest)	Run npm test	2026-10-10T15:56:27.7604249Z     [90m   |[39m                                                                    [31m^[39m
+native (windows-latest)	Run npm test	2026-10-10T15:56:27.7604996Z     [90m172|[39m     [35mconst[39m server [33m=[39m [35mawait[39m run[33m.[39m[34mpid[39m([32m"server"[39m)[33m,[39m
+native (windows-latest)	Run npm test	2026-10-10T15:56:27.7606252Z     [90m173|[39m       web [33m=[39m [35mawait[39m run[33m.[39m[34mpid[39m([32m"web"[39m)[33m;[39m
+native (windows-latest)	Run npm test	2026-10-10T15:56:27.7606630Z 
+native (windows-latest)	Run npm test	2026-10-10T15:56:27.7606923Z [31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:56:27.7607532Z 
+native (windows-latest)	Run npm test	2026-10-10T15:56:27.7608281Z [41m[1m FAIL [22m[49m apps/server/src/dev.test.ts[2m > [22mdev builds prerequisites and reaps children through handler shutdown
+native (windows-latest)	Run npm test	2026-10-10T15:56:27.7609196Z [31m[1mError[22m: EBUSY: resource busy or locked, rmdir 'C:\Users\runneradmin\AppData\Local\Temp\atlas-dev-CiidYa'[39m
+native (windows-latest)	Run npm test	2026-10-10T15:56:27.7609814Z [31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T15:56:27.7610016Z 
+native (windows-latest)	Run npm test	2026-10-10T15:56:27.7610043Z 
+native (windows-latest)	Run npm test	2026-10-10T15:56:27.7616426Z [2m Test Files [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m63 passed[39m[22m[2m | [22m[33m1 skipped[39m[90m (65)[39m
+native (windows-latest)	Run npm test	2026-10-10T15:56:27.7621644Z [2m      Tests [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m760 passed[39m[22m[2m | [22m[33m18 skipped[39m[90m (779)[39m
+native (windows-latest)	Run npm test	2026-10-10T15:56:27.7622693Z [2m   Start at [22m 15:55:18
+native (windows-latest)	Run npm test	2026-10-10T15:56:27.7623340Z [2m   Duration [22m 69.20s[2m (transform 3.84s, setup 0ms, import 13.77s, tests 128.06s, environment 5ms)[22m
+native (windows-latest)	Run npm test	2026-10-10T15:56:27.7624777Z 
+native (windows-latest)	Run npm test	2026-10-10T15:56:27.7639862Z 
+native (windows-latest)	Run npm test	2026-10-10T15:56:27.7658969Z ##[error]AssertionError: expected '' to be '1' // Object.is equality
+native (windows-latest)	Run npm test	
+native (windows-latest)	Run npm test	- Expected
+native (windows-latest)	Run npm test	+ Received
+native (windows-latest)	Run npm test	
+native (windows-latest)	Run npm test	- 1
+native (windows-latest)	Run npm test	
+native (windows-latest)	Run npm test	 ❯ apps/server/src/dev.test.ts:171:68
+native (windows-latest)	Run npm test	
+native (windows-latest)	Run npm test	
+native (windows-latest)	Run npm test	2026-10-10T15:56:27.8597484Z ##[error]Process completed with exit code 1.

@@ -1,0 +1,215 @@
+diff --git a/apps/server/src/dev.test.ts b/apps/server/src/dev.test.ts
+index e7232e9..3baffc3 100644
+--- a/apps/server/src/dev.test.ts
++++ b/apps/server/src/dev.test.ts
+@@ -70,8 +70,10 @@ appendFileSync(root+'/builds.txt',basename(process.cwd())+'\\n');
+ if(process.env.FAIL_BUILD)process.exit(9);
+ if(process.env.ACTIVE_BUILD){
+   writeFileSync(root+'/compiler.pid',String(process.pid));
++  writeFileSync(root+'/compiler.started',JSON.stringify({name:'compiler',root,pid:process.pid}));
+   process.on('SIGTERM',()=>process.exit(0));
+   setInterval(()=>{},100);
++  writeFileSync(root+'/compiler.ready',JSON.stringify({name:'compiler',root,pid:process.pid}));
+ }`,
+   );
+   await put(
+@@ -83,7 +85,24 @@ const compiler=spawn(process.execPath,[join(root,'node_modules/typescript/bin/ts
+ compiler.on('exit',code=>process.exit(code??1));`,
+   );
+   const childCode = (name: string) =>
+-    `import {writeFileSync} from 'node:fs';writeFileSync(process.env.DEV_FIXTURE_ROOT+'/${name}.pid',String(process.pid));writeFileSync(process.env.DEV_FIXTURE_ROOT+'/${name}.cwd',process.cwd());writeFileSync(process.env.DEV_FIXTURE_ROOT+'/${name}.proxy',process.env.CODEMAP_DEV_PROXY??'');process.on('SIGTERM',()=>process.exit(0));process.on('SIGINT',()=>process.exit(0));setInterval(()=>{},100);${name === "server" ? "if(process.env.FAIL_SERVER)setTimeout(()=>process.exit(7),150);" : ""}`;
++    `import {existsSync,openSync,closeSync,writeFileSync} from 'node:fs';
++import {setTimeout as delay} from 'node:timers/promises';
++const root=process.env.DEV_FIXTURE_ROOT,name='${name}';
++writeFileSync(root+'/'+name+'.pid',String(process.pid));
++writeFileSync(root+'/'+name+'.started',JSON.stringify({name,root,pid:process.pid}));
++writeFileSync(root+'/'+name+'.cwd',process.cwd());
++process.on('SIGTERM',()=>process.exit(0));
++process.on('SIGINT',()=>process.exit(0));
++if(name==='server'&&process.env.PAUSE_PROXY){
++  const fd=openSync(root+'/'+name+'.proxy','w');
++  writeFileSync(root+'/proxy-held','1');
++  while(!existsSync(root+'/release-proxy'))await delay(10);
++  writeFileSync(fd,process.env.CODEMAP_DEV_PROXY??'');
++  closeSync(fd);
++}else writeFileSync(root+'/'+name+'.proxy',process.env.CODEMAP_DEV_PROXY??'');
++writeFileSync(root+'/'+name+'.ready',JSON.stringify({name,root,pid:process.pid}));
++setInterval(()=>{},100);
++${name === "server" ? "if(process.env.FAIL_SERVER)setTimeout(()=>process.exit(7),150);" : ""}`;
+   await put("apps/server/src/index.ts", childCode("server"));
+   await put("apps/web/package.json", '{"type":"module"}');
+   await put(
+@@ -119,19 +138,76 @@ compiler.on('exit',code=>process.exit(code??1));`,
+   child.stdout!.on("data", (data) => (output += data));
+   child.stderr!.on("data", (data) => (output += data));
+   const exited = once(child, "exit");
+-  cleanup.push(async () => {
++  const closed = once(child, "close");
++  const record = async (name: string, phase: "started" | "ready") => {
++    const value = JSON.parse(
++      await readFile(join(root, `${name}.${phase}`), "utf8"),
++    );
++    if (
++      value.name !== name ||
++      value.root !== root ||
++      !Number.isSafeInteger(value.pid) ||
++      value.pid <= 0
++    )
++      throw new Error(`Invalid owned ${name} process record`);
++    return value.pid as number;
++  };
++  const running = (pid: number) => {
++    try {
++      process.kill(pid, 0);
++      return true;
++    } catch (error) {
++      if ((error as NodeJS.ErrnoException).code === "ESRCH") return false;
++      throw error;
++    }
++  };
++  let disposed = false;
++  async function dispose() {
++    if (disposed) return;
+     if (child.exitCode === null && child.signalCode === null) {
+-      child.kill("SIGKILL");
+-      await exited;
++      // The preload invokes the supervisor's actual handler on Windows too.
++      if (child.connected) child.send({ testSignal: "SIGTERM" }, () => {});
++      const graceful = await Promise.race([
++        closed.then(() => true),
++        new Promise<boolean>((resolve) =>
++          setTimeout(() => resolve(false), 1000),
++        ),
++      ]);
++      if (!graceful) child.kill("SIGKILL");
+     }
+-    for (const name of ["server", "web", "compiler"])
++    const deadline = Date.now() + 2000;
++    for (const name of ["server", "web", "compiler"]) {
++      let pid: number;
+       try {
+-        process.kill(
+-          Number(await readFile(join(root, `${name}.pid`), "utf8")),
+-          "SIGKILL",
+-        );
+-      } catch {}
+-  });
++        pid = await record(name, "started");
++      } catch (error) {
++        if ((error as NodeJS.ErrnoException).code === "ENOENT") continue;
++        throw error;
++      }
++      if (running(pid)) {
++        try {
++          process.kill(pid, "SIGKILL");
++        } catch (error) {
++          if ((error as NodeJS.ErrnoException).code !== "ESRCH") throw error;
++        }
++      }
++      while (running(pid)) {
++        if (Date.now() >= deadline)
++          throw new Error(`Owned ${name} process did not exit`);
++        await new Promise((resolve) => setTimeout(resolve, 20));
++      }
++    }
++    // close, rather than only exit, proves inherited fixture pipes were drained.
++    const drained = await Promise.race([
++      closed.then(() => true),
++      new Promise<boolean>((resolve) =>
++        setTimeout(() => resolve(false), Math.max(0, deadline - Date.now())),
++      ),
++    ]);
++    if (!drained) throw new Error("Owned dev supervisor did not close");
++    disposed = true;
++  }
++  cleanup.push(dispose);
+   async function ready() {
+     const end = Date.now() + 10000;
+     while (
+@@ -140,18 +216,81 @@ compiler.on('exit',code=>process.exit(code??1));`,
+       child.signalCode === null
+     ) {
+       try {
+-        await readFile(join(root, "server.pid"));
+-        await readFile(join(root, "web.pid"));
++        await record("server", "ready");
++        await record("web", "ready");
+         return;
+       } catch {}
+       await new Promise((resolve) => setTimeout(resolve, 20));
+     }
+     expect.fail(`dev children never ready: ${output}`);
+   }
+-  const pid = async (name: string) =>
+-    Number(await readFile(join(root, `${name}.pid`), "utf8"));
+-  return { root, child, exited, ready, pid, output: () => output };
++  const pid = (name: string, phase: "started" | "ready" = "ready") =>
++    record(name, phase);
++  return { root, child, exited, ready, pid, dispose, output: () => output };
+ }
++test("readiness waits for complete fixture records behind an owned proxy-write barrier", async () => {
++  const run = await fixture({ PAUSE_PROXY: "1" });
++  await expect
++    .poll(async () => {
++      try {
++        return await readFile(join(run.root, "proxy-held"), "utf8");
++      } catch {
++        return "";
++      }
++    })
++    .toBe("1");
++  expect(await readFile(join(run.root, "server.proxy"), "utf8")).toBe("");
++  const ready = run.ready();
++  try {
++    const readiness = await Promise.race([
++      ready.then(() => "ready"),
++      new Promise((resolve) => setTimeout(() => resolve("blocked"), 100)),
++    ]);
++    const heldProxy = await readFile(join(run.root, "server.proxy"), "utf8");
++    console.log(
++      JSON.stringify({ readiness, heldProxy, requiredProxyAfterReady: "1" }),
++    );
++    expect(readiness).toBe("blocked");
++    expect(heldProxy).toBe("");
++  } finally {
++    await writeFile(join(run.root, "release-proxy"), "1");
++    await ready;
++  }
++  expect(await readFile(join(run.root, "server.proxy"), "utf8")).toBe("1");
++}, 15000);
++test("fixture cleanup drains owned children even while a proxy write is held", async () => {
++  const run = await fixture({ PAUSE_PROXY: "1" });
++  await expect
++    .poll(async () => {
++      try {
++        return await readFile(join(run.root, "proxy-held"), "utf8");
++      } catch {
++        return "";
++      }
++    })
++    .toBe("1");
++  const server = await run.pid("server", "started");
++  await expect
++    .poll(async () => {
++      try {
++        return await run.pid("web", "started");
++      } catch {
++        return 0;
++      }
++    })
++    .toBeGreaterThan(0);
++  const web = await run.pid("web", "started");
++  expect(() => process.kill(server, 0)).not.toThrow();
++  expect(() => process.kill(web, 0)).not.toThrow();
++  expect(await readFile(join(run.root, "server.proxy"), "utf8")).toBe("");
++  await run.dispose();
++  expect(() => process.kill(server, 0)).toThrow();
++  expect(() => process.kill(web, 0)).toThrow();
++  await rm(run.root, { recursive: true, force: true });
++  await expect(readFile(join(run.root, "server.pid"))).rejects.toMatchObject({
++    code: "ENOENT",
++  });
++}, 15000);
+ // Shell-driven launch, launch before builds, swallowed failure, or orphaned children breaks observable supervision.
+ test.each([
+   "handler",

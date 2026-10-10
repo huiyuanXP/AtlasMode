@@ -1,0 +1,37 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90m/home/agent/projects/AtlasMode[39m
+
+ [31m❯[39m apps/server/src/dev.test.ts [2m([22m[2m8 tests[22m[2m | [22m[31m1 failed[39m[2m | [22m[33m7 skipped[39m[2m)[22m[33m 850[2mms[22m[39m
+[31m   [31m×[31m readiness waits for complete fixture records behind an owned proxy-write barrier[39m[33m 847[2mms[22m[39m
+   [2m[90m↓[39m[22m dev builds prerequisites and reaps children through handler shutdown
+   [2m[90m↓[39m[22m dev builds prerequisites and reaps children through aliased-parent shutdown
+   [2m[90m↓[39m[22m dev builds prerequisites and reaps children through signal shutdown
+   [2m[90m↓[39m[22m a development child failure exits with failure and stops the other child
+   [2m[90m↓[39m[22m a failed prerequisite build aborts before launching runtime children
+   [2m[90m↓[39m[22m shutdown during an active prerequisite build stops its live compiler before supervisor exit
+   [2m[90m↓[39m[22m custom prerequisite build or lifecycle steps fail clearly instead of being bypassed
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m apps/server/src/dev.test.ts[2m > [22mreadiness waits for complete fixture records behind an owned proxy-write barrier
+[31m[1mAssertionError[22m: expected 'ready' to be 'blocked' // Object.is equality[39m
+
+Expected: [32m"blocked"[39m
+Received: [31m"ready"[39m
+
+[36m [2m❯[22m apps/server/src/dev.test.ts:[2m189:7[22m[39m
+    [90m187|[39m         new Promise((resolve) => setTimeout(() => resolve("blocked"), …
+    [90m188|[39m       ])[33m,[39m
+    [90m189|[39m     )[33m.[39m[34mtoBe[39m([32m"blocked"[39m)[33m;[39m
+    [90m   |[39m       [31m^[39m
+    [90m190|[39m     expect(await readFile(join(run.root, "server.proxy"), "utf8")).toB…
+    [90m191|[39m   } [35mfinally[39m {
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m1 failed[39m[22m[2m | [22m[33m7 skipped[39m[90m (8)[39m
+[2m   Start at [22m 16:22:12
+[2m   Duration [22m 1.27s[2m (transform 69ms, setup 0ms, import 109ms, tests 850ms, environment 0ms)[22m
+

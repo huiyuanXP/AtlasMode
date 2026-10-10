@@ -1,0 +1,10 @@
+{
+  "testSha256": "3876549f0064a121a655e0a9b9a0d7bcda8b50632799143378f1e5b2a713b469",
+  "runtimeSha256": "056a5e1ee7900760a1935c1e39f9a8d30687d75d9578a1b57e29f962ae9d8585",
+  "runtimeMatchesHEAD": true,
+  "scopedLinuxTests": 9,
+  "scopedLinuxResult": "PASS",
+  "durationSeconds": 6.41,
+  "WindowsAfterRepair": "PENDING_REAL_CI",
+  "independentReview": "PENDING_MAIN_COORDINATION"
+}

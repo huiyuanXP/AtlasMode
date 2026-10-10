@@ -30,3 +30,7 @@ Only explicit GRP-02 products/tests/spec/plan/review and the parent-authorized s
 +The passing scenario's own screenshots were copied directly after its final 1/1 PASS; no browser rerun was used to produce them. [Desktop light](planning-final-desktop-light.png), [desktop dark](planning-final-desktop-dark.png), and [narrow viewport](planning-final-narrow.png) retain the final approved planning view. [SHA-256/source paths](planning-final-screenshots.json) and the original [joint-flow evidence](planning-final-joint-flow-evidence.json) are preserved. Source/test/Markdown/JSON whitespace checks pass; CLI log/patch bytes are intentionally unchanged, including emitted trailing whitespace and blank EOF lines.
 
 Independent high limited review: **APPROVE, Critical 0 / Important 0 / Minor 0**. The [original reviewer report](planning-helper-independent-review.md) verifies the frozen final helper, actual route/hit-test/evidence transition, exact domain assertions, unchanged scenario and separate-run results.
+
+## Committed remote CI receipt
+
+Commit `6566717ee81981358e36caacb23f80157b0ee61d` [CI 38067062352](https://github.com/huiyuanXP/AtlasMode/actions/runs/38067062352) completed SUCCESS in all four jobs: browser, Linux, macOS and Windows. The browser job reports a single complete **19 passed (1.5m)** run. [Exact head/job results](remote-ci-38067062352.json) and [raw browser log](remote-browser-38067062352.log) preserve this separate remote receipt; the initial local 18/19 failure and single-case 1/1 retest above remain unchanged.

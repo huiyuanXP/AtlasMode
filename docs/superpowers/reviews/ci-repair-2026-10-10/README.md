@@ -2,6 +2,10 @@
 
 当前状态：本地限定验证通过；修复提交后的原生三平台与完整浏览器 CI 重跑待主控完成。远端历史 run [38059730657](https://github.com/huiyuanXP/AtlasMode/actions/runs/38059730657) 保持 FAIL，其 Linux/Windows native PASS、macOS native 一项 FAIL、browser 六项 FAIL 是本次修复输入。
 
+## 第三轮：Windows dev fixture readiness
+
+[独立小阶段报告与证据](dev-readiness/README.md)：docs-only fe4b52c 的真实 CI browser/Linux/macOS PASS、Windows 读到空 proxy 后清理 EBUSY。确定性 proxy 写入屏障复现原 ready() 提前返回；仅修 dev.test.ts 完整 ready-last/owned PID 及退出确认清理，runtime 未改。Linux 9/9、限定 lint/typecheck/diffcheck PASS；独立 high 源码评审 APPROVE（C0/I0/M0）；修后新 Windows CI pending，历史 FAIL 保留。
+
 ## 第二轮：分组入口与地图遮挡
 
 提交 40710123061a5d1e86fb9269d4d3689a24de4691 的 [CI run 38061633736](https://github.com/huiyuanXP/AtlasMode/actions/runs/38061633736) 已确认 Linux/Windows/macOS native 全部 PASS；browser 14 PASS /3 FAIL，原结果保留为历史检查点。

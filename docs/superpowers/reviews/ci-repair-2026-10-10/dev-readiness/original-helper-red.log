@@ -1,0 +1,41 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90m/home/agent/projects/AtlasMode[39m
+
+[90mstdout[2m | apps/server/src/dev.test.ts[2m > [22m[2mreadiness waits for complete fixture records behind an owned proxy-write barrier
+[22m[39m{"readiness":"ready","heldProxy":"","requiredProxyAfterReady":"1"}
+
+ [31m❯[39m apps/server/src/dev.test.ts [2m([22m[2m9 tests[22m[2m | [22m[31m1 failed[39m[2m | [22m[33m8 skipped[39m[2m)[22m[33m 795[2mms[22m[39m
+[31m   [31m×[31m readiness waits for complete fixture records behind an owned proxy-write barrier[39m[33m 792[2mms[22m[39m
+   [2m[90m↓[39m[22m fixture cleanup drains owned children even while a proxy write is held
+   [2m[90m↓[39m[22m dev builds prerequisites and reaps children through handler shutdown
+   [2m[90m↓[39m[22m dev builds prerequisites and reaps children through aliased-parent shutdown
+   [2m[90m↓[39m[22m dev builds prerequisites and reaps children through signal shutdown
+   [2m[90m↓[39m[22m a development child failure exits with failure and stops the other child
+   [2m[90m↓[39m[22m a failed prerequisite build aborts before launching runtime children
+   [2m[90m↓[39m[22m shutdown during an active prerequisite build stops its live compiler before supervisor exit
+   [2m[90m↓[39m[22m custom prerequisite build or lifecycle steps fail clearly instead of being bypassed
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m apps/server/src/dev.test.ts[2m > [22mreadiness waits for complete fixture records behind an owned proxy-write barrier
+[31m[1mAssertionError[22m: expected 'ready' to be 'blocked' // Object.is equality[39m
+
+Expected: [32m"blocked"[39m
+Received: [31m"ready"[39m
+
+[36m [2m❯[22m apps/server/src/dev.test.ts:[2m253:23[22m[39m
+    [90m251|[39m       JSON.stringify({ readiness, heldProxy, requiredProxyAfterReady: …
+    [90m252|[39m     )[33m;[39m
+    [90m253|[39m     [34mexpect[39m(readiness)[33m.[39m[34mtoBe[39m([32m"blocked"[39m)[33m;[39m
+    [90m   |[39m                       [31m^[39m
+    [90m254|[39m     [34mexpect[39m(heldProxy)[33m.[39m[34mtoBe[39m([32m""[39m)[33m;[39m
+    [90m255|[39m   } [35mfinally[39m {
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m1 failed[39m[22m[2m | [22m[33m8 skipped[39m[90m (9)[39m
+[2m   Start at [22m 16:26:08
+[2m   Duration [22m 1.20s[2m (transform 72ms, setup 0ms, import 100ms, tests 795ms, environment 0ms)[22m
+
