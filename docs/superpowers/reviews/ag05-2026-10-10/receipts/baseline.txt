@@ -1,0 +1,11 @@
+
+ RUN  v4.1.11 /home/agent/projects/AtlasMode
+
+ ✓ apps/server/src/agent/bridge.test.ts (6 tests) 1218ms
+   ✓ gateway rejects foreign valid plans, approvals, opening, traversal and channel planning drafts; journals real drafts  554ms
+
+ Test Files  1 passed (1)
+      Tests  6 passed (6)
+   Start at  14:35:15
+   Duration  3.63s (transform 635ms, setup 0ms, import 2.17s, tests 1.22s, environment 0ms)
+

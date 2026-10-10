@@ -1,0 +1,12 @@
+{
+  "command": "npm --userconfig=/tmp/sec01-2026-10-10-user.npmrc --globalconfig=/tmp/sec01-2026-10-10-global.npmrc audit --json --registry=https://registry.npmjs.org --cache=/tmp/sec01-2026-10-10-npm-cache",
+  "started_utc": "2026-10-10T14:40:24.714352+00:00",
+  "ended_utc": "2026-10-10T14:40:25.878659+00:00",
+  "exit_code": 0,
+  "branch": "fix/first-use-20261010",
+  "head": "68876cd69823f973dd58be72f26b8ad320ac57e6",
+  "package_lock_sha256_before": "f26ef3a7cf494becb903226ef01d86dfa7ca1e014c271e284bb0db1b9cee49c4",
+  "package_lock_sha256_after": "f26ef3a7cf494becb903226ef01d86dfa7ca1e014c271e284bb0db1b9cee49c4",
+  "node": "v24.19.0",
+  "npm": "11.9.0"
+}

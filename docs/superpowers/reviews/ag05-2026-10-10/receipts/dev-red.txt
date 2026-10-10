@@ -1,0 +1,47 @@
+
+ RUN  v4.1.11 /home/agent/projects/AtlasMode
+
+ ❯ apps/server/src/dev.test.ts (7 tests | 3 failed) 2296ms
+   × dev builds prerequisites and reaps children through handler shutdown 670ms
+   × dev builds prerequisites and reaps children through aliased-parent shutdown 435ms
+   × dev builds prerequisites and reaps children through signal shutdown 406ms
+   ✓ a development child failure exits with failure and stops the other child  495ms
+   ✓ a failed prerequisite build aborts before launching runtime children 79ms
+   ✓ shutdown during an active prerequisite build stops its live compiler before supervisor exit 84ms
+   ✓ custom prerequisite build or lifecycle steps fail clearly instead of being bypassed 125ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  apps/server/src/dev.test.ts > dev builds prerequisites and reaps children through handler shutdown
+ FAIL  apps/server/src/dev.test.ts > dev builds prerequisites and reaps children through aliased-parent shutdown
+ FAIL  apps/server/src/dev.test.ts > dev builds prerequisites and reaps children through signal shutdown
+AssertionError: expected [ 'core', 'indexer', 'storage', …(2) ] to deeply equal [ 'core', 'indexer', 'storage', …(3) ]
+
+- Expected
++ Received
+
+  [
+    "core",
+    "indexer",
+    "storage",
+    "service",
+-   "mcp",
+    "server",
+  ]
+
+ ❯ apps/server/src/dev.test.ts:167:7
+    165|     expect(
+    166|       (await readFile(join(run.root, "builds.txt"), "utf8")).trim().sp…
+    167|     ).toEqual(["core", "indexer", "storage", "service", "mcp", "server…
+       |       ^
+    168|     expect(await readFile(join(run.root, "web.cwd"), "utf8")).toBe(
+    169|       join(run.root, "apps/web"),
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 4 passed (7)
+   Start at  14:48:04
+   Duration  2.71s (transform 105ms, setup 0ms, import 134ms, tests 2.30s, environment 0ms)
+

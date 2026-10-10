@@ -1,0 +1,11 @@
+{
+  "version": "3.3.3",
+  "engines": {
+    "node": ">=8.6.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mrmlnc/fast-glob.git"
+  },
+  "gitHead": "48687898dd26d4e935a0e5ecf6720e7c5aeac15d"
+}

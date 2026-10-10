@@ -1,0 +1,11 @@
+{
+  "version": "3.0.3",
+  "engines": {
+    "node": ">=8"
+  },
+  "repository": {
+    "url": "git+https://github.com/micromatch/braces.git",
+    "type": "git"
+  },
+  "gitHead": "74b2db2938fad48a2ea54a9c8bf27a37a62c350d"
+}

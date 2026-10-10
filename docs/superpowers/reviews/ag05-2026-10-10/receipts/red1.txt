@@ -1,0 +1,36 @@
+
+ RUN  v4.1.11 /home/agent/projects/AtlasMode
+
+ ❯ apps/server/src/agent/direct.test.ts (0 test)
+ ❯ apps/server/src/agent/responses-stream.test.ts (0 test)
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  apps/server/src/agent/direct.test.ts [ apps/server/src/agent/direct.test.ts ]
+Error: Cannot find module './direct.js' imported from /home/agent/projects/AtlasMode/apps/server/src/agent/direct.test.ts
+ ❯ apps/server/src/agent/direct.test.ts:2:1
+      1| import { expect, test } from "vitest";
+      2| import { createResponsesRunner } from "./direct.js";
+       | ^
+      3| const key = "test-only-not-a-real-credential";
+      4| const env = { CODEMAP_AGENT_MODEL: "fixture-model", OPENAI_API_KEY: ke…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  apps/server/src/agent/responses-stream.test.ts [ apps/server/src/agent/responses-stream.test.ts ]
+Error: Cannot find module './responses-stream.js' imported from /home/agent/projects/AtlasMode/apps/server/src/agent/responses-stream.test.ts
+ ❯ apps/server/src/agent/responses-stream.test.ts:2:1
+      1| import { expect, test } from "vitest";
+      2| import { readResponse, ApiRunError } from "./responses-stream.js";
+       | ^
+      3|
+      4| const output = [{ type: "message", role: "assistant", content: [{ type…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  no tests
+   Start at  14:36:36
+   Duration  352ms (transform 91ms, setup 0ms, import 0ms, tests 0ms, environment 0ms)
+

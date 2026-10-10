@@ -1,0 +1,8 @@
+2026-10-10T14:45:10Z
+v24.19.0
+11.9.0
+e9e609078de582fa90d21f7a7651ffc273e571cc15d9eb79c7b76739fa07b875  package.json
+4f42a8175f3855cd68ee0958e15df5a12af5947350d58f26e19ed234c977ebf7  packages/indexer/package.json
+aa83873de5cfde8f78fedeefb106eaa3249ba1cc02dc7b5415b77b422a02f540  apps/server/package.json
+f26ef3a7cf494becb903226ef01d86dfa7ca1e014c271e284bb0db1b9cee49c4  package-lock.json
+2c9dc62e7ee5ceab1bede0a1b5e97b0eae20208a8e3d363c1b9738ee93a7181f  scripts/workspaces.mjs

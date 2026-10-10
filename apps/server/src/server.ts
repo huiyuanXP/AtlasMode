@@ -8,6 +8,7 @@ import type { WorkspaceService } from "@codemap/service";
 import { ZodError } from "zod";
 import { registerRoutes } from "./routes.js";
 import { registerAgentRoutes } from "./agent/routes.js";
+import { createConfiguredRunner } from "./agent/configured.js";
 import type { AgentRunnerFactory } from "./agent/types.js";
 
 const domainStatuses: Record<string, number> = {
@@ -122,7 +123,11 @@ export async function createServer({
       .send({ code: "INTERNAL_ERROR", message: "Internal server error." });
   });
   registerRoutes(app, service);
-  registerAgentRoutes(app, service, agentRunnerFactory);
+  registerAgentRoutes(
+    app,
+    service,
+    agentRunnerFactory ?? (() => createConfiguredRunner()),
+  );
   if (webRoot) await app.register(fastifyStatic, { root: resolve(webRoot) });
   app.setNotFoundHandler((request, reply) => {
     const pathname = new URL(request.url, "http://localhost").pathname;

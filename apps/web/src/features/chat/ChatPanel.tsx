@@ -49,7 +49,7 @@ export function ChatPanel({
               ? s.connected
               : s.disconnected}
           {connected && state.connection?.provider
-            ? ` · ${state.connection.provider === "codex" ? "Codex" : "Claude"}`
+            ? ` · ${{ codex: "Codex", claude: "Claude", responses: "Responses API" }[state.connection.provider]}`
             : ""}
           {connected && (state.connection?.profile || state.connection?.model)
             ? ` · ${[state.connection.profile, state.connection.model].filter(Boolean).join(" / ")}`

@@ -1,0 +1,30 @@
+
+ RUN  v4.1.11 /home/agent/projects/AtlasMode
+
+ ❯ apps/web/src/features/chat/direct-panel.test.tsx (1 test | 1 failed) 44ms
+   × direct API connection labels Responses API accurately 40ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  apps/web/src/features/chat/direct-panel.test.tsx > direct API connection labels Responses API accurately
+AssertionError: expected '<section class="chat-panel chat-plan"…' to contain 'Responses API'
+
+Expected: "Responses API"
+Received: "<section class="chat-panel chat-plan" aria-label="Discuss a plan"><div class="chat-heading"><h2>Discuss a plan</h2><span class="connection-dot connected" aria-hidden="true"></span></div><div class="chat-connection " role="status"><span>Local Agent ready · Claude · fixture-model</span></div><div class="chat-messages" role="log" aria-label="Request progress" aria-live="polite" aria-relevant="additions text"><p class="chat-empty">Describe the behavior you want. The Agent can propose a plan you can inspect and adjust.</p><div></div></div><form class="chat-compose"><textarea aria-label="Message Agent" placeholder="For example: add fetchNotes and reuse request retry." rows="3" maxLength="4096"></textarea><div class="chat-compose-actions"><small>0/4096</small><button type="submit" class="primary" disabled="">Send</button></div></form></section>"
+
+ ❯ apps/web/src/features/chat/direct-panel.test.tsx:11:16
+      9|   controller.store.getInitialState = () => controller.store.getState();
+     10|   const html = renderToStaticMarkup(<ChatPanel controller={controller}…
+     11|   expect(html).toContain("Responses API");
+       |                ^
+     12|   expect(html).not.toContain("Claude");
+     13| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Start at  14:46:48
+   Duration  469ms (transform 123ms, setup 0ms, import 198ms, tests 44ms, environment 0ms)
+

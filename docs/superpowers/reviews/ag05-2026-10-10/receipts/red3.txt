@@ -1,0 +1,40 @@
+
+ RUN  v4.1.11 /home/agent/projects/AtlasMode
+
+ ❯ apps/server/src/agent/responses-stream.test.ts (11 tests | 1 failed) 105ms
+   ✓ fragmented UTF8 CRLF SSE streams public text before completion and preserves reasoning output 76ms
+   ✓ completed final text fallback is emitted once 1ms
+   ✓ rejects incomplete/error protocol without exposing provider body 4ms
+   ✓ rejects incomplete/error protocol without exposing provider body 1ms
+   ✓ rejects incomplete/error protocol without exposing provider body 1ms
+   ✓ rejects incomplete/error protocol without exposing provider body 5ms
+   ✓ rejects incomplete/error protocol without exposing provider body 1ms
+   ✓ byte budget applies across responses including hidden output 1ms
+   ✓ non SSE response fails closed 3ms
+   ✓ streamed text must agree with final completed public output 6ms
+   × SSE supports lone carriage return framing split at any byte 3ms
+ ✓ apps/server/src/agent/direct-loop.test.ts (20 tests) 2665ms
+   ✓ real HTTP Responses → SDK scoped MCP → SQLite draft loop, reasoning continuation and source sentinel  419ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  apps/server/src/agent/responses-stream.test.ts > SSE supports lone carriage return framing split at any byte
+Error: AGENT_PROTOCOL
+ ❯ protocol apps/server/src/agent/responses-stream.ts:9:24
+      7| export type ResponseItem = Record<string, unknown> & { type: string };
+      8| export interface ByteBudget { remaining: number }
+      9| const protocol = () => new ApiRunError("AGENT_PROTOCOL");
+       |                        ^
+     10|
+     11| /** SSE framing is independent of TCP chunks; only public output_text …
+ ❯ readResponse apps/server/src/agent/responses-stream.ts:80:15
+ ❯ apps/server/src/agent/responses-stream.test.ts:46:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  1 failed | 30 passed (31)
+   Start at  14:44:40
+   Duration  4.97s (transform 741ms, setup 0ms, import 2.12s, tests 2.77s, environment 1ms)
+

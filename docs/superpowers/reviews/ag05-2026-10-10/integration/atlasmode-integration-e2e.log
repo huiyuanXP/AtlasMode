@@ -1,0 +1,98 @@
+
+> atlasmode@0.1.0 test:e2e
+> playwright test
+
+
+Running 18 tests using 1 worker
+
+  ✘   1 tests/e2e/agent-chat.spec.ts:26:1 › actual disconnected provider shows conversation shell and retains failed input; source and advanced controls are opt-in (13.2s)
+  ✓   2 tests/e2e/agent-chat.spec.ts:170:1 › labeled trusted test adapter streams through real bridge, journals drafts, focuses changes, cancels partial work and isolates projects (5.1s)
+  ✓   3 tests/e2e/breadcrumb-navigation.spec.ts:33:1 › breadcrumbs navigate function, indexed file, folders, root and truthful planned paths, superseding stale scope responses (9.4s)
+  ✓   4 tests/e2e/commonjs.spec.ts:22:3 › production browser displays captured package coverage truthfully in Chinese and English (3.6s)
+  ✓   5 tests/e2e/commonjs.spec.ts:22:3 › production browser displays unrecorded legacy package coverage truthfully in Chinese and English (4.5s)
+  ✓   6 tests/e2e/commonjs.spec.ts:221:1 › recorded zero manifests is distinct from unrecorded coverage (1.5s)
+  ✓   7 tests/e2e/direct-api.spec.ts:14:1 › Responses API fixture through real browser send, streamed draft and cancel (3.7s)
+  ✓   8 tests/e2e/first-use.spec.ts:10:1 › first use offers an offline path and preserves optional AI drafts through disclosure (6.0s)
+  ✓   9 tests/e2e/focus-navigation.spec.ts:35:1 › high-degree function and file funnels keep readable neighbor windows with truthful totals and restore overview (6.0s)
+  ✓  10 tests/e2e/focus-navigation.spec.ts:204:1 › semantic creation after overview and multi-change plan choice fit their affected cards (4.1s)
+  ✓  11 tests/e2e/focus-navigation.spec.ts:406:1 › double-click builds an animated directional funnel, restores overview and honors reduced motion for file dependencies (3.7s)
+  ✓  12 tests/e2e/forwarding.spec.ts:21:1 › production browser follows a two-hop entry to the real leaf, preserves authored source in both languages and exposes unsafe forwarding reason (3.7s)
+  ✓  13 tests/e2e/graph-inspection.spec.ts:43:1 › inspection preserves the camera, uniquely previews repeated calls, and funnel dragging survives pages while maps navigate (8.5s)
+  ✓  14 tests/e2e/groups.spec.ts:17:1 › circle groups edit cross-directory shared functions and persist across owned-server restart without changing source (7.7s)
+  ✓  15 tests/e2e/pending-plans.spec.ts:11:1 › 待审入口打开实际变更，选择改动与显式批准分别生效 (2.5s)
+  ✘  16 tests/e2e/planning.spec.mjs:18:1 › production UI and SDK share the complete planning, approval, persistence and verification flow offline (18.9s)
+  ✓  17 tests/e2e/tsconfig.spec.ts:17:3 › production browser displays captured configuration coverage truthfully in Chinese and English (3.4s)
+  ✓  18 tests/e2e/tsconfig.spec.ts:17:3 › production browser displays unrecorded legacy configuration coverage truthfully in Chinese and English (4.2s)
+
+
+  1) tests/e2e/agent-chat.spec.ts:26:1 › actual disconnected provider shows conversation shell and retains failed input; source and advanced controls are opt-in 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('button', { name: 'Create group', exact: true })
+    Expected: visible
+    Timeout: 10000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('button', { name: 'Create group', exact: true }) with timeout 10000ms
+      - waiting for getByRole('button', { name: 'Create group', exact: true })
+
+
+      125 |     await expect(
+      126 |       page.getByRole("button", { name: "Create group", exact: true }),
+    > 127 |     ).toBeVisible();
+          |       ^
+      128 |     await page
+      129 |       .getByRole("button", { name: "Advanced controls", exact: true })
+      130 |       .click();
+        at /tmp/atlasmode-integration-20261010-1505/tests/e2e/agent-chat.spec.ts:127:7
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    artifacts/e2e/results/agent-chat-actual-disconne-a670a-dvanced-controls-are-opt-in/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: artifacts/e2e/results/agent-chat-actual-disconne-a670a-dvanced-controls-are-opt-in/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    artifacts/e2e/results/agent-chat-actual-disconne-a670a-dvanced-controls-are-opt-in/trace.zip
+    Usage:
+
+        npx playwright show-trace artifacts/e2e/results/agent-chat-actual-disconne-a670a-dvanced-controls-are-opt-in/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) tests/e2e/planning.spec.mjs:18:1 › production UI and SDK share the complete planning, approval, persistence and verification flow offline 
+
+    TimeoutError: locator.fill: Timeout 15000ms exceeded.
+    Call log:
+      - waiting for getByLabel('Group title', { exact: true })
+
+
+      225 |     await page
+      226 |       .getByLabel("Group title", { exact: true })
+    > 227 |       .fill("Shared membership");
+          |        ^
+      228 |     await page.getByText("Selected members (0)", { exact: true }).click();
+      229 |     await page.getByRole("checkbox", { name: /requestWithRetry/ }).check();
+      230 |     await page
+        at /tmp/atlasmode-integration-20261010-1505/tests/e2e/planning.spec.mjs:227:8
+
+    attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+    artifacts/e2e/results/planning-production-UI-and-0ffc9-d-verification-flow-offline/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: artifacts/e2e/results/planning-production-UI-and-0ffc9-d-verification-flow-offline/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    artifacts/e2e/results/planning-production-UI-and-0ffc9-d-verification-flow-offline/trace.zip
+    Usage:
+
+        npx playwright show-trace artifacts/e2e/results/planning-production-UI-and-0ffc9-d-verification-flow-offline/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2 failed
+    tests/e2e/agent-chat.spec.ts:26:1 › actual disconnected provider shows conversation shell and retains failed input; source and advanced controls are opt-in 
+    tests/e2e/planning.spec.mjs:18:1 › production UI and SDK share the complete planning, approval, persistence and verification flow offline 
+  16 passed (2.0m)

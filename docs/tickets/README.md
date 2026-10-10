@@ -32,12 +32,12 @@
 | [PERF-02](PERF-02.md) | 全局自动布局 | P2 | UI-02 | TODO |
 | [QA-02](QA-02.md) | 真实客户端与Windows退出验证 | P1 | QA-01 | TODO |
 | [OPS-01](OPS-01.md) | 新云恢复与分发 | P2 | QA-02 | TODO |
-| [SEC-01](SEC-01.md) | 继承依赖审计整改 | P1 | 无 | CLAIMED |
+| [SEC-01](SEC-01.md) | 继承依赖审计整改 | P1 | 无 | PARTIAL（整改通过；集成/新CI待验收） |
 | [FUT-01](FUT-01.md) | P5扩展证据评估 | P3 | DIFF-01 | TODO |
 | [AG-02](AG-02.md) | 用户确认后的自动源码实施 | P1 | AG-01、UI-04、QA-01 | TODO |
 | [AG-03](AG-03.md) | Windows 原生 Agent 所属 Job 清理 | P1 | AG-01、QA-02 | TODO |
 | [AG-04](AG-04.md) | 复用 Codex CLI / Profile 认证 | P0 | AG-01 | DONE |
-| [AG-05](AG-05.md) | 直接 API Call Agent 接入 | P1 下一票 | AG-04、QA-01 | CLAIMED |
+| [AG-05](AG-05.md) | 直接 API Call Agent 接入 | P1 下一票 | AG-04、QA-01 | PARTIAL（真实Provider gate待配置） |
 | [UI-05](UI-05.md) | 普通与漏斗视图始终可拖动 | P0 | 无 | DONE |
 | [UI-06](UI-06.md) | 节点邻域与关系高亮 | P0 | 无 | DONE |
 | [UI-07](UI-07.md) | 函数与文件引用详情卡 | P0 | UI-06 | DONE |

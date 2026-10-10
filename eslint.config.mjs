@@ -14,7 +14,7 @@ const allowed = {
   indexer: ["core"],
   storage: ["core"],
   service: ["core"],
-  server: ["core", "service", "indexer", "storage"],
+  server: ["core", "service", "indexer", "storage", "mcp"],
   web: ["core"],
   mcp: ["core"],
 };

@@ -16,7 +16,7 @@ export interface ChatInput extends ChatContext {
   message: string;
 }
 export interface AgentStatus {
-  provider: "codex" | "claude" | null;
+  provider: "codex" | "claude" | "responses" | null;
   configured: boolean;
   available: boolean;
   reason?: string;

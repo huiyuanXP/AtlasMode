@@ -2,7 +2,7 @@ import { spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
-const order = ["core", "indexer", "storage", "service", "web", "server", "mcp"];
+const order = ["core", "indexer", "storage", "service", "web", "mcp", "server"];
 const command = process.argv[2];
 const npm = process.env.npm_execpath;
 if (!npm) throw new Error("Run this helper through an npm script.");

@@ -1,0 +1,129 @@
+
+> atlasmode@0.1.0 test
+> vitest run
+
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90m/tmp/atlasmode-integration-20261010-1505[39m
+
+ [32m✓[39m apps/web/src/app/workspace.test.ts [2m([22m[2m24 tests[22m[2m)[22m[32m 71[2mms[22m[39m
+ [32m✓[39m packages/indexer/src/commonjs.test.ts [2m([22m[2m183 tests[22m[2m)[22m[33m 1069[2mms[22m[39m
+ [32m✓[39m packages/indexer/src/index.test.ts [2m([22m[2m54 tests[22m[2m)[22m[33m 2078[2mms[22m[39m
+ [32m✓[39m tests/integration/workspace-lifecycle.test.ts [2m([22m[2m31 tests[22m[2m)[22m[33m 3822[2mms[22m[39m
+ [32m✓[39m apps/server/src/server.test.ts [2m([22m[2m15 tests[22m[2m)[22m[33m 2235[2mms[22m[39m
+   [33m[2m✓[22m[39m domain failures map actionable unavailable errors and sanitize internal details [33m 595[2mms[22m[39m
+ [32m✓[39m packages/core/src/validation.test.ts [2m([22m[2m71 tests[22m[2m)[22m[32m 40[2mms[22m[39m
+ [32m✓[39m packages/indexer/src/configCapture.test.ts [2m([22m[2m25 tests[22m[2m)[22m[33m 1680[2mms[22m[39m
+     [33m[2m✓[22m[39m enforces the 512 file limit for 512 eligible seeds [33m 739[2mms[22m[39m
+     [33m[2m✓[22m[39m enforces the 512 file limit for 513 eligible seeds [33m 591[2mms[22m[39m
+ [32m✓[39m apps/server/src/agent/direct-loop.test.ts [2m([22m[2m22 tests[22m[2m)[22m[33m 3136[2mms[22m[39m
+   [33m[2m✓[22m[39m real HTTP Responses → SDK scoped MCP → SQLite draft loop, reasoning continuation and source sentinel [33m 346[2mms[22m[39m
+   [33m[2m✓[22m[39m in-flight MCP timeout drains committed journal and never dispatches another tool [33m 310[2mms[22m[39m
+ [32m✓[39m apps/server/src/agent/bridge.test.ts [2m([22m[2m6 tests[22m[2m)[22m[33m 941[2mms[22m[39m
+   [33m[2m✓[22m[39m gateway rejects foreign valid plans, approvals, opening, traversal and channel planning drafts; journals real drafts [33m 372[2mms[22m[39m
+ [32m✓[39m packages/core/src/queries.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 14[2mms[22m[39m
+ [32m✓[39m apps/web/src/features/navigation/workspace-navigation.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 54[2mms[22m[39m
+ [32m✓[39m packages/indexer/src/packageCapture.test.ts [2m([22m[2m24 tests[22m[2m)[22m[33m 2013[2mms[22m[39m
+     [33m[2m✓[22m[39m enforces count boundary with 512 files [33m 740[2mms[22m[39m
+     [33m[2m✓[22m[39m enforces count boundary with 513 files [33m 904[2mms[22m[39m
+ [32m✓[39m packages/service/src/workspace.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 22[2mms[22m[39m
+ [32m✓[39m apps/web/src/features/chat/workspace-sync.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 46[2mms[22m[39m
+ [32m✓[39m apps/web/src/app/inspection-workspace.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 64[2mms[22m[39m
+ [32m✓[39m packages/indexer/src/configResolution.test.ts [2m([22m[2m31 tests[22m[2m)[22m[32m 297[2mms[22m[39m
+ [32m✓[39m apps/server/src/dev.test.ts [2m([22m[2m7 tests[22m[2m)[22m[33m 2286[2mms[22m[39m
+   [33m[2m✓[22m[39m dev builds prerequisites and reaps children through handler shutdown [33m 403[2mms[22m[39m
+   [33m[2m✓[22m[39m dev builds prerequisites and reaps children through aliased-parent shutdown [33m 413[2mms[22m[39m
+   [33m[2m✓[22m[39m dev builds prerequisites and reaps children through signal shutdown [33m 422[2mms[22m[39m
+   [33m[2m✓[22m[39m a development child failure exits with failure and stops the other child [33m 588[2mms[22m[39m
+ [32m✓[39m apps/server/src/agent/profile.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 287[2mms[22m[39m
+ [32m✓[39m tests/integration/commonjs-resolution.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 4769[2mms[22m[39m
+   [33m[2m✓[22m[39m compiled HTTP and SDK stale package-only baselines without rewriting approval, symbols or historic SQLite snapshots [33m 4766[2mms[22m[39m
+ [32m✓[39m tests/integration/mcp-stdio.test.ts [2m([22m[2m12 tests[22m[2m)[22m[33m 18589[2mms[22m[39m
+   [33m[2m✓[22m[39m actual SDK discovers exactly the supported tools and pages opened projects from an unrelated cwd [33m 444[2mms[22m[39m
+   [33m[2m✓[22m[39m SDK query tools retain pagination, budgets, snapshot identity and unresolved call evidence [33m 383[2mms[22m[39m
+   [33m[2m✓[22m[39m HTTP user approval and SDK share the same revision/hash; draft edits revoke current approval and verification uses history [33m 485[2mms[22m[39m
+   [33m[2m✓[22m[39m get_approved_plan refreshes disk before trusting approval and stale explicit baselines conflict [33m 418[2mms[22m[39m
+   [33m[2m✓[22m[39m agent routes and new groups are validated, visible over HTTP, paged and marked stale after refresh [33m 518[2mms[22m[39m
+   [33m[2m✓[22m[39m schemas reject forged source/approval, absent baseline and invalid limits; HTTP domain conflicts remain actionable [33m 448[2mms[22m[39m
+   [33m[2m✓[22m[39m a newly connected SDK client reads retained approval/routes/groups after actual HTTP process restart [33m 2456[2mms[22m[39m
+   [33m[2m✓[22m[39m HTTP connection failure is an honest tool error and SDK close leaves no MCP process [33m 443[2mms[22m[39m
+   [33m[2m✓[22m[39m a real concurrent HTTP edit between create and update exposes the retained partial draft id/revision [33m 487[2mms[22m[39m
+   [33m[2m✓[22m[39m malformed stdio input and stdin EOF terminate cleanly with protocol-only stdout [33m 583[2mms[22m[39m
+   [33m[2m✓[22m[39m transport failure cancels an in-flight HTTP request instead of retaining the child until its timeout [33m 401[2mms[22m[39m
+   [33m[2m✓[22m[39m list_plans pages current project drafts and get_plan reads without reindex or foreign plan access [33m 873[2mms[22m[39m
+ [32m✓[39m apps/web/src/features/chat/controller.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 44[2mms[22m[39m
+ [32m✓[39m tests/integration/forwarding-resolution.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 3836[2mms[22m[39m
+   [33m[2m✓[22m[39m compiled HTTP and SDK preserve real forwarding leaf identity and immutable approval/history after alias-only refresh and SQLite reopen [33m 3835[2mms[22m[39m
+ [32m✓[39m apps/web/src/app/groups-workspace.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 95[2mms[22m[39m
+ [32m✓[39m tests/integration/tsconfig-resolution.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 3625[2mms[22m[39m
+   [33m[2m✓[22m[39m compiled HTTP and SDK stale config-only baselines without rewriting approval, symbols or historic SQLite snapshots [33m 3624[2mms[22m[39m
+[90mstdout[2m | tests/integration/server-shutdown.test.ts[2m > [22m[2mcompiled server shuts down with a raw connection
+[22m[39m{"state":"raw","root":"/tmp/atlas-shutdown-8hdxmr","pid":32316,"localPort":43356,"bytesWritten":0,"openAtStop":true,"handlerEmittedAndIpcDisconnectedMs":4.030505999999832,"stopMs":49.493561,"exitCode":0,"signalCode":null,"socketErrors":[],"cleaned":true}
+
+ [32m✓[39m apps/server/src/index.test.ts [2m([22m[2m5 tests[22m[2m)[22m[33m 14649[2mms[22m[39m
+   [33m[2m✓[22m[39m CLI serves real data and closes SQLite through handler shutdown [33m 2156[2mms[22m[39m
+   [33m[2m✓[22m[39m CLI serves real data and closes SQLite through signal shutdown [33m 2546[2mms[22m[39m
+   [33m[2m✓[22m[39m CLI validates port before startup and reports launch failure cleanly [33m 4333[2mms[22m[39m
+   [33m[2m✓[22m[39m CLI opens an explicitly configured default workspace [33m 2319[2mms[22m[39m
+   [33m[2m✓[22m[39m CLI enforces listener authority and enables the explicit local development proxy only on opt-in [33m 3294[2mms[22m[39m
+ [32m✓[39m apps/server/src/agent/routes.test.ts [2m([22m[2m5 tests[22m[2m)[22m[33m 1398[2mms[22m[39m
+   [33m[2m✓[22m[39m test-only native protocol runs actual production scoped stdio MCP against the owned HTTP gateway [33m 659[2mms[22m[39m
+ [32m✓[39m apps/web/src/i18n/locale.test.tsx [2m([22m[2m5 tests[22m[2m)[22m[33m 411[2mms[22m[39m
+   [33m[2m✓[22m[39m cached failure help follows current locale while backend diagnostics remain verbatim [33m 386[2mms[22m[39m
+[90mstdout[2m | tests/integration/server-shutdown.test.ts[2m > [22m[2mcompiled server shuts down with a partial headers connection
+[22m[39m{"state":"partial headers","root":"/tmp/atlas-shutdown-3KInlm","pid":32376,"localPort":53004,"bytesWritten":49,"openAtStop":true,"handlerEmittedAndIpcDisconnectedMs":2.3034640000000763,"stopMs":38.285281999999825,"exitCode":0,"signalCode":null,"socketErrors":[],"cleaned":true}
+
+ [32m✓[39m apps/web/src/features/graph/funnel.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 14[2mms[22m[39m
+ [32m✓[39m apps/web/src/features/graph/projection.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+ [32m✓[39m apps/server/src/agent/process.test.ts [2m([22m[2m11 tests[22m[2m)[22m[33m 746[2mms[22m[39m
+ [32m✓[39m apps/web/src/app/funnel-workspace.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 52[2mms[22m[39m
+ [32m✓[39m packages/storage/src/sqlite.test.ts [2m([22m[2m6 tests[22m[2m)[22m[33m 376[2mms[22m[39m
+[90mstdout[2m | tests/integration/server-shutdown.test.ts[2m > [22m[2mcompiled server shuts down with a partial body connection
+[22m[39m{"state":"partial body","root":"/tmp/atlas-shutdown-N1P1XE","pid":32490,"localPort":56930,"bytesWritten":108,"openAtStop":true,"handlerEmittedAndIpcDisconnectedMs":2.435461000000032,"stopMs":46.71980300000041,"exitCode":0,"signalCode":null,"socketErrors":[],"cleaned":true}
+
+ [32m✓[39m packages/indexer/src/idx01.test.ts [2m([22m[2m17 tests[22m[2m)[22m[32m 300[2mms[22m[39m
+ [32m✓[39m apps/mcp/src/scope.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 65[2mms[22m[39m
+ [32m✓[39m apps/server/src/agent/native.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 35[2mms[22m[39m
+ [32m✓[39m apps/server/src/agent/responses-stream.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 36[2mms[22m[39m
+ [32m✓[39m apps/web/src/features/graph/inspection.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m apps/server/src/navigation-query.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 10[2mms[22m[39m
+ [32m✓[39m apps/web/src/features/chat/panels.test.tsx [2m([22m[2m2 tests[22m[2m)[22m[32m 11[2mms[22m[39m
+ [32m✓[39m apps/web/src/features/planning/pending.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[32m 10[2mms[22m[39m
+ [32m✓[39m apps/server/src/funnel-query.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m packages/indexer/src/declarations.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 173[2mms[22m[39m
+ [32m✓[39m apps/web/src/features/planning/operations.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m apps/web/src/features/graph/nodeIdentity.test.tsx [2m([22m[2m3 tests[22m[2m)[22m[32m 11[2mms[22m[39m
+ [32m✓[39m apps/server/src/agent/platform-refusal.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 8[2mms[22m[39m
+ [32m✓[39m packages/indexer/src/packageMode.test.ts [2m([22m[2m13 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m apps/web/src/app/WorkspacePanels.test.tsx [2m([22m[2m1 test[22m[2m)[22m[32m 14[2mms[22m[39m
+ [32m✓[39m apps/web/src/features/navigation/path.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m apps/web/src/features/planning/history.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m tests/integration/repository-provenance.test.ts [2m([22m[2m4 tests[22m[2m)[22m[33m 1651[2mms[22m[39m
+   [33m[2m✓[22m[39m validator rejects modified supported source before capture [33m 547[2mms[22m[39m
+   [33m[2m✓[22m[39m validator rejects staged supported source before capture [33m 535[2mms[22m[39m
+   [33m[2m✓[22m[39m validator rejects untracked supported source before capture [33m 503[2mms[22m[39m
+ [32m✓[39m apps/web/src/features/graph/InspectionCard.test.tsx [2m([22m[2m2 tests[22m[2m)[22m[32m 11[2mms[22m[39m
+ [32m✓[39m apps/web/src/api/scope.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m apps/web/src/features/groups/GroupsPanel.test.tsx [2m([22m[2m2 tests[22m[2m)[22m[32m 14[2mms[22m[39m
+ [32m✓[39m apps/web/src/features/chat/shell.test.tsx [2m([22m[2m1 test[22m[2m)[22m[32m 27[2mms[22m[39m
+ [32m✓[39m apps/server/src/agent/direct.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m tests/integration/preload-loader.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 1133[2mms[22m[39m
+   [33m[2m✓[22m[39m production preload loads from a checkout path containing spaces and a hash [33m 1131[2mms[22m[39m
+ [32m✓[39m apps/web/src/features/groups/memberBindings.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 11[2mms[22m[39m
+ [32m✓[39m apps/web/src/features/groups/selection.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m apps/web/src/features/chat/transport.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 29[2mms[22m[39m
+ [32m✓[39m apps/web/src/features/chat/direct-panel.test.tsx [2m([22m[2m1 test[22m[2m)[22m[32m 9[2mms[22m[39m
+ [32m✓[39m apps/web/src/features/chat/sessions.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m apps/web/src/api/client.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 26[2mms[22m[39m
+ [32m✓[39m tests/integration/server-shutdown.test.ts [2m([22m[2m4 tests[22m[2m)[22m[33m 9169[2mms[22m[39m
+   [33m[2m✓[22m[39m compiled server shuts down with a raw connection [33m 981[2mms[22m[39m
+   [33m[2m✓[22m[39m compiled server shuts down with a partial headers connection [33m 935[2mms[22m[39m
+   [33m[2m✓[22m[39m compiled server shuts down with a partial body connection [33m 952[2mms[22m[39m
+   [33m[2m✓[22m[39m shutdown preserves slow complete requests before discarding incomplete pipelined bytes [33m 6299[2mms[22m[39m
+ [32m✓[39m apps/mcp/src/client.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 30030[2mms[22m[39m
+   [33m[2m✓[22m[39m the 30 second deadline reports API_TIMEOUT while consuming a stalled JSON body [33m 30028[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m64 passed[39m[22m[90m (64)[39m
+[2m      Tests [22m [1m[32m737 passed[39m[22m[90m (737)[39m
+[2m   Start at [22m 15:08:37
+[2m   Duration [22m 63.23s[2m (transform 2.39s, setup 0ms, import 12.11s, tests 111.60s, environment 6ms)[22m
+

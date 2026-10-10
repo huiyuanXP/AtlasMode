@@ -1,0 +1,11 @@
+{
+  "version": "1.12.0",
+  "engines": {
+    "node": ">= 0.4"
+  },
+  "repository": {
+    "url": "git+ssh://git@github.com/ljharb/shell-quote.git",
+    "type": "git"
+  },
+  "gitHead": "6ecb8aa618ba6dc6c3b087fce6d7660320d2adeb"
+}

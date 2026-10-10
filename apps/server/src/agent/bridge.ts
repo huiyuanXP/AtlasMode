@@ -48,10 +48,11 @@ const mutationTools = new Set([
   "get_approved_plan",
 ]);
 const errors: Record<string, string> = {
+  AGENT_LIMIT: "Agent reached the request or tool budget.",
   AGENT_PROTOCOL: "Agent returned an invalid or incomplete stream.",
   AGENT_OUTPUT_LIMIT: "Agent output exceeded the run limit.",
   AGENT_FAILED:
-    "Agent could not complete the request. Check local CLI login and model availability.",
+    "Agent could not complete the request. Check server provider credentials and model availability.",
   AGENT_UNAVAILABLE:
     "Local Agent could not start. Check its executable and local login.",
   AGENT_UNSAFE_TOOL: "Agent attempted a tool outside the planning boundary.",
@@ -316,6 +317,7 @@ export class AgentBridge {
   }
   private async execute(run: StoredRun, session: Session, prompt: string) {
     let gateway: Awaited<ReturnType<typeof createScopedGateway>> | undefined;
+    const streamedMessages = new Map<string, number>();
     try {
       gateway = await createScopedGateway(
         this.app,
@@ -348,7 +350,13 @@ export class AgentBridge {
           if (run.public.status !== "running" || run.cancelled) return;
           if (event.type === "message")
             run.public.messages.push({ role: "assistant", text: event.text });
-          else {
+          else if (event.type === "message_delta") {
+            const index = streamedMessages.get(event.messageId);
+            if (index === undefined) {
+              streamedMessages.set(event.messageId, run.public.messages.length);
+              run.public.messages.push({ role: "assistant", text: event.text });
+            } else run.public.messages[index]!.text += event.text;
+          } else {
             if (!tools.includes(event.tool)) {
               run.public.errors.push({
                 code: "AGENT_UNSAFE_TOOL",

@@ -4,7 +4,7 @@
 
 首用离线路径、AI渐进披露、可读初始图与手动规划入口已实现并独立审查通过；精确证据见 [验收](reviews/first-use-2026-10-10/README.md)。
 GitHub真实7个Issue均open；本地36票15DONE/21未完成；SEC-01、AG-05、IDX-02、GRP-02已认领，其余17TODO。不能用本地状态代替远端结案。IDX-01完整Express入口已通过，见 [证据](reviews/idx01-2026-10-10/README.md)，保留历史FAIL。
-首用commit078fa84已推送；实际CI Linux/Windows通过，macOS路径身份与浏览器源码/真实拖动helper已修复，独立只读审查通过，本地process11/11、相关browser7/7与强化拖动1/1通过，见 [报告](reviews/ci-repair-2026-10-10/README.md)；新远端CI仍pending，未称全平台通过。GRP-01实际圈选与完整成员编辑已通过，独立审查及竞态限定复审APPROVE，见 [报告](reviews/grp01-2026-10-10/README.md)。AG-05实现本地协议闭环，SEC依赖整改及新CI待验收。
+首用commit078fa84已推送；实际CI Linux/Windows通过，macOS路径身份与浏览器源码/真实拖动helper已修复，独立只读审查通过，本地process11/11、相关browser7/7与强化拖动1/1通过，见 [报告](reviews/ci-repair-2026-10-10/README.md)；4071012远端CI38061633736三原生OS全部通过；browser14/17通过，旧分组入口测试与地图/详情实际遮挡正在修复，不能称整CI通过。GRP-01实际圈选与完整成员编辑已通过，独立审查及竞态限定复审APPROVE，见 [报告](reviews/grp01-2026-10-10/README.md)。AG-05实现本地HTTP/SDK/SQLite/浏览器协议闭环、独立复审APPROVE，仍PARTIAL：当前启动环境缺Responses配置，真实Provider gate未执行。SEC依赖整改锁定安装审计0，仍PARTIAL：与AG05联合clean集成及新CI待验收。隔离staged tree d63a61a4f8cf787fce5ba55756fa0f268482d78f 已完成737测试/64文件、七包build/typecheck、rootlint和生产smoke；整套浏览器正在验证，此证据不包含正在实施的IDX02/GRP02。
 当前分支fix/first-use-20261010，保留已有AGENTS修改。用户最新授权按阶段同步文档后commit/push；不授权merge、生产部署或权限修改。下面旧阶段“不push”仅记录当时状态。
 neat-freak v3.0.0已配置并应用；生成记忆未写，临时预览已关闭，工作区与证据保留。
 

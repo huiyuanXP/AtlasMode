@@ -1,0 +1,6 @@
+
+> atlasmode@0.1.0 smoke
+> node scripts/smoke.mjs
+
+PASS production assets + TS/Python HTTP/SDK browsing + no target execution + persistent restart
+smoke exit=0

@@ -42,9 +42,9 @@ async function fixture(
   await put("package.json", '{"type":"module"}');
   await put("scripts/dev.mjs", "");
   await copyFile("scripts/dev.mjs", join(root, "scripts/dev.mjs"));
-  for (const name of ["core", "indexer", "storage", "service", "server"])
+  for (const name of ["core", "indexer", "storage", "service", "mcp", "server"])
     await put(
-      `${name === "server" ? "apps" : "packages"}/${name}/package.json`,
+      `${["server", "mcp"].includes(name) ? "apps" : "packages"}/${name}/package.json`,
       JSON.stringify({
         type: "module",
         scripts: {
@@ -164,7 +164,7 @@ test.each([
     await run.ready();
     expect(
       (await readFile(join(run.root, "builds.txt"), "utf8")).trim().split("\n"),
-    ).toEqual(["core", "indexer", "storage", "service", "server"]);
+    ).toEqual(["core", "indexer", "storage", "service", "mcp", "server"]);
     expect(await readFile(join(run.root, "web.cwd"), "utf8")).toBe(
       join(run.root, "apps/web"),
     );

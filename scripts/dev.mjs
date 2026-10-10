@@ -39,9 +39,20 @@ process.once("SIGTERM", () => stop(0));
 try {
   const require = createRequire(join(root, "package.json"));
   const compiler = require.resolve("typescript/bin/tsc");
-  for (const name of ["core", "indexer", "storage", "service", "server"]) {
+  for (const name of [
+    "core",
+    "indexer",
+    "storage",
+    "service",
+    "mcp",
+    "server",
+  ]) {
     if (stopping) break;
-    const cwd = join(root, name === "server" ? "apps" : "packages", name);
+    const cwd = join(
+      root,
+      ["server", "mcp"].includes(name) ? "apps" : "packages",
+      name,
+    );
     const { scripts } = JSON.parse(
       await readFile(join(cwd, "package.json"), "utf8"),
     );

@@ -1,0 +1,5 @@
+
+> @codemap/indexer@0.1.0 typecheck
+> tsc -p tsconfig.json --noEmit
+
+indexer typecheck exit=0

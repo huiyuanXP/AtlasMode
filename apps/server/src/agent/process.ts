@@ -3,6 +3,7 @@ import { StringDecoder } from "node:string_decoder";
 
 export type AgentEvent =
   | { type: "message"; text: string }
+  | { type: "message_delta"; text: string; messageId: string; first: boolean }
   | {
       type: "activity";
       tool: string;

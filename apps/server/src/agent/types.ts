@@ -14,7 +14,7 @@ export interface ChatInput {
   expectedRevision?: number;
 }
 export interface AgentStatus {
-  provider: "codex" | "claude" | null;
+  provider: "codex" | "claude" | "responses" | null;
   configured: boolean;
   available: boolean;
   reason?: string;

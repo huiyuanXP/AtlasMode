@@ -1,0 +1,14 @@
+
+ RUN  v4.1.11 /home/agent/projects/AtlasMode
+
+ ✓ apps/server/src/agent/responses-stream.test.ts (11 tests) 84ms
+ ✓ apps/server/src/agent/direct.test.ts (7 tests) 16ms
+ ✓ apps/server/src/agent/direct-loop.test.ts (22 tests) 4233ms
+   ✓ real HTTP Responses → SDK scoped MCP → SQLite draft loop, reasoning continuation and source sentinel  770ms
+   ✓ in-flight MCP timeout drains committed journal and never dispatches another tool  342ms
+
+ Test Files  3 passed (3)
+      Tests  40 passed (40)
+   Start at  14:54:39
+   Duration  7.03s (transform 987ms, setup 0ms, import 3.39s, tests 4.33s, environment 1ms)
+

@@ -1,0 +1,220 @@
+
+ RUN  v4.1.11 /home/agent/projects/AtlasMode
+
+ ❯ apps/server/src/agent/direct-loop.test.ts (14 tests | 14 failed) 3676ms
+   × real HTTP Responses → SDK scoped MCP → SQLite draft loop, reasoning continuation and source sentinel 308ms
+   × partial SSE becomes one public message while run is active; cancel aborts owned HTTP 740ms
+   × draft journal survives cancel after a successful MCP mutation 672ms
+   × draft journal survives http-error after a successful MCP mutation 631ms
+   × complete legal foreign project and plan tuple cannot read or mutate 134ms
+   × unlisted native tool shell fails before execution 132ms
+   × unlisted native tool approve_plan fails before execution 102ms
+   × unlisted native tool open_project fails before execution 127ms
+   × MCP rejects invalid schema and returns bounded safe tool result to next provider turn 162ms
+   × provider/tool/request budgets stop without retry 158ms
+   × provider/tool/request budgets stop without retry 149ms
+   × provider/tool/request budgets stop without retry 155ms
+   × timeout aborts stalled provider and returns safe terminal code 114ms
+   × concurrent direct runs keep existing per-channel and four-run global limits 90ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 14 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  apps/server/src/agent/direct-loop.test.ts > real HTTP Responses → SDK scoped MCP → SQLite draft loop, reasoning continuation and source sentinel
+AssertionError: expected 'failed' to be 'completed' // Object.is equality
+
+Expected: "completed"
+Received: "failed"
+
+ ❯ apps/server/src/agent/direct-loop.test.ts:89:22
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/14]⎯
+
+ FAIL  apps/server/src/agent/direct-loop.test.ts > partial SSE becomes one public message while run is active; cancel aborts owned HTTP
+AssertionError: expected { …(7) } to match object { status: 'running', …(1) }
+(5 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "messages": [
+-     {
+-       "role": "assistant",
+-       "text": "first second",
+-     },
+-   ],
+-   "status": "running",
++   "messages": [],
++   "status": "failed",
+  }
+
+ ❯ apps/server/src/agent/direct-loop.test.ts:119:31
+    117|   const id = (await scope.start()).json<ChatRun>().runId;
+    118|   for (let n=0; n<100 && !(await scope.get(id)).messages.length; n++) …
+    119|   expect(await scope.get(id)).toMatchObject({ status: "running", messa…
+       |                               ^
+    120|   const cancelled = (await scope.app.inject({ method: "POST", url: `/a…
+    121|   expect(cancelled.status).toBe("cancelled");
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/14]⎯
+
+ FAIL  apps/server/src/agent/direct-loop.test.ts > draft journal survives cancel after a successful MCP mutation
+AssertionError: expected 'failed' to be 'cancelled' // Object.is equality
+
+Expected: "cancelled"
+Received: "failed"
+
+ ❯ apps/server/src/agent/direct-loop.test.ts:137:22
+    135|   for (let n=0; n<100 && provider.requests.length < 2; n++) await new …
+    136|   const run = mode === "cancel" ? (await scope.app.inject({ method: "P…
+    137|   expect(run.status).toBe(mode === "cancel" ? "cancelled" : "failed");
+       |                      ^
+    138|   expect(run.changedPlanIds).toHaveLength(1);
+    139|   expect(scope.service.getPlan(run.changedPlanIds[0]!).plan.status).to…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/14]⎯
+
+ FAIL  apps/server/src/agent/direct-loop.test.ts > draft journal survives http-error after a successful MCP mutation
+AssertionError: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ apps/server/src/agent/direct-loop.test.ts:138:30
+    136|   const run = mode === "cancel" ? (await scope.app.inject({ method: "P…
+    137|   expect(run.status).toBe(mode === "cancel" ? "cancelled" : "failed");
+    138|   expect(run.changedPlanIds).toHaveLength(1);
+       |                              ^
+    139|   expect(scope.service.getPlan(run.changedPlanIds[0]!).plan.status).to…
+    140|   expect(run.mayHaveSavedChanges).toBe(true);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/14]⎯
+
+ FAIL  apps/server/src/agent/direct-loop.test.ts > complete legal foreign project and plan tuple cannot read or mutate
+AssertionError: expected 'failed' to be 'completed' // Object.is equality
+
+Expected: "completed"
+Received: "failed"
+
+ ❯ apps/server/src/agent/direct-loop.test.ts:153:22
+    151|   foreign = scope.service.createPlan({ projectId: scope.projects[1]!.i…
+    152|   const run = await scope.wait((await scope.start()).json<ChatRun>().r…
+    153|   expect(run.status).toBe("completed");
+       |                      ^
+    154|   expect(run.activity.at(-1)?.status).toBe("failed");
+    155|   expect(scope.service.getPlan(foreign).plan).toMatchObject({ title: "…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/14]⎯
+
+ FAIL  apps/server/src/agent/direct-loop.test.ts > unlisted native tool shell fails before execution
+ FAIL  apps/server/src/agent/direct-loop.test.ts > unlisted native tool approve_plan fails before execution
+ FAIL  apps/server/src/agent/direct-loop.test.ts > unlisted native tool open_project fails before execution
+AssertionError: expected 'AGENT_UNAVAILABLE' to be 'AGENT_UNSAFE_TOOL' // Object.is equality
+
+Expected: "AGENT_UNSAFE_TOOL"
+Received: "AGENT_UNAVAILABLE"
+
+ ❯ apps/server/src/agent/direct-loop.test.ts:164:31
+    162|   const run = await scope.wait((await scope.start()).json<ChatRun>().r…
+    163|   expect(run.status).toBe("failed");
+    164|   expect(run.errors[0]?.code).toBe("AGENT_UNSAFE_TOOL");
+       |                               ^
+    165|   expect(run.activity).toEqual([]);
+    166|   expect(provider.requests).toHaveLength(1);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/14]⎯
+
+ FAIL  apps/server/src/agent/direct-loop.test.ts > MCP rejects invalid schema and returns bounded safe tool result to next provider turn
+AssertionError: expected 'failed' to be 'completed' // Object.is equality
+
+Expected: "completed"
+Received: "failed"
+
+ ❯ apps/server/src/agent/direct-loop.test.ts:176:22
+    174|   const scope = await setup(provider.url);
+    175|   const run = await scope.wait((await scope.start()).json<ChatRun>().r…
+    176|   expect(run.status).toBe("completed");
+       |                      ^
+    177|   expect(run.activity.at(-1)?.status).toBe("failed");
+    178|   expect(run.changedPlanIds).toEqual([]);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/14]⎯
+
+ FAIL  apps/server/src/agent/direct-loop.test.ts > provider/tool/request budgets stop without retry
+ FAIL  apps/server/src/agent/direct-loop.test.ts > provider/tool/request budgets stop without retry
+AssertionError: expected 'AGENT_UNAVAILABLE' to be 'AGENT_LIMIT' // Object.is equality
+
+Expected: "AGENT_LIMIT"
+Received: "AGENT_UNAVAILABLE"
+
+ ❯ apps/server/src/agent/direct-loop.test.ts:189:31
+    187|   const run = await scope.wait((await scope.start()).json<ChatRun>().r…
+    188|   expect(run.status).toBe("failed");
+    189|   expect(run.errors[0]?.code).toBe(code);
+       |                               ^
+    190|   expect(provider.requests.length).toBeLessThanOrEqual(1);
+    191| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/14]⎯
+
+ FAIL  apps/server/src/agent/direct-loop.test.ts > provider/tool/request budgets stop without retry
+AssertionError: expected 'AGENT_UNAVAILABLE' to be 'AGENT_OUTPUT_LIMIT' // Object.is equality
+
+Expected: "AGENT_OUTPUT_LIMIT"
+Received: "AGENT_UNAVAILABLE"
+
+ ❯ apps/server/src/agent/direct-loop.test.ts:189:31
+    187|   const run = await scope.wait((await scope.start()).json<ChatRun>().r…
+    188|   expect(run.status).toBe("failed");
+    189|   expect(run.errors[0]?.code).toBe(code);
+       |                               ^
+    190|   expect(provider.requests.length).toBeLessThanOrEqual(1);
+    191| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/14]⎯
+
+ FAIL  apps/server/src/agent/direct-loop.test.ts > timeout aborts stalled provider and returns safe terminal code
+AssertionError: expected 'AGENT_UNAVAILABLE' to be 'AGENT_TIMEOUT' // Object.is equality
+
+Expected: "AGENT_TIMEOUT"
+Received: "AGENT_UNAVAILABLE"
+
+ ❯ apps/server/src/agent/direct-loop.test.ts:197:31
+    195|   const run = await scope.wait((await scope.start()).json<ChatRun>().r…
+    196|   expect(run.status).toBe("failed");
+    197|   expect(run.errors[0]?.code).toBe("AGENT_TIMEOUT");
+       |                               ^
+    198| });
+    199| test("concurrent direct runs keep existing per-channel and four-run gl…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/14]⎯
+
+ FAIL  apps/server/src/agent/direct-loop.test.ts > concurrent direct runs keep existing per-channel and four-run global limits
+AssertionError: expected 200 to be 409 // Object.is equality
+
+- Expected
++ Received
+
+- 409
++ 200
+
+ ❯ apps/server/src/agent/direct-loop.test.ts:204:54
+    202|   const project = scope.projects[0]!;
+    203|   expect((await scope.start(project.id)).statusCode).toBe(200);
+    204|   expect((await scope.start(project.id)).statusCode).toBe(409);
+       |                                                      ^
+    205|   expect((await scope.start(project.id, "explore")).statusCode).toBe(2…
+    206|   expect((await scope.start(scope.projects[1]!.id)).statusCode).toBe(2…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/14]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  14 failed (14)
+   Start at  14:40:59
+   Duration  5.20s (transform 490ms, setup 0ms, import 1.34s, tests 3.68s, environment 0ms)
+

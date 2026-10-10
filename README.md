@@ -50,7 +50,7 @@ npm run test:mcp
 npm run test:agent -- codex mimo
 ```
 
-网页独立配置直接 API Call 的适配器另列 [AG-05](docs/tickets/AG-05.md)。当前待办及认领状态见 [Tickets](docs/tickets/README.md)。
+直接 Responses HTTP API 适配器已完成本地协议与浏览器闭环，真实外部 Provider gate 尚待配置，保持 PARTIAL，见 [AG-05](docs/tickets/AG-05.md)。当前待办及认领状态见 [Tickets](docs/tickets/README.md)。
 首次浏览与规划操作见 [第一份规划](docs/first-plan.md)。开发模式使用
 `npm run dev`，网页端口5173。API 校验实际本地 Host 及同源 Origin；开发启动器显式允许本地5173代理，MCP 无 Origin 的本地请求仍可使用。Codex App/CLI 与 Claude Code 的 MCP 连接说明见
 [docs/mcp.md](docs/mcp.md)；外部客户端配置使用 Node 直接启动编译入口。
@@ -231,7 +231,7 @@ exports、一般值流和运行时加载兼容性不作保证。
 | `apps/server` | `fastify` | 本地 HTTP API，作为业务操作入口 | P0 |
 | `packages/core` | `zod` | 对图、规划和边界输入做 schema 校验 | P0 |
 | `packages/indexer` | `typescript`、`ts-morph` | 解析 TS/JS、解析符号引用 | P1 |
-| `packages/indexer` | Node `fs`、`ignore` | 有界扫描与排除文件；未使用的 fast-glob 移除整改在工作区完成，依赖补丁提交与SEC-01后续门禁待验收 | P1 |
+| `packages/indexer` | Node `fs`、`ignore` | 有界扫描与排除文件；未使用的 fast-glob 已移除；冻结锁 clean install 审计0，SEC-01新跨平台CI待验收 | P1 |
 | `packages/storage` | `better-sqlite3` | SQLite 持久化和事务 | P1 |
 | `packages/storage` dev | `@types/better-sqlite3` | 数据库类型定义 | P1 |
 | `apps/mcp` | 官方 MCP TypeScript SDK 的稳定 server 包、其要求的 schema 依赖 | stdio MCP 入口 | P3 |
@@ -309,11 +309,11 @@ MCP SDK 正在演进，初始化 P3 时读取官方文档再确定包名与版�
 | indexer | `@codemap/indexer` | core |
 | storage | `@codemap/storage` | core |
 | service | `@codemap/service` | core；通过注入接口使用 indexer/storage |
-| server | `@codemap/server` | core、service、indexer、storage，负责装配 |
+| server | `@codemap/server` | core、service、indexer、storage、mcp，负责装配与直接 API 工具桥接 |
 | mcp | `@codemap/mcp` | core；通过 HTTP 使用 server |
 | web | `@codemap/web` | core；通过 HTTP 使用 server |
 
-`service` 不直接导入 indexer/storage 实现；接口定义在 core 的 ports 中，server 注入实现。MCP 与网页都经过同一个 service 层，不能分别实现确认规则。
+`service` 不直接导入 indexer/storage 实现；接口定义在 core 的 ports 中，server 注入实现。MCP 与网页都经过同一个 service 层，不能分别实现确认规则。直接 Responses API 适配器经 mcp 公共入口复用真实工具 schemas 与 SDK handler，并通过每轮项目绑定 HTTP gateway 回到相同 service；mcp 编译依赖仍仅 core，因此 server→mcp 无依赖循环，dev/build 先构建 mcp 再 server。
 
 ### 文件放置判断
 

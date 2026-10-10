@@ -24,7 +24,6 @@
     "@codemap/core": "0.1.0",
     "typescript": "5.9.3",
     "ts-morph": "27.0.2",
-    "fast-glob": "3.3.3",
     "ignore": "7.0.12"
   }
 }

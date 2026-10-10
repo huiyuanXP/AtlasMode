@@ -1,0 +1,14 @@
+
+ RUN  v4.1.11 /home/agent/projects/AtlasMode
+
+ ✓ apps/server/src/dev.test.ts (7 tests) 3807ms
+   ✓ dev builds prerequisites and reaps children through handler shutdown  816ms
+   ✓ dev builds prerequisites and reaps children through aliased-parent shutdown  809ms
+   ✓ dev builds prerequisites and reaps children through signal shutdown  906ms
+   ✓ a development child failure exits with failure and stops the other child  765ms
+
+ Test Files  1 passed (1)
+      Tests  7 passed (7)
+   Start at  14:48:14
+   Duration  4.13s (transform 61ms, setup 0ms, import 86ms, tests 3.81s, environment 0ms)
+
