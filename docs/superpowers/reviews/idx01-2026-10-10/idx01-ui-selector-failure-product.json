@@ -1,0 +1,33 @@
+{
+  "status": "failed",
+  "observedAt": "2026-10-10T14:31:07.353Z",
+  "target": {
+    "path": "/tmp/atlasmode-idx01-express",
+    "gitRevision": "dbac741a49a5a64336b70c06e85c2e2706e36336",
+    "symbol": "createApplication",
+    "file": "lib/express.js"
+  },
+  "provenance": {
+    "beforeCapture": {
+      "gitRevision": "dbac741a49a5a64336b70c06e85c2e2706e36336",
+      "clean": true,
+      "status": "",
+      "checkedAt": "2026-10-10T14:30:32.450Z"
+    },
+    "afterCapture": {
+      "gitRevision": "dbac741a49a5a64336b70c06e85c2e2706e36336",
+      "clean": true,
+      "status": "",
+      "checkedAt": "2026-10-10T14:31:07.353Z"
+    }
+  },
+  "entryCriterion": {
+    "requested": true,
+    "status": "not-requested"
+  },
+  "error": "TimeoutError: locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('.navigation .node-list button').filter({ has: getByText('ƒ createApplication', { exact: true }) }).filter({ has: getByText('lib/express.js', { exact: true }) }).last()\n    - locator resolved to <button class=\"\">…</button>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n      - waiting 100ms\n    58 × waiting for element to be visible, enabled and stable\n       - element is not visible\n     - retrying click action\n       - waiting 500ms\n",
+  "errors": [],
+  "external": [],
+  "protocolErrors": [],
+  "scope": "Actual compiled read-only product validation; target code and upstream tests never executed."
+}

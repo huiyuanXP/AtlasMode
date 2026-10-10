@@ -1,0 +1,723 @@
+{
+  "status": "passed",
+  "observedAt": "2026-10-10T14:34:15.319Z",
+  "provenance": {
+    "before": {
+      "gitRevision": "dbac741a49a5a64336b70c06e85c2e2706e36336",
+      "clean": true,
+      "status": "",
+      "checkedAt": "2026-10-10T14:34:13.334Z"
+    },
+    "after": {
+      "gitRevision": "dbac741a49a5a64336b70c06e85c2e2706e36336",
+      "clean": true,
+      "status": "",
+      "checkedAt": "2026-10-10T14:34:15.339Z"
+    }
+  },
+  "coverage": {
+    "files": [
+      "benchmarks/middleware.js",
+      "examples/auth/index.js",
+      "examples/content-negotiation/db.js",
+      "examples/content-negotiation/index.js",
+      "examples/content-negotiation/users.js",
+      "examples/cookie-sessions/index.js",
+      "examples/cookies/index.js",
+      "examples/downloads/index.js",
+      "examples/ejs/index.js",
+      "examples/error-pages/index.js",
+      "examples/error/index.js",
+      "examples/hello-world/index.js",
+      "examples/markdown/index.js",
+      "examples/multi-router/controllers/api_v1.js",
+      "examples/multi-router/controllers/api_v2.js",
+      "examples/multi-router/index.js",
+      "examples/mvc/controllers/main/index.js",
+      "examples/mvc/controllers/pet/index.js",
+      "examples/mvc/controllers/user-pet/index.js",
+      "examples/mvc/controllers/user/index.js",
+      "examples/mvc/db.js",
+      "examples/mvc/index.js",
+      "examples/mvc/lib/boot.js",
+      "examples/online/index.js",
+      "examples/params/index.js",
+      "examples/resource/index.js",
+      "examples/route-map/index.js",
+      "examples/route-middleware/index.js",
+      "examples/route-separation/index.js",
+      "examples/route-separation/post.js",
+      "examples/route-separation/site.js",
+      "examples/route-separation/user.js",
+      "examples/search/index.js",
+      "examples/search/public/client.js",
+      "examples/session/index.js",
+      "examples/session/redis.js",
+      "examples/static-files/index.js",
+      "examples/static-files/public/js/app.js",
+      "examples/vhost/index.js",
+      "examples/view-constructor/github-view.js",
+      "examples/view-constructor/index.js",
+      "examples/view-locals/index.js",
+      "examples/view-locals/user.js",
+      "examples/web-service/index.js",
+      "index.js",
+      "lib/application.js",
+      "lib/express.js",
+      "lib/request.js",
+      "lib/response.js",
+      "lib/utils.js",
+      "lib/view.js",
+      "test/Route.js",
+      "test/Router.js",
+      "test/acceptance/auth.js",
+      "test/acceptance/content-negotiation.js",
+      "test/acceptance/cookie-sessions.js",
+      "test/acceptance/cookies.js",
+      "test/acceptance/downloads.js",
+      "test/acceptance/ejs.js",
+      "test/acceptance/error-pages.js",
+      "test/acceptance/error.js",
+      "test/acceptance/hello-world.js",
+      "test/acceptance/markdown.js",
+      "test/acceptance/multi-router.js",
+      "test/acceptance/mvc.js",
+      "test/acceptance/params.js",
+      "test/acceptance/resource.js",
+      "test/acceptance/route-map.js",
+      "test/acceptance/route-separation.js",
+      "test/acceptance/vhost.js",
+      "test/acceptance/web-service.js",
+      "test/app.all.js",
+      "test/app.engine.js",
+      "test/app.head.js",
+      "test/app.js",
+      "test/app.listen.js",
+      "test/app.locals.js",
+      "test/app.options.js",
+      "test/app.param.js",
+      "test/app.render.js",
+      "test/app.request.js",
+      "test/app.response.js",
+      "test/app.route.js",
+      "test/app.router.js",
+      "test/app.routes.error.js",
+      "test/app.use.js",
+      "test/config.js",
+      "test/exports.js",
+      "test/express.json.js",
+      "test/express.raw.js",
+      "test/express.static.js",
+      "test/express.text.js",
+      "test/express.urlencoded.js",
+      "test/middleware.basic.js",
+      "test/regression.js",
+      "test/req.accepts.js",
+      "test/req.acceptsCharsets.js",
+      "test/req.acceptsEncodings.js",
+      "test/req.acceptsLanguages.js",
+      "test/req.baseUrl.js",
+      "test/req.fresh.js",
+      "test/req.get.js",
+      "test/req.host.js",
+      "test/req.hostname.js",
+      "test/req.ip.js",
+      "test/req.ips.js",
+      "test/req.is.js",
+      "test/req.path.js",
+      "test/req.protocol.js",
+      "test/req.query.js",
+      "test/req.range.js",
+      "test/req.route.js",
+      "test/req.secure.js",
+      "test/req.signedCookies.js",
+      "test/req.stale.js",
+      "test/req.subdomains.js",
+      "test/req.xhr.js",
+      "test/res.append.js",
+      "test/res.attachment.js",
+      "test/res.clearCookie.js",
+      "test/res.cookie.js",
+      "test/res.download.js",
+      "test/res.format.js",
+      "test/res.get.js",
+      "test/res.json.js",
+      "test/res.jsonp.js",
+      "test/res.links.js",
+      "test/res.locals.js",
+      "test/res.location.js",
+      "test/res.redirect.js",
+      "test/res.render.js",
+      "test/res.send.js",
+      "test/res.sendFile.js",
+      "test/res.sendStatus.js",
+      "test/res.set.js",
+      "test/res.status.js",
+      "test/res.type.js",
+      "test/res.vary.js",
+      "test/support/env.js",
+      "test/support/tmpl.js",
+      "test/support/utils.js",
+      "test/utils.js"
+    ],
+    "configurationFiles": [],
+    "packageFiles": [
+      "package.json"
+    ],
+    "excludedPatterns": [
+      "**/.git/**",
+      "**/node_modules/**",
+      "**/dist/**",
+      "**/build/**",
+      "**/coverage/**",
+      "**/__pycache__/**",
+      "**/.venv/**",
+      "**/venv/**",
+      "**/.agents/**",
+      "**/.superpowers/**",
+      "**/.next/**",
+      "**/.cache/**",
+      "**/vendor/**",
+      ".gitignore: # npm\nnode_modules\npackage-lock.json\nnpm-shrinkwrap.json\n*.log\n*.gz\n\n# Yarn\nyarn-error.log\nyarn.lock\n\n# Coveralls\n.nyc_output\ncoverage\n\n# Benchmarking\nbenchmarks/graphs\n\n# ignore additional files using core.excludesFile\n# https://git-scm.com/docs/gitignore"
+    ],
+    "availability": {
+      "complete": true,
+      "unavailablePaths": [],
+      "excludedPaths": [
+        ".git"
+      ]
+    },
+    "unresolvedCount": 11221
+  },
+  "root": {
+    "id": "function:0a521d81fa3d594368fe281dee4882e0",
+    "kind": "function",
+    "name": "createApplication",
+    "qualifiedName": "createApplication",
+    "filePath": "lib/express.js",
+    "declarationKind": "function",
+    "parentId": "file:9cdfa4f9c6755d3690718b58e99b4b2f",
+    "language": "javascript",
+    "startLine": 36,
+    "endLine": 56,
+    "exported": true,
+    "signature": "function createApplication()"
+  },
+  "incomingEvidence": [
+    {
+      "edge": {
+        "id": "relation:0346660efb869b1d763be83c688d9e5e",
+        "type": "calls",
+        "sourceId": "function:8b19acc4c32c6709cbe8b2163258e400",
+        "targetId": "function:0a521d81fa3d594368fe281dee4882e0",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "test/res.status.js",
+          "line": 9,
+          "text": "express()"
+        }
+      },
+      "binding": "const express = require('../.');",
+      "line": "      var app = express();",
+      "sourceSha256": "2fe6137bcb25077ff88436c9286fc5d42d1a94951fdcd50e62919b2f13785c8f"
+    },
+    {
+      "edge": {
+        "id": "relation:6d4ec14d199d37555493207d3f212d78",
+        "type": "calls",
+        "sourceId": "function:661ce09bc9e5ea72f6ed762eedb87ccb",
+        "targetId": "function:0a521d81fa3d594368fe281dee4882e0",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "test/res.status.js",
+          "line": 23,
+          "text": "express()"
+        }
+      },
+      "binding": "const express = require('../.');",
+      "line": "        var app = express()",
+      "sourceSha256": "2fe6137bcb25077ff88436c9286fc5d42d1a94951fdcd50e62919b2f13785c8f"
+    },
+    {
+      "edge": {
+        "id": "relation:d365b9b480c18766fe9a5bdf6c324705",
+        "type": "calls",
+        "sourceId": "function:316ea6dab22726fa43d3f922fc0e63ac",
+        "targetId": "function:0a521d81fa3d594368fe281dee4882e0",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "test/res.status.js",
+          "line": 35,
+          "text": "express()"
+        }
+      },
+      "binding": "const express = require('../.');",
+      "line": "        var app = express()",
+      "sourceSha256": "2fe6137bcb25077ff88436c9286fc5d42d1a94951fdcd50e62919b2f13785c8f"
+    },
+    {
+      "edge": {
+        "id": "relation:8dfc07cb0b7d734952186529c8758bd2",
+        "type": "calls",
+        "sourceId": "function:d17fe9574fc3f45c2e6d983a2c96a829",
+        "targetId": "function:0a521d81fa3d594368fe281dee4882e0",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "test/res.status.js",
+          "line": 47,
+          "text": "express()"
+        }
+      },
+      "binding": "const express = require('../.');",
+      "line": "        var app = express()",
+      "sourceSha256": "2fe6137bcb25077ff88436c9286fc5d42d1a94951fdcd50e62919b2f13785c8f"
+    },
+    {
+      "edge": {
+        "id": "relation:485073da5e800c7c9a3ab5df7e0e587e",
+        "type": "calls",
+        "sourceId": "function:7504933314cd27d058f11a0e6d4b300a",
+        "targetId": "function:0a521d81fa3d594368fe281dee4882e0",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "test/res.status.js",
+          "line": 59,
+          "text": "express()"
+        }
+      },
+      "binding": "const express = require('../.');",
+      "line": "        var app = express()",
+      "sourceSha256": "2fe6137bcb25077ff88436c9286fc5d42d1a94951fdcd50e62919b2f13785c8f"
+    },
+    {
+      "edge": {
+        "id": "relation:658abc0a88017be962fb609fa453c1e5",
+        "type": "calls",
+        "sourceId": "function:4b91c6f0469f35a33861d6ff3f445fff",
+        "targetId": "function:0a521d81fa3d594368fe281dee4882e0",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "test/res.status.js",
+          "line": 71,
+          "text": "express()"
+        }
+      },
+      "binding": "const express = require('../.');",
+      "line": "        var app = express()",
+      "sourceSha256": "2fe6137bcb25077ff88436c9286fc5d42d1a94951fdcd50e62919b2f13785c8f"
+    },
+    {
+      "edge": {
+        "id": "relation:dc21b38388e8965047a9348a92e14ab8",
+        "type": "calls",
+        "sourceId": "function:a36578a5dfd5d5da3dc161b44791fd40",
+        "targetId": "function:0a521d81fa3d594368fe281dee4882e0",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "test/res.status.js",
+          "line": 83,
+          "text": "express()"
+        }
+      },
+      "binding": "const express = require('../.');",
+      "line": "        var app = express()",
+      "sourceSha256": "2fe6137bcb25077ff88436c9286fc5d42d1a94951fdcd50e62919b2f13785c8f"
+    },
+    {
+      "edge": {
+        "id": "relation:6f58116bbb7333d667fffaeaf61f041a",
+        "type": "calls",
+        "sourceId": "function:81c7180c02df685e82c596d16df1b19d",
+        "targetId": "function:0a521d81fa3d594368fe281dee4882e0",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "test/res.status.js",
+          "line": 95,
+          "text": "express()"
+        }
+      },
+      "binding": "const express = require('../.');",
+      "line": "        var app = express()",
+      "sourceSha256": "2fe6137bcb25077ff88436c9286fc5d42d1a94951fdcd50e62919b2f13785c8f"
+    },
+    {
+      "edge": {
+        "id": "relation:75f52f2ff2047285342bca143e39f8ee",
+        "type": "calls",
+        "sourceId": "function:b6064a5be4238bce73ad112a469e93fe",
+        "targetId": "function:0a521d81fa3d594368fe281dee4882e0",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "test/res.status.js",
+          "line": 107,
+          "text": "express()"
+        }
+      },
+      "binding": "const express = require('../.');",
+      "line": "        var app = express()",
+      "sourceSha256": "2fe6137bcb25077ff88436c9286fc5d42d1a94951fdcd50e62919b2f13785c8f"
+    },
+    {
+      "edge": {
+        "id": "relation:f80224a7f5ad625d6092e70024044eb3",
+        "type": "calls",
+        "sourceId": "function:f7e538761b4a5dbedf663c6f7b57a5ea",
+        "targetId": "function:0a521d81fa3d594368fe281dee4882e0",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "test/res.status.js",
+          "line": 121,
+          "text": "express()"
+        }
+      },
+      "binding": "const express = require('../.');",
+      "line": "        var app = express();",
+      "sourceSha256": "2fe6137bcb25077ff88436c9286fc5d42d1a94951fdcd50e62919b2f13785c8f"
+    },
+    {
+      "edge": {
+        "id": "relation:07d12b7eaeb8068cc7f264ae54f91621",
+        "type": "calls",
+        "sourceId": "function:c7db1b4de3d7e021143b9fa6f9236d95",
+        "targetId": "function:0a521d81fa3d594368fe281dee4882e0",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "test/res.status.js",
+          "line": 133,
+          "text": "express()"
+        }
+      },
+      "binding": "const express = require('../.');",
+      "line": "        var app = express();",
+      "sourceSha256": "2fe6137bcb25077ff88436c9286fc5d42d1a94951fdcd50e62919b2f13785c8f"
+    },
+    {
+      "edge": {
+        "id": "relation:379c9c35e23a8b491fc6ad17df63bbc9",
+        "type": "calls",
+        "sourceId": "function:53adde05de27431855cd5e32966fa0f8",
+        "targetId": "function:0a521d81fa3d594368fe281dee4882e0",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "test/res.status.js",
+          "line": 145,
+          "text": "express()"
+        }
+      },
+      "binding": "const express = require('../.');",
+      "line": "        var app = express();",
+      "sourceSha256": "2fe6137bcb25077ff88436c9286fc5d42d1a94951fdcd50e62919b2f13785c8f"
+    },
+    {
+      "edge": {
+        "id": "relation:63834f1c5aad52095af9d65d2424928a",
+        "type": "calls",
+        "sourceId": "function:cb076c542f86f7821c1e0ef51fe70943",
+        "targetId": "function:0a521d81fa3d594368fe281dee4882e0",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "test/res.status.js",
+          "line": 157,
+          "text": "express()"
+        }
+      },
+      "binding": "const express = require('../.');",
+      "line": "        var app = express();",
+      "sourceSha256": "2fe6137bcb25077ff88436c9286fc5d42d1a94951fdcd50e62919b2f13785c8f"
+    },
+    {
+      "edge": {
+        "id": "relation:8f65e17af150b34d4e50df78b69820eb",
+        "type": "calls",
+        "sourceId": "function:63cf3af2e3b451c3d037ca551e45af8e",
+        "targetId": "function:0a521d81fa3d594368fe281dee4882e0",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "test/res.status.js",
+          "line": 169,
+          "text": "express()"
+        }
+      },
+      "binding": "const express = require('../.');",
+      "line": "        var app = express();",
+      "sourceSha256": "2fe6137bcb25077ff88436c9286fc5d42d1a94951fdcd50e62919b2f13785c8f"
+    },
+    {
+      "edge": {
+        "id": "relation:77d6686848d34db39369a83359c8de41",
+        "type": "calls",
+        "sourceId": "function:2c3af0985532d99d11e10e9f373eaa81",
+        "targetId": "function:0a521d81fa3d594368fe281dee4882e0",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "test/res.status.js",
+          "line": 181,
+          "text": "express()"
+        }
+      },
+      "binding": "const express = require('../.');",
+      "line": "        var app = express();",
+      "sourceSha256": "2fe6137bcb25077ff88436c9286fc5d42d1a94951fdcd50e62919b2f13785c8f"
+    },
+    {
+      "edge": {
+        "id": "relation:3ae49ad3d8def832c6a412e61ec8b6c4",
+        "type": "calls",
+        "sourceId": "function:4d61e450fa6703d5c6b74df167530ce4",
+        "targetId": "function:0a521d81fa3d594368fe281dee4882e0",
+        "resolution": "resolved",
+        "evidence": {
+          "filePath": "test/res.status.js",
+          "line": 193,
+          "text": "express()"
+        }
+      },
+      "binding": "const express = require('../.');",
+      "line": "        var app = express();",
+      "sourceSha256": "2fe6137bcb25077ff88436c9286fc5d42d1a94951fdcd50e62919b2f13785c8f"
+    }
+  ],
+  "outgoing": [
+    {
+      "id": "relation:2e34e9d7f86d0eed84a7d547626e9380",
+      "type": "calls",
+      "sourceId": "function:0a521d81fa3d594368fe281dee4882e0",
+      "targetId": null,
+      "resolution": "unresolved",
+      "evidence": {
+        "filePath": "lib/express.js",
+        "line": 41,
+        "text": "mixin(app, EventEmitter.prototype, false)"
+      },
+      "reason": "CommonJS importer binding is mutable or rewritten"
+    },
+    {
+      "id": "relation:aa71df872b5392946ecded32f0ae2b14",
+      "type": "calls",
+      "sourceId": "function:0a521d81fa3d594368fe281dee4882e0",
+      "targetId": null,
+      "resolution": "unresolved",
+      "evidence": {
+        "filePath": "lib/express.js",
+        "line": 42,
+        "text": "mixin(app, proto, false)"
+      },
+      "reason": "CommonJS importer binding is mutable or rewritten"
+    },
+    {
+      "id": "relation:53e6cb80528ce09a2f7da74b9614ad6a",
+      "type": "calls",
+      "sourceId": "function:0a521d81fa3d594368fe281dee4882e0",
+      "targetId": null,
+      "resolution": "unresolved",
+      "evidence": {
+        "filePath": "lib/express.js",
+        "line": 45,
+        "text": "Object.create(req, {\n    app: { configurable: true, enumerable: true, writable: true, value: app }\n  })"
+      },
+      "reason": "No unique indexed implementation for this call (dynamic, ambient, or excluded target)"
+    },
+    {
+      "id": "relation:18913a154c2d96dfbbcae50f1c3feee7",
+      "type": "calls",
+      "sourceId": "function:0a521d81fa3d594368fe281dee4882e0",
+      "targetId": null,
+      "resolution": "unresolved",
+      "evidence": {
+        "filePath": "lib/express.js",
+        "line": 50,
+        "text": "Object.create(res, {\n    app: { configurable: true, enumerable: true, writable: true, value: app }\n  })"
+      },
+      "reason": "No unique indexed implementation for this call (dynamic, ambient, or excluded target)"
+    },
+    {
+      "id": "relation:a43dcc2c3b0f606437676ba62ee84dfe",
+      "type": "calls",
+      "sourceId": "function:0a521d81fa3d594368fe281dee4882e0",
+      "targetId": null,
+      "resolution": "unresolved",
+      "evidence": {
+        "filePath": "lib/express.js",
+        "line": 54,
+        "text": "app.init()"
+      },
+      "reason": "No unique indexed implementation for this call (dynamic, ambient, or excluded target)"
+    }
+  ],
+  "mutatedCalls": [
+    {
+      "id": "relation:0fe821d1534ce8a5eadbfa151f79ebd2",
+      "type": "calls",
+      "sourceId": "file:c5232eb47ed511331126538b6525d129",
+      "targetId": null,
+      "resolution": "unresolved",
+      "evidence": {
+        "filePath": "test/exports.js",
+        "line": 7,
+        "text": "describe('exports', function(){\n  it('should expose Router', function(){\n    assert.strictEqual(typeof express.Router, 'function')\n  })\n\n  it('should expose json middleware', function () {\n    assert.equal(typeof express.json, 'function')\n    assert.equal(express.json.length, 1)\n  })\n\n  it('should expose raw middleware', function () {\n    assert.equal(typeof express.raw, 'function')\n    assert.equal(express.raw.length, 1)\n  })\n\n  it('should expose static middleware', function () {\n    assert.equal(typeof express.static, 'function')\n    assert.equal(express.static.length, 2)\n  })\n\n  it('should expose text middleware', function () {\n    assert.equal(typeof express.text, 'function')\n    assert.equal(express.text.length, 1)\n  })\n\n  it('should expose urlencoded middleware', function () {\n    assert.equal(typeof express.urlencoded, 'function')\n    assert.equal(express.urlencoded.length, 1)\n  })\n\n  it('should expose the application prototype', function(){\n    assert.strictEqual(typeof express.application, 'object')\n    assert.strictEqual(typeof express.application.set, 'function')\n  })\n\n  it('should expose the request prototype', function(){\n    assert.strictEqual(typeof express.request, 'object')\n    assert.strictEqual(typeof express.request.accepts, 'function')\n  })\n\n  it('should expose the response prototype', function(){\n    assert.strictEqual(typeof express.response, 'object')\n    assert.strictEqual(typeof express.response.send, 'function')\n  })\n\n  it('should permit modifying the .application prototype', function(){\n    express.application.foo = function(){ return 'bar'; };\n    assert.strictEqual(express().foo(), 'bar')\n  })\n\n  it('should permit modifying the .request prototype', function(done){\n    express.request.foo = function(){ return 'bar'; };\n    var app = express();\n\n    app.use(function(req, res, next){\n      res.end(req.foo());\n    });\n\n    request(app)\n    .get('/')\n    .expect('bar', done);\n  })\n\n  it('should permit modifying the .response prototype', function(done){\n    express.response.foo = function(){ this.send('bar'); };\n    var app = express();\n\n    app.use(function(req, res, next){\n      res.foo();\n    });\n\n    request(app)\n    .get('/')\n    .expect('bar', done);\n  })\n})"
+      },
+      "reason": "No unique indexed implementation for this call (dynamic, ambient, or excluded target)"
+    },
+    {
+      "id": "relation:f6d330af7542f5ce8cdc58bcd372c0ab",
+      "type": "calls",
+      "sourceId": "function:60e0d4ab921a4ee6b617c177e41e0a77",
+      "targetId": null,
+      "resolution": "unresolved",
+      "evidence": {
+        "filePath": "test/exports.js",
+        "line": 52,
+        "text": "it('should permit modifying the .application prototype', function(){\n    express.application.foo = function(){ return 'bar'; };\n    assert.strictEqual(express().foo(), 'bar')\n  })"
+      },
+      "reason": "No unique indexed implementation for this call (dynamic, ambient, or excluded target)"
+    },
+    {
+      "id": "relation:1601686732a3413551c9b95c6fa4cd1b",
+      "type": "calls",
+      "sourceId": "function:81b691c1ef07b9de56e1ef05641c2f7c",
+      "targetId": null,
+      "resolution": "unresolved",
+      "evidence": {
+        "filePath": "test/exports.js",
+        "line": 54,
+        "text": "assert.strictEqual(express().foo(), 'bar')"
+      },
+      "reason": "CommonJS importer binding is mutable or rewritten"
+    },
+    {
+      "id": "relation:16016cfc8ba3413551c9b95c7188a8b4",
+      "type": "calls",
+      "sourceId": "function:81b691c1ef07b9de56e1ef05641c2f7c",
+      "targetId": null,
+      "resolution": "unresolved",
+      "evidence": {
+        "filePath": "test/exports.js",
+        "line": 54,
+        "text": "express().foo()"
+      },
+      "reason": "No unique indexed implementation for this call (dynamic, ambient, or excluded target)"
+    },
+    {
+      "id": "relation:fb6a84012f6904bf0d5fe85e3de35d51",
+      "type": "calls",
+      "sourceId": "function:60e0d4ab921a4ee6b617c177e41e0a77",
+      "targetId": null,
+      "resolution": "unresolved",
+      "evidence": {
+        "filePath": "test/exports.js",
+        "line": 57,
+        "text": "it('should permit modifying the .request prototype', function(done){\n    express.request.foo = function(){ return 'bar'; };\n    var app = express();\n\n    app.use(function(req, res, next){\n      res.end(req.foo());\n    });\n\n    request(app)\n    .get('/')\n    .expect('bar', done);\n  })"
+      },
+      "reason": "No unique indexed implementation for this call (dynamic, ambient, or excluded target)"
+    },
+    {
+      "id": "relation:f06021c5a6e5cd5fe550e5720e9bffa8",
+      "type": "calls",
+      "sourceId": "function:07f97aa4de29e2d2fe8682aadc26d8f9",
+      "targetId": null,
+      "resolution": "unresolved",
+      "evidence": {
+        "filePath": "test/exports.js",
+        "line": 61,
+        "text": "app.use(function(req, res, next){\n      res.end(req.foo());\n    })"
+      },
+      "reason": "No unique indexed implementation for this call (dynamic, ambient, or excluded target)"
+    },
+    {
+      "id": "relation:a4b6a2aff6eef0d2a973875abb03f307",
+      "type": "calls",
+      "sourceId": "function:480ae0e336f0406762fa1442329fabd5",
+      "targetId": null,
+      "resolution": "unresolved",
+      "evidence": {
+        "filePath": "test/exports.js",
+        "line": 62,
+        "text": "res.end(req.foo())"
+      },
+      "reason": "No unique indexed implementation for this call (dynamic, ambient, or excluded target)"
+    },
+    {
+      "id": "relation:a4b6a7448feef0d2a973875abce6e260",
+      "type": "calls",
+      "sourceId": "function:480ae0e336f0406762fa1442329fabd5",
+      "targetId": null,
+      "resolution": "unresolved",
+      "evidence": {
+        "filePath": "test/exports.js",
+        "line": 62,
+        "text": "req.foo()"
+      },
+      "reason": "No unique indexed implementation for this call (dynamic, ambient, or excluded target)"
+    },
+    {
+      "id": "relation:9ca9eabb85be770a7527edf79f696e30",
+      "type": "calls",
+      "sourceId": "function:60e0d4ab921a4ee6b617c177e41e0a77",
+      "targetId": null,
+      "resolution": "unresolved",
+      "evidence": {
+        "filePath": "test/exports.js",
+        "line": 70,
+        "text": "it('should permit modifying the .response prototype', function(done){\n    express.response.foo = function(){ this.send('bar'); };\n    var app = express();\n\n    app.use(function(req, res, next){\n      res.foo();\n    });\n\n    request(app)\n    .get('/')\n    .expect('bar', done);\n  })"
+      },
+      "reason": "No unique indexed implementation for this call (dynamic, ambient, or excluded target)"
+    },
+    {
+      "id": "relation:f65e1399157b49c6db62b22428ed15a2",
+      "type": "calls",
+      "sourceId": "function:20392421a9ca0f6f41962ee270320686",
+      "targetId": null,
+      "resolution": "unresolved",
+      "evidence": {
+        "filePath": "test/exports.js",
+        "line": 74,
+        "text": "app.use(function(req, res, next){\n      res.foo();\n    })"
+      },
+      "reason": "No unique indexed implementation for this call (dynamic, ambient, or excluded target)"
+    },
+    {
+      "id": "relation:f83a39e22eefcfec64ad9526655b8f3f",
+      "type": "calls",
+      "sourceId": "function:bf563046dc37197abbfe33abd8b00e5e",
+      "targetId": null,
+      "resolution": "unresolved",
+      "evidence": {
+        "filePath": "test/exports.js",
+        "line": 75,
+        "text": "res.foo()"
+      },
+      "reason": "No unique indexed implementation for this call (dynamic, ambient, or excluded target)"
+    }
+  ],
+  "leafExports": [
+    {
+      "id": "function:0a521d81fa3d594368fe281dee4882e0",
+      "kind": "function",
+      "name": "createApplication",
+      "qualifiedName": "createApplication",
+      "filePath": "lib/express.js",
+      "declarationKind": "function",
+      "parentId": "file:9cdfa4f9c6755d3690718b58e99b4b2f",
+      "language": "javascript",
+      "startLine": 36,
+      "endLine": 56,
+      "exported": true,
+      "signature": "function createApplication()"
+    }
+  ],
+  "sources": {
+    "index.js": {
+      "sha256": "4d2f5afc192178c5b0dc418d2da5826d52a8b6998771b011aede7fdba9118140"
+    },
+    "lib/express.js": {
+      "sha256": "4f35e8273a5e78c35e778d14e4a8c80a81ca3e1fc8047dc87d2077b860404572"
+    },
+    "test/exports.js": {
+      "sha256": "4d8389207f6b4693dc5792f79f61f719a70389fe1900c04c83ff31ef06b07001"
+    },
+    "test/res.status.js": {
+      "sha256": "2fe6137bcb25077ff88436c9286fc5d42d1a94951fdcd50e62919b2f13785c8f"
+    }
+  },
+  "scope": "Complete pinned captured target; accepted root edges match const direct require and exact source lines. Mutated foo calls remain unknown; no runtime/mixin/whole-program soundness claim."
+}

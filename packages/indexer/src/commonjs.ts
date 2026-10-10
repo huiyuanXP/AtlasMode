@@ -22,6 +22,7 @@ type Module = {
   source: ts.SourceFile;
   candidate: boolean;
   invalid: boolean;
+  namedExportsInvalid: boolean;
   exports: Map<ExportKey, string | undefined>;
   rejected: Set<ExportKey>;
 };
@@ -30,6 +31,8 @@ type Binding = {
   cyclicInitialization?: boolean;
   module?: Module;
   property?: string;
+  nestedProperty?: boolean;
+  dynamicProperty?: boolean;
   reason?: string;
   externalName?: string;
 };
@@ -247,6 +250,7 @@ export function createCommonJsAnalyzer(
       source,
       candidate: source.fileName.endsWith(".cjs"),
       invalid: mode(source) !== "commonjs",
+      namedExportsInvalid: false,
       exports: new Map(),
       rejected: new Set(),
     });
@@ -333,6 +337,8 @@ export function createCommonJsAnalyzer(
       if (!ref.whole) {
         propertyAssignments.push({ root: ref.root, node });
         if (ref.property === undefined) mod.invalid = true;
+        else if (!exportRoot(member(target)!.base))
+          mod.namedExportsInvalid = true;
         else
           addExport(
             mod,
@@ -593,7 +599,11 @@ export function createCommonJsAnalyzer(
     if (key === undefined || binding.property !== undefined)
       return {
         ...binding,
-        property: "",
+        property: binding.property ?? "",
+        nestedProperty: binding.nestedProperty || binding.property !== undefined,
+        dynamicProperty:
+          binding.dynamicProperty ||
+          (binding.property === undefined && key === undefined),
         reason: "CommonJS property selection is dynamic or nested",
       };
     if (binding.esmNamespace && key === "default")
@@ -774,7 +784,12 @@ export function createCommonJsAnalyzer(
       for (const target of writeTargets(node)) {
         const ref = reference(target);
         if (ref?.module && !exportReference(target)) {
-          if (ref.property !== undefined && !ref.reason)
+          // A nested object may point back to the callable through self,
+          // prototype.constructor, or an unsupported alias. Keep the default
+          // callable identity, but reject every named export in that group.
+          if (ref.nestedProperty && !ref.dynamicProperty)
+            ref.module.namedExportsInvalid = true;
+          else if (ref.property !== undefined && !ref.reason)
             ref.module.rejected.add(ref.property);
           else if (member(target)) ref.module.invalid = true;
         }
@@ -821,6 +836,10 @@ export function createCommonJsAnalyzer(
   for (const group of groups.values()) {
     const invalid = group.some((mod) => mod.invalid);
     const rejected = new Set(group.flatMap((mod) => [...mod.rejected]));
+    if (group.some((mod) => mod.namedExportsInvalid))
+      for (const mod of group)
+        for (const key of mod.exports.keys())
+          if (key !== defaultExport) rejected.add(key);
     for (const mod of group) {
       mod.invalid = invalid;
       mod.rejected = rejected;

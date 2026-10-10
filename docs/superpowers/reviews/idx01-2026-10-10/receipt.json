@@ -1,0 +1,67 @@
+{
+  "recordedAt": "2026-10-10T14:36:44.376752+00:00",
+  "branch": "fix/first-use-20261010",
+  "recordedHead": "078fa84238a5126729429fe1e2d2c7f094f103e9",
+  "sourceHashes": {
+    "packages/indexer/src/commonjs.ts": "211d705e8ca4623bc341726dba64fc2a7d1a9ad4fd1b5d5dd238321fea6dd24c",
+    "packages/indexer/src/idx01.test.ts": "e93f9d77b9765494a0b0f1f9262a2029dc106b3e227e92c8d84f8f472cc92de5",
+    "tests/support/idx01-audit.mjs": "2b114f9c5a6fc5ac9df0031eaffd699c45830dc52b98b7360e1fe3193324ac47",
+    "tests/support/idx01-validate.mjs": "2bf5e56df507b97865e49c4bbbceb633fdea06b1d7d989f035687abca8fc1350",
+    "packages/indexer/dist/commonjs.js": "6b6a6e6f65461e7e298a0e3c31f187b5a167a3ed4d3a8d4de0df437842210dd3"
+  },
+  "evidenceHashes": {
+    "README.md": "ac008e4bd0d0f01116b31ba5223c5f72e5c9f59b83a21b145a4a7bc82be2f7ad",
+    "build.log": "772f9e3b73ab6bf5aab36cd87a894e03c2656f5996fc8929bac604f572dbe143",
+    "express-gate-browser.log": "6fae7b8a9f2fe769046da0833392e675b44e2f36205564824799420a5f65088e",
+    "express-gate-final.log": "abe318498e2a8c57b7b29386dd79bd7f112698e7e702c8ee1b7aad4d4e0f0d8d",
+    "express-gate.log": "d75010fea740321c5234f9776e3d3fecc70b8a1922bb21aff2b2f144e86d02fb",
+    "express-safety-audit-first.log": "58957cbc8e9b0adf8b1eb394aed9e2daa8e9d43be92975c3d9faa80d986c47d4",
+    "express-safety-audit.json": "f993d7baf02f24e466f968c047e2920f3da5d8cf684fab2234dfec436cacc429",
+    "express-safety-audit.log": "d0152f80aed5090acdc321b9e45b9652d58b3baeba690cc8564f99f8914218af",
+    "final-lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "green.log": "53d67f781f699c58ea288a1f6efba12789234a597fc2414ec241577a8c2d358b",
+    "idx01-express-product.json": "c74758e58383766871ebe53ea7410ed110514ed732eb6eb41aaa1f6a433a8ff8",
+    "idx01-express-product.png": "7d68d70ea60af22eec6dc7a963c54e3ac38ccf52a430fab57d23b8ec80574f09",
+    "idx01-ui-selector-failure-product.json": "836796cac893d8e777c34c3ef597e35d6ccbf429d77ea335f51fdfc380f3d55c",
+    "idx01-ui-selector-failure-product.png": "e6192814753c9d5cf423166bd4046419c0d39c9abcc40353d2da0f146469af81",
+    "independent-review.md": "0c1ed9658b2cc5aaf67b6c2d879a85a96e57ff96435a3ef176122cd5c9d39cc6",
+    "indexer-tests.log": "99f63ea5e84cbdcffbe0bdf8af49c74e4223e95936ba512e0c9af3ffd16d6fc5",
+    "lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "red.log": "0d949a8103b49f17ed181cea00619cdb2f659af259320f355c3d154250750651",
+    "typecheck.log": "c7cd114906e4bd00c3a120da715104ff2f7112c1474afe4778d0b3a17c3fa1e6"
+  },
+  "stage": "IDX01 source behavior/gate before controller SEC dependency cleanup; no post-lockfile or root-suite claim",
+  "checks": {
+    "red": {
+      "exit": 1,
+      "testsFailed": 11,
+      "testsPassed": 6
+    },
+    "green": {
+      "exit": 0,
+      "testsPassed": 17
+    },
+    "indexer": {
+      "exit": 0,
+      "files": 8,
+      "testsPassed": 349
+    },
+    "build": 0,
+    "typecheck": 0,
+    "lint": 0,
+    "finalLint": 0,
+    "strictExpressGate": 0,
+    "sourceSafetyAudit": 0
+  },
+  "historicalFailureUnmodifiedByThisWorker": [
+    "docs/superpowers/validation-targets.md",
+    "docs/superpowers/reviews/static-forwarding-task2/"
+  ],
+  "target": {
+    "origin": "https://github.com/expressjs/express.git",
+    "path": "/tmp/atlasmode-idx01-express",
+    "sha": "dbac741a49a5a64336b70c06e85c2e2706e36336"
+  },
+  "screenshotViewed": true,
+  "screenshotLocalCopy": "/home/strix/Documents/Codex/2026-10-10/task-3/idx01-express-product.png"
+}

@@ -14,7 +14,7 @@
 历史已审查的Task2 PARTIAL检查点与待办见 [交接记录](docs/superpowers/reviews/static-forwarding-task2/README.md)。
 Task2的七包构建、类型检查、lint和541项/31文件测试通过，独立task/whole检查点评审已记录；
 唯一集中修复后根lint/541项31文件及forwarding browser1通过，限定复审已批准；
-完整Express入口仍FAIL，整票目标未完成。
+该历史阶段完整Express入口FAIL，整票当时未完成。2026-10-10现有IDX-01已修复完整固定Express入口，35/35严格入口及实际源码/上下文/浏览器通过，见 [本轮证据](docs/superpowers/reviews/idx01-2026-10-10/README.md)；完整值流、workspace和references等后续票仍未完成。
 
 本机使用 Node24.19.0/npm11.9.0；分析 Python 项目需 Python3.10+。从仓库根目录运行：
 
