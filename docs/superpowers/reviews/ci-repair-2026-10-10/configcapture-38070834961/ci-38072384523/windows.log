@@ -1,0 +1,545 @@
+native (windows-latest)	Set up job	﻿2026-10-10T17:35:55.0876544Z Current runner version: '2.337.0'
+native (windows-latest)	Set up job	2026-10-10T17:35:55.0930745Z ##[group]Runner Image Provisioner
+native (windows-latest)	Set up job	2026-10-10T17:35:55.0931655Z Hosted Compute Agent
+native (windows-latest)	Set up job	2026-10-10T17:35:55.0932233Z Version: 20260901.588
+native (windows-latest)	Set up job	2026-10-10T17:35:55.0932898Z Commit: f88ec8081b781fac6c440065ac7ff9e710ce3d0b
+native (windows-latest)	Set up job	2026-10-10T17:35:55.0933620Z Build Date: 2026-09-01T19:56:44Z
+native (windows-latest)	Set up job	2026-10-10T17:35:55.0934273Z Worker ID: {f921343e-b6e9-402d-9c35-2a0a088bb647}
+native (windows-latest)	Set up job	2026-10-10T17:35:55.0935014Z Azure Region: westcentralus
+native (windows-latest)	Set up job	2026-10-10T17:35:55.0935615Z ##[endgroup]
+native (windows-latest)	Set up job	2026-10-10T17:35:55.0937081Z ##[group]Operating System
+native (windows-latest)	Set up job	2026-10-10T17:35:55.0937759Z Microsoft Windows Server 2025
+native (windows-latest)	Set up job	2026-10-10T17:35:55.0938361Z 10.0.26100
+native (windows-latest)	Set up job	2026-10-10T17:35:55.0938877Z Datacenter
+native (windows-latest)	Set up job	2026-10-10T17:35:55.0939416Z ##[endgroup]
+native (windows-latest)	Set up job	2026-10-10T17:35:55.0939996Z ##[group]Runner Image
+native (windows-latest)	Set up job	2026-10-10T17:35:55.0940611Z Image: windows-2025-vs2026
+native (windows-latest)	Set up job	2026-10-10T17:35:55.0941238Z Version: 20260925.250.1
+native (windows-latest)	Set up job	2026-10-10T17:35:55.0942468Z Included Software: https://github.com/actions/runner-images/blob/win25-vs2026/20260925.250/images/windows/Windows2025-VS2026-Readme.md
+native (windows-latest)	Set up job	2026-10-10T17:35:55.0945002Z Image Release: https://github.com/actions/runner-images/releases/tag/win25-vs2026%2F20260925.250
+native (windows-latest)	Set up job	2026-10-10T17:35:55.0946048Z ##[endgroup]
+native (windows-latest)	Set up job	2026-10-10T17:35:55.0947103Z ##[group]GITHUB_TOKEN Permissions
+native (windows-latest)	Set up job	2026-10-10T17:35:55.0949204Z Contents: read
+native (windows-latest)	Set up job	2026-10-10T17:35:55.0949810Z Metadata: read
+native (windows-latest)	Set up job	2026-10-10T17:35:55.0950369Z ##[endgroup]
+native (windows-latest)	Set up job	2026-10-10T17:35:55.0952601Z Secret source: Actions
+native (windows-latest)	Set up job	2026-10-10T17:35:55.0953553Z Cache mode: write
+native (windows-latest)	Set up job	2026-10-10T17:35:55.0954391Z Prepare workflow directory
+native (windows-latest)	Set up job	2026-10-10T17:35:55.1367678Z Prepare all required actions
+native (windows-latest)	Set up job	2026-10-10T17:35:55.1417023Z Getting action download info
+native (windows-latest)	Set up job	2026-10-10T17:35:55.4119740Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+native (windows-latest)	Set up job	2026-10-10T17:35:55.5401975Z Download action repository 'actions/setup-node@v4' (SHA:49933ea5288caeca8642d1e84afbd3f7d6820020)
+native (windows-latest)	Set up job	2026-10-10T17:35:55.7068433Z Download action repository 'actions/setup-python@v5' (SHA:a26af69be951a213d495a4c3e4e4022e16d87065)
+native (windows-latest)	Set up job	2026-10-10T17:35:55.9919543Z Complete job name: native (windows-latest)
+native (windows-latest)	Run actions/checkout@v4	﻿2026-10-10T17:35:56.1604596Z ##[group]Run actions/checkout@v4
+native (windows-latest)	Run actions/checkout@v4	2026-10-10T17:35:56.1605819Z with:
+native (windows-latest)	Run actions/checkout@v4	2026-10-10T17:35:56.1606257Z   repository: huiyuanXP/AtlasMode
+native (windows-latest)	Run actions/checkout@v4	2026-10-10T17:35:56.1610685Z   token: ***
+native (windows-latest)	Run actions/checkout@v4	2026-10-10T17:35:56.1611100Z   ssh-strict: true
+native (windows-latest)	Run actions/checkout@v4	2026-10-10T17:35:56.1611520Z   ssh-user: git
+native (windows-latest)	Run actions/checkout@v4	2026-10-10T17:35:56.1611942Z   persist-credentials: true
+native (windows-latest)	Run actions/checkout@v4	2026-10-10T17:35:56.1612418Z   clean: true
+native (windows-latest)	Run actions/checkout@v4	2026-10-10T17:35:56.1612838Z   sparse-checkout-cone-mode: true
+native (windows-latest)	Run actions/checkout@v4	2026-10-10T17:35:56.1613339Z   fetch-depth: 1
+native (windows-latest)	Run actions/checkout@v4	2026-10-10T17:35:56.1613746Z   fetch-tags: false
+native (windows-latest)	Run actions/checkout@v4	2026-10-10T17:35:56.1614169Z   show-progress: true
+native (windows-latest)	Run actions/checkout@v4	2026-10-10T17:35:56.1614603Z   lfs: false
+native (windows-latest)	Run actions/checkout@v4	2026-10-10T17:35:56.1615279Z   submodules: false
+native (windows-latest)	Run actions/checkout@v4	2026-10-10T17:35:56.1615719Z   set-safe-directory: true
+native (windows-latest)	Run actions/checkout@v4	2026-10-10T17:35:56.1616205Z   allow-unsafe-pr-checkout: false
+native (windows-latest)	Run actions/checkout@v4	2026-10-10T17:35:56.1616954Z ##[endgroup]
+native (windows-latest)	Run actions/checkout@v4	2026-10-10T17:35:56.3152938Z Syncing repository: huiyuanXP/AtlasMode
+native (windows-latest)	Run actions/checkout@v4	2026-10-10T17:35:56.3155622Z ##[group]Getting Git version info
+native (windows-latest)	Run actions/checkout@v4	2026-10-10T17:35:56.3156746Z Working directory is 'D:\a\AtlasMode\AtlasMode'
+native (windows-latest)	Run actions/checkout@v4	2026-10-10T17:35:56.4206809Z [command]"C:\Program Files\Git\bin\git.exe" version
+native (windows-latest)	Run actions/checkout@v4	2026-10-10T17:35:56.7423408Z git version 2.55.0.windows.5
+native (windows-latest)	Run actions/checkout@v4	2026-10-10T17:35:56.7481721Z ##[endgroup]
+native (windows-latest)	Run actions/checkout@v4	2026-10-10T17:35:56.7508211Z Temporarily overriding HOME='D:\a\_temp\3a522904-8231-4a6f-bebd-3857cdb00ced' before making global git config changes
+native (windows-latest)	Run actions/checkout@v4	2026-10-10T17:35:56.7510802Z Adding repository directory to the temporary git global config as a safe directory
+native (windows-latest)	Run actions/checkout@v4	2026-10-10T17:35:56.7519017Z [command]"C:\Program Files\Git\bin\git.exe" config --global --add safe.directory D:\a\AtlasMode\AtlasMode
+native (windows-latest)	Run actions/checkout@v4	2026-10-10T17:35:56.8170426Z Deleting the contents of 'D:\a\AtlasMode\AtlasMode'
+native (windows-latest)	Run actions/checkout@v4	2026-10-10T17:35:56.8177162Z ##[group]Initializing the repository
+native (windows-latest)	Run actions/checkout@v4	2026-10-10T17:35:56.8185565Z [command]"C:\Program Files\Git\bin\git.exe" init D:\a\AtlasMode\AtlasMode
+native (windows-latest)	Run actions/checkout@v4	2026-10-10T17:35:56.9081419Z Initialized empty Git repository in D:/a/AtlasMode/AtlasMode/.git/
+native (windows-latest)	Run actions/checkout@v4	2026-10-10T17:35:56.9134201Z [command]"C:\Program Files\Git\bin\git.exe" remote add origin https://github.com/huiyuanXP/AtlasMode
+native (windows-latest)	Run actions/checkout@v4	2026-10-10T17:35:56.9760329Z ##[endgroup]
+native (windows-latest)	Run actions/checkout@v4	2026-10-10T17:35:56.9761895Z ##[group]Disabling automatic garbage collection
+native (windows-latest)	Run actions/checkout@v4	2026-10-10T17:35:56.9768365Z [command]"C:\Program Files\Git\bin\git.exe" config --local gc.auto 0
+native (windows-latest)	Run actions/checkout@v4	2026-10-10T17:35:57.0078556Z ##[endgroup]
+native (windows-latest)	Run actions/checkout@v4	2026-10-10T17:35:57.0080475Z ##[group]Setting up auth
+native (windows-latest)	Run actions/checkout@v4	2026-10-10T17:35:57.0091364Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+native (windows-latest)	Run actions/checkout@v4	2026-10-10T17:35:57.0414201Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+native (windows-latest)	Run actions/checkout@v4	2026-10-10T17:35:58.4242906Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+native (windows-latest)	Run actions/checkout@v4	2026-10-10T17:35:58.4575118Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+native (windows-latest)	Run actions/checkout@v4	2026-10-10T17:35:59.0145949Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp ^includeIf\.gitdir:
+native (windows-latest)	Run actions/checkout@v4	2026-10-10T17:35:59.0465374Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "git config --local --show-origin --name-only --get-regexp remote.origin.url"
+native (windows-latest)	Run actions/checkout@v4	2026-10-10T17:35:59.6234633Z [command]"C:\Program Files\Git\bin\git.exe" config --local http.https://github.com/.extraheader "AUTHORIZATION: basic ***"
+native (windows-latest)	Run actions/checkout@v4	2026-10-10T17:35:59.6613954Z ##[endgroup]
+native (windows-latest)	Run actions/checkout@v4	2026-10-10T17:35:59.6614537Z ##[group]Fetching the repository
+native (windows-latest)	Run actions/checkout@v4	2026-10-10T17:35:59.6633934Z [command]"C:\Program Files\Git\bin\git.exe" -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +84fd8b3add03ac43d8ac160a6ae231fb99fde370:refs/remotes/origin/fix/first-use-20261010
+native (windows-latest)	Run actions/checkout@v4	2026-10-10T17:36:02.0300471Z From https://github.com/huiyuanXP/AtlasMode
+native (windows-latest)	Run actions/checkout@v4	2026-10-10T17:36:02.0305623Z  * [new ref]         84fd8b3add03ac43d8ac160a6ae231fb99fde370 -> origin/fix/first-use-20261010
+native (windows-latest)	Run actions/checkout@v4	2026-10-10T17:36:02.0347463Z ##[endgroup]
+native (windows-latest)	Run actions/checkout@v4	2026-10-10T17:36:02.0348204Z ##[group]Determining the checkout info
+native (windows-latest)	Run actions/checkout@v4	2026-10-10T17:36:02.0350984Z ##[endgroup]
+native (windows-latest)	Run actions/checkout@v4	2026-10-10T17:36:02.0361460Z [command]"C:\Program Files\Git\bin\git.exe" sparse-checkout disable
+native (windows-latest)	Run actions/checkout@v4	2026-10-10T17:36:02.0821290Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset-all extensions.worktreeConfig
+native (windows-latest)	Run actions/checkout@v4	2026-10-10T17:36:02.1139719Z ##[group]Checking out the ref
+native (windows-latest)	Run actions/checkout@v4	2026-10-10T17:36:02.1149035Z [command]"C:\Program Files\Git\bin\git.exe" checkout --progress --force -B fix/first-use-20261010 refs/remotes/origin/fix/first-use-20261010
+native (windows-latest)	Run actions/checkout@v4	2026-10-10T17:36:02.7186649Z Switched to a new branch 'fix/first-use-20261010'
+native (windows-latest)	Run actions/checkout@v4	2026-10-10T17:36:02.7251046Z branch 'fix/first-use-20261010' set up to track 'origin/fix/first-use-20261010'.
+native (windows-latest)	Run actions/checkout@v4	2026-10-10T17:36:02.7350522Z ##[endgroup]
+native (windows-latest)	Run actions/checkout@v4	2026-10-10T17:36:02.7766944Z [command]"C:\Program Files\Git\bin\git.exe" log -1 --format=%H
+native (windows-latest)	Run actions/checkout@v4	2026-10-10T17:36:02.8042941Z 84fd8b3add03ac43d8ac160a6ae231fb99fde370
+native (windows-latest)	Run actions/setup-node@v4	﻿2026-10-10T17:36:02.8609280Z ##[group]Run actions/setup-node@v4
+native (windows-latest)	Run actions/setup-node@v4	2026-10-10T17:36:02.8609639Z with:
+native (windows-latest)	Run actions/setup-node@v4	2026-10-10T17:36:02.8609845Z   node-version: 24.19.0
+native (windows-latest)	Run actions/setup-node@v4	2026-10-10T17:36:02.8610050Z   cache: npm
+native (windows-latest)	Run actions/setup-node@v4	2026-10-10T17:36:02.8610225Z   always-auth: false
+native (windows-latest)	Run actions/setup-node@v4	2026-10-10T17:36:02.8610417Z   check-latest: false
+native (windows-latest)	Run actions/setup-node@v4	2026-10-10T17:36:02.8613430Z   token: ***
+native (windows-latest)	Run actions/setup-node@v4	2026-10-10T17:36:02.8613640Z ##[endgroup]
+native (windows-latest)	Run actions/setup-node@v4	2026-10-10T17:36:03.0452568Z Attempting to download 24.19.0...
+native (windows-latest)	Run actions/setup-node@v4	2026-10-10T17:36:03.0677064Z (node:8268) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+native (windows-latest)	Run actions/setup-node@v4	2026-10-10T17:36:03.0678539Z (Use `node --trace-deprecation ...` to show where the warning was created)
+native (windows-latest)	Run actions/setup-node@v4	2026-10-10T17:36:03.9808420Z Acquiring 24.19.0 - x64 from https://github.com/actions/node-versions/releases/download/24.19.0-30872449280/node-24.19.0-win32-x64.7z
+native (windows-latest)	Run actions/setup-node@v4	2026-10-10T17:36:04.6303818Z Extracting ...
+native (windows-latest)	Run actions/setup-node@v4	2026-10-10T17:36:07.6022071Z Adding to the cache ...
+native (windows-latest)	Run actions/setup-node@v4	2026-10-10T17:36:14.5716547Z ##[group]Environment details
+native (windows-latest)	Run actions/setup-node@v4	2026-10-10T17:36:20.2405267Z node: v24.19.0
+native (windows-latest)	Run actions/setup-node@v4	2026-10-10T17:36:20.2405647Z npm: 11.17.0
+native (windows-latest)	Run actions/setup-node@v4	2026-10-10T17:36:20.2407223Z yarn: 1.22.22
+native (windows-latest)	Run actions/setup-node@v4	2026-10-10T17:36:20.2407853Z ##[endgroup]
+native (windows-latest)	Run actions/setup-node@v4	2026-10-10T17:36:20.3161309Z [command]C:\Windows\system32\cmd.exe /D /S /C "C:\hostedtoolcache\windows\node\24.19.0\x64\npm.cmd config get cache"
+native (windows-latest)	Run actions/setup-node@v4	2026-10-10T17:36:20.6136981Z C:\npm\cache
+native (windows-latest)	Run actions/setup-node@v4	2026-10-10T17:36:20.9596625Z Cache hit for: node-cache-Windows-x64-npm-1558a3ed390b9a8c29723f3fb96a62699469c60eff4f6b92bfdd77d9b12aa56d
+native (windows-latest)	Run actions/setup-node@v4	2026-10-10T17:36:20.9719566Z (node:8268) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+native (windows-latest)	Run actions/setup-node@v4	2026-10-10T17:36:22.0291853Z Received 53089310 of 53089310 (100.0%), 59.1 MBs/sec
+native (windows-latest)	Run actions/setup-node@v4	2026-10-10T17:36:22.0295899Z Cache Size: ~51 MB (53089310 B)
+native (windows-latest)	Run actions/setup-node@v4	2026-10-10T17:36:22.0402024Z [command]"C:\Program Files\Git\usr\bin\tar.exe" -xf D:/a/_temp/b7900c70-2a19-4edf-b416-e97896df2514/cache.tzst -P -C D:/a/AtlasMode/AtlasMode --force-local --use-compress-program "zstd -d"
+native (windows-latest)	Run actions/setup-node@v4	2026-10-10T17:36:27.2908546Z Cache restored successfully
+native (windows-latest)	Run actions/setup-node@v4	2026-10-10T17:36:27.2964432Z Cache restored from key: node-cache-Windows-x64-npm-1558a3ed390b9a8c29723f3fb96a62699469c60eff4f6b92bfdd77d9b12aa56d
+native (windows-latest)	Run actions/setup-python@v5	﻿2026-10-10T17:36:27.3363670Z ##[group]Run actions/setup-python@v5
+native (windows-latest)	Run actions/setup-python@v5	2026-10-10T17:36:27.3364135Z with:
+native (windows-latest)	Run actions/setup-python@v5	2026-10-10T17:36:27.3364388Z   python-version: 3.12
+native (windows-latest)	Run actions/setup-python@v5	2026-10-10T17:36:27.3364672Z   check-latest: false
+native (windows-latest)	Run actions/setup-python@v5	2026-10-10T17:36:27.3368463Z   token: ***
+native (windows-latest)	Run actions/setup-python@v5	2026-10-10T17:36:27.3368741Z   update-environment: true
+native (windows-latest)	Run actions/setup-python@v5	2026-10-10T17:36:27.3369074Z   allow-prereleases: false
+native (windows-latest)	Run actions/setup-python@v5	2026-10-10T17:36:27.3369404Z   freethreaded: false
+native (windows-latest)	Run actions/setup-python@v5	2026-10-10T17:36:27.3369686Z ##[endgroup]
+native (windows-latest)	Run actions/setup-python@v5	2026-10-10T17:36:27.5135038Z ##[group]Installed versions
+native (windows-latest)	Run actions/setup-python@v5	2026-10-10T17:36:27.5362454Z (node:9636) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+native (windows-latest)	Run actions/setup-python@v5	2026-10-10T17:36:27.5363354Z (Use `node --trace-deprecation ...` to show where the warning was created)
+native (windows-latest)	Run actions/setup-python@v5	2026-10-10T17:36:27.5363860Z Successfully set up CPython (3.12.10)
+native (windows-latest)	Run actions/setup-python@v5	2026-10-10T17:36:27.5364330Z ##[endgroup]
+native (windows-latest)	Run npm install --global npm@11.9.0	﻿2026-10-10T17:36:27.5671960Z ##[group]Run npm install --global npm@11.9.0
+native (windows-latest)	Run npm install --global npm@11.9.0	2026-10-10T17:36:27.5672406Z [36;1mnpm install --global npm@11.9.0[0m
+native (windows-latest)	Run npm install --global npm@11.9.0	2026-10-10T17:36:27.6274781Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+native (windows-latest)	Run npm install --global npm@11.9.0	2026-10-10T17:36:27.6275375Z env:
+native (windows-latest)	Run npm install --global npm@11.9.0	2026-10-10T17:36:27.6275811Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-latest)	Run npm install --global npm@11.9.0	2026-10-10T17:36:27.6276599Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+native (windows-latest)	Run npm install --global npm@11.9.0	2026-10-10T17:36:27.6277376Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-latest)	Run npm install --global npm@11.9.0	2026-10-10T17:36:27.6278073Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-latest)	Run npm install --global npm@11.9.0	2026-10-10T17:36:27.6278744Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-latest)	Run npm install --global npm@11.9.0	2026-10-10T17:36:27.6279745Z ##[endgroup]
+native (windows-latest)	Run npm install --global npm@11.9.0	2026-10-10T17:36:43.1834342Z 
+native (windows-latest)	Run npm install --global npm@11.9.0	2026-10-10T17:36:43.1835069Z added 1 package in 15s
+native (windows-latest)	Run npm install --global npm@11.9.0	2026-10-10T17:36:43.1837025Z 
+native (windows-latest)	Run npm install --global npm@11.9.0	2026-10-10T17:36:43.1839471Z 15 packages are looking for funding
+native (windows-latest)	Run npm install --global npm@11.9.0	2026-10-10T17:36:43.1841038Z   run `npm fund` for details
+native (windows-latest)	Run npm ci	﻿2026-10-10T17:36:44.6002826Z ##[group]Run npm ci
+native (windows-latest)	Run npm ci	2026-10-10T17:36:44.6003164Z [36;1mnpm ci[0m
+native (windows-latest)	Run npm ci	2026-10-10T17:36:44.6076298Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+native (windows-latest)	Run npm ci	2026-10-10T17:36:44.6076688Z env:
+native (windows-latest)	Run npm ci	2026-10-10T17:36:44.6076971Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-latest)	Run npm ci	2026-10-10T17:36:44.6077472Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+native (windows-latest)	Run npm ci	2026-10-10T17:36:44.6077977Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-latest)	Run npm ci	2026-10-10T17:36:44.6078643Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-latest)	Run npm ci	2026-10-10T17:36:44.6079076Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-latest)	Run npm ci	2026-10-10T17:36:44.6079424Z ##[endgroup]
+native (windows-latest)	Run npm ci	2026-10-10T17:37:55.1556344Z 
+native (windows-latest)	Run npm ci	2026-10-10T17:37:55.1560341Z added 396 packages, and audited 404 packages in 1m
+native (windows-latest)	Run npm ci	2026-10-10T17:37:55.1560921Z 
+native (windows-latest)	Run npm ci	2026-10-10T17:37:55.1561220Z 115 packages are looking for funding
+native (windows-latest)	Run npm ci	2026-10-10T17:37:55.1562095Z   run `npm fund` for details
+native (windows-latest)	Run npm ci	2026-10-10T17:37:55.1575893Z 
+native (windows-latest)	Run npm ci	2026-10-10T17:37:55.1576293Z found 0 vulnerabilities
+native (windows-latest)	Run npm run build	﻿2026-10-10T17:37:56.9771970Z ##[group]Run npm run build
+native (windows-latest)	Run npm run build	2026-10-10T17:37:56.9772335Z [36;1mnpm run build[0m
+native (windows-latest)	Run npm run build	2026-10-10T17:37:56.9846255Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+native (windows-latest)	Run npm run build	2026-10-10T17:37:56.9846640Z env:
+native (windows-latest)	Run npm run build	2026-10-10T17:37:56.9846938Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-latest)	Run npm run build	2026-10-10T17:37:56.9847457Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+native (windows-latest)	Run npm run build	2026-10-10T17:37:56.9847987Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-latest)	Run npm run build	2026-10-10T17:37:56.9848440Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-latest)	Run npm run build	2026-10-10T17:37:56.9848881Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-latest)	Run npm run build	2026-10-10T17:37:56.9849237Z ##[endgroup]
+native (windows-latest)	Run npm run build	2026-10-10T17:37:57.6846141Z 
+native (windows-latest)	Run npm run build	2026-10-10T17:37:57.6846974Z > atlasmode@0.1.0 build
+native (windows-latest)	Run npm run build	2026-10-10T17:37:57.6847359Z > node scripts/workspaces.mjs build
+native (windows-latest)	Run npm run build	2026-10-10T17:37:57.6847570Z 
+native (windows-latest)	Run npm run build	2026-10-10T17:37:57.9323861Z 
+native (windows-latest)	Run npm run build	2026-10-10T17:37:57.9324468Z > @codemap/core@0.1.0 build
+native (windows-latest)	Run npm run build	2026-10-10T17:37:57.9325192Z > tsc -p tsconfig.json
+native (windows-latest)	Run npm run build	2026-10-10T17:37:57.9325435Z 
+native (windows-latest)	Run npm run build	2026-10-10T17:37:59.6924140Z 
+native (windows-latest)	Run npm run build	2026-10-10T17:37:59.6925202Z > @codemap/indexer@0.1.0 build
+native (windows-latest)	Run npm run build	2026-10-10T17:37:59.6925724Z > tsc -p tsconfig.json
+native (windows-latest)	Run npm run build	2026-10-10T17:37:59.6925956Z 
+native (windows-latest)	Run npm run build	2026-10-10T17:38:02.0109701Z 
+native (windows-latest)	Run npm run build	2026-10-10T17:38:02.0110597Z > @codemap/storage@0.1.0 build
+native (windows-latest)	Run npm run build	2026-10-10T17:38:02.0111292Z > tsc -p tsconfig.json
+native (windows-latest)	Run npm run build	2026-10-10T17:38:02.0111941Z 
+native (windows-latest)	Run npm run build	2026-10-10T17:38:03.3061995Z 
+native (windows-latest)	Run npm run build	2026-10-10T17:38:03.3062736Z > @codemap/service@0.1.0 build
+native (windows-latest)	Run npm run build	2026-10-10T17:38:03.3063161Z > tsc -p tsconfig.json
+native (windows-latest)	Run npm run build	2026-10-10T17:38:03.3063334Z 
+native (windows-latest)	Run npm run build	2026-10-10T17:38:04.8661848Z 
+native (windows-latest)	Run npm run build	2026-10-10T17:38:04.8662490Z > @codemap/web@0.1.0 build
+native (windows-latest)	Run npm run build	2026-10-10T17:38:04.8662974Z > tsc -p tsconfig.json && vite build
+native (windows-latest)	Run npm run build	2026-10-10T17:38:04.8663197Z 
+native (windows-latest)	Run npm run build	2026-10-10T17:38:08.9913027Z [36mvite v7.3.6 [32mbuilding client environment for production...[36m[39m
+native (windows-latest)	Run npm run build	2026-10-10T17:38:09.0707682Z transforming...
+native (windows-latest)	Run npm run build	2026-10-10T17:38:11.6256281Z [32m✓[39m 241 modules transformed.
+native (windows-latest)	Run npm run build	2026-10-10T17:38:11.8898343Z rendering chunks...
+native (windows-latest)	Run npm run build	2026-10-10T17:38:11.9007791Z computing gzip size...
+native (windows-latest)	Run npm run build	2026-10-10T17:38:11.9209058Z [2mdist/[22m[32mindex.html                 [39m[1m[2m  0.52 kB[22m[1m[22m[2m │ gzip:   0.35 kB[22m
+native (windows-latest)	Run npm run build	2026-10-10T17:38:11.9210566Z [33m
+native (windows-latest)	Run npm run build	2026-10-10T17:38:11.9211224Z (!) Some chunks are larger than 500 kB after minification. Consider:
+native (windows-latest)	Run npm run build	2026-10-10T17:38:11.9212046Z - Using dynamic import() to code-split the application
+native (windows-latest)	Run npm run build	2026-10-10T17:38:11.9213462Z - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+native (windows-latest)	Run npm run build	2026-10-10T17:38:11.9215704Z - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.[39m
+native (windows-latest)	Run npm run build	2026-10-10T17:38:11.9217213Z [2mdist/[22m[35massets/index-CRX9i0dH.css  [39m[1m[2m 40.32 kB[22m[1m[22m[2m │ gzip:   8.14 kB[22m
+native (windows-latest)	Run npm run build	2026-10-10T17:38:11.9219108Z [2mdist/[22m[36massets/index-BwgsS5lY.js   [39m[1m[33m550.30 kB[39m[22m[2m │ gzip: 175.81 kB[22m
+native (windows-latest)	Run npm run build	2026-10-10T17:38:11.9228897Z [32m✓ built in 2.90s[39m
+native (windows-latest)	Run npm run build	2026-10-10T17:38:12.3866309Z 
+native (windows-latest)	Run npm run build	2026-10-10T17:38:12.3866972Z > @codemap/mcp@0.1.0 build
+native (windows-latest)	Run npm run build	2026-10-10T17:38:12.3867398Z > tsc -p tsconfig.json
+native (windows-latest)	Run npm run build	2026-10-10T17:38:12.3867612Z 
+native (windows-latest)	Run npm run build	2026-10-10T17:38:14.1149714Z 
+native (windows-latest)	Run npm run build	2026-10-10T17:38:14.1150525Z > @codemap/server@0.1.0 build
+native (windows-latest)	Run npm run build	2026-10-10T17:38:14.1151279Z > tsc -p tsconfig.json
+native (windows-latest)	Run npm run build	2026-10-10T17:38:14.1151683Z 
+native (windows-latest)	Run npm run typecheck	﻿2026-10-10T17:38:17.1947303Z ##[group]Run npm run typecheck
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:17.1947689Z [36;1mnpm run typecheck[0m
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:17.2019614Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:17.2019983Z env:
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:17.2020257Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:17.2020742Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:17.2021214Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:17.2021651Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:17.2022097Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:17.2022799Z ##[endgroup]
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:17.9141098Z 
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:17.9141762Z > atlasmode@0.1.0 typecheck
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:17.9142464Z > node scripts/workspaces.mjs typecheck
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:17.9142868Z 
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:18.1725351Z 
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:18.1726055Z > @codemap/core@0.1.0 build
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:18.1726706Z > tsc -p tsconfig.json
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:18.1726981Z 
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:19.8409511Z 
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:19.8410171Z > @codemap/core@0.1.0 typecheck
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:19.8410818Z > tsc -p tsconfig.json --noEmit
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:19.8411046Z 
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:21.4241367Z 
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:21.4242068Z > @codemap/indexer@0.1.0 build
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:21.4242973Z > tsc -p tsconfig.json
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:21.4243302Z 
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:23.7507540Z 
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:23.7508239Z > @codemap/indexer@0.1.0 typecheck
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:23.7508869Z > tsc -p tsconfig.json --noEmit
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:23.7509172Z 
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:25.8639423Z 
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:25.8640347Z > @codemap/storage@0.1.0 build
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:25.8641146Z > tsc -p tsconfig.json
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:25.8641406Z 
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:27.1282787Z 
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:27.1283529Z > @codemap/storage@0.1.0 typecheck
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:27.1284921Z > tsc -p tsconfig.json --noEmit
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:27.1285316Z 
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:28.3636032Z 
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:28.3636905Z > @codemap/service@0.1.0 build
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:28.3637766Z > tsc -p tsconfig.json
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:28.3638083Z 
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:29.9380458Z 
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:29.9381204Z > @codemap/service@0.1.0 typecheck
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:29.9381840Z > tsc -p tsconfig.json --noEmit
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:29.9382077Z 
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:31.3906917Z 
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:31.3907532Z > @codemap/web@0.1.0 build
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:31.3908175Z > tsc -p tsconfig.json && vite build
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:31.3908472Z 
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:35.4696806Z [36mvite v7.3.6 [32mbuilding client environment for production...[36m[39m
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:35.5302418Z transforming...
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:38.1097524Z [32m✓[39m 241 modules transformed.
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:38.3850955Z rendering chunks...
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:38.3959793Z computing gzip size...
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:38.4139493Z [2mdist/[22m[32mindex.html                 [39m[1m[2m  0.52 kB[22m[1m[22m[2m │ gzip:   0.35 kB[22m
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:38.4140700Z [2mdist/[22m[35massets/index-CRX9i0dH.css  [39m[1m[2m 40.32 kB[22m[1m[22m[2m │ gzip:   8.14 kB[22m
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:38.4141971Z [2mdist/[22m[36massets/index-BwgsS5lY.js   [39m[1m[33m550.30 kB[39m[22m[2m │ gzip: 175.81 kB[22m
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:38.4143225Z [33m
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:38.4143625Z (!) Some chunks are larger than 500 kB after minification. Consider:
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:38.4144149Z - Using dynamic import() to code-split the application
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:38.4145030Z - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:38.4146435Z - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.[39m
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:38.4147012Z [32m✓ built in 2.93s[39m
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:38.6463457Z 
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:38.6464038Z > @codemap/web@0.1.0 typecheck
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:38.6464463Z > tsc -p tsconfig.json --noEmit
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:38.6464676Z 
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:42.5978107Z 
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:42.5982500Z > @codemap/mcp@0.1.0 build
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:42.5983056Z > tsc -p tsconfig.json
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:42.5983314Z 
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:44.3710822Z 
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:44.3711473Z > @codemap/mcp@0.1.0 typecheck
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:44.3712094Z > tsc -p tsconfig.json --noEmit
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:44.3712429Z 
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:46.0668728Z 
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:46.0669260Z > @codemap/server@0.1.0 build
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:46.0670041Z > tsc -p tsconfig.json
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:46.0670385Z 
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:49.3021576Z 
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:49.3022351Z > @codemap/server@0.1.0 typecheck
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:49.3023004Z > tsc -p tsconfig.json --noEmit
+native (windows-latest)	Run npm run typecheck	2026-10-10T17:38:49.3023277Z 
+native (windows-latest)	Run npm run lint	﻿2026-10-10T17:38:52.2636357Z ##[group]Run npm run lint
+native (windows-latest)	Run npm run lint	2026-10-10T17:38:52.2636786Z [36;1mnpm run lint[0m
+native (windows-latest)	Run npm run lint	2026-10-10T17:38:52.2709521Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+native (windows-latest)	Run npm run lint	2026-10-10T17:38:52.2709969Z env:
+native (windows-latest)	Run npm run lint	2026-10-10T17:38:52.2710324Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-latest)	Run npm run lint	2026-10-10T17:38:52.2710903Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+native (windows-latest)	Run npm run lint	2026-10-10T17:38:52.2711440Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-latest)	Run npm run lint	2026-10-10T17:38:52.2711933Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-latest)	Run npm run lint	2026-10-10T17:38:52.2712444Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-latest)	Run npm run lint	2026-10-10T17:38:52.2712861Z ##[endgroup]
+native (windows-latest)	Run npm run lint	2026-10-10T17:38:52.9837381Z 
+native (windows-latest)	Run npm run lint	2026-10-10T17:38:52.9837943Z > atlasmode@0.1.0 lint
+native (windows-latest)	Run npm run lint	2026-10-10T17:38:52.9838235Z > eslint .
+native (windows-latest)	Run npm run lint	2026-10-10T17:38:52.9838361Z 
+native (windows-latest)	Run npm test	﻿2026-10-10T17:39:00.9076990Z ##[group]Run npm test
+native (windows-latest)	Run npm test	2026-10-10T17:39:00.9077349Z [36;1mnpm test[0m
+native (windows-latest)	Run npm test	2026-10-10T17:39:00.9150435Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+native (windows-latest)	Run npm test	2026-10-10T17:39:00.9150883Z env:
+native (windows-latest)	Run npm test	2026-10-10T17:39:00.9151465Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-latest)	Run npm test	2026-10-10T17:39:00.9152043Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+native (windows-latest)	Run npm test	2026-10-10T17:39:00.9152650Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-latest)	Run npm test	2026-10-10T17:39:00.9153158Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-latest)	Run npm test	2026-10-10T17:39:00.9153661Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-latest)	Run npm test	2026-10-10T17:39:00.9154103Z ##[endgroup]
+native (windows-latest)	Run npm test	2026-10-10T17:39:01.6069304Z 
+native (windows-latest)	Run npm test	2026-10-10T17:39:01.6069968Z > atlasmode@0.1.0 test
+native (windows-latest)	Run npm test	2026-10-10T17:39:01.6070537Z > vitest run
+native (windows-latest)	Run npm test	2026-10-10T17:39:01.6070848Z 
+native (windows-latest)	Run npm test	2026-10-10T17:39:02.1193938Z 
+native (windows-latest)	Run npm test	2026-10-10T17:39:02.1196678Z [1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90mD:/a/AtlasMode/AtlasMode[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:02.1197628Z 
+native (windows-latest)	Run npm test	2026-10-10T17:39:02.8288548Z  [32m✓[39m apps/web/src/app/workspace.test.ts [2m([22m[2m24 tests[22m[2m)[22m[32m 124[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:05.4081276Z  [32m✓[39m packages/indexer/src/commonjs.test.ts [2m([22m[2m183 tests[22m[2m)[22m[33m 1729[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:12.7954309Z  [32m✓[39m packages/indexer/src/index.test.ts [2m([22m[2m54 tests[22m[2m)[22m[33m 9087[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:12.7957095Z      [33m[2m✓[22m[39m indexes Python relative package aliases, nested functions and self calls without executing targets [33m 1439[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:12.7966054Z      [33m[2m✓[22m[39m detects Git revision read-only and rejects invalid roots [33m 428[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:12.7968159Z      [33m[2m✓[22m[39m returns deterministic facts for repeated and relocated equal-content projects [33m 312[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:12.7970236Z    [33m[2m✓[22m[39m changes snapshot identity when Python capability changes for identical source bytes [33m 416[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:13.5359057Z  [32m✓[39m tests/integration/workspace-lifecycle.test.ts [2m([22m[2m31 tests[22m[2m)[22m[33m 9475[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:13.5401333Z    [33m[2m✓[22m[39m opens projects idempotently and isolates plans, routes, groups, policies and views [33m 348[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:13.5554188Z    [33m[2m✓[22m[39m verification refreshes and checks the latest approved historical revision after draft edits [33m 333[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:13.5592215Z    [33m[2m✓[22m[39m verification maps moved endpoints and removed call facts across snapshots [33m 330[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:13.5681942Z    [33m[2m✓[22m[39m removing a function remains unmet if the same symbol merely moved to another file [33m 358[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:13.5696498Z    [33m[2m✓[22m[39m new temporary functions bind by target path/name and ambiguous candidates stay unknown [33m 389[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:13.5718465Z    [33m[2m✓[22m[39m same-source capability refresh preserves original immutable snapshot and marks approval stale [33m 513[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:13.5721305Z    [33m[2m✓[22m[39m verification selects the most recent approved revision, never an older approval [33m 304[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:13.5724298Z    [33m[2m✓[22m[39m unrelated diagnostics do not suppress positive structural evidence or complete call absence [33m 385[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:13.5727220Z    [33m[2m✓[22m[39m temporary function moves reject copies and accept a true move [33m 407[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:13.5762141Z    [33m[2m✓[22m[39m removal absence depends on incomplete files in the symbol's language search scope [33m 728[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:13.5766909Z    [33m[2m✓[22m[39m a reassigned callable's obsolete initializer cannot satisfy required reuse [33m 309[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:13.5773135Z    [33m[2m✓[22m[39m ignoring unchanged source main.ts cannot prove approved function or relation removal [33m 314[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:13.5778098Z    [33m[2m✓[22m[39m ignoring unchanged source src/ cannot prove approved function or relation removal [33m 382[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:13.5797320Z    [33m[2m✓[22m[39m unavailable source cannot prove an approved move, while unaffected positive facts remain usable [33m 375[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:13.5815965Z    [33m[2m✓[22m[39m legacy snapshots stay readable and cannot prove removal from omitted files [33m 314[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:21.6202490Z  [32m✓[39m packages/indexer/src/configCapture.test.ts [2m([22m[2m26 tests[22m[2m)[22m[33m 7072[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:21.6205027Z        [33m[2m✓[22m[39m enforces the 512 file limit for 512 eligible seeds [33m 1508[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:21.6217660Z        [33m[2m✓[22m[39m enforces the 512 file limit for 513 eligible seeds [33m 4599[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:22.8516095Z  [32m✓[39m apps/server/src/server.test.ts [2m([22m[2m15 tests[22m[2m)[22m[33m 7682[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:22.8519630Z    [33m[2m✓[22m[39m health and project opening expose real indexed projects without choosing cwd implicitly [33m 697[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:22.8528097Z    [33m[2m✓[22m[39m file context exposes real indexed evidence through the selected project and validates pagination [33m 302[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:22.8530765Z    [33m[2m✓[22m[39m plan lifecycle preserves revision checks and verifies actually refreshed implementation [33m 405[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:22.8533122Z    [33m[2m✓[22m[39m plan invalid references are explicit issues and cannot be approved [33m 3441[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:22.8538924Z    [33m[2m✓[22m[39m domain failures map actionable unavailable errors and sanitize internal details [33m 835[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:23.3592019Z  [32m✓[39m packages/core/src/validation.test.ts [2m([22m[2m71 tests[22m[2m)[22m[32m 59[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:25.3085857Z  [32m✓[39m packages/indexer/src/workspaceResolution.test.ts [2m([22m[2m44 tests[22m[2m)[22m[33m 811[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:26.4820189Z [90mstdout[2m | apps/server/src/dev.test.ts[2m > [22m[2mreadiness waits for complete fixture records behind an owned proxy-write barrier
+native (windows-latest)	Run npm test	2026-10-10T17:39:26.4821716Z [22m[39m{"readiness":"blocked","heldProxy":"","requiredProxyAfterReady":"1"}
+native (windows-latest)	Run npm test	2026-10-10T17:39:26.4822103Z 
+native (windows-latest)	Run npm test	2026-10-10T17:39:29.6814539Z  [32m✓[39m apps/server/src/agent/direct-loop.test.ts [2m([22m[2m22 tests[22m[2m)[22m[33m 6668[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:29.6817679Z    [33m[2m✓[22m[39m real HTTP Responses → SDK scoped MCP → SQLite draft loop, reasoning continuation and source sentinel [33m 726[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:29.6825813Z    [33m[2m✓[22m[39m partial SSE becomes one public message while run is active; cancel aborts owned HTTP [33m 302[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:29.6827826Z    [33m[2m✓[22m[39m timeout aborts stalled provider and returns safe terminal code [33m 329[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:29.6829791Z    [33m[2m✓[22m[39m concurrent direct runs keep existing per-channel and four-run global limits [33m 315[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:29.6831967Z    [33m[2m✓[22m[39m in-flight MCP timeout drains committed journal and never dispatches another tool [33m 470[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:30.7102660Z  [32m✓[39m apps/server/src/dev.test.ts [2m([22m[2m8 tests[22m[2m)[22m[33m 5117[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:30.7104797Z    [33m[2m✓[22m[39m readiness waits for complete fixture records behind an owned proxy-write barrier [33m 942[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:30.7106870Z    [33m[2m✓[22m[39m fixture cleanup drains owned children even while a proxy write is held [33m 808[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:30.7108880Z    [33m[2m✓[22m[39m dev builds prerequisites and reaps children through handler shutdown [33m 838[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:30.7113455Z    [33m[2m✓[22m[39m dev builds prerequisites and reaps children through aliased-parent shutdown [33m 840[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:30.7115358Z    [33m[2m✓[22m[39m a development child failure exits with failure and stops the other child [33m 959[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:30.7117914Z    [33m[2m✓[22m[39m custom prerequisite build or lifecycle steps fail clearly instead of being bypassed [33m 350[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:34.8224113Z  [32m✓[39m apps/server/src/agent/bridge.test.ts [2m([22m[2m6 tests[22m[2m)[22m[33m 2174[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:34.8226638Z    [33m[2m✓[22m[39m gateway rejects foreign valid plans, approvals, opening, traversal and channel planning drafts; journals real drafts [33m 856[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:34.8229261Z    [33m[2m✓[22m[39m enforces one session, four global runs, expiration and bounded history [33m 345[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:35.0863234Z  [32m✓[39m tests/integration/mcp-stdio.test.ts [2m([22m[2m12 tests[22m[2m)[22m[33m 29138[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:35.0865785Z    [33m[2m✓[22m[39m actual SDK discovers exactly the supported tools and pages opened projects from an unrelated cwd [33m 813[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:35.0867955Z    [33m[2m✓[22m[39m SDK query tools retain pagination, budgets, snapshot identity and unresolved call evidence [33m 749[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:35.0871745Z    [33m[2m✓[22m[39m HTTP user approval and SDK share the same revision/hash; draft edits revoke current approval and verification uses history [33m 1004[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:35.0874857Z    [33m[2m✓[22m[39m get_approved_plan refreshes disk before trusting approval and stale explicit baselines conflict [33m 735[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:35.0876520Z    [33m[2m✓[22m[39m agent routes and new groups are validated, visible over HTTP, paged and marked stale after refresh [33m 838[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:35.0878405Z    [33m[2m✓[22m[39m schemas reject forged source/approval, absent baseline and invalid limits; HTTP domain conflicts remain actionable [33m 700[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:35.0880477Z    [33m[2m✓[22m[39m a newly connected SDK client reads retained approval/routes/groups after actual HTTP process restart [33m 3110[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:35.0884018Z    [33m[2m✓[22m[39m HTTP connection failure is an honest tool error and SDK close leaves no MCP process [33m 668[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:35.0886149Z    [33m[2m✓[22m[39m a real concurrent HTTP edit between create and update exposes the retained partial draft id/revision [33m 661[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:35.0888633Z    [33m[2m✓[22m[39m malformed stdio input and stdin EOF terminate cleanly with protocol-only stdout [33m 925[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:35.0890479Z    [33m[2m✓[22m[39m transport failure cancels an in-flight HTTP request instead of retaining the child until its timeout [33m 725[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:35.0892393Z    [33m[2m✓[22m[39m list_plans pages current project drafts and get_plan reads without reindex or foreign plan access [33m 1271[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:35.2749635Z  [32m✓[39m packages/core/src/queries.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 23[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:35.5036460Z  [32m✓[39m apps/web/src/features/navigation/workspace-navigation.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 88[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:36.0656032Z  [32m✓[39m packages/service/src/workspace.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 39[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:36.3484920Z  [32m✓[39m packages/indexer/src/packageCapture.test.ts [2m([22m[2m24 tests[22m[2m)[22m[33m 5906[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:36.3487538Z      [33m[2m✓[22m[39m enforces count boundary with 512 files [33m 2653[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:36.3507816Z      [33m[2m✓[22m[39m enforces count boundary with 513 files [33m 2394[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:36.6807435Z  [32m✓[39m apps/web/src/app/inspection-workspace.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 53[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:37.0619330Z  [32m✓[39m apps/web/src/features/chat/workspace-sync.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 85[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:37.0970586Z  [32m✓[39m packages/indexer/src/configResolution.test.ts [2m([22m[2m31 tests[22m[2m)[22m[33m 499[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:37.4420642Z  [32m✓[39m apps/server/src/agent/profile.test.ts [2m([22m[2m6 tests[22m[2m | [22m[33m1 skipped[39m[2m)[22m[32m 47[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:37.8380808Z  [32m✓[39m packages/indexer/src/projectReferencesResolution.test.ts [2m([22m[2m15 tests[22m[2m)[22m[33m 569[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:43.9272092Z  [32m✓[39m tests/integration/commonjs-resolution.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 5824[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:43.9315026Z    [33m[2m✓[22m[39m compiled HTTP and SDK stale package-only baselines without rewriting approval, symbols or historic SQLite snapshots [33m 5822[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:44.2636990Z  [32m✓[39m apps/web/src/features/chat/controller.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 20[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:44.2863922Z  [32m✓[39m tests/integration/forwarding-resolution.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 5839[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:44.2869949Z    [33m[2m✓[22m[39m compiled HTTP and SDK preserve real forwarding leaf identity and immutable approval/history after alias-only refresh and SQLite reopen [33m 5837[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:45.3613552Z  [32m✓[39m packages/indexer/src/projectReferencesCapture.test.ts [2m([22m[2m24 tests[22m[2m)[22m[33m 359[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:45.7394614Z  [32m✓[39m apps/web/src/app/groups-workspace.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 110[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:47.8392416Z  [32m✓[39m apps/server/src/agent/routes.test.ts [2m([22m[2m5 tests[22m[2m | [22m[33m4 skipped[39m[2m)[22m[33m 519[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:47.8395328Z    [33m[2m✓[22m[39m production defaults disconnected and POST gives explicit error with no invented answer [33m 517[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:50.4564165Z  [32m✓[39m tests/integration/tsconfig-resolution.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 5587[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:50.4569010Z    [33m[2m✓[22m[39m compiled HTTP and SDK stale config-only baselines without rewriting approval, symbols or historic SQLite snapshots [33m 5584[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:50.8214850Z  [32m✓[39m apps/web/src/features/groups/projection.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 34[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:51.2335200Z  [32m✓[39m packages/core/src/projectReferenceSchema.test.ts [2m([22m[2m30 tests[22m[2m)[22m[32m 34[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:51.3273117Z [90mstdout[2m | tests/integration/server-shutdown.test.ts[2m > [22m[2mcompiled server shuts down with a raw connection
+native (windows-latest)	Run npm test	2026-10-10T17:39:51.3278168Z [22m[39m{"state":"raw","root":"C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\atlas-shutdown-UlCmO8","pid":7316,"localPort":51042,"bytesWritten":0,"openAtStop":true,"handlerEmittedAndIpcDisconnectedMs":5.442399999999907,"stopMs":41.83039999999983,"exitCode":0,"signalCode":null,"socketErrors":[],"cleaned":true}
+native (windows-latest)	Run npm test	2026-10-10T17:39:51.3306693Z 
+native (windows-latest)	Run npm test	2026-10-10T17:39:52.2426924Z  [32m✓[39m apps/web/src/i18n/locale.test.tsx [2m([22m[2m5 tests[22m[2m)[22m[33m 633[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:52.2429105Z    [33m[2m✓[22m[39m cached failure help follows current locale while backend diagnostics remain verbatim [33m 599[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:52.5138165Z  [2m[90m↓[39m[22m apps/server/src/agent/process.test.ts [2m([22m[2m11 tests[22m[2m | [22m[33m11 skipped[39m[2m)[22m
+native (windows-latest)	Run npm test	2026-10-10T17:39:52.8462207Z  [32m✓[39m apps/web/src/features/graph/funnel.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 25[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:53.2080498Z [90mstdout[2m | tests/integration/server-shutdown.test.ts[2m > [22m[2mcompiled server shuts down with a partial headers connection
+native (windows-latest)	Run npm test	2026-10-10T17:39:53.2085712Z [22m[39m{"state":"partial headers","root":"C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\atlas-shutdown-w31Cw6","pid":8972,"localPort":51137,"bytesWritten":49,"openAtStop":true,"handlerEmittedAndIpcDisconnectedMs":2.5551000000004933,"stopMs":54.07390000000032,"exitCode":0,"signalCode":null,"socketErrors":[],"cleaned":true}
+native (windows-latest)	Run npm test	2026-10-10T17:39:53.2091767Z 
+native (windows-latest)	Run npm test	2026-10-10T17:39:54.3072534Z  [32m✓[39m packages/indexer/src/projectReferencesReview.test.ts [2m([22m[2m6 tests[22m[2m)[22m[33m 334[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:54.5992602Z  [32m✓[39m apps/web/src/features/graph/projection.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 12[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:54.9295268Z [90mstdout[2m | tests/integration/server-shutdown.test.ts[2m > [22m[2mcompiled server shuts down with a partial body connection
+native (windows-latest)	Run npm test	2026-10-10T17:39:54.9300011Z [22m[39m{"state":"partial body","root":"C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\atlas-shutdown-aVkPYE","pid":8428,"localPort":51228,"bytesWritten":108,"openAtStop":true,"handlerEmittedAndIpcDisconnectedMs":2.658300000000054,"stopMs":56.36239999999998,"exitCode":0,"signalCode":null,"socketErrors":[],"cleaned":true}
+native (windows-latest)	Run npm test	2026-10-10T17:39:54.9302353Z 
+native (windows-latest)	Run npm test	2026-10-10T17:39:54.9310138Z  [32m✓[39m apps/web/src/app/funnel-workspace.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 44[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:55.4705963Z  [32m✓[39m apps/server/src/index.test.ts [2m([22m[2m4 tests[22m[2m)[22m[33m 18103[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:55.4707404Z    [33m[2m✓[22m[39m CLI serves real data and closes SQLite through handler shutdown [33m 3377[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:55.4708828Z    [33m[2m✓[22m[39m CLI validates port before startup and reports launch failure cleanly [33m 5264[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:55.4710206Z    [33m[2m✓[22m[39m CLI opens an explicitly configured default workspace [33m 3158[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:55.4711790Z    [33m[2m✓[22m[39m CLI enforces listener authority and enables the explicit local development proxy only on opt-in [33m 6301[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:56.0329373Z  [32m✓[39m packages/indexer/src/projectReferencesFreshness.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 181[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:56.0908334Z  [32m✓[39m packages/storage/src/sqlite.test.ts [2m([22m[2m6 tests[22m[2m)[22m[33m 408[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:56.7071781Z  [32m✓[39m apps/mcp/src/scope.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 101[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:56.9494428Z  [32m✓[39m apps/server/src/agent/native.test.ts [2m([22m[2m4 tests[22m[2m | [22m[33m2 skipped[39m[2m)[22m[32m 9[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:57.2491208Z  [32m✓[39m apps/server/src/agent/responses-stream.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 56[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:57.4483574Z  [32m✓[39m packages/indexer/src/idx01.test.ts [2m([22m[2m17 tests[22m[2m)[22m[33m 526[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:57.5678640Z  [32m✓[39m apps/web/src/app/ConfigurationProjectGraphPanel.test.tsx [2m([22m[2m7 tests[22m[2m)[22m[32m 33[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:57.6900668Z  [32m✓[39m apps/web/src/features/graph/inspection.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:57.9059021Z  [32m✓[39m apps/server/src/navigation-query.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 20[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:57.9830570Z  [32m✓[39m apps/web/src/features/chat/panels.test.tsx [2m([22m[2m2 tests[22m[2m)[22m[32m 16[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:58.2456791Z  [32m✓[39m apps/web/src/features/planning/pending.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[32m 19[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:58.2475760Z  [32m✓[39m packages/service/src/group-view.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:59.5716026Z  [32m✓[39m packages/indexer/src/declarations.test.ts [2m([22m[2m2 tests[22m[2m)[22m[33m 429[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:59.8764941Z  [32m✓[39m apps/server/src/group-view.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 401[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:59.8767101Z    [33m[2m✓[22m[39m accepts old views and bounded collapse IDs over HTTP, rejects malformed arrays and filters foreign groups [33m 399[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:39:59.9228999Z  [32m✓[39m apps/server/src/funnel-query.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:40:00.1541365Z  [32m✓[39m apps/web/src/features/planning/operations.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:40:00.4168983Z  [32m✓[39m apps/web/src/features/graph/nodeIdentity.test.tsx [2m([22m[2m3 tests[22m[2m)[22m[32m 13[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:40:00.6663888Z  [32m✓[39m apps/server/src/agent/platform-refusal.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 15[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:40:01.0138255Z  [32m✓[39m packages/indexer/src/packageMode.test.ts [2m([22m[2m13 tests[22m[2m)[22m[32m 10[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:40:01.4533155Z  [32m✓[39m tests/integration/server-shutdown.test.ts [2m([22m[2m4 tests[22m[2m)[22m[33m 11898[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:40:01.4534929Z    [33m[2m✓[22m[39m compiled server shuts down with a raw connection [33m 1770[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:40:01.4536965Z    [33m[2m✓[22m[39m compiled server shuts down with a partial headers connection [33m 1881[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:40:01.4543974Z    [33m[2m✓[22m[39m compiled server shuts down with a partial body connection [33m 1721[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:40:01.4545689Z    [33m[2m✓[22m[39m shutdown preserves slow complete requests before discarding incomplete pipelined bytes [33m 6523[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:40:01.4626060Z  [32m✓[39m apps/web/src/app/WorkspacePanels.test.tsx [2m([22m[2m1 test[22m[2m)[22m[32m 23[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:40:01.7190624Z  [32m✓[39m apps/web/src/features/navigation/path.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:40:01.7406298Z  [32m✓[39m apps/web/src/features/groups/inspection.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:40:01.9955848Z  [32m✓[39m apps/web/src/features/planning/history.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:40:02.3169061Z  [32m✓[39m apps/web/src/features/graph/InspectionCard.test.tsx [2m([22m[2m2 tests[22m[2m)[22m[32m 19[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:40:02.6664222Z  [32m✓[39m apps/web/src/app/group-collapse-workspace.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 51[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:40:02.9362930Z  [32m✓[39m apps/web/src/api/scope.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 10[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:40:03.4194332Z  [32m✓[39m tests/integration/group-view.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 73[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:40:03.7613333Z  [32m✓[39m apps/web/src/features/groups/GroupsPanel.test.tsx [2m([22m[2m2 tests[22m[2m)[22m[32m 19[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:40:04.3363673Z  [32m✓[39m apps/web/src/features/chat/shell.test.tsx [2m([22m[2m1 test[22m[2m)[22m[32m 41[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:40:04.3808042Z  [32m✓[39m tests/integration/preload-loader.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 2379[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:40:04.3810348Z    [33m[2m✓[22m[39m production preload loads from a checkout path containing spaces and a hash [33m 2376[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:40:04.6818475Z  [32m✓[39m apps/web/src/features/groups/memberBindings.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 37[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:40:04.9396111Z  [32m✓[39m apps/web/src/features/groups/selection.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:40:04.9627490Z  [32m✓[39m apps/server/src/agent/direct.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 10[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:40:05.1156652Z  [32m✓[39m tests/integration/repository-provenance.test.ts [2m([22m[2m4 tests[22m[2m)[22m[33m 5009[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:40:05.1158625Z    [33m[2m✓[22m[39m validator rejects modified supported source before capture [33m 1150[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:40:05.1161120Z    [33m[2m✓[22m[39m validator rejects staged supported source before capture [33m 1521[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:40:05.1168367Z    [33m[2m✓[22m[39m validator rejects untracked supported source before capture [33m 1397[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:40:05.1180387Z    [33m[2m✓[22m[39m clean provenance is recorded and completion rejects intervening source or revision changes [33m 939[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:40:05.2656407Z  [32m✓[39m apps/web/src/features/chat/transport.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 47[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:40:05.4321068Z  [32m✓[39m apps/web/src/features/groups/GroupCard.test.tsx [2m([22m[2m1 test[22m[2m)[22m[32m 18[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:40:05.4717641Z  [32m✓[39m apps/web/src/features/chat/direct-panel.test.tsx [2m([22m[2m1 test[22m[2m)[22m[32m 18[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:40:05.7059475Z  [32m✓[39m apps/web/src/features/chat/sessions.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 4[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:40:05.7654093Z  [32m✓[39m apps/web/src/api/client.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 32[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:40:35.6092856Z  [32m✓[39m apps/mcp/src/client.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 30030[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:40:35.6094536Z    [33m[2m✓[22m[39m the 30 second deadline reports API_TIMEOUT while consuming a stalled JSON body [33m 30028[2mms[22m[39m
+native (windows-latest)	Run npm test	2026-10-10T17:40:35.6173000Z 
+native (windows-latest)	Run npm test	2026-10-10T17:40:35.6184700Z [2m Test Files [22m [1m[32m77 passed[39m[22m[2m | [22m[33m1 skipped[39m[90m (78)[39m
+native (windows-latest)	Run npm test	2026-10-10T17:40:35.6195062Z [2m      Tests [22m [1m[32m863 passed[39m[22m[2m | [22m[33m18 skipped[39m[90m (881)[39m
+native (windows-latest)	Run npm test	2026-10-10T17:40:35.6195950Z [2m   Start at [22m 17:39:02
+native (windows-latest)	Run npm test	2026-10-10T17:40:35.6200191Z [2m   Duration [22m 93.47s[2m (transform 3.59s, setup 0ms, import 26.60s, tests 175.94s, environment 13ms)[22m
+native (windows-latest)	Run npm test	2026-10-10T17:40:35.6203617Z 
+native (windows-latest)	Run npm run smoke	﻿2026-10-10T17:40:38.0158709Z ##[group]Run npm run smoke
+native (windows-latest)	Run npm run smoke	2026-10-10T17:40:38.0159146Z [36;1mnpm run smoke[0m
+native (windows-latest)	Run npm run smoke	2026-10-10T17:40:38.0238777Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+native (windows-latest)	Run npm run smoke	2026-10-10T17:40:38.0239261Z env:
+native (windows-latest)	Run npm run smoke	2026-10-10T17:40:38.0239601Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-latest)	Run npm run smoke	2026-10-10T17:40:38.0240099Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+native (windows-latest)	Run npm run smoke	2026-10-10T17:40:38.0240627Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-latest)	Run npm run smoke	2026-10-10T17:40:38.0241149Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-latest)	Run npm run smoke	2026-10-10T17:40:38.0241667Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-latest)	Run npm run smoke	2026-10-10T17:40:38.0242084Z ##[endgroup]
+native (windows-latest)	Run npm run smoke	2026-10-10T17:40:38.8871678Z 
+native (windows-latest)	Run npm run smoke	2026-10-10T17:40:38.8872281Z > atlasmode@0.1.0 smoke
+native (windows-latest)	Run npm run smoke	2026-10-10T17:40:38.8872682Z > node scripts/smoke.mjs
+native (windows-latest)	Run npm run smoke	2026-10-10T17:40:38.8872896Z 
+native (windows-latest)	Run npm run smoke	2026-10-10T17:40:48.4781287Z PASS production assets + TS/Python HTTP/SDK browsing + no target execution + persistent restart
+native (windows-latest)	Post Run actions/setup-python@v5	﻿2026-10-10T17:40:48.5996192Z Post job cleanup.
+native (windows-latest)	Post Run actions/setup-python@v5	2026-10-10T17:40:48.7500083Z (node:9312) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+native (windows-latest)	Post Run actions/setup-python@v5	2026-10-10T17:40:48.7501492Z (Use `node --trace-deprecation ...` to show where the warning was created)
+native (windows-latest)	Post Run actions/setup-node@v4	﻿2026-10-10T17:40:48.7800981Z Post job cleanup.
+native (windows-latest)	Post Run actions/setup-node@v4	2026-10-10T17:40:48.9388976Z (node:2084) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+native (windows-latest)	Post Run actions/setup-node@v4	2026-10-10T17:40:48.9390351Z (Use `node --trace-deprecation ...` to show where the warning was created)
+native (windows-latest)	Post Run actions/setup-node@v4	2026-10-10T17:40:48.9394352Z Cache hit occurred on the primary key node-cache-Windows-x64-npm-1558a3ed390b9a8c29723f3fb96a62699469c60eff4f6b92bfdd77d9b12aa56d, not saving cache.
+native (windows-latest)	Post Run actions/checkout@v4	﻿2026-10-10T17:40:48.9717967Z Post job cleanup.
+native (windows-latest)	Post Run actions/checkout@v4	2026-10-10T17:40:49.1689822Z [command]"C:\Program Files\Git\bin\git.exe" version
+native (windows-latest)	Post Run actions/checkout@v4	2026-10-10T17:40:49.1980936Z git version 2.55.0.windows.5
+native (windows-latest)	Post Run actions/checkout@v4	2026-10-10T17:40:49.2066823Z Temporarily overriding HOME='D:\a\_temp\f3e5efca-251a-4d81-b364-153c08fcba80' before making global git config changes
+native (windows-latest)	Post Run actions/checkout@v4	2026-10-10T17:40:49.2068363Z Adding repository directory to the temporary git global config as a safe directory
+native (windows-latest)	Post Run actions/checkout@v4	2026-10-10T17:40:49.2082523Z [command]"C:\Program Files\Git\bin\git.exe" config --global --add safe.directory D:\a\AtlasMode\AtlasMode
+native (windows-latest)	Post Run actions/checkout@v4	2026-10-10T17:40:49.2407298Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+native (windows-latest)	Post Run actions/checkout@v4	2026-10-10T17:40:49.2714126Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+native (windows-latest)	Post Run actions/checkout@v4	2026-10-10T17:40:49.8483477Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+native (windows-latest)	Post Run actions/checkout@v4	2026-10-10T17:40:49.8754747Z http.https://github.com/.extraheader
+native (windows-latest)	Post Run actions/checkout@v4	2026-10-10T17:40:49.8802641Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset-all http.https://github.com/.extraheader
+native (windows-latest)	Post Run actions/checkout@v4	2026-10-10T17:40:49.9118868Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+native (windows-latest)	Post Run actions/checkout@v4	2026-10-10T17:40:50.4836141Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp ^includeIf\.gitdir:
+native (windows-latest)	Post Run actions/checkout@v4	2026-10-10T17:40:50.5156319Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "git config --local --show-origin --name-only --get-regexp remote.origin.url"
+native (windows-latest)	Complete job	﻿2026-10-10T17:40:51.1006226Z Cleaning up orphan processes
+native (windows-latest)	Complete job	2026-10-10T17:40:51.1046050Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-node@v4, actions/setup-python@v5. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

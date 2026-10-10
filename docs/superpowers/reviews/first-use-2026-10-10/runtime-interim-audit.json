@@ -1,0 +1,64 @@
+{
+  "at": "2026-10-10T18:15:01.398Z",
+  "scope": "registered first-use/POL01 resources only; interim audit, not final cleanup",
+  "processes": [
+    {
+      "pid": 1960,
+      "state": "ESRCH"
+    },
+    {
+      "pid": 2663,
+      "state": "ESRCH"
+    },
+    {
+      "pid": 99714,
+      "state": "ESRCH"
+    },
+    {
+      "pid": 99741,
+      "state": "ESRCH"
+    },
+    {
+      "pid": 99783,
+      "state": "ESRCH"
+    },
+    {
+      "pid": 99835,
+      "state": "ESRCH"
+    },
+    {
+      "pid": 99878,
+      "state": "ESRCH"
+    },
+    {
+      "pid": 99903,
+      "state": "ESRCH"
+    },
+    {
+      "pid": 99929,
+      "state": "ESRCH"
+    },
+    {
+      "pid": 99982,
+      "state": "ESRCH"
+    },
+    {
+      "pid": 100040,
+      "state": "ESRCH"
+    }
+  ],
+  "listeners": [
+    {
+      "port": 4310,
+      "state": "ECONNREFUSED"
+    },
+    {
+      "port": 44310,
+      "state": "ECONNREFUSED"
+    },
+    {
+      "port": 38847,
+      "state": "ECONNREFUSED"
+    }
+  ]
+}

@@ -1,0 +1,192 @@
+--- a/docs/superpowers/specs/2026-10-10-ag03-design.md
++++ b/docs/superpowers/specs/2026-10-10-ag03-design.md
+@@ -1,6 +1,6 @@
+ # AG03 Windows 原生 Agent 所属 Job 与有限收口设计
+ 
+-日期：2026-10-10。作者执行模型：gpt-6.1-sol high。状态：DESIGN ONLY，等待独立审查及主控产品窗口。此文不解除现有 Windows 原生 Chat guard。
++日期：2026-10-10。作者执行模型：gpt-6.1-sol high。版本：rev1，仅修独立审查 I1/M1；原 rev0 字节与 REQUEST CHANGES 原文已归档。状态：DESIGN ONLY，等待原 reviewer 复审及主控产品窗口。此文不解除现有 Windows 原生 Chat guard。
+ 
+ ## 目标与当前事实
+ 
+@@ -32,7 +32,7 @@
+ 
+ ## 根执行前的无归属窗口消除
+ 
+-helper 创建 unnamed Job，立即设置 KILL_ON_JOB_CLOSE；Job HANDLE 非 inheritable，仅 helper 持有。用 STARTUPINFOEXW 的 PROC_THREAD_ATTRIBUTE_JOB_LIST，在 CreateProcessW 创建根时同时归属 Job；HANDLE_LIST 只允许目标 stdin/stdout/stderr 的三个显式 duplicated inheritable HANDLE。控制管道、Job、父监视器、测试观察 HANDLE 不继承。
++helper 创建 unnamed Job，立即设置 KILL_ON_JOB_CLOSE；私有 Job HANDLE 自创建起为非 inheritable，仅 helper 持有，独立于 stdio 的继承设置。用 STARTUPINFOEXW 的 PROC_THREAD_ATTRIBUTE_JOB_LIST，在 CreateProcessW 创建根时同时归属 Job；HANDLE_LIST 只允许目标 stdin/stdout/stderr 的三个显式 duplicated inheritable HANDLE。三个 duplicate 都须有效、非 NULL/INVALID_HANDLE_VALUE、不是 pseudo HANDLE；`CreateProcessW(..., bInheritHandles=TRUE, ...)`，`StartupInfo.dwFlags |= STARTF_USESTDHANDLES`，`hStdInput/hStdOutput/hStdError` 分别指向同一 HANDLE_LIST 中对应三份 duplicate。控制管道、Job、父监视器、测试观察 HANDLE 明确清除 HANDLE_FLAG_INHERIT，且不入 HANDLE_LIST；bInheritHandles=TRUE 不改变这些独立约束。准备参数或创建失败时释放本 helper 所有原始/duplicate stdio HANDLE；成功继承后立即释放 helper 自己的副本，目标继承副本随其所属进程清理。[STARTUPINFOW 标准句柄要求](https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/ns-processthreadsapi-startupinfow)
+ 
+ CreateProcessW 使用 `CREATE_SUSPENDED | EXTENDED_STARTUPINFO_PRESENT | CREATE_UNICODE_ENVIRONMENT | CREATE_NO_WINDOW`、显式 lpApplicationName 和 cwd。先检查 IsProcessInJob(root, ownedJob) 为 true，再 ResumeThread；失败时根不得执行，终止/释放只属于本次的 HANDLE。不能退回“创建 suspended 根，再单独 AssignProcessToJobObject”：helper 在两步之间崩溃会留下尚未归属的 suspended 根。JOB_LIST 平台下限和 HANDLE_LIST 继承约束来自 [UpdateProcThreadAttribute](https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-updateprocthreadattribute)。
+ 
+@@ -52,13 +52,25 @@
+ 
+ 使用 TerminateJobObject 终止整个本轮 Job；Windows 不伪装 SIGTERM grace 或交互 Ctrl+Break。`graceMs` 仍只属于现 POSIX adapter。JOB_EMPTY 依据 QueryInformationJobObject 的 ActiveProcesses==0；不能用根 exit、Job HANDLE 等待或单个 completion-port 通知代替。Windows 终止为硬终止，应用不能推迟。[TerminateJobObject](https://learn.microsoft.com/en-us/windows/win32/api/jobapi2/nf-jobapi2-terminatejobobject)、[Job accounting ActiveProcesses](https://learn.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-jobobject_basic_accounting_information)
+ 
+-生产预算固定：helper setup/READY 5000ms；运行默认 timeoutMs 120000ms；probe 执行 5000ms/合计输出 65536 bytes；Job empty 等待 2000ms（poll 间隔最多 20ms）；其后 stdio drain 1000ms；gateway drain 5000ms。停止与 setup 共用停止 latch，cancel 不额外等待剩余 setup 期限。终止、helper fallback 和 drain 共用 5000ms 的 process stop 总期限；gateway 随 stop 同步关闭 ingress，整轮 cancel/bridge.close 的响应总期限 10000ms，不按四个运行串行累加。计时使用 monotonic clock，期限从首次 stop/root exit/failure 开始，重复 stop 不重置。
++生产预算固定：helper setup/READY 5000ms；运行默认 timeoutMs 120000ms；probe 执行 5000ms/合计输出 65536 bytes；Job empty 等待 2000ms（poll 间隔最多 20ms）；其后 stdio drain 1000ms；gateway drain 5000ms。停止与 setup 共用停止 latch，cancel/server close 不额外等待剩余 setup/execute 期限。终止、helper fallback 和 drain 共用 5000ms 的 process stop 总期限；gateway 随 stop 同步关闭 ingress，整轮 cancel/server生命周期close 的响应总期限 10000ms，覆盖所有 runs、prestart/inspect/probes，不按四个运行或串行 probe 数累加。计时使用 monotonic clock，关闭总 deadline 从首次 beginClose 开始，重复 stop/close 不重置。
+ 
+ 正常结束也清理后代：ROOT_EXIT 后 TerminateJobObject→JOB_EMPTY→stdio EOF/受限 drain→done。已有 combined 1 MiB JSONL output budget、unsafe tool/privacy 检查保留。JOB_EMPTY 已证明后，stdio 仍未 EOF 是 AGENT_CLEANUP_FAILED，不返回 ok。
+ 
+ helper ERROR/提前退出/control EOF/STOP timeout：Node 只用自己 spawn 的 helper handle 终止 helper，依靠独占 Job HANDLE 关闭，不凭历史 PID 扫描后代。有限 drain 后返回 AGENT_CLEANUP_FAILED；缺 JOB_EMPTY acknowledgement 就明确“清理未证实”，不能声称已完成所属清理。该 native runner 在当前 server 生命周期内转 unavailable，并使 cached inspect 失效；保留临时 cwd 到已证实 Job empty，未证实时保留有界错误 receipt 路径，不把它作 source/repo 文件。正常 cancellation 只有 Job empty 与 gateway journal settled 才标 cancelled；cleanup failure 的 status 为 failed，即使用户曾点停止。
+ 
+-私有 transport 接口：`launchOwnedProcess(input:{command,args,cwd,env}): OwnedProcess`，含 stdin/stdout/stderr、`rootExit:Promise<number|null>`、`done:Promise<{cleanup:"verified"|"unverified";code:number|null}>`、`stop():Promise<void>`。Windows stop/done 总期限按上表；helper故障未观测根退出时rootExit以null结束，不能留下parser等待永不settle的promise，null不代表根已证实退出。`RunningAgent` 和 ChatRun DTO 不增加字段；现JSONL绑定抽为package内部 `bindAgentTransport(input,emit,transport):RunningAgent`，保留解析规则，阶段A的可信test runner可直接使用它与真实Windowsadapter，不绕过publicguard。阶段B startProcess才条件式选择transport。raw probe使用同一 owned transport，不经过 JSONL parser。probe 的 5s 仅执行预算，整次最多 setup5s+execute5s+stop5s，inspect 原本多次 probe 为有界串行，不能把 status 的完整检查误称 5s。
++私有 transport 接口：`launchOwnedProcess(input:{command,args,cwd,env}, scope:OwnedScope): OwnedProcess`，scope 在任何异步验真/启动之前登记且包含 sticky AbortSignal；含 stdin/stdout/stderr、`rootExit:Promise<number|null>`、`done:Promise<{cleanup:"verified"|"unverified";code:number|null}>`、`stop():Promise<void>`。Windows stop/done 总期限按上表；helper故障未观测根退出时rootExit以null结束，不能留下parser等待永不settle的promise，null不代表根已证实退出。`RunningAgent` 和 ChatRun DTO 不增加字段；现JSONL绑定抽为package内部 `bindAgentTransport(input,emit,transport):RunningAgent`，保留解析规则，阶段A的可信test runner可直接使用它与真实Windowsadapter及自己的ownerregistry，不绕过publicguard。阶段B startProcess才条件式选择transport，内部兼容签名 `startProcess(input,emit,ownedScope?:OwnedScope)`：native.start必须传共享registry的scope；既有两参数独立调用由函数建立仅本次所属的scope，调用者仍通过stop/done负责收口。第三参数不放进ProcessInvocation/HTTP DTO。raw probe使用同一 owned transport，不经过 JSONL parser。未关闭时单probe最多 setup5s+execute5s+stop5s=15s，多probe正常inspect串行有界，但一旦close则中断当前phase、禁止后续probe，所有停止并行共用server10s deadline，不能等待原串行检查跑完。
++
++## 注册运行前的 inspect/probe 所属生命周期（I1）
++
++native runner 创建一份内部 `OwnedRegistry`，在 bridge、native status/inspect/start 和 transport 之间共享。可信 `AgentRunner` construction 可以带可选 `ownedLifecycle:OwnedRunnerLifecycle`；没有OS进程的runner由bridge建立内部registry适配。它包含 `registry`、同步 `beginClose()`、`close(deadline):Promise<AgentCloseReport>` 和 `whenIdle():Promise<void>`，均不属于 AgentStatus/ChatRun/RunningAgent HTTP DTO。DTO只显式序列化既有字段，不能把registry、AbortSignal、HANDLE、command/env或完整profile/config对象泄漏到客户端。
++
++registry在每次chat.start进入status await之前登记prestart operation；status endpoint也在进入runner.status前纳入owner范围。首次inspect在创建cached promise前登记实际inspect operation，多个status/chat请求共享同一inspection的owner与abort信号，不为每个waiter重启probe。每个probe在任何manifest检查/异步I/O/pipe listen/spawn前 reserve launch lease。reservation、closing检查与stickyabort绑定必须同步；任何await之后、每个下一串行probe之前、每次spawn/Resume之前都再次检查同一scope。若lease在分配helper前被close，之后不得创建helper；若已分配，则registry已经能用实际owned handle停止。await config/profile/login返回也检查scope，不因close失败重试/退回默认provider/API/auth配置。
++
++bridge/server `beginClose()` 首先同步设置同一closing latch并abort所有prestarts、status/inspect与launch leases，再并行stop已存在的helper和runs，立即关闭已有gateway ingress。cache pending inspection因abort不继续features/login等后续步骤；即使底层filesystem promise不能物理取消，scope禁止其完成后再spawn，将raw work保留在registry追踪，外层HTTP等待abort可有界结束但不冒称底层idle。closing之后新status不启动probe，返回安全unavailable/503；新chat.start以及已在status await的prestart恢复后再次检查closing，拒绝登记StoredRun/启动gateway/CLI，并仅清自身session reservation。已有cached成功status也不得越过closing允许新start。
++
++`whenIdle` 覆盖prestart、所有status/inspect owner（包括cached共享work）、所有launch leases、已登记runs以及已dispatch gateway tasks。只在全部实际settled且所属清理verified时resolve；abort外层waiter或Promise.race返回不等于从registry删除raw work。缺JOB_EMPTY等unverified lease进入quarantine，runner unavailable、whenIdle仍pending，不能当成run已清空就关闭storage。close10s到期返回 `{settled:false,whenSettled}` 与safe pending诊断，registry保留所属；不等待单probe15s或所有串行probe累计期限。正常probe abort验证清理后prestart/status安全失败并释放其reservation；mutation pending沿既有journal规则。bridge registry的prestart计入原四run并发边界，不允许未登记runs绕过上限。
++
++server的生命周期callback在请求可用前注册，main shutdown的whenIdle来自该完整owner，而非遍历runs的snapshot。root HTTP listener可以有界关闭，storage保持到whenIdle；unverified或原work不settle时明确报告关闭未完成，保留storage与一次finalizer，禁止后续spawn/串行probe/Chat start。status abort的reason只描述关闭/机制问题，保留已确定的provider/profile/model/authentication元数据，不将unavailable误写成未登录、错误root/source配置或新的认证事实。
+ 
+ ## Gateway 与已派发写入
+ 
+@@ -66,7 +78,7 @@
+ 
+ 超过 5s，gateway listener/sockets 必须已关闭，bridge 的 run 保持 running，errors 增加 AGENT_CLEANUP_PENDING（“本轮连接已关闭，已派发变更仍在收口”），mayHaveSavedChanges=true，changedPlanIds 仅已证实本项目 journal IDs。cancel 在总期限内返回该 snapshot；不释放 conversation active，不允许同一会话启动新 run，不标 cancelled/completed，不声称 journal 全量已确定。后续 poll 继续，whenSettled 后以 failed/AGENT_GATEWAY_DRAIN_TIMEOUT 终结，补实际 journal IDs。无 mutation 的纯读请求也使用该保守路径；历史 snapshot 不伪造为未写入。
+ 
+-`AgentBridge.close():Promise<AgentCloseReport>` 以所有 active runs 并行收口，返回 `{settled:boolean;whenSettled:Promise<void>}`；设置 closing，不再接受运行。routes preClose 等待有界 report 后允许 Fastify 主 listener 关闭。`registerAgentRoutes` 返回内部生命周期 `whenIdle():Promise<void>`；`createServer` 新增可选可信 construction callback `onAgentLifecycle` 传给 server main，不增加 HTTP 入口。main index.shutdown 在 app.close 后只在生命周期 whenIdle 确认服务 tasks settled 时关闭 storage；pending 时有界返回并报告收口未完成，持有 storage、附一次 whenIdle finalizer，绝不 finally 提前 close DB。错误 finalizer 只报告安全错误并保留失败状态，无 process.exit 强退、全机 kill 或第二个写队列。
++`AgentBridge.close():Promise<AgentCloseReport>` 先beginClose完整ownerregistry，再以全部prestart/status/inspect/probes和active runs并行收口，返回 `{settled:boolean;whenSettled:Promise<void>}`；不再接受运行。routes preClose 等待server共用10s deadline内的report后允许Fastify主listener关闭，status/prestart外层等待也须在此期限内abort结束，不留下Fastify等待完整15s/串行inspect。`registerAgentRoutes` 返回完整内部生命周期 `whenIdle():Promise<void>`；`createServer` 新增可选可信 construction callback `onAgentLifecycle` 传给 server main，不增加 HTTP 入口。main index.shutdown 在 app.close 后只在生命周期 whenIdle 确认所有实际work settled及owned清理verified时关闭storage；pending/unverified时有界返回并报告收口未完成，持有storage、附一次whenIdle finalizer，绝不finally提前close DB。错误finalizer只报告安全错误并保留失败状态，无process.exit强退、全机kill或第二个写队列。
+ 
+ 持续 pending 的 run 保留原四 active-run 上限，不被 TTL/200 finished cap 错误回收；保护数量有界。没有平台机制能承诺任意不可取消 service handler 的业务终结期限，文档与 UI 必须显示该限制；AG03 的正常 root-first/MCP 生命周期 gate 必须在期限内 settled，永不 settle 的 negative case 只证明有界失败和不假报完成。
+ 
+@@ -85,7 +97,7 @@
+ | G1 原子所属 | suspended 根在 ResumeThread 前 IsProcessInJob 为 true；故障 test harness 在创建后/恢复前退出，观察者所持根 HANDLE signaled，无 orphan。helper 生产构建不包含故障开关。 |
+ | G2 根先退出 | fixture 建子/孙后代、持 stdout/stderr，根先 exit0/exit1；收到 ROOT_EXIT 后 bounded JOB_EMPTY/done，无需原 PID 存活。 |
+ | G3 owner/helper 故障 | READY 后真实终止 owned helper；另起 test owner 再真实终止 owner；所有已观察后代 HANDLE signaled，unrelated sentinel HANDLE 仍活；缺 ack 返回 cleanup failed，不冒 verified。 |
+-| G4 cancellation/races | stop 在 launch前/READY前/运行中/根退出后，多次 stop、四 run 并行、timeout、超输出/协议失败；期限不重置，所有 own handles/ports释放。 |
++| G4 cancellation/races | stop 在 launch前/READY前/运行中/根退出后，多次 stop、四 run（含prestart）并行、timeout、超输出/协议失败；期限不重置，所有 own handles/ports释放。真实Windows barrier分别令独立status endpoint在launch/READY前、chat.start在status await时、多个请求共享cached inspect时触发server.close：owned helper都并行stop，不启动后续features/login/新chat；总close≤10s。缺ack路径返回unverified/pending、storage保持，raw work/lease仍受registry追踪，sentinel保活。 |
+ | G5 API/interoperability | literal argv 含空串、中文、空格、quotes/backslash；nested outer Job、detached descendant、breakaway 请求拒绝；非法 frame不恢复根；shim/identity/arch失败拒绝。 |
+ | G6 实际 MCP/gateway | fixture CLI 起编译后的真实 MCP SDK stdio client访问独立 HTTP/SQLite，写 draft 后根退出/MCP持stdio；cancel/server close 返回actual journal IDs，gateway新连接被拒，DB可正常reopen，无 source writes/approval。 |
+ | G7 已 dispatch 收口 | deterministic barrier把 mutation卡在 dispatch后，close先关listener；5s pending真实时钟边界，UI/poll不terminal、不解锁会话、storage未close；release后仅一次mutation/actualjournal→failed终结，storage最后关闭。 |
+@@ -95,6 +107,6 @@
+ 
+ ## 自审和交付边界
+ 
+-自审结果：root-first 与 stdio close 分离；Job 创建归属无 Assign 后补窗口；Node owner EOF 不被目标继承；probe 同所属；硬终止无 grace 伪语义；unverified cleanup 不伪报成功；gateway ingress与派发写入分别有界/明确 pending；storage finalizer不抢跑；platform/shim/binary identity/QA02缺口均可见。每个条件在 plan 有任务和 gate，不包含当前授权之外实现动作。
++自审结果：root-first 与 stdio close 分离；Job 创建归属无 Assign 后补窗口；bInheritHandles/STARTF_USESTDHANDLES/三std HANDLE与私有句柄noninherit分开明确；Node owner EOF 不被目标继承；prestart/status/cached inspect/probe先登记owner、close stickyabort禁止后续串行probe并共用10s deadline；whenIdle不靠runs列表或外层abort假定rawwork清空；硬终止无 grace 伪语义；unverified cleanup/quarantine不伪报成功；gateway ingress与派发写入分别有界/明确pending；storage finalizer不抢跑；platform/shim/binary identity/QA02缺口均可见。I1/M1在plan有对应RED与真实Windows gates；其余通过范围保持。
+ 
+ 此版本是作者自审，不是独立 APPROVE。当前只写本 spec/plan/own receipt，没有产品代码、测试、build、stage、commit、spawn 或 Windows 清理保证。主控安排原 sol high 独立审查后再授权实施窗口。
+--- a/docs/superpowers/plans/2026-10-10-ag03.md
++++ b/docs/superpowers/plans/2026-10-10-ag03.md
+@@ -10,6 +10,8 @@
+ 
+ **Spec:** `docs/superpowers/specs/2026-10-10-ag03-design.md`。
+ 
++**Revision:** rev1，仅修独立review I1/M1；rev0 spec/plan exactbytes及完整REQUEST CHANGES报告在专属review目录保留，等原reviewer限定复审。
++
+ ## Global Constraints
+ 
+ - Windows10+/Server2016+ x64；ARM64/x86/旧系统 unavailable。
+@@ -20,6 +22,8 @@
+ - setup5000ms、运行默认120000ms、probe执行5000ms/65536bytes；Job empty2000ms、stdio drain1000ms、process stop总5000ms、gateway drain5000ms、cancel/bridge.close总10000ms。
+ - Job cleanup verified 要 ActiveProcesses==0；缺ack/异常 helper为 AGENT_CLEANUP_FAILED，不把 root exit/EOF 代替证明。
+ - pending 维持 running/会话active/mayHaveSavedChanges；storage只在实际服务tasks settled后close。
++- prestart/status/inspect/cached共享probe在任何await/spawn前纳入共享ownerregistry；同步closing+stickyabort禁止后续串行probe与新Chat start，whenIdle包括rawwork及verified leases。单probe正常15s不扩大server关闭共用10s期限；unverified必须pending/storage保持。
++- HANDLE_LIST之外还须bInheritHandles=TRUE、STARTF_USESTDHANDLES和三hStd HANDLE准确对应；private Job/control/observer HANDLE独立noninherit。
+ - CLI privacy、1MiB JSONL、isolation/tool/approval restrictions、HTTP/UI/通用MCP和POSIX行为保留。
+ - QA02真实Codex/Claude与交互Ctrl+C独立，fixtures/SDK/nativeCI不能替代。
+ - tests只用独立DB/端口/cwd、owned handles；Windowshelper缺失不得skip该平台机制suite。
+@@ -29,27 +33,30 @@
+ 
+ 1. 创建后恢复前 helper 崩溃：根已属Job，绝无 suspended orphan（任务2/G1）。
+ 2. CLI根退出但孙进程持stdio：ROOT_EXIT触发清理，独立于close事件（任务2、3/G2）。
+-3. owner/control/helper故障与重复stop：只清own Job，bounded failure不声称verified（任务2、3/G3/G4）。
++3. owner/control/helper故障、prestart/status共享inspect与重复stop：全部先登记owner；closing阻断下个probe，只清own Job，bounded failure不声称verified（任务1、2、3、4/G3/G4）。
+ 4. gateway派发mutation跨5s deadline：DB不能先close，pending不漏journal/会话锁（任务4、5/G7）。
+ 5. runnerimage变动、manifest漂移、cmd shim、nestedJob与literalquotes：safe refusal/真实Windows验证（任务1、2、3、6/G5）。
+ 
+ ## 文件和共享窗口
+ 
+-新文件：`apps/server/src/agent/owned-process.ts`（私有 transport 类型/平台选择）、`windows-job-protocol.ts`（frame codec/校验）、`windows-job.ts`（Node helper owner）、对应三个 `.test.ts`；`apps/server/native/agent-job/{main.cpp,job.cpp,job.h,protocol.cpp,protocol.h}`（helper/atomic launch/协议）；`apps/server/native/agent-job/tests/{job-fixture.cpp,job-harness.cpp}`（纯测试observer/sentinel/故障）；`scripts/build-agent-job.mjs`、`scripts/build-agent-job.test.ts`；`apps/server/src/agent/windows-job.integration.test.ts`。
++新文件：`apps/server/src/agent/owned-lifecycle.ts/.test.ts`（prestart/status/inspect/probe registry、closing/abort/idle）、`owned-process.ts`（私有 transport 类型/平台选择）、`windows-job-protocol.ts`（frame codec/校验）、`windows-job.ts`（Node helper owner）、对应后三个 `.test.ts`；`apps/server/native/agent-job/{main.cpp,job.cpp,job.h,protocol.cpp,protocol.h}`（helper/atomic launch/协议）；`apps/server/native/agent-job/tests/{job-fixture.cpp,job-harness.cpp}`（纯测试observer/sentinel/故障）；`scripts/build-agent-job.mjs`、`scripts/build-agent-job.test.ts`；`apps/server/src/agent/windows-job.integration.test.ts`。
+ 
+-修改窗口：`apps/server/src/agent/{process.ts,native.ts,gateway.ts,bridge.ts,routes.ts}` 及现有专属 tests；`apps/server/src/{server.ts,index.ts}` 生命周期与 `shutdown.test.ts`；`apps/web/src/features/chat/{controller.ts,strings.ts,controller.test.ts}` pending 显示；根 `package.json` 仅可选 script、`.gitignore` 仅native输出、`.github/workflows/ci.yml` 仅native编译/证据。server/package build、core/indexer/storage/service源码不改。新 `owned-process.ts` 只适配现 spawn/group代码，不重构 JSONL/parser。
++修改窗口：`apps/server/src/agent/{process.ts,native.ts,gateway.ts,bridge.ts,routes.ts,types.ts}` 及现有专属 tests；types.ts只可信AgentRunner可选ownedLifecycle接口，AgentStatus/ChatRun/RunningAgent DTO不增字段。`apps/server/src/{server.ts,index.ts}` 生命周期与 `shutdown.test.ts`；`apps/web/src/features/chat/{controller.ts,strings.ts,controller.test.ts}` pending 显示；根 `package.json` 仅可选 script、`.gitignore` 仅native输出、`.github/workflows/ci.yml` 仅native编译/证据。server/package build、core/indexer/storage/service源码不改。新 `owned-process.ts` 只适配现 spawn/group代码，不重构 JSONL/parser。
+ 
+ 生成产物：`apps/server/native/bin/win32-x64/atlas-agent-job.exe`+manifest 不commit；test fixture/harness另放测试产物目录，不能被 runtime manifest接纳。原 spec/plan read-only冻结，后续范围变化需新revision receipt。
+ 
+ ### Task 1: Manifest、frame codec 与显式构建入口（guard保留）
+ 
+-**Files:** 新 `windows-job-protocol.ts/.test.ts`、`scripts/build-agent-job.mjs/.test.ts`；未来获窗后根package.json/.gitignore。
++**Files:** 新 `owned-lifecycle.ts/.test.ts`、`windows-job-protocol.ts/.test.ts`、`scripts/build-agent-job.mjs/.test.ts`；未来获窗后根package.json/.gitignore。
+ 
+ **Interfaces:** `encodeLaunch(input:OwnedLaunch):Buffer`、`decodeControl(frame:Buffer):ControlEvent`；`OwnedLaunch={command:string,args:string[],cwd:string,env:NodeJS.ProcessEnv}`。ControlEvent只有 HELLO/READY/ROOT_EXIT/JOB_EMPTY/ERROR，包含 spec确定字段；codec 支持任意chunk和连续帧、只拒非法状态次序，不拼 shell、不输出敏感 payload。`buildAgentJob({toolchainDir,outputDir}):Promise<Manifest>` 用已有toolchain，返回strict manifest与源清单。
+ 
++新增 `OwnedScope={signal:AbortSignal;throwIfClosing():void}`；`OwnedRegistry.track<T>(kind:"prestart"|"status"|"inspect",work:(scope:OwnedScope)=>Promise<T>):Promise<T>` 在调用work前同步登记raw work；`reserveLaunch(scope):LaunchLease` 同步登记，lease在任何spawn前绑定stop latch、完成时记录verified/unverified proof。`beginClose():void` 同步closing+abort；`close(deadline:number):Promise<AgentCloseReport>` 并行停止所有leases、只在共用monotonic deadline等待；`whenIdle():Promise<void>` 跟踪实际rawsettlement和verified lease，不跟外层abort Promise.race。`AgentCloseReport={settled:boolean;whenSettled:Promise<void>}` 和 `OwnedRunnerLifecycle={registry:OwnedRegistry;beginClose():void;close(deadline:number):Promise<AgentCloseReport>;whenIdle():Promise<void>}` 在此模块定义供任务3/4消费；未证实lease quarantine保持pending。
++
+ - [ ] 写 RED：roundtrip empty/Unicode/quote/slash args；frame>1MiB、unknown type、重复launch、invalidUTF8/NUL、argc257、envc513、case-insensitiveduplicate、Win32line32768均拒绝；manifest missing/hash/source/version/arch/unknownkey均 unavailable。测试不调用目标CLI、不伪造Windows已支持。
+-- [ ] `npx vitest run apps/server/src/agent/windows-job-protocol.test.ts scripts/build-agent-job.test.ts`；预期新module/实现缺失导致真实RED，保存log和inputSHA。
+-- [ ] 实现有界codec/manifest验真；buildscript从已安装vswhere/VsDevCmd发现compiler，仅明确的可信固定build命令可用开发者shell激活，CLI启动仍无shell。缺工具链失败，不自动安装；加入独立script与native产物ignore。
++- [ ] 写registry RED：work在首await前已登记，close在manifest/launch barrier中abort则后续spawn计数0；共享inspect只一个owner，close后features/login计数0；外层abort返回后raw promise仍pending，whenIdle不resolve；unverified lease quarantine同样不resolve。finally release本测试barrier并只清own对象。
++- [ ] `npx vitest run apps/server/src/agent/owned-lifecycle.test.ts apps/server/src/agent/windows-job-protocol.test.ts scripts/build-agent-job.test.ts`；预期新module/实现缺失导致真实RED，保存log和inputSHA。
++- [ ] 实现同步registry/leases、stickyabort及quarantine；有界codec/manifest验真；buildscript从已安装vswhere/VsDevCmd发现compiler，仅明确的可信固定build命令可用开发者shell激活，CLI启动仍无shell。缺工具链失败，不自动安装；加入独立script与native产物ignore。
+ - [ ] 同命令GREEN；检查 `apps/server/package.json` build/lifecycle、`scripts/dev.mjs` 不变。当前Linux只能证明codec/refusal/buildscript规则，nativecompile留任务2/6。
+ - [ ] freeze独占diff、scopedlint/noEmit；交主控限定checkpoint，不自行gitadd。
+ 
+@@ -57,36 +64,38 @@
+ 
+ **Files:** 新native source与tests、`windows-job.integration.test.ts`。
+ 
+-**Interfaces:** `OwnedJob::Launch(const Launch&, HANDLE stdin, HANDLE stdout, HANDLE stderr)` 内部返回root/threadHANDLE；`OwnedJob::Stop(deadline)` 与 `OwnedJob::ActiveProcesses()`；helper发布协议1事件，不读payloadstdio。测试harness链接同job.cpp，在test-only callback插入“CreateProcess完成、Resume前”故障；release main无故障开关。
++**Interfaces:** `OwnedJob::Launch(const Launch&, HANDLE stdin, HANDLE stdout, HANDLE stderr)` 内部返回root/threadHANDLE；`OwnedJob::Stop(deadline)` 与 `OwnedJob::ActiveProcesses()`；helper发布协议1事件，不读payloadstdio。测试harness链接同job.cpp，在test-only callback插入“CreateProcess完成、Resume前”故障；release main无故障开关。准备三个有效非pseudo stdio duplicate并设inherit；`StartupInfo.dwFlags |= STARTF_USESTDHANDLES`、hStdInput/hStdOutput/hStdError分别对应HANDLE_LIST三项，CreateProcessW的bInheritHandles=TRUE。private Job/control/observer HANDLE独立noninherit并不入list；失败释放helper所属原始和duplicate，成功继承后也及时释放helper副本。
+ 
+ - [ ] 写真实Windows RED：observer在放行根前持有根/后代非inherited HANDLE；assert `IsProcessInJob(root,ownedJob)` 在Resume前true。fault-after-create使helper/testharness退出，根HANDLE最终signaled。root-first0/root-first1+持stdout/stderr孙进程，STOP重复/race、owner退出、helper真实被终止、nested outerJob、detachedchild、breakaway请求均验证所持HANDLE；outside sentinel始终WAIT_TIMEOUT。
+ - [ ] 已安装Windows环境 `npm run build:agent-job` 后 `npx vitest run apps/server/src/agent/windows-job.integration.test.ts`；首RED可以是helper未实现/无JOB_EMPTY，不能因当前publicguard提前refusal当机制RED，也不能missingexe skip。
+-- [ ] 实现Job KILL_ON_JOB_CLOSE、JOB_LIST+HANDLE_LIST CreateProcessW suspended、确认归属后Resume、overlapped控制等待、rootHANDLE事件、TerminateJobObject与ActiveProcesses轮询。所有HANDLE RAII归本实例，止于deadline；不启breakaway，不给payload控制/Job/observerHANDLE。
++- [ ] 实现Job KILL_ON_JOB_CLOSE、JOB_LIST+HANDLE_LIST、bInheritHandles TRUE/STARTF_USESTDHANDLES/全部三stdHANDLE的CreateProcessW suspended、确认归属后Resume、overlapped控制等待、rootHANDLE事件、TerminateJobObject与ActiveProcesses轮询。所有HANDLE RAII归本实例，含参数准备/创建失败的完整释放；止于deadline，不启breakaway，不给payload控制/Job/observerHANDLE。G2/G5真实stdin prompt/stdout/stderr同时连通，不能只测单流。
+ - [ ] GREEN G1/G2/G3/G5：记录build/source/binary/manifest/OS/arch/toolchain SHA和各handler时间；helper崩溃missingack结果明确unverified，即使testobserver证明内核已经终止后代。
+ - [ ] 保留publicguard，交主控review；没有真实Windows执行环境则任务BLOCKED，不能用mockwin32或Linux模拟GREEN。
+ 
+ ### Task 3: Node owned transport、JSONL与probe统一归属
+ 
+-**Files:** 新owned-process.ts/windows-job.ts及tests；修改process.ts/native.ts和对应tests，publicguard仍保留。
++**Files:** 新owned-process.ts/windows-job.ts及tests；消费owned-lifecycle.ts；修改process.ts/native.ts/types.ts和对应tests，publicguard仍保留。
+ 
+-**Interfaces:** `launchOwnedProcess(input:OwnedLaunch):OwnedProcess`，`OwnedProcess` 的stdio/rootExit/done/stop按spec；package内部 `bindAgentTransport(input:ProcessInvocation,emit,transport:OwnedProcess):RunningAgent` 可由阶段A可信test runner调用，保原parser规则。`startProcess(input:ProcessInvocation,emit):RunningAgent` 与 `RunningAgent{done,stop}`保持，publicguard此时不变。probe rawmode走同transport，保留现private `{code,text}`返回，不输出stderr。runtime `verifyWindowsHelper():Promise<Manifest>` 每次launch验真；测试注入helperpath仅可信构造私有adapter，不能HTTP配置。
++**Interfaces:** `launchOwnedProcess(input:OwnedLaunch,scope:OwnedScope):OwnedProcess`，任何异步验真/pipe/spawn前reserve lease，OwnedProcess的stop latch立即绑定该lease；stdio/rootExit/done/stop按spec。package内部 `bindAgentTransport(input:ProcessInvocation,emit,transport:OwnedProcess):RunningAgent` 可由阶段A可信test runner调用，保原parser规则。内部兼容签名 `startProcess(input:ProcessInvocation,emit,ownedScope?:OwnedScope):RunningAgent`，native.start必须传sharedregistry scope；既有两参数独立调用只建立本次scope，调用者负责stop/done。RunningAgent{done,stop}和ProcessInvocation DTO不增字段，publicguard此时不变。AgentRunner仅可信可选 `ownedLifecycle?:OwnedRunnerLifecycle`；native status/start与bridge共享同registry。probe rawmode走同transport，保留现private `{code,text}`返回，不输出stderr。runtime `verifyWindowsHelper():Promise<Manifest>` 每次launch验真；测试注入helperpath仅可信构造私有adapter，不能HTTP配置。
+ 
+ - [ ] RED：namedpipe HELLOnonce/version错误、controlEOF、READY前取消、missing/mismatchedexe拒绝不跑CLI；rootExit早于stdioEOF触发stop；samePromise重复stop不重置deadline；真实argv往返；probe建后代持stdio后根先退出，65537bytes和5s运行超时也清Job；断言所有原JSONL/privacy/unsafe-tool案例仍成立。
++- [ ] RED：status endpoint和chat prestart在首inspect前已登记；多个waiter共享cached inspect，beginClose在help barrier触发后剩余features/login/start计数0，cached成功metadata也不越过closing。abort后不修改已知profile/model/provider/authentication为新认证结论；DTO无registry/signal/HANDLE/env泄漏。
+ - [ ] `npx vitest run apps/server/src/agent/windows-job.test.ts apps/server/src/agent/owned-process.test.ts apps/server/src/agent/process.test.ts apps/server/src/agent/native.test.ts` 保存RED，平台OS特有机制分开标记。
+-- [ ] 实现固定路径helper owner/namedpipe单连接、bounded协议、stdio直通与stop latch；复用现POSIXgroup策略，JSONL parser只替换transport入口。Windowsmetadata/hash失败、cleanupunverified令当前runner unavailable、invalidate inspect缓存；临时cwd仅verified cleanup删除。
+-- [ ] GREEN再跑任务2真实Windows套件；确认probe/setup/stop分别deadline与完整inspect串行最大值，不能把capturetimer/测试timeout代替产品期限。
++- [ ] 实现固定路径helper owner/namedpipe单连接、bounded协议、stdio直通与stop latch；status/inspect/prestart用共享registry先登记，cache首次creation先track，所有await之后和每个串行probe之前checkscope；close同步abort阻断后续spawn，外层等待有界但raw work仍登记。复用现POSIXgroup策略，JSONL parser只替换transport入口。Windowsmetadata/hash失败、cleanupunverified令当前runner unavailable、invalidate inspect缓存；临时cwd仅verified cleanup删除。
++- [ ] GREEN再跑任务2真实Windows套件；真实Windowsbarrier含status在launch前/READY前、chat在status await、cached共享inspect关闭和缺ack quarantine，owned process HANDLE signaled/sentinel仍活，所有关闭共用10s不等原15s probe/后续串行budget。确认正常probe/setup/stop分别deadline，不能把测试timeout代替生产期限。
+ - [ ] freeze和独立review；runtime available仍被原publicguard拒绝。
+ 
+ ### Task 4: gateway drain、journal 与 storage 生命周期
+ 
+ **Files:** gateway.ts/bridge.ts/routes.ts/server.ts/index.ts、对应tests、新shutdown.test.ts。
+ 
+-**Interfaces:** `GatewayCloseResult={settled:true}|{settled:false;whenSettled:Promise<void>}`；gateway.close idempotent。`AgentCloseReport={settled:boolean;whenSettled:Promise<void>}`；bridge.close并行有界；内部 `AgentLifecycle{whenIdle():Promise<void>}` 从registerAgentRoutes返回，createServer可选 `onAgentLifecycle?:(lifecycle:AgentLifecycle)=>void`。ChatRun DTO、MCP/publicHTTP字段不增加；onAgentLifecycle只trustedconstructor，不允许请求注入。
++**Interfaces:** `GatewayCloseResult={settled:true}|{settled:false;whenSettled:Promise<void>}`；gateway.close idempotent。消费任务1的AgentCloseReport/OwnedRunnerLifecycle/OwnedRegistry；bridge在close先同步beginClose，再对所有prestart/status/inspect/probes/runs/gateway并行停止，deadline共用10s。内部 `AgentLifecycle{whenIdle():Promise<void>}` 从registerAgentRoutes返回，须覆盖完整registry+gateway实际work；createServer可选 `onAgentLifecycle?:(lifecycle:AgentLifecycle)=>void` 在请求可用前注册。ChatRun DTO、MCP/publicHTTP字段不增加；onAgentLifecycle只trustedconstructor，不允许请求注入。
+ 
+ - [ ] RED真实barrier案例：dispatch mutation后hold；调用cancel，gateway新连接失败，5s后run仍running/AGENT_CLEANUP_PENDING/mayHaveSavedChanges true，同会话新start409，storage.close未调用；release后actualPlanIDs一致、只一次mutation、statusfailed/AGENT_GATEWAY_DRAIN_TIMEOUT，active才清。never-settle negative用ownedbarrier最后release，不遗留测试进程。
+ - [ ] RED server.close：四runs并行，10s总期限不四倍；mainlistener关闭，pending whenIdle未resolve则storage保留；release后storage最后close且只一次。测试失败handler也settles，成功journal先于delivery，no-ID/跨project过滤保留。cleanupfailed即使cancelrequested仍statusfailed。
++- [ ] RED真实Windows server.close：①独立status endpoint在helper launch前和READY前；②chat.start已reserve但await status、runs为空；③多status/chat请求共享cache inspect；④helper缺ack quarantine。assert HTTP等待在close10s内safe失败、不启动下个probe/StoredRun/gateway、新start拒绝，ownerwhenIdle/pending/storage正确；正常verified后actualidle，unverified不靠empty runs列表提前close storage。每case barrier建立观察HANDLE后放行，onlyowned清理/外部sentinel保持。
+ - [ ] `npx vitest run apps/server/src/agent/bridge.test.ts apps/server/src/agent/routes.test.ts apps/server/src/shutdown.test.ts`；pre-fix预期hang/提前DBclose/terminal错误必须保存真实RED，不用盲增timeout。
+-- [ ] 实现ingress同步close+ownedconnectionsdestroy，inFlight真实drain期限、whenSettled跟踪；bridge pending保active及error，deadline后cancel有界snapshot；settle再实际journal终结。routes preClose 有界后让Fastify close主listener；index移除盲finally DBclose，注册一次whenIdle storage finalizer，失败只安全报告。
++- [ ] 实现ingress同步close+ownedconnectionsdestroy，inFlight真实drain期限、whenSettled跟踪；bridge status/prestart track到runner共享registry，closing双check阻止status await之后再登记StoredRun，prestart计入原四run预算；close10s并行abort全部registry work并停止所有helper。pending保active/error，deadline后cancel有界snapshot；settle再实际journal终结。routes preClose有界后让Fastify close主listener，status/prestart外层HTTP等待同期限abort；index移除盲finally DBclose，完整whenIdle的rawwork/verified leases/gateway为准，注册一次storage finalizer，失败只安全报告。
+ - [ ] GREEN：真实5s/10s产品预算的测试外层timeout20000ms，说明这是orchestration覆盖setup/收口的测试预算。scoped typecheck确认所有原createServer调用兼容；no abandoned promises/no new queue/sourcewrites/approval路径。
+ - [ ] freeze共享接口精确hunks交主控复审，不自行stage。
+ 
+@@ -108,7 +117,7 @@
+ 
+ **Interfaces:** native job现matrix Windows step在npmci之后、tests之前显式 `npm run build:agent-job`；不改变server纯tsc build或Linux/macOS执行行为。Actions evidence名包含OS/commit，内容仅safe metadata/manifest/test receipts与原失败，不上传prompt/env/accountstores/DB。
+ 
+-- [ ] Gate A编译releasehelper+testfixture/harness，所有任务2/3/4 realWindows案例必须执行；记录BuildTools/SDK、binary/hash/sourcefreeze，G1-G7原始PASS/FAIL。helper missing/arch错误需要FAIL或明确capabilityrefusal testcase，机制suite不得skip。
++- [ ] Gate A编译releasehelper+testfixture/harness，所有任务2/3/4 realWindows案例必须执行，尤其standalone status/preRegistered chat/cacheinspect shutdown/noack四类barrier gate；记录BuildTools/SDK、binary/hash/sourcefreeze、共享10s关闭测量与G1-G7原始PASS/FAIL。helper missing/arch错误需要FAIL或明确capabilityrefusal testcase，机制suite不得skip。
+ - [ ] 独立solhigh实现审查，主控审核GateA receipts及共享diff；未满足则停止，原guard保留。当前docs交付未通过此步。
+ - [ ] 授予阶段B后写RED：Windows x64/validmanifest+trusted.exe fixture inspect可验证能力，缺exe/hash/arch/cmdshim及不兼容outerJob明确unavailable。POSIX/nativeprivacy和responses provider原行为保留。真实codex/claude未获得收据时labelsimulated，绝不声称QA02完成。
+ - [ ] 仅将三处unconditional拒绝替为capability条件式guard；safe failures仍拒绝。同一冻结source/binary运行root-first实际SDKMCP→HTTPdraft/cancel/serverclose，正常收口≤10s、journal正确、gateway拒新连接/DBreopen、targetSHA不变。
+@@ -129,4 +138,4 @@
+ 
+ ## 作者自检
+ 
+-Spec范围对应任务1分发identity/协议、2Job与race、3run/probe、4pending/storage、5UI、6nativeCI/guard、7历史/证据。私有transport与公共RunningAgent/ChatRun区分；GatewayCloseResult和AgentCloseReport名称前后一致；没有packages/server路径、泛泛“加测试”或实现中再猜平台。五项reviewfocus均有明确反例。设计/计划冻结后等待独立审查及主控授权；本次没有产品实现或native成功声明。
++Spec范围对应任务1分发identity/协议/内部ownerregistry、2Job与race/stdio准确Win32参数、3run/probe/prestart/status/cachedinspect所属、4完整whenIdle/pending/storage、5UI、6nativeCI/guard、7历史/证据。私有AgentRunner ownedLifecycle与公共AgentStatus/RunningAgent/ChatRun DTO区分；任务1定义AgentCloseReport/OwnedScope供任务3/4复用，launchOwnedProcess scope参数前后一致；没有packages/server路径、泛泛“加测试”或实现中再猜平台。I1的server10s总边界不等待单15s/多probe串行、rawwork/quarantine不假idle，M1三stdHANDLE和privateJob noninherit独立且有真实stdio gate。其余已通过设计范围保持。等待原reviewer限定复审及主控授权；本次没有产品实现或native成功声明。

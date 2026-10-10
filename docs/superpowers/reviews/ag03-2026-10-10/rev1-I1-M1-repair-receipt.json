@@ -1,0 +1,79 @@
+{
+  "task": "AG03 docs-only I1/M1 repair",
+  "model": "gpt-6.1-sol high",
+  "head": "84fd8b3add03ac43d8ac160a6ae231fb99fde370",
+  "archivedRev0": {
+    "docs/superpowers/specs/2026-10-10-ag03-design.md": {
+      "archive": "spec-rev0-before-I1-M1.md",
+      "sha256": "9a9704ade638a13c398e698394a5407fa92644abaf30fa781d081fccbfe22b06",
+      "bytes": 19339
+    },
+    "docs/superpowers/plans/2026-10-10-ag03.md": {
+      "archive": "plan-rev0-before-I1-M1.md",
+      "sha256": "c5a0754f4880e7b848686f645503d4fc7fcd7d20ca3dcf9999629ae827f1d885",
+      "bytes": 16947
+    }
+  },
+  "reviewSha256Unchanged": "5ebdaca2642cd7b87f23d519270ec5cae3a01c1a0949fa88dea341eba2528abd",
+  "rev1": {
+    "docs/superpowers/specs/2026-10-10-ag03-design.md": {
+      "sha256": "3a17c125eb89aa4e4f46b569f51331f653fc00401905732f1a25900b5a73186b",
+      "bytes": 25155
+    },
+    "docs/superpowers/plans/2026-10-10-ag03.md": {
+      "sha256": "cd4adb3b88294dbc8e5b6c2e6e5fc594e525f00bc8c7ea858cb6369c94c26150",
+      "bytes": 22410
+    }
+  },
+  "patch": {
+    "path": "docs/superpowers/reviews/ag03-2026-10-10/rev1-I1-M1-docs.patch",
+    "sha256": "2add9745c4e1ceb17d6d18a4c07a5e14cdb319711e496b1e90b600718c7a54ae"
+  },
+  "inputsBefore": {
+    "apps/server/src/agent/process.ts": "34592ff12a90b75b900796f89fff7b7a1979630939d38275bea9860405a91eb0",
+    "apps/server/src/agent/native.ts": "9051c19aad5f2f24f63511dcc91f57a8ca7991ed79f7623654402ff21636052d",
+    "apps/server/src/agent/gateway.ts": "59541d6bef5723be82f7f72d0ed5c95604020c18e10a083630fef151847fb80c",
+    "apps/server/src/agent/bridge.ts": "6fe21a3b7c687bf3f97ad8f599ff9f8e6a220dbe3b3877f7f1c68ab898a5d68d",
+    "apps/server/src/agent/types.ts": "5addb74004bf7a351788593e02e8036cf980144026ae1bb9838329d8edf28125",
+    "apps/server/src/agent/routes.ts": "9f5ac0f102dc3b932b6b3eaf5b3df351b153392a36e6292d51c48859cdbd1df6",
+    "apps/server/src/server.ts": "5b1132a2fda456a079fd629076cf3a50e2d040c988603ec1e5c96b34b595d4ec",
+    "apps/server/src/index.ts": "7599bc60f8ff0226c754de975c24fa5a5df584a749cf38d46336c23c399768be",
+    "scripts/dev.mjs": "056a5e1ee7900760a1935c1e39f9a8d30687d75d9578a1b57e29f962ae9d8585",
+    ".github/workflows/ci.yml": "a982c07858397e4a55881503748fea499ee34a00d7fa8102a33c6b5844722095",
+    "apps/server/package.json": "aa83873de5cfde8f78fedeefb106eaa3249ba1cc02dc7b5415b77b422a02f540",
+    "apps/web/src/features/chat/controller.ts": "41cea4f9167bdaa602dd8e2d065dab64c4af415a6512f1cd7d2311b4c20f34bf",
+    "apps/web/src/features/chat/strings.ts": "ba3e07357a1172ec19270d3be487b76a81b5ab298b5c6a76beb6072472846a8a"
+  },
+  "inputsAfter": {
+    "apps/server/src/agent/process.ts": "34592ff12a90b75b900796f89fff7b7a1979630939d38275bea9860405a91eb0",
+    "apps/server/src/agent/native.ts": "9051c19aad5f2f24f63511dcc91f57a8ca7991ed79f7623654402ff21636052d",
+    "apps/server/src/agent/gateway.ts": "59541d6bef5723be82f7f72d0ed5c95604020c18e10a083630fef151847fb80c",
+    "apps/server/src/agent/bridge.ts": "6fe21a3b7c687bf3f97ad8f599ff9f8e6a220dbe3b3877f7f1c68ab898a5d68d",
+    "apps/server/src/agent/types.ts": "5addb74004bf7a351788593e02e8036cf980144026ae1bb9838329d8edf28125",
+    "apps/server/src/agent/routes.ts": "9f5ac0f102dc3b932b6b3eaf5b3df351b153392a36e6292d51c48859cdbd1df6",
+    "apps/server/src/server.ts": "5b1132a2fda456a079fd629076cf3a50e2d040c988603ec1e5c96b34b595d4ec",
+    "apps/server/src/index.ts": "7599bc60f8ff0226c754de975c24fa5a5df584a749cf38d46336c23c399768be",
+    "scripts/dev.mjs": "056a5e1ee7900760a1935c1e39f9a8d30687d75d9578a1b57e29f962ae9d8585",
+    ".github/workflows/ci.yml": "a982c07858397e4a55881503748fea499ee34a00d7fa8102a33c6b5844722095",
+    "apps/server/package.json": "aa83873de5cfde8f78fedeefb106eaa3249ba1cc02dc7b5415b77b422a02f540",
+    "apps/web/src/features/chat/controller.ts": "41cea4f9167bdaa602dd8e2d065dab64c4af415a6512f1cd7d2311b4c20f34bf",
+    "apps/web/src/features/chat/strings.ts": "ba3e07357a1172ec19270d3be487b76a81b5ab298b5c6a76beb6072472846a8a"
+  },
+  "productSourceUnchanged": true,
+  "repairChecks": {
+    "I1": "prestart/status/inspect/probes registered before awaits/spawn; shared closing/abort; serial next probe forbidden; complete whenIdle/quarantine; 10s server closure and actual Windows barriers/pending/storage gates",
+    "M1": "bInheritHandles TRUE; STARTF_USESTDHANDLES; all three valid duplicate std handles; independent private job/control/observer noninherit; full release paths"
+  },
+  "reviewStatus": "Author self-check only; original reviewer re-review pending",
+  "notPerformed": [
+    "product edits",
+    "native compile",
+    "build",
+    "tests",
+    "stage",
+    "commit",
+    "spawn",
+    "guard removal",
+    "permission change"
+  ]
+}

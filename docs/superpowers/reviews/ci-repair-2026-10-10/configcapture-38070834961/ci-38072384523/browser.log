@@ -1,0 +1,573 @@
+browser	Set up job	﻿2026-10-10T17:35:55.0623548Z Current runner version: '2.337.0'
+browser	Set up job	2026-10-10T17:35:55.0649690Z ##[group]Runner Image Provisioner
+browser	Set up job	2026-10-10T17:35:55.0650765Z Hosted Compute Agent
+browser	Set up job	2026-10-10T17:35:55.0651383Z Version: 20261002.596
+browser	Set up job	2026-10-10T17:35:55.0652012Z Commit: c3d12f3313a95f25162a1503be624f3b0617f8c0
+browser	Set up job	2026-10-10T17:35:55.0652819Z Build Date: 2026-10-02T22:28:27Z
+browser	Set up job	2026-10-10T17:35:55.0653555Z Worker ID: {6cbf7a26-d389-442d-a6f1-10aa856c917a}
+browser	Set up job	2026-10-10T17:35:55.0654322Z Region: westus3
+browser	Set up job	2026-10-10T17:35:55.0654901Z Cloud: Azure
+browser	Set up job	2026-10-10T17:35:55.0655441Z ##[endgroup]
+browser	Set up job	2026-10-10T17:35:55.0657210Z ##[group]Operating System
+browser	Set up job	2026-10-10T17:35:55.0657890Z Ubuntu
+browser	Set up job	2026-10-10T17:35:55.0658511Z 24.04.5
+browser	Set up job	2026-10-10T17:35:55.0659276Z LTS
+browser	Set up job	2026-10-10T17:35:55.0659798Z ##[endgroup]
+browser	Set up job	2026-10-10T17:35:55.0660463Z ##[group]Runner Image
+browser	Set up job	2026-10-10T17:35:55.0661108Z Image: ubuntu-24.04
+browser	Set up job	2026-10-10T17:35:55.0661668Z Version: 20261004.327.1
+browser	Set up job	2026-10-10T17:35:55.0662823Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261004.327/images/ubuntu/Ubuntu2404-Readme.md
+browser	Set up job	2026-10-10T17:35:55.0664713Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261004.327
+browser	Set up job	2026-10-10T17:35:55.0665709Z ##[endgroup]
+browser	Set up job	2026-10-10T17:35:55.0667267Z ##[group]GITHUB_TOKEN Permissions
+browser	Set up job	2026-10-10T17:35:55.0669692Z Contents: read
+browser	Set up job	2026-10-10T17:35:55.0670428Z Metadata: read
+browser	Set up job	2026-10-10T17:35:55.0671051Z ##[endgroup]
+browser	Set up job	2026-10-10T17:35:55.0673093Z Secret source: Actions
+browser	Set up job	2026-10-10T17:35:55.0674291Z Cache mode: write
+browser	Set up job	2026-10-10T17:35:55.0675047Z Prepare workflow directory
+browser	Set up job	2026-10-10T17:35:55.1073063Z Prepare all required actions
+browser	Set up job	2026-10-10T17:35:55.1121409Z Getting action download info
+browser	Set up job	2026-10-10T17:35:55.4156538Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+browser	Set up job	2026-10-10T17:35:55.5563923Z Download action repository 'actions/setup-node@v4' (SHA:49933ea5288caeca8642d1e84afbd3f7d6820020)
+browser	Set up job	2026-10-10T17:35:55.6752303Z Download action repository 'actions/setup-python@v5' (SHA:a26af69be951a213d495a4c3e4e4022e16d87065)
+browser	Set up job	2026-10-10T17:35:55.7783096Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+browser	Set up job	2026-10-10T17:35:55.9921399Z Complete job name: browser
+browser	Run actions/checkout@v4	﻿2026-10-10T17:35:56.0710596Z ##[group]Run actions/checkout@v4
+browser	Run actions/checkout@v4	2026-10-10T17:35:56.0711524Z with:
+browser	Run actions/checkout@v4	2026-10-10T17:35:56.0711990Z   repository: huiyuanXP/AtlasMode
+browser	Run actions/checkout@v4	2026-10-10T17:35:56.0715672Z   token: ***
+browser	Run actions/checkout@v4	2026-10-10T17:35:56.0716110Z   ssh-strict: true
+browser	Run actions/checkout@v4	2026-10-10T17:35:56.0716550Z   ssh-user: git
+browser	Run actions/checkout@v4	2026-10-10T17:35:56.0717002Z   persist-credentials: true
+browser	Run actions/checkout@v4	2026-10-10T17:35:56.0717490Z   clean: true
+browser	Run actions/checkout@v4	2026-10-10T17:35:56.0717936Z   sparse-checkout-cone-mode: true
+browser	Run actions/checkout@v4	2026-10-10T17:35:56.0718458Z   fetch-depth: 1
+browser	Run actions/checkout@v4	2026-10-10T17:35:56.0719083Z   fetch-tags: false
+browser	Run actions/checkout@v4	2026-10-10T17:35:56.0719535Z   show-progress: true
+browser	Run actions/checkout@v4	2026-10-10T17:35:56.0719989Z   lfs: false
+browser	Run actions/checkout@v4	2026-10-10T17:35:56.0720408Z   submodules: false
+browser	Run actions/checkout@v4	2026-10-10T17:35:56.0720861Z   set-safe-directory: true
+browser	Run actions/checkout@v4	2026-10-10T17:35:56.0721366Z   allow-unsafe-pr-checkout: false
+browser	Run actions/checkout@v4	2026-10-10T17:35:56.0722166Z ##[endgroup]
+browser	Run actions/checkout@v4	2026-10-10T17:35:56.1801826Z Syncing repository: huiyuanXP/AtlasMode
+browser	Run actions/checkout@v4	2026-10-10T17:35:56.1804643Z ##[group]Getting Git version info
+browser	Run actions/checkout@v4	2026-10-10T17:35:56.1805840Z Working directory is '/home/runner/work/AtlasMode/AtlasMode'
+browser	Run actions/checkout@v4	2026-10-10T17:35:56.1807765Z [command]/usr/bin/git version
+browser	Run actions/checkout@v4	2026-10-10T17:35:56.1888694Z git version 2.55.0
+browser	Run actions/checkout@v4	2026-10-10T17:35:56.1919034Z ##[endgroup]
+browser	Run actions/checkout@v4	2026-10-10T17:35:56.1927843Z Temporarily overriding HOME='/home/runner/work/_temp/efa8293f-5706-4ac3-a918-f622c6556ad5' before making global git config changes
+browser	Run actions/checkout@v4	2026-10-10T17:35:56.1930445Z Adding repository directory to the temporary git global config as a safe directory
+browser	Run actions/checkout@v4	2026-10-10T17:35:56.1938618Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/AtlasMode/AtlasMode
+browser	Run actions/checkout@v4	2026-10-10T17:35:56.1990153Z Deleting the contents of '/home/runner/work/AtlasMode/AtlasMode'
+browser	Run actions/checkout@v4	2026-10-10T17:35:56.1999057Z ##[group]Initializing the repository
+browser	Run actions/checkout@v4	2026-10-10T17:35:56.2000294Z [command]/usr/bin/git init /home/runner/work/AtlasMode/AtlasMode
+browser	Run actions/checkout@v4	2026-10-10T17:35:56.2111918Z hint: Using 'master' as the name for the initial branch. This default branch name
+browser	Run actions/checkout@v4	2026-10-10T17:35:56.2113778Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+browser	Run actions/checkout@v4	2026-10-10T17:35:56.2115402Z hint: to use in all of your new repositories, which will suppress this warning,
+browser	Run actions/checkout@v4	2026-10-10T17:35:56.2116676Z hint: call:
+browser	Run actions/checkout@v4	2026-10-10T17:35:56.2117308Z hint:
+browser	Run actions/checkout@v4	2026-10-10T17:35:56.2118121Z hint: 	git config --global init.defaultBranch <name>
+browser	Run actions/checkout@v4	2026-10-10T17:35:56.2119441Z hint:
+browser	Run actions/checkout@v4	2026-10-10T17:35:56.2120449Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+browser	Run actions/checkout@v4	2026-10-10T17:35:56.2121971Z hint: 'development'. The just-created branch can be renamed via this command:
+browser	Run actions/checkout@v4	2026-10-10T17:35:56.2123208Z hint:
+browser	Run actions/checkout@v4	2026-10-10T17:35:56.2123952Z hint: 	git branch -m <name>
+browser	Run actions/checkout@v4	2026-10-10T17:35:56.2124732Z hint:
+browser	Run actions/checkout@v4	2026-10-10T17:35:56.2125736Z hint: Disable this message with "git config set advice.defaultBranchName false"
+browser	Run actions/checkout@v4	2026-10-10T17:35:56.2127583Z Initialized empty Git repository in /home/runner/work/AtlasMode/AtlasMode/.git/
+browser	Run actions/checkout@v4	2026-10-10T17:35:56.2130577Z [command]/usr/bin/git remote add origin https://github.com/huiyuanXP/AtlasMode
+browser	Run actions/checkout@v4	2026-10-10T17:35:56.2177822Z ##[endgroup]
+browser	Run actions/checkout@v4	2026-10-10T17:35:56.2179351Z ##[group]Disabling automatic garbage collection
+browser	Run actions/checkout@v4	2026-10-10T17:35:56.2182158Z [command]/usr/bin/git config --local gc.auto 0
+browser	Run actions/checkout@v4	2026-10-10T17:35:56.2250761Z ##[endgroup]
+browser	Run actions/checkout@v4	2026-10-10T17:35:56.2252193Z ##[group]Setting up auth
+browser	Run actions/checkout@v4	2026-10-10T17:35:56.2253592Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+browser	Run actions/checkout@v4	2026-10-10T17:35:56.2267641Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+browser	Run actions/checkout@v4	2026-10-10T17:35:56.2622703Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+browser	Run actions/checkout@v4	2026-10-10T17:35:56.2660894Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+browser	Run actions/checkout@v4	2026-10-10T17:35:56.2924321Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+browser	Run actions/checkout@v4	2026-10-10T17:35:56.2976431Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+browser	Run actions/checkout@v4	2026-10-10T17:35:56.3244171Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+browser	Run actions/checkout@v4	2026-10-10T17:35:56.3333244Z ##[endgroup]
+browser	Run actions/checkout@v4	2026-10-10T17:35:56.3334177Z ##[group]Fetching the repository
+browser	Run actions/checkout@v4	2026-10-10T17:35:56.3347803Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +84fd8b3add03ac43d8ac160a6ae231fb99fde370:refs/remotes/origin/fix/first-use-20261010
+browser	Run actions/checkout@v4	2026-10-10T17:35:58.5821069Z From https://github.com/huiyuanXP/AtlasMode
+browser	Run actions/checkout@v4	2026-10-10T17:35:58.5823719Z  * [new ref]         84fd8b3add03ac43d8ac160a6ae231fb99fde370 -> origin/fix/first-use-20261010
+browser	Run actions/checkout@v4	2026-10-10T17:35:58.5829595Z ##[endgroup]
+browser	Run actions/checkout@v4	2026-10-10T17:35:58.5831697Z ##[group]Determining the checkout info
+browser	Run actions/checkout@v4	2026-10-10T17:35:58.5833750Z ##[endgroup]
+browser	Run actions/checkout@v4	2026-10-10T17:35:58.5835046Z [command]/usr/bin/git sparse-checkout disable
+browser	Run actions/checkout@v4	2026-10-10T17:35:58.5885710Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+browser	Run actions/checkout@v4	2026-10-10T17:35:58.5918183Z ##[group]Checking out the ref
+browser	Run actions/checkout@v4	2026-10-10T17:35:58.5924117Z [command]/usr/bin/git checkout --progress --force -B fix/first-use-20261010 refs/remotes/origin/fix/first-use-20261010
+browser	Run actions/checkout@v4	2026-10-10T17:35:58.7865263Z Switched to a new branch 'fix/first-use-20261010'
+browser	Run actions/checkout@v4	2026-10-10T17:35:58.7872209Z branch 'fix/first-use-20261010' set up to track 'origin/fix/first-use-20261010'.
+browser	Run actions/checkout@v4	2026-10-10T17:35:58.7887514Z ##[endgroup]
+browser	Run actions/checkout@v4	2026-10-10T17:35:58.7933786Z [command]/usr/bin/git log -1 --format=%H
+browser	Run actions/checkout@v4	2026-10-10T17:35:58.7963389Z 84fd8b3add03ac43d8ac160a6ae231fb99fde370
+browser	Run actions/setup-node@v4	﻿2026-10-10T17:35:58.8378719Z ##[group]Run actions/setup-node@v4
+browser	Run actions/setup-node@v4	2026-10-10T17:35:58.8380099Z with:
+browser	Run actions/setup-node@v4	2026-10-10T17:35:58.8380929Z   node-version: 24.19.0
+browser	Run actions/setup-node@v4	2026-10-10T17:35:58.8381775Z   cache: npm
+browser	Run actions/setup-node@v4	2026-10-10T17:35:58.8382584Z   always-auth: false
+browser	Run actions/setup-node@v4	2026-10-10T17:35:58.8383423Z   check-latest: false
+browser	Run actions/setup-node@v4	2026-10-10T17:35:58.8386813Z   token: ***
+browser	Run actions/setup-node@v4	2026-10-10T17:35:58.8387595Z ##[endgroup]
+browser	Run actions/setup-node@v4	2026-10-10T17:35:58.9781549Z Attempting to download 24.19.0...
+browser	Run actions/setup-node@v4	2026-10-10T17:35:58.9886947Z (node:2275) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+browser	Run actions/setup-node@v4	2026-10-10T17:35:58.9889372Z (Use `node --trace-deprecation ...` to show where the warning was created)
+browser	Run actions/setup-node@v4	2026-10-10T17:36:00.0328117Z Acquiring 24.19.0 - x64 from https://github.com/actions/node-versions/releases/download/24.19.0-30872449280/node-24.19.0-linux-x64.tar.gz
+browser	Run actions/setup-node@v4	2026-10-10T17:36:00.5807787Z Extracting ...
+browser	Run actions/setup-node@v4	2026-10-10T17:36:00.5964554Z [command]/usr/bin/tar xz --strip 1 --warning=no-unknown-keyword --overwrite -C /home/runner/work/_temp/cb572cef-a0ee-4ce5-ae44-630651d9a316 -f /home/runner/work/_temp/5be7d42a-67ca-46ce-8e99-308153450d0a
+browser	Run actions/setup-node@v4	2026-10-10T17:36:01.8885715Z Adding to the cache ...
+browser	Run actions/setup-node@v4	2026-10-10T17:36:04.9664756Z ##[group]Environment details
+browser	Run actions/setup-node@v4	2026-10-10T17:36:05.2071744Z node: v24.19.0
+browser	Run actions/setup-node@v4	2026-10-10T17:36:05.2072406Z npm: 11.17.0
+browser	Run actions/setup-node@v4	2026-10-10T17:36:05.2072790Z yarn: 1.22.22
+browser	Run actions/setup-node@v4	2026-10-10T17:36:05.2073586Z ##[endgroup]
+browser	Run actions/setup-node@v4	2026-10-10T17:36:05.2095919Z [command]/opt/hostedtoolcache/node/24.19.0/x64/bin/npm config get cache
+browser	Run actions/setup-node@v4	2026-10-10T17:36:05.3039963Z /home/runner/.npm
+browser	Run actions/setup-node@v4	2026-10-10T17:36:05.5141284Z Cache hit for: node-cache-Linux-x64-npm-63ca624c84b4d1c894dd3d8534532893250cd6c3583fbf5ed566dbe3ddc075a6
+browser	Run actions/setup-node@v4	2026-10-10T17:36:05.5254273Z (node:2275) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+browser	Run actions/setup-node@v4	2026-10-10T17:36:06.7436041Z Received 25165824 of 53610190 (46.9%), 24.0 MBs/sec
+browser	Run actions/setup-node@v4	2026-10-10T17:36:06.9618015Z Received 53610190 of 53610190 (100.0%), 41.9 MBs/sec
+browser	Run actions/setup-node@v4	2026-10-10T17:36:06.9620032Z Cache Size: ~51 MB (53610190 B)
+browser	Run actions/setup-node@v4	2026-10-10T17:36:06.9655991Z [command]/usr/bin/tar -xf /home/runner/work/_temp/1308a3e5-59ee-48b5-9cbe-ea7590059a29/cache.tzst -P -C /home/runner/work/AtlasMode/AtlasMode --use-compress-program unzstd
+browser	Run actions/setup-node@v4	2026-10-10T17:36:07.1355782Z Cache restored successfully
+browser	Run actions/setup-node@v4	2026-10-10T17:36:07.1388456Z Cache restored from key: node-cache-Linux-x64-npm-63ca624c84b4d1c894dd3d8534532893250cd6c3583fbf5ed566dbe3ddc075a6
+browser	Run actions/setup-python@v5	﻿2026-10-10T17:36:07.1630303Z ##[group]Run actions/setup-python@v5
+browser	Run actions/setup-python@v5	2026-10-10T17:36:07.1630641Z with:
+browser	Run actions/setup-python@v5	2026-10-10T17:36:07.1630861Z   python-version: 3.12
+browser	Run actions/setup-python@v5	2026-10-10T17:36:07.1631094Z   check-latest: false
+browser	Run actions/setup-python@v5	2026-10-10T17:36:07.1633428Z   token: ***
+browser	Run actions/setup-python@v5	2026-10-10T17:36:07.1633653Z   update-environment: true
+browser	Run actions/setup-python@v5	2026-10-10T17:36:07.1633914Z   allow-prereleases: false
+browser	Run actions/setup-python@v5	2026-10-10T17:36:07.1634152Z   freethreaded: false
+browser	Run actions/setup-python@v5	2026-10-10T17:36:07.1634373Z ##[endgroup]
+browser	Run actions/setup-python@v5	2026-10-10T17:36:07.2957073Z ##[group]Installed versions
+browser	Run actions/setup-python@v5	2026-10-10T17:36:07.3055443Z (node:2357) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+browser	Run actions/setup-python@v5	2026-10-10T17:36:07.3056576Z (Use `node --trace-deprecation ...` to show where the warning was created)
+browser	Run actions/setup-python@v5	2026-10-10T17:36:07.3057201Z Successfully set up CPython (3.12.15)
+browser	Run actions/setup-python@v5	2026-10-10T17:36:07.3057737Z ##[endgroup]
+browser	Run npm install --global npm@11.9.0	﻿2026-10-10T17:36:07.3242528Z ##[group]Run npm install --global npm@11.9.0
+browser	Run npm install --global npm@11.9.0	2026-10-10T17:36:07.3242981Z [36;1mnpm install --global npm@11.9.0[0m
+browser	Run npm install --global npm@11.9.0	2026-10-10T17:36:07.3597487Z shell: /usr/bin/bash -e {0}
+browser	Run npm install --global npm@11.9.0	2026-10-10T17:36:07.3598092Z env:
+browser	Run npm install --global npm@11.9.0	2026-10-10T17:36:07.3598585Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.15/x64
+browser	Run npm install --global npm@11.9.0	2026-10-10T17:36:07.3599564Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib/pkgconfig
+browser	Run npm install --global npm@11.9.0	2026-10-10T17:36:07.3600497Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+browser	Run npm install --global npm@11.9.0	2026-10-10T17:36:07.3601291Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+browser	Run npm install --global npm@11.9.0	2026-10-10T17:36:07.3601888Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+browser	Run npm install --global npm@11.9.0	2026-10-10T17:36:07.3602903Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib
+browser	Run npm install --global npm@11.9.0	2026-10-10T17:36:07.3603420Z ##[endgroup]
+browser	Run npm install --global npm@11.9.0	2026-10-10T17:36:09.3089205Z 
+browser	Run npm install --global npm@11.9.0	2026-10-10T17:36:09.3090289Z removed 5 packages, and changed 55 packages in 2s
+browser	Run npm install --global npm@11.9.0	2026-10-10T17:36:09.3090739Z 
+browser	Run npm install --global npm@11.9.0	2026-10-10T17:36:09.3098606Z 15 packages are looking for funding
+browser	Run npm install --global npm@11.9.0	2026-10-10T17:36:09.3099479Z   run `npm fund` for details
+browser	Run npm ci	﻿2026-10-10T17:36:09.3580660Z ##[group]Run npm ci
+browser	Run npm ci	2026-10-10T17:36:09.3580966Z [36;1mnpm ci[0m
+browser	Run npm ci	2026-10-10T17:36:09.3647741Z shell: /usr/bin/bash -e {0}
+browser	Run npm ci	2026-10-10T17:36:09.3648011Z env:
+browser	Run npm ci	2026-10-10T17:36:09.3648287Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.15/x64
+browser	Run npm ci	2026-10-10T17:36:09.3648997Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib/pkgconfig
+browser	Run npm ci	2026-10-10T17:36:09.3649497Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+browser	Run npm ci	2026-10-10T17:36:09.3649903Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+browser	Run npm ci	2026-10-10T17:36:09.3650290Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+browser	Run npm ci	2026-10-10T17:36:09.3650695Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib
+browser	Run npm ci	2026-10-10T17:36:09.3651043Z ##[endgroup]
+browser	Run npm ci	2026-10-10T17:36:19.5404667Z 
+browser	Run npm ci	2026-10-10T17:36:19.5405582Z added 397 packages, and audited 405 packages in 10s
+browser	Run npm ci	2026-10-10T17:36:19.5406055Z 
+browser	Run npm ci	2026-10-10T17:36:19.5406269Z 115 packages are looking for funding
+browser	Run npm ci	2026-10-10T17:36:19.5407279Z   run `npm fund` for details
+browser	Run npm ci	2026-10-10T17:36:19.5423017Z 
+browser	Run npm ci	2026-10-10T17:36:19.5423364Z found 0 vulnerabilities
+browser	Run npm run build	﻿2026-10-10T17:36:19.6006981Z ##[group]Run npm run build
+browser	Run npm run build	2026-10-10T17:36:19.6007295Z [36;1mnpm run build[0m
+browser	Run npm run build	2026-10-10T17:36:19.6077336Z shell: /usr/bin/bash -e {0}
+browser	Run npm run build	2026-10-10T17:36:19.6077599Z env:
+browser	Run npm run build	2026-10-10T17:36:19.6077873Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.15/x64
+browser	Run npm run build	2026-10-10T17:36:19.6078335Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib/pkgconfig
+browser	Run npm run build	2026-10-10T17:36:19.6079042Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+browser	Run npm run build	2026-10-10T17:36:19.6079484Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+browser	Run npm run build	2026-10-10T17:36:19.6079914Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+browser	Run npm run build	2026-10-10T17:36:19.6080339Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib
+browser	Run npm run build	2026-10-10T17:36:19.6080679Z ##[endgroup]
+browser	Run npm run build	2026-10-10T17:36:19.7045109Z 
+browser	Run npm run build	2026-10-10T17:36:19.7045670Z > atlasmode@0.1.0 build
+browser	Run npm run build	2026-10-10T17:36:19.7046110Z > node scripts/workspaces.mjs build
+browser	Run npm run build	2026-10-10T17:36:19.7046353Z 
+browser	Run npm run build	2026-10-10T17:36:19.8426471Z 
+browser	Run npm run build	2026-10-10T17:36:19.8427188Z > @codemap/core@0.1.0 build
+browser	Run npm run build	2026-10-10T17:36:19.8427912Z > tsc -p tsconfig.json
+browser	Run npm run build	2026-10-10T17:36:19.8428195Z 
+browser	Run npm run build	2026-10-10T17:36:21.3128685Z 
+browser	Run npm run build	2026-10-10T17:36:21.3129988Z > @codemap/indexer@0.1.0 build
+browser	Run npm run build	2026-10-10T17:36:21.3130529Z > tsc -p tsconfig.json
+browser	Run npm run build	2026-10-10T17:36:21.3130742Z 
+browser	Run npm run build	2026-10-10T17:36:23.3038324Z 
+browser	Run npm run build	2026-10-10T17:36:23.3039403Z > @codemap/storage@0.1.0 build
+browser	Run npm run build	2026-10-10T17:36:23.3040090Z > tsc -p tsconfig.json
+browser	Run npm run build	2026-10-10T17:36:23.3040381Z 
+browser	Run npm run build	2026-10-10T17:36:24.3632580Z 
+browser	Run npm run build	2026-10-10T17:36:24.3633261Z > @codemap/service@0.1.0 build
+browser	Run npm run build	2026-10-10T17:36:24.3633702Z > tsc -p tsconfig.json
+browser	Run npm run build	2026-10-10T17:36:24.3633877Z 
+browser	Run npm run build	2026-10-10T17:36:25.6632040Z 
+browser	Run npm run build	2026-10-10T17:36:25.6632734Z > @codemap/web@0.1.0 build
+browser	Run npm run build	2026-10-10T17:36:25.6633183Z > tsc -p tsconfig.json && vite build
+browser	Run npm run build	2026-10-10T17:36:25.6633397Z 
+browser	Run npm run build	2026-10-10T17:36:29.2455206Z [36mvite v7.3.6 [32mbuilding client environment for production...[36m[39m
+browser	Run npm run build	2026-10-10T17:36:29.3340754Z transforming...
+browser	Run npm run build	2026-10-10T17:36:31.6937502Z [32m✓[39m 241 modules transformed.
+browser	Run npm run build	2026-10-10T17:36:31.9259014Z rendering chunks...
+browser	Run npm run build	2026-10-10T17:36:31.9351385Z computing gzip size...
+browser	Run npm run build	2026-10-10T17:36:31.9524411Z [2mdist/[22m[32mindex.html                 [39m[1m[2m  0.50 kB[22m[1m[22m[2m │ gzip:   0.34 kB[22m
+browser	Run npm run build	2026-10-10T17:36:31.9526079Z [2mdist/[22m[2massets/[22m[35mindex-CRX9i0dH.css  [39m[1m[2m 40.32 kB[22m[1m[22m[2m │ gzip:   8.14 kB[22m
+browser	Run npm run build	2026-10-10T17:36:31.9527611Z [2mdist/[22m[2massets/[22m[36mindex-BwgsS5lY.js   [39m[1m[33m550.30 kB[39m[22m[2m │ gzip: 175.81 kB[22m
+browser	Run npm run build	2026-10-10T17:36:31.9529366Z [32m✓ built in 2.67s[39m
+browser	Run npm run build	2026-10-10T17:36:31.9529913Z [33m
+browser	Run npm run build	2026-10-10T17:36:31.9530690Z (!) Some chunks are larger than 500 kB after minification. Consider:
+browser	Run npm run build	2026-10-10T17:36:31.9531580Z - Using dynamic import() to code-split the application
+browser	Run npm run build	2026-10-10T17:36:31.9533103Z - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+browser	Run npm run build	2026-10-10T17:36:31.9534839Z - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.[39m
+browser	Run npm run build	2026-10-10T17:36:32.1131229Z 
+browser	Run npm run build	2026-10-10T17:36:32.1131845Z > @codemap/mcp@0.1.0 build
+browser	Run npm run build	2026-10-10T17:36:32.1132350Z > tsc -p tsconfig.json
+browser	Run npm run build	2026-10-10T17:36:32.1132545Z 
+browser	Run npm run build	2026-10-10T17:36:33.5586853Z 
+browser	Run npm run build	2026-10-10T17:36:33.5587458Z > @codemap/server@0.1.0 build
+browser	Run npm run build	2026-10-10T17:36:33.5587895Z > tsc -p tsconfig.json
+browser	Run npm run build	2026-10-10T17:36:33.5588082Z 
+browser	Run npx playwright install --with-deps chromium	﻿2026-10-10T17:36:36.2224400Z ##[group]Run npx playwright install --with-deps chromium
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:36.2224869Z [36;1mnpx playwright install --with-deps chromium[0m
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:36.2290157Z shell: /usr/bin/bash -e {0}
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:36.2290434Z env:
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:36.2290714Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.15/x64
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:36.2291175Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib/pkgconfig
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:36.2291630Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:36.2292036Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:36.2292429Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:36.2292830Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:36.2293164Z ##[endgroup]
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:36.9672528Z Installing dependencies...
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:36.9752432Z Switching to root user to install dependencies...
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:37.1204151Z Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:37.1358405Z Get:6 https://packages.microsoft.com/ubuntu/24.04/prod noble InRelease [3600 B]
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:37.1571582Z Hit:2 http://azure.archive.ubuntu.com/ubuntu noble InRelease
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:37.1583444Z Get:3 http://azure.archive.ubuntu.com/ubuntu noble-updates InRelease [126 kB]
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:37.1647720Z Get:4 http://azure.archive.ubuntu.com/ubuntu noble-backports InRelease [126 kB]
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:37.1697243Z Get:5 http://azure.archive.ubuntu.com/ubuntu noble-security InRelease [126 kB]
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:37.2552502Z Get:7 https://packages.microsoft.com/ubuntu/24.04/prod noble/main arm64 Packages [492 kB]
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:37.2730248Z Get:8 https://packages.microsoft.com/ubuntu/24.04/prod noble/main armhf Packages [12.3 kB]
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:37.2747164Z Get:9 https://packages.microsoft.com/ubuntu/24.04/prod noble/main all Packages [640 B]
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:37.2779354Z Get:10 https://packages.microsoft.com/ubuntu/24.04/prod noble/main amd64 Packages [548 kB]
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:37.3700320Z Get:11 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 Packages [1375 kB]
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:37.3770429Z Get:12 http://azure.archive.ubuntu.com/ubuntu noble-updates/main Translation-en [306 kB]
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:37.3796986Z Get:13 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe amd64 Packages [1702 kB]
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:37.3885422Z Get:14 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe Translation-en [342 kB]
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:37.3910037Z Get:15 http://azure.archive.ubuntu.com/ubuntu noble-updates/restricted amd64 Packages [1761 kB]
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:37.4009160Z Get:16 http://azure.archive.ubuntu.com/ubuntu noble-updates/restricted Translation-en [401 kB]
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:37.4026829Z Get:17 http://azure.archive.ubuntu.com/ubuntu noble-updates/multiverse amd64 Packages [55.0 kB]
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:37.4034912Z Get:18 http://azure.archive.ubuntu.com/ubuntu noble-updates/multiverse Translation-en [14.3 kB]
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:37.4720300Z Get:19 http://azure.archive.ubuntu.com/ubuntu noble-security/main amd64 Packages [1121 kB]
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:37.4773954Z Get:20 http://azure.archive.ubuntu.com/ubuntu noble-security/main Translation-en [228 kB]
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:37.5257681Z Get:21 http://azure.archive.ubuntu.com/ubuntu noble-security/universe amd64 Packages [1220 kB]
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:37.5312724Z Get:22 http://azure.archive.ubuntu.com/ubuntu noble-security/universe Translation-en [245 kB]
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:37.5326947Z Get:23 http://azure.archive.ubuntu.com/ubuntu noble-security/restricted amd64 Packages [1669 kB]
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:37.5400046Z Get:24 http://azure.archive.ubuntu.com/ubuntu noble-security/restricted Translation-en [383 kB]
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:37.5420199Z Get:25 http://azure.archive.ubuntu.com/ubuntu noble-security/multiverse amd64 Packages [49.8 kB]
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:37.5428424Z Get:26 http://azure.archive.ubuntu.com/ubuntu noble-security/multiverse Translation-en [12.4 kB]
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:42.2969361Z Fetched 12.3 MB in 1s (9457 kB/s)
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:43.1497816Z Reading package lists...
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:43.1731510Z Reading package lists...
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:43.3649899Z Building dependency tree...
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:43.3656793Z Reading state information...
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:43.5240391Z libasound2t64 is already the newest version (1.2.11-1ubuntu0.3).
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:43.5241102Z libasound2t64 set to manually installed.
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:43.5241643Z libatk-bridge2.0-0t64 is already the newest version (2.52.0-1build1).
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:43.5242178Z libatk-bridge2.0-0t64 set to manually installed.
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:43.5242683Z libatk1.0-0t64 is already the newest version (2.52.0-1build1).
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:43.5243146Z libatk1.0-0t64 set to manually installed.
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:43.5243639Z libatspi2.0-0t64 is already the newest version (2.52.0-1build1).
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:43.5244106Z libatspi2.0-0t64 set to manually installed.
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:43.5244571Z libcairo2 is already the newest version (1.18.0-3build1).
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:43.5245011Z libcairo2 set to manually installed.
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:43.5245536Z libcups2t64 is already the newest version (2.4.7-1.2ubuntu7.14).
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:43.5246213Z libcups2t64 set to manually installed.
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:43.5246691Z libdbus-1-3 is already the newest version (1.14.10-4ubuntu4.1).
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:43.5247140Z libdbus-1-3 set to manually installed.
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:43.5247624Z libdrm2 is already the newest version (2.4.125-1ubuntu0.1~24.04.2).
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:43.5248084Z libdrm2 set to manually installed.
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:43.5248537Z libgbm1 is already the newest version (25.2.8-0ubuntu0.24.04.4).
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:43.5249368Z libgbm1 set to manually installed.
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:43.5250085Z libglib2.0-0t64 is already the newest version (2.80.0-6ubuntu3.9).
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:43.5250572Z libglib2.0-0t64 set to manually installed.
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:43.5251053Z libnspr4 is already the newest version (2:4.35-1.1build1).
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:43.5251487Z libnspr4 set to manually installed.
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:43.5252059Z libnss3 is already the newest version (2:3.98-1ubuntu0.2).
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:43.5252609Z libnss3 set to manually installed.
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:43.5253098Z libpango-1.0-0 is already the newest version (1.52.1+ds-1build1).
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:43.5253575Z libpango-1.0-0 set to manually installed.
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:43.5254028Z libx11-6 is already the newest version (2:1.8.7-1build1).
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:43.5254456Z libx11-6 set to manually installed.
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:43.5254865Z libxcb1 is already the newest version (1.15-1ubuntu2).
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:43.5255272Z libxcb1 set to manually installed.
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:43.5255751Z libxcomposite1 is already the newest version (1:0.4.5-1build3).
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:43.5256224Z libxcomposite1 set to manually installed.
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:43.5256642Z libxdamage1 is already the newest version (1:1.1.6-1build1).
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:43.5257037Z libxdamage1 set to manually installed.
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:43.5257427Z libxext6 is already the newest version (2:1.3.4-1build2).
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:43.5257798Z libxext6 set to manually installed.
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:43.5258199Z libxfixes3 is already the newest version (1:6.0.0-2build1).
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:43.5259080Z libxfixes3 set to manually installed.
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:43.5259488Z libxkbcommon0 is already the newest version (1.6.0-1build1).
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:43.5259891Z libxkbcommon0 set to manually installed.
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:43.5260292Z libxrandr2 is already the newest version (2:1.5.2-2build1).
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:43.5260674Z libxrandr2 set to manually installed.
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:43.5261068Z xvfb is already the newest version (2:21.1.12-1ubuntu1.8).
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:43.5261604Z fonts-noto-color-emoji is already the newest version (2.047-0ubuntu0.24.04.1).
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:43.5262181Z libfontconfig1 is already the newest version (2.15.0-1.1ubuntu2).
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:43.5262607Z libfontconfig1 set to manually installed.
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:43.5263023Z fonts-liberation is already the newest version (1:2.1.5-3).
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:43.5263433Z fonts-liberation set to manually installed.
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:43.5264008Z The following additional packages will be installed:
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:43.5264373Z   xfonts-encodings xfonts-utils
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:43.5264667Z Recommended packages:
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:43.5264945Z   fonts-ipafont-mincho fonts-tlwg-loma
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:43.5570215Z The following NEW packages will be installed:
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:43.5571232Z   fonts-freefont-ttf fonts-ipafont-gothic fonts-tlwg-loma-otf fonts-unifont
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:43.5576543Z   fonts-wqy-zenhei xfonts-cyrillic xfonts-encodings xfonts-scalable
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:43.5577276Z   xfonts-utils
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:43.5581195Z The following packages will be upgraded:
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:43.5585518Z   libfreetype6
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:43.5745215Z 1 upgraded, 9 newly installed, 0 to remove and 22 not upgraded.
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:43.5745728Z Need to get 21.5 MB of archives.
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:43.5746203Z After this operation, 79.5 MB of additional disk space will be used.
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:43.5746716Z Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:43.7180426Z Get:2 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 fonts-ipafont-gothic all 00303-21ubuntu1 [3513 kB]
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:44.3044607Z Get:3 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 fonts-freefont-ttf all 20211204+svn4273-2 [5641 kB]
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:44.8115614Z Get:4 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 fonts-tlwg-loma-otf all 1:0.7.3-1 [107 kB]
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:44.8752960Z Get:5 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 fonts-unifont all 1:15.1.01-1build1 [2993 kB]
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:44.9624195Z Get:6 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 fonts-wqy-zenhei all 0.9.45-8 [7472 kB]
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:45.1616260Z Get:7 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libfreetype6 amd64 2.13.2+dfsg-1ubuntu0.2 [403 kB]
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:45.2285190Z Get:8 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 xfonts-encodings all 1:1.0.5-0ubuntu2 [578 kB]
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:45.4234166Z Get:9 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 xfonts-utils amd64 1:7.7+6build3 [94.4 kB]
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:45.4926118Z Get:10 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 xfonts-cyrillic all 1:1.0.5+nmu1 [384 kB]
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:45.5844141Z Get:11 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 xfonts-scalable all 1:1.0.3-1.3 [304 kB]
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:45.8651673Z Fetched 21.5 MB in 2s (10.5 MB/s)
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:45.9033717Z Selecting previously unselected package fonts-ipafont-gothic.
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:45.9528075Z (Reading database ... 
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:45.9529042Z (Reading database ... 5%
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:45.9529557Z (Reading database ... 10%
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:45.9529887Z (Reading database ... 15%
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:45.9530511Z (Reading database ... 20%
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:45.9531191Z (Reading database ... 25%
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:45.9531711Z (Reading database ... 30%
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:45.9532147Z (Reading database ... 35%
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:45.9532423Z (Reading database ... 40%
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:45.9532717Z (Reading database ... 45%
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:45.9532976Z (Reading database ... 50%
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:45.9882922Z (Reading database ... 55%
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:46.3138043Z (Reading database ... 60%
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:46.5629618Z (Reading database ... 65%
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:46.8291218Z (Reading database ... 70%
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:47.1165108Z (Reading database ... 75%
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:47.4311436Z (Reading database ... 80%
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:47.9728584Z (Reading database ... 85%
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:48.5249568Z (Reading database ... 90%
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:49.0891796Z (Reading database ... 95%
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:49.0892217Z (Reading database ... 100%
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:49.0892716Z (Reading database ... 203191 files and directories currently installed.)
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:49.0939216Z Preparing to unpack .../0-fonts-ipafont-gothic_00303-21ubuntu1_all.deb ...
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:49.1032165Z Unpacking fonts-ipafont-gothic (00303-21ubuntu1) ...
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:49.3295610Z Selecting previously unselected package fonts-freefont-ttf.
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:49.3419657Z Preparing to unpack .../1-fonts-freefont-ttf_20211204+svn4273-2_all.deb ...
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:49.3426633Z Unpacking fonts-freefont-ttf (20211204+svn4273-2) ...
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:49.4181203Z Selecting previously unselected package fonts-tlwg-loma-otf.
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:49.4326091Z Preparing to unpack .../2-fonts-tlwg-loma-otf_1%3a0.7.3-1_all.deb ...
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:49.4333027Z Unpacking fonts-tlwg-loma-otf (1:0.7.3-1) ...
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:49.4572144Z Selecting previously unselected package fonts-unifont.
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:49.4695045Z Preparing to unpack .../3-fonts-unifont_1%3a15.1.01-1build1_all.deb ...
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:49.4705701Z Unpacking fonts-unifont (1:15.1.01-1build1) ...
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:49.5776619Z Selecting previously unselected package fonts-wqy-zenhei.
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:49.5900731Z Preparing to unpack .../4-fonts-wqy-zenhei_0.9.45-8_all.deb ...
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:49.6000900Z Unpacking fonts-wqy-zenhei (0.9.45-8) ...
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:50.0823215Z Preparing to unpack .../5-libfreetype6_2.13.2+dfsg-1ubuntu0.2_amd64.deb ...
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:50.0851504Z Unpacking libfreetype6:amd64 (2.13.2+dfsg-1ubuntu0.2) over (2.13.2+dfsg-1ubuntu0.1) ...
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:50.1092469Z Selecting previously unselected package xfonts-encodings.
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:50.1221856Z Preparing to unpack .../6-xfonts-encodings_1%3a1.0.5-0ubuntu2_all.deb ...
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:50.1228620Z Unpacking xfonts-encodings (1:1.0.5-0ubuntu2) ...
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:50.1502729Z Selecting previously unselected package xfonts-utils.
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:50.1626802Z Preparing to unpack .../7-xfonts-utils_1%3a7.7+6build3_amd64.deb ...
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:50.1633098Z Unpacking xfonts-utils (1:7.7+6build3) ...
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:50.2985556Z Selecting previously unselected package xfonts-cyrillic.
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:50.3113307Z Preparing to unpack .../8-xfonts-cyrillic_1%3a1.0.5+nmu1_all.deb ...
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:50.3121737Z Unpacking xfonts-cyrillic (1:1.0.5+nmu1) ...
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:50.3460541Z Selecting previously unselected package xfonts-scalable.
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:50.3587903Z Preparing to unpack .../9-xfonts-scalable_1%3a1.0.3-1.3_all.deb ...
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:50.3594416Z Unpacking xfonts-scalable (1:1.0.3-1.3) ...
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:50.4015395Z Setting up fonts-wqy-zenhei (0.9.45-8) ...
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:50.4128422Z Setting up fonts-freefont-ttf (20211204+svn4273-2) ...
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:50.4145208Z Setting up fonts-tlwg-loma-otf (1:0.7.3-1) ...
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:50.4161325Z Setting up libfreetype6:amd64 (2.13.2+dfsg-1ubuntu0.2) ...
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:50.4177118Z Setting up xfonts-encodings (1:1.0.5-0ubuntu2) ...
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:50.4216324Z Setting up fonts-ipafont-gothic (00303-21ubuntu1) ...
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:50.4280017Z update-alternatives: using /usr/share/fonts/opentype/ipafont-gothic/ipag.ttf to provide /usr/share/fonts/truetype/fonts-japanese-gothic.ttf (fonts-japanese-gothic.ttf) in auto mode
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:50.4294685Z Setting up fonts-unifont (1:15.1.01-1build1) ...
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:50.4312190Z Setting up xfonts-utils (1:7.7+6build3) ...
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:50.4350414Z Setting up xfonts-cyrillic (1:1.0.5+nmu1) ...
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:50.4659074Z Setting up xfonts-scalable (1:1.0.3-1.3) ...
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:50.4922075Z Processing triggers for libc-bin (2.39-0ubuntu8.9) ...
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:50.6076744Z Processing triggers for man-db (2.12.0-4build2) ...
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:50.6099640Z Not building database; man-db/auto-update is not 'true'.
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:50.6111638Z Processing triggers for fontconfig (2.15.0-1.1ubuntu2) ...
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:52.0471807Z 
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:52.0472472Z Running kernel seems to be up-to-date.
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:52.0472758Z 
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:52.0472893Z Restarting services...
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:52.0549178Z  systemctl restart php8.3-fpm.service
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:52.1652554Z 
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:52.1653989Z No containers need to be restarted.
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:52.1654562Z 
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:52.1663680Z No user sessions are running outdated binaries.
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:52.1664150Z 
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:52.1664868Z No VM guests are running outdated hypervisor (qemu) binaries on this host.
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:53.0633438Z Downloading Chrome for Testing 153.0.8010.12 (playwright chromium v1243) from https://cdn.playwright.dev/builds/cft/153.0.8010.12/linux64/chrome-linux64.zip
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:36:53.4962849Z |                                                                                |   0% of 186.8 MiB
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:38:02.0763731Z |■■■■■■■■                                                                        |  10% of 186.8 MiB
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:39:07.4343353Z |■■■■■■■■■■■■■■■■                                                                |  20% of 186.8 MiB
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:40:17.0804924Z |■■■■■■■■■■■■■■■■■■■■■■■■                                                        |  30% of 186.8 MiB
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:41:25.7995602Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                                |  40% of 186.8 MiB
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:42:27.9363707Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                        |  50% of 186.8 MiB
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:43:21.9376267Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                |  60% of 186.8 MiB
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:44:11.8753488Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                        |  70% of 186.8 MiB
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:45:34.0289244Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                |  80% of 186.8 MiB
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:46:34.5349789Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■        |  90% of 186.8 MiB
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:47:30.0372036Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■| 100% of 186.8 MiB
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:47:33.2229392Z Chrome for Testing 153.0.8010.12 (playwright chromium v1243) downloaded to /home/runner/.cache/ms-playwright/chromium-1243
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:47:33.2233785Z Downloading FFmpeg (playwright ffmpeg v1011) from https://cdn.playwright.dev/dbazure/download/playwright/builds/ffmpeg/1011/ffmpeg-linux.zip
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:47:33.6369467Z |                                                                                |   0% of 2.3 MiB
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:47:33.6420346Z |■■■■■■■■                                                                        |  10% of 2.3 MiB
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:47:33.6577567Z |■■■■■■■■■■■■■■■■                                                                |  20% of 2.3 MiB
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:47:33.6691541Z |■■■■■■■■■■■■■■■■■■■■■■■■                                                        |  30% of 2.3 MiB
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:47:33.6807221Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                                |  40% of 2.3 MiB
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:47:33.6857508Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                        |  50% of 2.3 MiB
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:47:33.7071359Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                |  60% of 2.3 MiB
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:47:33.7294718Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                        |  70% of 2.3 MiB
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:47:33.7340312Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                |  80% of 2.3 MiB
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:47:33.7355875Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■        |  90% of 2.3 MiB
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:47:33.7372314Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■| 100% of 2.3 MiB
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:47:33.7971515Z FFmpeg (playwright ffmpeg v1011) downloaded to /home/runner/.cache/ms-playwright/ffmpeg-1011
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:47:33.7974650Z Downloading Chrome Headless Shell 153.0.8010.12 (playwright chromium-headless-shell v1243) from https://cdn.playwright.dev/builds/cft/153.0.8010.12/linux64/chrome-headless-shell-linux64.zip
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:47:34.2067586Z |                                                                                |   0% of 114.3 MiB
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:47:34.3259422Z |■■■■■■■■                                                                        |  10% of 114.3 MiB
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:47:34.4124304Z |■■■■■■■■■■■■■■■■                                                                |  20% of 114.3 MiB
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:47:34.4790519Z |■■■■■■■■■■■■■■■■■■■■■■■■                                                        |  30% of 114.3 MiB
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:47:34.5401934Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                                |  40% of 114.3 MiB
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:47:34.6026043Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                        |  50% of 114.3 MiB
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:47:34.6443129Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                |  60% of 114.3 MiB
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:47:34.7005214Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                        |  70% of 114.3 MiB
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:47:34.7380388Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                |  80% of 114.3 MiB
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:47:34.7840695Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■        |  90% of 114.3 MiB
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:47:34.8385290Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■| 100% of 114.3 MiB
+browser	Run npx playwright install --with-deps chromium	2026-10-10T17:47:37.1313055Z Chrome Headless Shell 153.0.8010.12 (playwright chromium-headless-shell v1243) downloaded to /home/runner/.cache/ms-playwright/chromium_headless_shell-1243
+browser	Run npm run test:e2e	﻿2026-10-10T17:47:37.1540457Z ##[group]Run npm run test:e2e
+browser	Run npm run test:e2e	2026-10-10T17:47:37.1540780Z [36;1mnpm run test:e2e[0m
+browser	Run npm run test:e2e	2026-10-10T17:47:37.1603822Z shell: /usr/bin/bash -e {0}
+browser	Run npm run test:e2e	2026-10-10T17:47:37.1604082Z env:
+browser	Run npm run test:e2e	2026-10-10T17:47:37.1604349Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.15/x64
+browser	Run npm run test:e2e	2026-10-10T17:47:37.1604792Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib/pkgconfig
+browser	Run npm run test:e2e	2026-10-10T17:47:37.1605234Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+browser	Run npm run test:e2e	2026-10-10T17:47:37.1605624Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+browser	Run npm run test:e2e	2026-10-10T17:47:37.1606007Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+browser	Run npm run test:e2e	2026-10-10T17:47:37.1606395Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib
+browser	Run npm run test:e2e	2026-10-10T17:47:37.1606722Z ##[endgroup]
+browser	Run npm run test:e2e	2026-10-10T17:47:37.2632237Z 
+browser	Run npm run test:e2e	2026-10-10T17:47:37.2632758Z > atlasmode@0.1.0 test:e2e
+browser	Run npm run test:e2e	2026-10-10T17:47:37.2633122Z > playwright test
+browser	Run npm run test:e2e	2026-10-10T17:47:37.2633273Z 
+browser	Run npm run test:e2e	2026-10-10T17:47:39.4768779Z 
+browser	Run npm run test:e2e	2026-10-10T17:47:39.4769727Z Running 19 tests using 1 worker
+browser	Run npm run test:e2e	2026-10-10T17:47:39.4770705Z 
+browser	Run npm run test:e2e	2026-10-10T17:47:44.8877755Z   ✓   1 tests/e2e/agent-chat.spec.ts:26:1 › actual disconnected provider shows conversation shell and retains failed input; source and advanced controls are opt-in (3.0s)
+browser	Run npm run test:e2e	2026-10-10T17:47:49.2569595Z   ✓   2 tests/e2e/agent-chat.spec.ts:182:1 › labeled trusted test adapter streams through real bridge, journals drafts, focuses changes, cancels partial work and isolates projects (4.4s)
+browser	Run npm run test:e2e	2026-10-10T17:47:55.6898071Z   ✓   3 tests/e2e/breadcrumb-navigation.spec.ts:33:1 › breadcrumbs navigate function, indexed file, folders, root and truthful planned paths, superseding stale scope responses (6.4s)
+browser	Run npm run test:e2e	2026-10-10T17:47:59.3812570Z   ✓   4 tests/e2e/commonjs.spec.ts:22:3 › production browser displays captured package coverage truthfully in Chinese and English (3.7s)
+browser	Run npm run test:e2e	2026-10-10T17:48:03.8812750Z   ✓   5 tests/e2e/commonjs.spec.ts:22:3 › production browser displays unrecorded legacy package coverage truthfully in Chinese and English (4.5s)
+browser	Run npm run test:e2e	2026-10-10T17:48:05.4250836Z   ✓   6 tests/e2e/commonjs.spec.ts:221:1 › recorded zero manifests is distinct from unrecorded coverage (1.5s)
+browser	Run npm run test:e2e	2026-10-10T17:48:08.9169882Z   ✓   7 tests/e2e/direct-api.spec.ts:14:1 › Responses API fixture through real browser send, streamed draft and cancel (3.5s)
+browser	Run npm run test:e2e	2026-10-10T17:48:11.9703028Z   ✓   8 tests/e2e/first-use.spec.ts:10:1 › first use offers an offline path and preserves optional AI drafts through disclosure (3.0s)
+browser	Run npm run test:e2e	2026-10-10T17:48:18.0348238Z   ✓   9 tests/e2e/focus-navigation.spec.ts:35:1 › high-degree function and file funnels keep readable neighbor windows with truthful totals and restore overview (6.0s)
+browser	Run npm run test:e2e	2026-10-10T17:48:21.9386963Z   ✓  10 tests/e2e/focus-navigation.spec.ts:204:1 › semantic creation after overview and multi-change plan choice fit their affected cards (3.9s)
+browser	Run npm run test:e2e	2026-10-10T17:48:25.3747358Z   ✓  11 tests/e2e/focus-navigation.spec.ts:406:1 › double-click builds an animated directional funnel, restores overview and honors reduced motion for file dependencies (3.4s)
+browser	Run npm run test:e2e	2026-10-10T17:48:28.9575163Z   ✓  12 tests/e2e/forwarding.spec.ts:21:1 › production browser follows a two-hop entry to the real leaf, preserves authored source in both languages and exposes unsafe forwarding reason (3.6s)
+browser	Run npm run test:e2e	2026-10-10T17:48:35.3404867Z {"viewportWidth":1900,"canvasWidth":1190,"capturedDock":"inspection-overlay dock-side","panelsFit":true,"navigation":"zoom, drag, wheel, key pan, click changed camera"}
+browser	Run npm run test:e2e	2026-10-10T17:48:36.3727541Z {"viewportWidth":1600,"canvasWidth":930,"capturedDock":"inspection-overlay dock-side","panelsFit":true,"navigation":"zoom, drag, wheel, key pan, click changed camera"}
+browser	Run npm run test:e2e	2026-10-10T17:48:36.7553642Z   ✓  13 tests/e2e/graph-inspection.spec.ts:43:1 › inspection preserves the camera, uniquely previews repeated calls, and funnel dragging survives pages while maps navigate (7.8s)
+browser	Run npm run test:e2e	2026-10-10T17:48:42.7024776Z   ✓  14 tests/e2e/groups-collapse.spec.ts:17:1 › group collapse preserves shared function aliases, true external call endpoints, layout and view across owned restart (5.9s)
+browser	Run npm run test:e2e	2026-10-10T17:48:47.8598354Z   ✓  15 tests/e2e/groups.spec.ts:17:1 › circle groups edit cross-directory shared functions and persist across owned-server restart without changing source (5.1s)
+browser	Run npm run test:e2e	2026-10-10T17:48:50.5733067Z   ✓  16 tests/e2e/pending-plans.spec.ts:11:1 › 待审入口打开实际变更，选择改动与显式批准分别生效 (2.7s)
+browser	Run npm run test:e2e	2026-10-10T17:48:55.1084820Z {"requestedRelation":"plan:new-call","clickedRoute":{"x":671.0561734013172,"y":335.5633977353573,"visualRoute":"rf__edge-plan:new-call"}}
+browser	Run npm run test:e2e	2026-10-10T17:48:57.9971992Z {"requestedRelation":"fact:relation:de3a0a4ccc210edf6edc365c0e258d1b","clickedRoute":{"x":975.3006901528897,"y":248.06184619313376,"visualRoute":"rf__edge-group-edge:fact:relation:de3a0a4ccc210edf6edc365c0e258d1b:0"}}
+browser	Run npm run test:e2e	2026-10-10T17:49:04.7457220Z   ✓  17 tests/e2e/planning.spec.mjs:18:1 › production UI and SDK share the complete planning, approval, persistence and verification flow offline (14.1s)
+browser	Run npm run test:e2e	2026-10-10T17:49:08.1092708Z   ✓  18 tests/e2e/tsconfig.spec.ts:17:3 › production browser displays captured configuration coverage truthfully in Chinese and English (3.3s)
+browser	Run npm run test:e2e	2026-10-10T17:49:12.3276296Z   ✓  19 tests/e2e/tsconfig.spec.ts:17:3 › production browser displays unrecorded legacy configuration coverage truthfully in Chinese and English (4.2s)
+browser	Run npm run test:e2e	2026-10-10T17:49:12.4796302Z 
+browser	Run npm run test:e2e	2026-10-10T17:49:12.4802723Z   19 passed (1.6m)
+browser	Run actions/upload-artifact@v4	﻿2026-10-10T17:49:12.5286792Z ##[group]Run actions/upload-artifact@v4
+browser	Run actions/upload-artifact@v4	2026-10-10T17:49:12.5287115Z with:
+browser	Run actions/upload-artifact@v4	2026-10-10T17:49:12.5287319Z   name: browser-evidence
+browser	Run actions/upload-artifact@v4	2026-10-10T17:49:12.5287556Z   path: artifacts/e2e/
+browser	Run actions/upload-artifact@v4	2026-10-10T17:49:12.5287787Z   if-no-files-found: warn
+browser	Run actions/upload-artifact@v4	2026-10-10T17:49:12.5288021Z   compression-level: 6
+browser	Run actions/upload-artifact@v4	2026-10-10T17:49:12.5288236Z   overwrite: false
+browser	Run actions/upload-artifact@v4	2026-10-10T17:49:12.5288451Z   include-hidden-files: false
+browser	Run actions/upload-artifact@v4	2026-10-10T17:49:12.5288685Z env:
+browser	Run actions/upload-artifact@v4	2026-10-10T17:49:12.5289247Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.15/x64
+browser	Run actions/upload-artifact@v4	2026-10-10T17:49:12.5289710Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib/pkgconfig
+browser	Run actions/upload-artifact@v4	2026-10-10T17:49:12.5290163Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+browser	Run actions/upload-artifact@v4	2026-10-10T17:49:12.5290563Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+browser	Run actions/upload-artifact@v4	2026-10-10T17:49:12.5290945Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+browser	Run actions/upload-artifact@v4	2026-10-10T17:49:12.5291327Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib
+browser	Run actions/upload-artifact@v4	2026-10-10T17:49:12.5291651Z ##[endgroup]
+browser	Run actions/upload-artifact@v4	2026-10-10T17:49:12.6927475Z (node:4160) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+browser	Run actions/upload-artifact@v4	2026-10-10T17:49:12.6928359Z (Use `node --trace-deprecation ...` to show where the warning was created)
+browser	Run actions/upload-artifact@v4	2026-10-10T17:49:12.7172551Z With the provided path, there will be 53 files uploaded
+browser	Run actions/upload-artifact@v4	2026-10-10T17:49:12.7173948Z Artifact name is valid!
+browser	Run actions/upload-artifact@v4	2026-10-10T17:49:12.7174459Z Root directory input is valid!
+browser	Run actions/upload-artifact@v4	2026-10-10T17:49:13.1035160Z Beginning upload of artifact content to blob storage
+browser	Run actions/upload-artifact@v4	2026-10-10T17:49:13.4416869Z (node:4160) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+browser	Run actions/upload-artifact@v4	2026-10-10T17:49:14.1520672Z Uploaded bytes 8388608
+browser	Run actions/upload-artifact@v4	2026-10-10T17:49:14.2132676Z Uploaded bytes 8646808
+browser	Run actions/upload-artifact@v4	2026-10-10T17:49:14.2753570Z Finished uploading artifact content to blob storage!
+browser	Run actions/upload-artifact@v4	2026-10-10T17:49:14.2755030Z SHA256 digest of uploaded artifact zip is 3d1bfd0ca679894b24957e120a6c8d9e488f91c4f7bdef0c7b2b77aedcaa2a4a
+browser	Run actions/upload-artifact@v4	2026-10-10T17:49:14.2756122Z Finalizing artifact upload
+browser	Run actions/upload-artifact@v4	2026-10-10T17:49:14.5300156Z Artifact browser-evidence.zip successfully finalized. Artifact ID 11678150414
+browser	Run actions/upload-artifact@v4	2026-10-10T17:49:14.5301229Z Artifact browser-evidence has been successfully uploaded! Final size is 8646808 bytes. Artifact ID is 11678150414
+browser	Run actions/upload-artifact@v4	2026-10-10T17:49:14.5308184Z Artifact download URL: https://github.com/huiyuanXP/AtlasMode/actions/runs/38072384523/artifacts/11678150414
+browser	Post Run actions/setup-python@v5	﻿2026-10-10T17:49:14.5501056Z Post job cleanup.
+browser	Post Run actions/setup-python@v5	2026-10-10T17:49:14.6674441Z (node:4173) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+browser	Post Run actions/setup-python@v5	2026-10-10T17:49:14.6675484Z (Use `node --trace-deprecation ...` to show where the warning was created)
+browser	Post Run actions/setup-node@v4	﻿2026-10-10T17:49:14.6813062Z Post job cleanup.
+browser	Post Run actions/setup-node@v4	2026-10-10T17:49:14.8121827Z (node:4181) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+browser	Post Run actions/setup-node@v4	2026-10-10T17:49:14.8123619Z (Use `node --trace-deprecation ...` to show where the warning was created)
+browser	Post Run actions/setup-node@v4	2026-10-10T17:49:14.8126085Z Cache hit occurred on the primary key node-cache-Linux-x64-npm-63ca624c84b4d1c894dd3d8534532893250cd6c3583fbf5ed566dbe3ddc075a6, not saving cache.
+browser	Post Run actions/checkout@v4	﻿2026-10-10T17:49:14.8300758Z Post job cleanup.
+browser	Post Run actions/checkout@v4	2026-10-10T17:49:14.9239360Z [command]/usr/bin/git version
+browser	Post Run actions/checkout@v4	2026-10-10T17:49:14.9288821Z git version 2.55.0
+browser	Post Run actions/checkout@v4	2026-10-10T17:49:14.9334285Z Temporarily overriding HOME='/home/runner/work/_temp/d23e8470-35ee-470b-b7c5-111277bfc0e9' before making global git config changes
+browser	Post Run actions/checkout@v4	2026-10-10T17:49:14.9335939Z Adding repository directory to the temporary git global config as a safe directory
+browser	Post Run actions/checkout@v4	2026-10-10T17:49:14.9339474Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/AtlasMode/AtlasMode
+browser	Post Run actions/checkout@v4	2026-10-10T17:49:14.9381170Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+browser	Post Run actions/checkout@v4	2026-10-10T17:49:14.9416748Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+browser	Post Run actions/checkout@v4	2026-10-10T17:49:14.9675999Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+browser	Post Run actions/checkout@v4	2026-10-10T17:49:14.9701226Z http.https://github.com/.extraheader
+browser	Post Run actions/checkout@v4	2026-10-10T17:49:14.9721008Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+browser	Post Run actions/checkout@v4	2026-10-10T17:49:14.9754384Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+browser	Post Run actions/checkout@v4	2026-10-10T17:49:15.0025661Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+browser	Post Run actions/checkout@v4	2026-10-10T17:49:15.0064206Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+browser	Complete job	﻿2026-10-10T17:49:15.0472446Z Cleaning up orphan processes
+browser	Complete job	2026-10-10T17:49:15.0895699Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-node@v4, actions/setup-python@v5, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
