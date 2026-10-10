@@ -1,0 +1,29 @@
+
+> atlasmode@0.1.0 test:e2e
+> playwright test
+
+
+Running 18 tests using 1 worker
+
+  ✓   1 tests/e2e/agent-chat.spec.ts:26:1 › actual disconnected provider shows conversation shell and retains failed input; source and advanced controls are opt-in (3.0s)
+  ✓   2 tests/e2e/agent-chat.spec.ts:182:1 › labeled trusted test adapter streams through real bridge, journals drafts, focuses changes, cancels partial work and isolates projects (5.0s)
+  ✓   3 tests/e2e/breadcrumb-navigation.spec.ts:33:1 › breadcrumbs navigate function, indexed file, folders, root and truthful planned paths, superseding stale scope responses (9.5s)
+  ✓   4 tests/e2e/commonjs.spec.ts:22:3 › production browser displays captured package coverage truthfully in Chinese and English (4.5s)
+  ✓   5 tests/e2e/commonjs.spec.ts:22:3 › production browser displays unrecorded legacy package coverage truthfully in Chinese and English (4.5s)
+  ✓   6 tests/e2e/commonjs.spec.ts:221:1 › recorded zero manifests is distinct from unrecorded coverage (1.5s)
+  ✓   7 tests/e2e/direct-api.spec.ts:14:1 › Responses API fixture through real browser send, streamed draft and cancel (3.9s)
+  ✓   8 tests/e2e/first-use.spec.ts:10:1 › first use offers an offline path and preserves optional AI drafts through disclosure (6.0s)
+  ✓   9 tests/e2e/focus-navigation.spec.ts:35:1 › high-degree function and file funnels keep readable neighbor windows with truthful totals and restore overview (5.8s)
+  ✓  10 tests/e2e/focus-navigation.spec.ts:204:1 › semantic creation after overview and multi-change plan choice fit their affected cards (4.0s)
+  ✓  11 tests/e2e/focus-navigation.spec.ts:406:1 › double-click builds an animated directional funnel, restores overview and honors reduced motion for file dependencies (3.5s)
+  ✓  12 tests/e2e/forwarding.spec.ts:21:1 › production browser follows a two-hop entry to the real leaf, preserves authored source in both languages and exposes unsafe forwarding reason (3.6s)
+{"viewportWidth":1900,"canvasWidth":1190,"capturedDock":"inspection-overlay dock-side","panelsFit":true,"navigation":"zoom, drag, wheel, key pan, click changed camera"}
+{"viewportWidth":1600,"canvasWidth":930,"capturedDock":"inspection-overlay dock-side","panelsFit":true,"navigation":"zoom, drag, wheel, key pan, click changed camera"}
+  ✓  13 tests/e2e/graph-inspection.spec.ts:43:1 › inspection preserves the camera, uniquely previews repeated calls, and funnel dragging survives pages while maps navigate (10.4s)
+  ✓  14 tests/e2e/groups.spec.ts:17:1 › circle groups edit cross-directory shared functions and persist across owned-server restart without changing source (6.1s)
+  ✓  15 tests/e2e/pending-plans.spec.ts:11:1 › 待审入口打开实际变更，选择改动与显式批准分别生效 (2.6s)
+  ✓  16 tests/e2e/planning.spec.mjs:18:1 › production UI and SDK share the complete planning, approval, persistence and verification flow offline (16.6s)
+  ✓  17 tests/e2e/tsconfig.spec.ts:17:3 › production browser displays captured configuration coverage truthfully in Chinese and English (3.4s)
+  ✓  18 tests/e2e/tsconfig.spec.ts:17:3 › production browser displays unrecorded legacy configuration coverage truthfully in Chinese and English (4.4s)
+
+  18 passed (1.7m)

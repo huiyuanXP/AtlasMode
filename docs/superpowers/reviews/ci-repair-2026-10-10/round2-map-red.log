@@ -1,0 +1,41 @@
+
+Running 1 test using 1 worker
+
+  ✘  1 tests/e2e/graph-inspection.spec.ts:43:1 › inspection preserves the camera, uniquely previews repeated calls, and funnel dragging survives pages while maps navigate (19.4s)
+
+
+  1) tests/e2e/graph-inspection.spec.ts:43:1 › inspection preserves the camera, uniquely previews repeated calls, and funnel dragging survives pages while maps navigate 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 0
+    Received: 100800
+
+    Call Log:
+    - Timeout 10000ms exceeded while waiting on the predicate
+
+      275 |         );
+      276 |       })
+    > 277 |       .toBe(0);
+          |        ^
+      278 |     const currentSvgBox = await svg.boundingBox();
+      279 |     expect(currentSvgBox).not.toBeNull();
+      280 |     const beforeMapClick = await page
+        at /home/agent/projects/AtlasMode/tests/e2e/graph-inspection.spec.ts:277:8
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../../../tmp/atlas-ci-repair-round2-map-red/results/graph-inspection-inspectio-63d93-s-pages-while-maps-navigate/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../../../tmp/atlas-ci-repair-round2-map-red/results/graph-inspection-inspectio-63d93-s-pages-while-maps-navigate/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../../../tmp/atlas-ci-repair-round2-map-red/results/graph-inspection-inspectio-63d93-s-pages-while-maps-navigate/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../../../tmp/atlas-ci-repair-round2-map-red/results/graph-inspection-inspectio-63d93-s-pages-while-maps-navigate/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests/e2e/graph-inspection.spec.ts:43:1 › inspection preserves the camera, uniquely previews repeated calls, and funnel dragging survives pages while maps navigate 

@@ -1,0 +1,14 @@
+{
+  "candidate": "/tmp/atlasmode-integration-20261010-1505",
+  "baseCommit": "40710123061a5d1e86fb9269d4d3689a24de4691",
+  "changes": "3 browser specs + standalone Canvas map placement patch",
+  "browser": "4/4 PASS (39.8s)",
+  "originalCI": "https://github.com/huiyuanXP/AtlasMode/actions/runs/38061633736",
+  "sha256": {
+    "apps/server/dist/index.js": "0daaba18e88e951b1ef67bdb3274af28717f0b2078b1d2baf17b8ca6ec787ab6",
+    "apps/mcp/dist/index.js": "ce27aa23da77bb00e5fcaec932b034d5e7c0ba95feaf72f62b3a175b7fadccb5",
+    "apps/web/dist/index.html": "2aacff907e291410d38303b7cf95b4cd74507e24cd054a9ccdcfc7e218ad05b6",
+    "apps/web/dist/assets/index-2uV7OwI7.css": "9d34a14c224ca98b5bdd6b0f952573a60a29330e3080bbd57c669744e9db53ed",
+    "apps/web/dist/assets/index-CLxJGHiq.js": "a16853d9673746a35285b4661d0c8d36e4c19dfb001e05af3a6361029cb9ca29"
+  }
+}

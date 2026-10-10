@@ -43,7 +43,7 @@ async function dragCard(page: Page, card: Locator, dx: number, dy: number) {
 test("inspection preserves the camera, uniquely previews repeated calls, and funnel dragging survives pages while maps navigate", async ({
   page,
   context,
-}) => {
+}, testInfo) => {
   const root = await mkdtemp(join(tmpdir(), "atlas-inspection-"));
   let server;
   const errors: string[] = [],
@@ -190,62 +190,146 @@ test("inspection preserves the camera, uniquely previews repeated calls, and fun
       .click();
     await page.waitForTimeout(400);
     expect(await transform(card(selected.id))).toBe(moved);
-    await page.getByRole("button", { name: "Expand map", exact: true }).click();
-    const map = page.getByRole("complementary", {
-      name: "Map of the loaded graph",
-    });
-    await expect(map).toHaveClass(/expanded/);
-    const mapBox = await map.boundingBox();
-    expect(mapBox!.width).toBeGreaterThan(300);
-    await expect(map.locator(".react-flow__minimap-mask")).toBeVisible();
-    const initialMapCamera = await page
-      .locator(".react-flow__viewport")
-      .getAttribute("style");
-    await map
-      .getByRole("button", { name: "Map zoom out", exact: true })
-      .click();
-    await expect
-      .poll(() => page.locator(".react-flow__viewport").getAttribute("style"))
-      .not.toBe(initialMapCamera);
-    const svg = map.locator("svg");
-    const svgBox = await svg.boundingBox();
-    expect(svgBox!.width).toBeGreaterThan(300);
-    expect(svgBox!.width).toBeLessThanOrEqual(mapBox!.width);
-    const beforeDrag = await page
-      .locator(".react-flow__viewport")
-      .getAttribute("style");
-    await page.mouse.move(
-      svgBox!.x + svgBox!.width * 0.5,
-      svgBox!.y + svgBox!.height * 0.5,
-    );
-    await page.mouse.down();
-    await page.mouse.move(
-      svgBox!.x + svgBox!.width * 0.5 + 28,
-      svgBox!.y + svgBox!.height * 0.5 + 14,
-      { steps: 6 },
-    );
-    await page.mouse.up();
-    await expect
-      .poll(() => page.locator(".react-flow__viewport").getAttribute("style"))
-      .not.toBe(beforeDrag);
-    const draggedMapBox = await map.boundingBox();
-    expect(draggedMapBox!.x).toBeCloseTo(mapBox!.x, 0);
-    expect(draggedMapBox!.y).toBeCloseTo(mapBox!.y, 0);
-    await svg.hover();
-    const beforeWheel = await page
-      .locator(".react-flow__viewport")
-      .getAttribute("style");
-    await page.mouse.wheel(0, -240);
-    await expect
-      .poll(() => page.locator(".react-flow__viewport").getAttribute("style"))
-      .not.toBe(beforeWheel);
-    await svg.click({
-      position: { x: svgBox!.width * 0.75, y: svgBox!.height * 0.5 },
-    });
-    await expect(map).toContainText("Currently loaded");
-    await page.keyboard.press("Escape");
-    await expect(map).toHaveClass(/collapsed/);
-    await expect(detail).toBeVisible();
+    // Retain the wide coexistence regression and the original CI geometry.
+    for (const width of [1900, 1600]) {
+      await page.setViewportSize({ width, height: 1000 });
+      await expect(detail).toBeVisible();
+      const overlay = page.locator(".inspection-overlay");
+      if (width === 1900) await expect(overlay).toHaveClass(/dock-side/);
+      const capturedDock = await overlay.getAttribute("class");
+      const canvasWidth = await page
+        .locator(".canvas-shell")
+        .evaluate((element) => element.clientWidth);
+      const panelsFit =
+        canvasWidth >= 850 && capturedDock?.includes("dock-side");
+      await page
+        .getByRole("button", { name: "Expand map", exact: true })
+        .click();
+      const map = page.getByRole("complementary", {
+        name: "Map of the loaded graph",
+      });
+      await expect(map).toHaveClass(/expanded/);
+      const mapBox = await map.boundingBox();
+      expect(mapBox!.width).toBeGreaterThan(300);
+      await expect(map.locator(".react-flow__minimap-mask")).toBeVisible();
+      const initialMapCamera = await page
+        .locator(".react-flow__viewport")
+        .getAttribute("style");
+      await map
+        .getByRole("button", { name: "Map zoom out", exact: true })
+        .click();
+      await expect
+        .poll(() => page.locator(".react-flow__viewport").getAttribute("style"))
+        .not.toBe(initialMapCamera);
+      const svg = map.locator("svg");
+      const svgBox = await svg.boundingBox();
+      expect(svgBox!.width).toBeGreaterThan(300);
+      expect(svgBox!.width).toBeLessThanOrEqual(mapBox!.width);
+      const beforeDrag = await page
+        .locator(".react-flow__viewport")
+        .getAttribute("style");
+      await page.mouse.move(
+        svgBox!.x + svgBox!.width * 0.5,
+        svgBox!.y + svgBox!.height * 0.5,
+      );
+      await page.mouse.down();
+      await page.mouse.move(
+        svgBox!.x + svgBox!.width * 0.5 + 28,
+        svgBox!.y + svgBox!.height * 0.5 + 14,
+        { steps: 6 },
+      );
+      await page.mouse.up();
+      await expect
+        .poll(() => page.locator(".react-flow__viewport").getAttribute("style"))
+        .not.toBe(beforeDrag);
+      const draggedMapBox = await map.boundingBox();
+      expect(draggedMapBox!.x).toBeCloseTo(mapBox!.x, 0);
+      expect(draggedMapBox!.y).toBeCloseTo(mapBox!.y, 0);
+      await svg.hover();
+      const beforeWheel = await page
+        .locator(".react-flow__viewport")
+        .getAttribute("style");
+      await page.mouse.wheel(0, -240);
+      await expect
+        .poll(() => page.locator(".react-flow__viewport").getAttribute("style"))
+        .not.toBe(beforeWheel);
+      // Move the selected card across the canvas while the expanded map stays docked.
+      const mapOnLeft = await map.evaluate(
+        (element) => (element as HTMLElement).style.left === "12px",
+      );
+      await map
+        .getByRole("button", { name: "Map zoom out", exact: true })
+        .focus();
+      for (let step = 0; step < 12; step++)
+        await page.keyboard.press(mapOnLeft ? "ArrowLeft" : "ArrowRight");
+      if (panelsFit) {
+        await expect(detail).toBeVisible();
+        await expect
+          .poll(async () => {
+            const mapBounds = await map.boundingBox(),
+              detailBounds = await detail.boundingBox();
+            if (!mapBounds || !detailBounds) return Infinity;
+            return (
+              Math.max(
+                0,
+                Math.min(
+                  mapBounds.x + mapBounds.width,
+                  detailBounds.x + detailBounds.width,
+                ) - Math.max(mapBounds.x, detailBounds.x),
+              ) *
+              Math.max(
+                0,
+                Math.min(
+                  mapBounds.y + mapBounds.height,
+                  detailBounds.y + detailBounds.height,
+                ) - Math.max(mapBounds.y, detailBounds.y),
+              )
+            );
+          })
+          .toBe(0);
+      } else {
+        // Compact placement deliberately hides details while the map is expanded.
+        await expect(detail).toHaveCount(0);
+        await expect(map).toContainText(
+          "Reference details are temporarily collapsed; collapse the map to restore them.",
+        );
+      }
+      const currentSvgBox = await svg.boundingBox();
+      expect(currentSvgBox).not.toBeNull();
+      const beforeMapClick = await page
+        .locator(".react-flow__viewport")
+        .getAttribute("style");
+      await svg.click({
+        position: {
+          x: currentSvgBox!.width * 0.75,
+          y: currentSvgBox!.height * 0.5,
+        },
+      });
+      await expect
+        .poll(() => page.locator(".react-flow__viewport").getAttribute("style"))
+        .not.toBe(beforeMapClick);
+      await expect(map).toContainText("Currently loaded");
+      console.log(
+        JSON.stringify({
+          viewportWidth: width,
+          canvasWidth,
+          capturedDock,
+          panelsFit,
+          navigation: "zoom, drag, wheel, key pan, click changed camera",
+        }),
+      );
+      await page.screenshot({
+        path: testInfo.outputPath(`map-navigation-${width}.png`),
+        fullPage: true,
+      });
+      await page.keyboard.press("Escape");
+      await expect(map).toHaveClass(/collapsed/);
+      await expect(detail).toBeVisible();
+      await page.screenshot({
+        path: testInfo.outputPath(`map-collapsed-${width}.png`),
+        fullPage: true,
+      });
+    }
     // Escape closes detail first and then exits the funnel.
     await page.keyboard.press("Escape");
     await expect(detail).toHaveCount(0);

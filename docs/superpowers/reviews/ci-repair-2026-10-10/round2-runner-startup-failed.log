@@ -1,0 +1,67 @@
+Error: Playwright Test did not expect test() to be called here.
+Most common reasons include:
+- You are calling test() in a configuration file.
+- You are calling test() in a file that is imported by the configuration file.
+- You have two different versions of @playwright/test. This usually happens
+  when one of the dependencies in your package.json depends on @playwright/test.
+- You are calling test() from an async test.describe() block. Only sync ones are supported.
+
+   at agent-chat.spec.ts:26
+
+  24 |   await expect(page.locator(".chat-explore")).toBeVisible();
+  25 | }
+> 26 | test("actual disconnected provider shows conversation shell and retains failed input; source and advanced controls are opt-in", async ({
+     | ^
+  27 |   page,
+  28 |   context,
+  29 | }, testInfo) => {
+    at _TestTypeImpl._currentSuite (/tmp/atlasmode-integration-20261010-1505/node_modules/playwright/lib/common/index.js:2224:13)
+    at _TestTypeImpl._createTest (/tmp/atlasmode-integration-20261010-1505/node_modules/playwright/lib/common/index.js:2238:24)
+    at test (/tmp/atlasmode-integration-20261010-1505/node_modules/playwright/lib/common/index.js:1154:12)
+    at /tmp/atlasmode-integration-20261010-1505/tests/e2e/agent-chat.spec.ts:26:1
+Error: Playwright Test did not expect test() to be called here.
+Most common reasons include:
+- You are calling test() in a configuration file.
+- You are calling test() in a file that is imported by the configuration file.
+- You have two different versions of @playwright/test. This usually happens
+  when one of the dependencies in your package.json depends on @playwright/test.
+- You are calling test() from an async test.describe() block. Only sync ones are supported.
+
+   at graph-inspection.spec.ts:43
+
+  41 |     .toBeLessThan(2);
+  42 | }
+> 43 | test("inspection preserves the camera, uniquely previews repeated calls, and funnel dragging survives pages while maps navigate", async ({
+     | ^
+  44 |   page,
+  45 |   context,
+  46 | }) => {
+    at _TestTypeImpl._currentSuite (/tmp/atlasmode-integration-20261010-1505/node_modules/playwright/lib/common/index.js:2224:13)
+    at _TestTypeImpl._createTest (/tmp/atlasmode-integration-20261010-1505/node_modules/playwright/lib/common/index.js:2238:24)
+    at test (/tmp/atlasmode-integration-20261010-1505/node_modules/playwright/lib/common/index.js:1154:12)
+    at /tmp/atlasmode-integration-20261010-1505/tests/e2e/graph-inspection.spec.ts:43:1
+Error: Playwright Test did not expect test() to be called here.
+Most common reasons include:
+- You are calling test() in a configuration file.
+- You are calling test() in a file that is imported by the configuration file.
+- You have two different versions of @playwright/test. This usually happens
+  when one of the dependencies in your package.json depends on @playwright/test.
+- You are calling test() from an async test.describe() block. Only sync ones are supported.
+
+   at planning.spec.mjs:18
+
+  16 | } from "../support/production.mjs";
+  17 |
+> 18 | test("production UI and SDK share the complete planning, approval, persistence and verification flow offline", async ({
+     | ^
+  19 |   page,
+  20 |   context,
+  21 | }, testInfo) => {
+    at _TestTypeImpl._currentSuite (/tmp/atlasmode-integration-20261010-1505/node_modules/playwright/lib/common/index.js:2224:13)
+    at _TestTypeImpl._createTest (/tmp/atlasmode-integration-20261010-1505/node_modules/playwright/lib/common/index.js:2238:24)
+    at test (/tmp/atlasmode-integration-20261010-1505/node_modules/playwright/lib/common/index.js:1154:12)
+    at /tmp/atlasmode-integration-20261010-1505/tests/e2e/planning.spec.mjs:18:1
+Error: No tests found.
+Make sure that arguments are regular expressions matching test files.
+You may need to escape symbols like "$" or "*" and quote the arguments.
+

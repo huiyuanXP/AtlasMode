@@ -223,9 +223,15 @@ test("production UI and SDK share the complete planning, approval, persistence a
     // A second group shares a member without changing file ownership.
     await openAdvancedNavigation(page);
     await page
+      .getByRole("button", { name: "Manage groups", exact: true })
+      .click();
+    await page
+      .getByRole("button", { name: "Create group", exact: true })
+      .click();
+    await page
       .getByLabel("Group title", { exact: true })
       .fill("Shared membership");
-    await page.getByText("Selected members (0)", { exact: true }).click();
+    await page.getByText("Choose loaded functions", { exact: true }).click();
     await page.getByRole("checkbox", { name: /requestWithRetry/ }).check();
     await page
       .getByRole("button", { name: "Create group", exact: true })

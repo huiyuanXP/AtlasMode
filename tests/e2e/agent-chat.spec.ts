@@ -124,7 +124,19 @@ test("actual disconnected provider shows conversation shell and retains failed i
       .click();
     await expect(
       page.getByRole("button", { name: "Create group", exact: true }),
+    ).toHaveCount(0);
+    await page
+      .getByRole("button", { name: "Manage groups", exact: true })
+      .click();
+    await expect(
+      page.getByRole("button", { name: "Create group", exact: true }),
     ).toBeVisible();
+    await page
+      .getByRole("button", { name: "Manage groups", exact: true })
+      .click();
+    await expect(
+      page.getByRole("button", { name: "Create group", exact: true }),
+    ).toHaveCount(0);
     await page
       .getByRole("button", { name: "Advanced controls", exact: true })
       .click();

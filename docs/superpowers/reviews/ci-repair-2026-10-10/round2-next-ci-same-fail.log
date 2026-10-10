@@ -1,0 +1,199 @@
+browser	Run npm run test:e2e	﻿2026-10-10T15:15:04.0631067Z ##[group]Run npm run test:e2e
+browser	Run npm run test:e2e	2026-10-10T15:15:04.0631327Z [36;1mnpm run test:e2e[0m
+browser	Run npm run test:e2e	2026-10-10T15:15:04.0686818Z shell: /usr/bin/bash -e {0}
+browser	Run npm run test:e2e	2026-10-10T15:15:04.0687041Z env:
+browser	Run npm run test:e2e	2026-10-10T15:15:04.0687264Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.15/x64
+browser	Run npm run test:e2e	2026-10-10T15:15:04.0687609Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib/pkgconfig
+browser	Run npm run test:e2e	2026-10-10T15:15:04.0687957Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+browser	Run npm run test:e2e	2026-10-10T15:15:04.0688260Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+browser	Run npm run test:e2e	2026-10-10T15:15:04.0688554Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+browser	Run npm run test:e2e	2026-10-10T15:15:04.0688849Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib
+browser	Run npm run test:e2e	2026-10-10T15:15:04.0689105Z ##[endgroup]
+browser	Run npm run test:e2e	2026-10-10T15:15:04.1509731Z 
+browser	Run npm run test:e2e	2026-10-10T15:15:04.1510430Z > atlasmode@0.1.0 test:e2e
+browser	Run npm run test:e2e	2026-10-10T15:15:04.1510729Z > playwright test
+browser	Run npm run test:e2e	2026-10-10T15:15:04.1510845Z 
+browser	Run npm run test:e2e	2026-10-10T15:15:05.7235542Z 
+browser	Run npm run test:e2e	2026-10-10T15:15:05.7236226Z Running 18 tests using 1 worker
+browser	Run npm run test:e2e	2026-10-10T15:15:05.7236629Z 
+browser	Run npm run test:e2e	2026-10-10T15:15:20.6435022Z   ✘   1 tests/e2e/agent-chat.spec.ts:26:1 › actual disconnected provider shows conversation shell and retains failed input; source and advanced controls are opt-in (12.1s)
+browser	Run npm run test:e2e	2026-10-10T15:15:25.7039877Z   ✓   2 tests/e2e/agent-chat.spec.ts:170:1 › labeled trusted test adapter streams through real bridge, journals drafts, focuses changes, cancels partial work and isolates projects (4.1s)
+browser	Run npm run test:e2e	2026-10-10T15:15:31.4528429Z   ✓   3 tests/e2e/breadcrumb-navigation.spec.ts:33:1 › breadcrumbs navigate function, indexed file, folders, root and truthful planned paths, superseding stale scope responses (5.7s)
+browser	Run npm run test:e2e	2026-10-10T15:15:34.9050679Z   ✓   4 tests/e2e/commonjs.spec.ts:22:3 › production browser displays captured package coverage truthfully in Chinese and English (3.4s)
+browser	Run npm run test:e2e	2026-10-10T15:15:38.9100649Z   ✓   5 tests/e2e/commonjs.spec.ts:22:3 › production browser displays unrecorded legacy package coverage truthfully in Chinese and English (4.0s)
+browser	Run npm run test:e2e	2026-10-10T15:15:40.1170726Z   ✓   6 tests/e2e/commonjs.spec.ts:221:1 › recorded zero manifests is distinct from unrecorded coverage (1.2s)
+browser	Run npm run test:e2e	2026-10-10T15:15:43.1650957Z   ✓   7 tests/e2e/direct-api.spec.ts:14:1 › Responses API fixture through real browser send, streamed draft and cancel (3.0s)
+browser	Run npm run test:e2e	2026-10-10T15:15:45.6214303Z   ✓   8 tests/e2e/first-use.spec.ts:10:1 › first use offers an offline path and preserves optional AI drafts through disclosure (2.4s)
+browser	Run npm run test:e2e	2026-10-10T15:15:50.2391908Z   ✓   9 tests/e2e/focus-navigation.spec.ts:35:1 › high-degree function and file funnels keep readable neighbor windows with truthful totals and restore overview (4.6s)
+browser	Run npm run test:e2e	2026-10-10T15:15:53.5691185Z   ✓  10 tests/e2e/focus-navigation.spec.ts:204:1 › semantic creation after overview and multi-change plan choice fit their affected cards (3.3s)
+browser	Run npm run test:e2e	2026-10-10T15:15:56.4379282Z   ✓  11 tests/e2e/focus-navigation.spec.ts:406:1 › double-click builds an animated directional funnel, restores overview and honors reduced motion for file dependencies (2.9s)
+browser	Run npm run test:e2e	2026-10-10T15:15:59.6571021Z   ✓  12 tests/e2e/forwarding.spec.ts:21:1 › production browser follows a two-hop entry to the real leaf, preserves authored source in both languages and exposes unsafe forwarding reason (3.2s)
+browser	Run npm run test:e2e	2026-10-10T15:16:20.8457088Z   ✘  13 tests/e2e/graph-inspection.spec.ts:43:1 › inspection preserves the camera, uniquely previews repeated calls, and funnel dragging survives pages while maps navigate (20.8s)
+browser	Run npm run test:e2e	2026-10-10T15:16:25.6885421Z   ✓  14 tests/e2e/groups.spec.ts:17:1 › circle groups edit cross-directory shared functions and persist across owned-server restart without changing source (4.2s)
+browser	Run npm run test:e2e	2026-10-10T15:16:27.7905550Z   ✓  15 tests/e2e/pending-plans.spec.ts:11:1 › 待审入口打开实际变更，选择改动与显式批准分别生效 (2.1s)
+browser	Run npm run test:e2e	2026-10-10T15:16:45.9712251Z   ✘  16 tests/e2e/planning.spec.mjs:18:1 › production UI and SDK share the complete planning, approval, persistence and verification flow offline (17.9s)
+browser	Run npm run test:e2e	2026-10-10T15:16:49.7279186Z   ✓  17 tests/e2e/tsconfig.spec.ts:17:3 › production browser displays captured configuration coverage truthfully in Chinese and English (3.2s)
+browser	Run npm run test:e2e	2026-10-10T15:16:53.4713850Z   ✓  18 tests/e2e/tsconfig.spec.ts:17:3 › production browser displays unrecorded legacy configuration coverage truthfully in Chinese and English (3.7s)
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5173077Z 
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5177268Z 
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5185933Z   1) tests/e2e/agent-chat.spec.ts:26:1 › actual disconnected provider shows conversation shell and retains failed input; source and advanced controls are opt-in 
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5186801Z 
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5187011Z     Error: expect(locator).toBeVisible() failed
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5187291Z 
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5187582Z     Locator: getByRole('button', { name: 'Create group', exact: true })
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5188073Z     Expected: visible
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5188350Z     Timeout: 10000ms
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5189065Z     Error: element(s) not found
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5189285Z 
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5189391Z     Call log:
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5190002Z       - Expect "toBeVisible" getByRole('button', { name: 'Create group', exact: true }) with timeout 10000ms
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5190825Z       - waiting for getByRole('button', { name: 'Create group', exact: true })
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5191203Z 
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5191213Z 
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5191336Z       125 |     await expect(
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5191831Z       126 |       page.getByRole("button", { name: "Create group", exact: true }),
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5192334Z     > 127 |     ).toBeVisible();
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5192647Z           |       ^
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5192900Z       128 |     await page
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5193376Z       129 |       .getByRole("button", { name: "Advanced controls", exact: true })
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5193845Z       130 |       .click();
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5194549Z         at /home/runner/work/AtlasMode/AtlasMode/tests/e2e/agent-chat.spec.ts:127:7
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5194974Z 
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5195586Z     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5196564Z     artifacts/e2e/results/agent-chat-actual-disconne-a670a-dvanced-controls-are-opt-in/test-failed-1.png
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5197518Z     ────────────────────────────────────────────────────────────────────────────────────────────────
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5197883Z 
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5198476Z     Error Context: artifacts/e2e/results/agent-chat-actual-disconne-a670a-dvanced-controls-are-opt-in/error-context.md
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5199116Z 
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5199674Z     attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5200587Z     artifacts/e2e/results/agent-chat-actual-disconne-a670a-dvanced-controls-are-opt-in/trace.zip
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5201224Z     Usage:
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5201369Z 
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5201993Z         npx playwright show-trace artifacts/e2e/results/agent-chat-actual-disconne-a670a-dvanced-controls-are-opt-in/trace.zip
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5202754Z 
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5203236Z     ────────────────────────────────────────────────────────────────────────────────────────────────
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5203615Z 
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5207106Z   2) tests/e2e/graph-inspection.spec.ts:43:1 › inspection preserves the camera, uniquely previews repeated calls, and funnel dragging survives pages while maps navigate 
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5207965Z 
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5208230Z     TimeoutError: locator.click: Timeout 15000ms exceeded.
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5208629Z     Call log:
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5209198Z       - waiting for getByRole('complementary', { name: 'Map of the loaded graph' }).locator('svg')
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5211062Z         - locator resolved to <svg role="img" width="420" height="168" class="react-flow__minimap-svg" aria-labelledby="react-flow__minimap-desc-1" viewBox="-380.17857142857144 -774.0050475261127 4315.357142857143 1786.3571428571431">…</svg>
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5212636Z       - attempting click action
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5213186Z         2 × waiting for element to be visible, enabled and stable
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5213862Z           - element is visible, enabled and stable
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5214481Z           - scrolling into view if needed
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5214820Z           - done scrolling
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5215848Z           - <pre class="signature">export function selected()</pre> from <div class="inspection-overlay dock-side">…</div> subtree intercepts pointer events
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5216691Z         - retrying click action
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5216998Z         - waiting 20ms
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5217398Z         - waiting for element to be visible, enabled and stable
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5217883Z         - element is visible, enabled and stable
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5218289Z         - scrolling into view if needed
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5218636Z         - done scrolling
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5219588Z         - <div class="inspection-body">…</div> from <div class="inspection-overlay dock-side">…</div> subtree intercepts pointer events
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5220312Z       - retrying click action
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5220629Z         - waiting 100ms
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5221037Z         - waiting for element to be visible, enabled and stable
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5221498Z         - element is visible, enabled and stable
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5221856Z         - scrolling into view if needed
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5222179Z         - done scrolling
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5222783Z         - <div role="status" class="funnel-summary">…</div> intercepts pointer events
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5223294Z       - retrying click action
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5223605Z         - waiting 100ms
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5224272Z         7 × waiting for element to be visible, enabled and stable
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5224656Z           - element is visible, enabled and stable
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5225067Z           - scrolling into view if needed
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5225435Z           - done scrolling
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5226479Z           - <pre class="signature">export function selected()</pre> from <div class="inspection-overlay dock-side">…</div> subtree intercepts pointer events
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5227409Z         - retrying click action
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5227731Z           - waiting 500ms
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5228182Z           - waiting for element to be visible, enabled and stable
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5228700Z           - element is visible, enabled and stable
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5229128Z           - scrolling into view if needed
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5229477Z           - done scrolling
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5230672Z           - <pre class="signature">export function selected()</pre> from <div class="inspection-overlay dock-side">…</div> subtree intercepts pointer events
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5231585Z         - retrying click action
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5231901Z           - waiting 500ms
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5232319Z           - waiting for element to be visible, enabled and stable
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5232805Z           - element is visible, enabled and stable
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5233269Z           - scrolling into view if needed
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5233636Z           - done scrolling
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5234817Z           - <div class="inspection-body">…</div> from <div class="inspection-overlay dock-side">…</div> subtree intercepts pointer events
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5235611Z         - retrying click action
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5235917Z           - waiting 500ms
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5236337Z           - waiting for element to be visible, enabled and stable
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5236829Z           - element is visible, enabled and stable
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5237298Z           - scrolling into view if needed
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5237658Z           - done scrolling
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5238329Z           - <div role="status" class="funnel-summary">…</div> intercepts pointer events
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5238771Z         - retrying click action
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5239386Z           - waiting 500ms
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5239647Z         - waiting for element to be visible, enabled and stable
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5239943Z         - element is visible, enabled and stable
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5240308Z         - scrolling into view if needed
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5240523Z         - done scrolling
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5241147Z         - <pre class="signature">export function selected()</pre> from <div class="inspection-overlay dock-side">…</div> subtree intercepts pointer events
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5241642Z       - retrying click action
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5241845Z         - waiting 500ms
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5241962Z 
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5241969Z 
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5242185Z       240 |       .poll(() => page.locator(".react-flow__viewport").getAttribute("style"))
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5242523Z       241 |       .not.toBe(beforeWheel);
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5242752Z     > 242 |     await svg.click({
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5242949Z           |               ^
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5243270Z       243 |       position: { x: svgBox!.width * 0.75, y: svgBox!.height * 0.5 },
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5243551Z       244 |     });
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5243798Z       245 |     await expect(map).toContainText("Currently loaded");
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5244420Z         at /home/runner/work/AtlasMode/AtlasMode/tests/e2e/graph-inspection.spec.ts:242:15
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5244686Z 
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5245007Z     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5245582Z     artifacts/e2e/results/graph-inspection-inspectio-63d93-s-pages-while-maps-navigate/test-failed-1.png
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5246181Z     ────────────────────────────────────────────────────────────────────────────────────────────────
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5246397Z 
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5246742Z     Error Context: artifacts/e2e/results/graph-inspection-inspectio-63d93-s-pages-while-maps-navigate/error-context.md
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5247145Z 
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5247454Z     attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5248000Z     artifacts/e2e/results/graph-inspection-inspectio-63d93-s-pages-while-maps-navigate/trace.zip
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5248379Z     Usage:
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5248469Z 
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5248822Z         npx playwright show-trace artifacts/e2e/results/graph-inspection-inspectio-63d93-s-pages-while-maps-navigate/trace.zip
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5249201Z 
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5249463Z     ────────────────────────────────────────────────────────────────────────────────────────────────
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5249678Z 
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5250163Z   3) tests/e2e/planning.spec.mjs:18:1 › production UI and SDK share the complete planning, approval, persistence and verification flow offline 
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5250548Z 
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5250691Z     TimeoutError: locator.fill: Timeout 15000ms exceeded.
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5250936Z     Call log:
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5251180Z       - waiting for getByLabel('Group title', { exact: true })
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5251376Z 
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5251382Z 
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5251461Z       225 |     await page
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5251702Z       226 |       .getByLabel("Group title", { exact: true })
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5252122Z     > 227 |       .fill("Shared membership");
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5252339Z           |        ^
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5252639Z       228 |     await page.getByText("Selected members (0)", { exact: true }).click();
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5253297Z       229 |     await page.getByRole("checkbox", { name: /requestWithRetry/ }).check();
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5253741Z       230 |     await page
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5254338Z         at /home/runner/work/AtlasMode/AtlasMode/tests/e2e/planning.spec.mjs:227:8
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5254704Z 
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5255057Z     attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5255734Z     artifacts/e2e/results/planning-production-UI-and-0ffc9-d-verification-flow-offline/test-failed-1.png
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5256630Z     ────────────────────────────────────────────────────────────────────────────────────────────────
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5256878Z 
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5257303Z     Error Context: artifacts/e2e/results/planning-production-UI-and-0ffc9-d-verification-flow-offline/error-context.md
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5257741Z 
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5258110Z     attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5258786Z     artifacts/e2e/results/planning-production-UI-and-0ffc9-d-verification-flow-offline/trace.zip
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5259236Z     Usage:
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5259397Z 
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5259846Z         npx playwright show-trace artifacts/e2e/results/planning-production-UI-and-0ffc9-d-verification-flow-offline/trace.zip
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5260290Z 
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5269670Z     ────────────────────────────────────────────────────────────────────────────────────────────────
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5270088Z 
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5270196Z   3 failed
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5271156Z     tests/e2e/agent-chat.spec.ts:26:1 › actual disconnected provider shows conversation shell and retains failed input; source and advanced controls are opt-in 
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5272741Z     tests/e2e/graph-inspection.spec.ts:43:1 › inspection preserves the camera, uniquely previews repeated calls, and funnel dragging survives pages while maps navigate 
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5273650Z     tests/e2e/planning.spec.mjs:18:1 › production UI and SDK share the complete planning, approval, persistence and verification flow offline 
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5274275Z   15 passed (1.8m)
+browser	Run npm run test:e2e	2026-10-10T15:16:53.5560007Z ##[error]Process completed with exit code 1.

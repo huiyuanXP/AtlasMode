@@ -537,6 +537,9 @@ export function Canvas(props: {
     size.height,
     mapSelectionRect,
   );
+  // Expanded-map navigation keeps both panels in the layout captured on opening.
+  // Pin the details to the same placement that chooses the map's opposite side.
+  const activeDetailPlacement = mapExpanded ? mapDetailPlacement : detailPlacement;
   const mapAbove = mapSelectionRect ? mapSelectionRect.y - 58 - 16 : 0;
   const mapBelow = mapSelectionRect
     ? size.height - mapSelectionRect.y - mapSelectionRect.height - 28
@@ -860,12 +863,12 @@ export function Canvas(props: {
           (size.width < 850 || mapDetailPlacement.dock !== "side")
         ) && (
           <div
-            className={`inspection-overlay dock-${detailPlacement.dock}`}
+            className={`inspection-overlay dock-${activeDetailPlacement.dock}`}
             style={{
-              left: detailPlacement.left,
-              top: detailPlacement.top,
-              width: detailPlacement.width,
-              maxHeight: detailPlacement.maxHeight,
+              left: activeDetailPlacement.left,
+              top: activeDetailPlacement.top,
+              width: activeDetailPlacement.width,
+              maxHeight: activeDetailPlacement.maxHeight,
             }}
           >
             {props.inspection}

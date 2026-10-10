@@ -1,0 +1,8 @@
+
+Running 1 test using 1 worker
+
+{"viewportWidth":1900,"canvasWidth":1190,"capturedDock":"inspection-overlay dock-side","panelsFit":true,"navigation":"zoom, drag, wheel, key pan, click changed camera"}
+{"viewportWidth":1600,"canvasWidth":930,"capturedDock":"inspection-overlay dock-side","panelsFit":true,"navigation":"zoom, drag, wheel, key pan, click changed camera"}
+  ✓  1 tests/e2e/graph-inspection.spec.ts:43:1 › inspection preserves the camera, uniquely previews repeated calls, and funnel dragging survives pages while maps navigate (12.3s)
+
+  1 passed (14.5s)

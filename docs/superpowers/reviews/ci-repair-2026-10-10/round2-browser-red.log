@@ -1,0 +1,80 @@
+
+Running 4 tests using 1 worker
+
+  ✘  1 tests/e2e/agent-chat.spec.ts:26:1 › actual disconnected provider shows conversation shell and retains failed input; source and advanced controls are opt-in (13.8s)
+  ✓  2 tests/e2e/agent-chat.spec.ts:170:1 › labeled trusted test adapter streams through real bridge, journals drafts, focuses changes, cancels partial work and isolates projects (5.0s)
+  ✓  3 tests/e2e/graph-inspection.spec.ts:43:1 › inspection preserves the camera, uniquely previews repeated calls, and funnel dragging survives pages while maps navigate (9.5s)
+  ✘  4 tests/e2e/planning.spec.mjs:18:1 › production UI and SDK share the complete planning, approval, persistence and verification flow offline (21.0s)
+
+
+  1) tests/e2e/agent-chat.spec.ts:26:1 › actual disconnected provider shows conversation shell and retains failed input; source and advanced controls are opt-in 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('button', { name: 'Create group', exact: true })
+    Expected: visible
+    Timeout: 10000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('button', { name: 'Create group', exact: true }) with timeout 10000ms
+      - waiting for getByRole('button', { name: 'Create group', exact: true })
+
+
+      125 |     await expect(
+      126 |       page.getByRole("button", { name: "Create group", exact: true }),
+    > 127 |     ).toBeVisible();
+          |       ^
+      128 |     await page
+      129 |       .getByRole("button", { name: "Advanced controls", exact: true })
+      130 |       .click();
+        at /home/agent/projects/AtlasMode/tests/e2e/agent-chat.spec.ts:127:7
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../../../tmp/atlas-ci-repair-round2-red/results/agent-chat-actual-disconne-a670a-dvanced-controls-are-opt-in/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../../../tmp/atlas-ci-repair-round2-red/results/agent-chat-actual-disconne-a670a-dvanced-controls-are-opt-in/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../../../tmp/atlas-ci-repair-round2-red/results/agent-chat-actual-disconne-a670a-dvanced-controls-are-opt-in/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../../../tmp/atlas-ci-repair-round2-red/results/agent-chat-actual-disconne-a670a-dvanced-controls-are-opt-in/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) tests/e2e/planning.spec.mjs:18:1 › production UI and SDK share the complete planning, approval, persistence and verification flow offline 
+
+    TimeoutError: locator.fill: Timeout 15000ms exceeded.
+    Call log:
+      - waiting for getByLabel('Group title', { exact: true })
+
+
+      225 |     await page
+      226 |       .getByLabel("Group title", { exact: true })
+    > 227 |       .fill("Shared membership");
+          |        ^
+      228 |     await page.getByText("Selected members (0)", { exact: true }).click();
+      229 |     await page.getByRole("checkbox", { name: /requestWithRetry/ }).check();
+      230 |     await page
+        at /home/agent/projects/AtlasMode/tests/e2e/planning.spec.mjs:227:8
+
+    attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../../../tmp/atlas-ci-repair-round2-red/results/planning-production-UI-and-0ffc9-d-verification-flow-offline/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../../../tmp/atlas-ci-repair-round2-red/results/planning-production-UI-and-0ffc9-d-verification-flow-offline/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../../../tmp/atlas-ci-repair-round2-red/results/planning-production-UI-and-0ffc9-d-verification-flow-offline/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../../../tmp/atlas-ci-repair-round2-red/results/planning-production-UI-and-0ffc9-d-verification-flow-offline/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2 failed
+    tests/e2e/agent-chat.spec.ts:26:1 › actual disconnected provider shows conversation shell and retains failed input; source and advanced controls are opt-in 
+    tests/e2e/planning.spec.mjs:18:1 › production UI and SDK share the complete planning, approval, persistence and verification flow offline 
+  2 passed (54.7s)
