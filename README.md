@@ -232,7 +232,7 @@ IDX-02已支持捕获workspace注册包/self-reference与有界静态exports：i
 | `apps/server` | `fastify` | 本地 HTTP API，作为业务操作入口 | P0 |
 | `packages/core` | `zod` | 对图、规划和边界输入做 schema 校验 | P0 |
 | `packages/indexer` | `typescript`、`ts-morph` | 解析 TS/JS、解析符号引用 | P1 |
-| `packages/indexer` | Node `fs`、`ignore` | 有界扫描与排除文件；未使用的 fast-glob 已移除；冻结锁 clean install 审计0，SEC-01新跨平台CI待验收 | P1 |
+| `packages/indexer` | Node `fs`、`ignore` | 有界扫描与排除文件；未使用的 fast-glob 已移除；冻结锁 clean install 审计0，SEC-01跨平台CI四job通过 | P1 |
 | `packages/storage` | `better-sqlite3` | SQLite 持久化和事务 | P1 |
 | `packages/storage` dev | `@types/better-sqlite3` | 数据库类型定义 | P1 |
 | `apps/mcp` | 官方 MCP TypeScript SDK 的稳定 server 包、其要求的 schema 依赖 | stdio MCP 入口 | P3 |

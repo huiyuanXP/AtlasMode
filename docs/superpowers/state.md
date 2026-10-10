@@ -3,8 +3,8 @@
 ## 当前工作（2026-10-10 UTC）
 
 首用离线路径、AI渐进披露、可读初始图与手动规划入口已实现并独立审查通过；精确证据见 [验收](reviews/first-use-2026-10-10/README.md)。
-GitHub真实7个Issue均open；本地36票16DONE/20未完成；SEC-01与AG-05为PARTIAL，GRP-02实施中；IDX-03、POL-01与AG-02先盘点/设计，其余待办按依赖推进。不能用本地状态代替远端结案。IDX-02静态workspace/exports映射已通过393/9、真实HTTP/MCP/浏览器与freshness/history/restart/crossproject，独立复审APPROVE，见 [验收](reviews/idx02-2026-10-10/README.md)。IDX-01完整Express入口已通过，见 [证据](reviews/idx01-2026-10-10/README.md)，保留历史FAIL。
-首用commit078fa84已推送；实际CI Linux/Windows通过，macOS路径身份与浏览器源码/真实拖动helper已修复，独立只读审查通过，本地process11/11、相关browser7/7与强化拖动1/1通过，见 [报告](reviews/ci-repair-2026-10-10/README.md)；4071012远端CI38061633736三原生OS全部通过；browser14/17通过；随后77e4554三nativeOS通过、browser15/18通过。旧分组入口与地图/详情遮挡已独立修复，最终high复审APPROVE，原1600与1900真实导航/0px重叠通过，不能称整CI通过。GRP-01实际圈选与完整成员编辑已通过，独立审查及竞态限定复审APPROVE，见 [报告](reviews/grp01-2026-10-10/README.md)。AG-05实现本地HTTP/SDK/SQLite/浏览器协议闭环、独立复审APPROVE，仍PARTIAL：当前启动环境缺Responses配置，真实Provider gate未执行。SEC依赖整改锁定安装审计0，仍PARTIAL：与AG05联合clean集成及新CI待验收。隔离staged tree d63a61a4f8cf787fce5ba55756fa0f268482d78f 已完成737测试/64文件、七包build/typecheck、rootlint和生产smoke；整套浏览器正在验证，此证据不包含正在实施的IDX02/GRP02。
+GitHub真实7个Issue均open；本地36票17DONE/19未完成；SEC-01已DONE，AG-05为PARTIAL，GRP-02实施中；IDX-03、POL-01与AG-02先盘点/设计，其余待办按依赖推进。不能用本地状态代替远端结案。IDX-02静态workspace/exports映射已通过393/9、真实HTTP/MCP/浏览器与freshness/history/restart/crossproject，独立复审APPROVE，见 [验收](reviews/idx02-2026-10-10/README.md)。IDX-01完整Express入口已通过，见 [证据](reviews/idx01-2026-10-10/README.md)，保留历史FAIL。
+提交7528f78远端CI38064184377四job（Ubuntu/Windows/macOS native、Chromium）全部SUCCESS；同冻结clean快照全根build/typecheck/lint、781/65测试、smoke、18/18浏览器及安装审计0通过。SEC-01已DONE；GRP02不在该快照，独立集成正在执行。AG-05本地HTTP/SDK/SQLite/浏览器协议闭环已通过独立复审，真实外部Provider配置/最小调用授权仍待答复，保持PARTIAL。历史CI失败与首次复用产物TS2349日志及未确定根因保留。详见 [CI报告](reviews/ci-repair-2026-10-10/README.md)。
 当前分支fix/first-use-20261010，保留已有AGENTS修改。用户最新授权按阶段同步文档后commit/push；不授权merge、生产部署或权限修改。下面旧阶段“不push”仅记录当时状态。
 neat-freak v3.0.0已配置并应用；生成记忆未写，临时预览已关闭，工作区与证据保留。
 
@@ -442,3 +442,7 @@ The latest human request explicitly authorizes merging main's VM2 work into work
 ## CI地图/分组入口最终隔离验收
 
 cfda22b已推送IDX02；与地图独立patch冻结联合快照fefda8e后，clean锁定安装审计0，全根build/typecheck/lint、781/65测试、smoke及18/18真实Chromium通过。复用产物首次构建TS2349失败日志保留，clean重装通过，根因未定；GRP02未包含在此门禁。CI修复新提交的远端门禁待检查，SEC01不提前标整票DONE。详见[CI报告](reviews/ci-repair-2026-10-10/README.md)。
+
+## 2026-10-10 SEC01最终收尾
+
+2026-10-10 最终验收：提交7528f78302275acb11cb9a23b49cb284d2a7fd9f的远端CI [38064184377](https://github.com/huiyuanXP/AtlasMode/actions/runs/38064184377) 四个job全部SUCCESS：Linux、Windows、macOS native及Chromium。冻结锁SHA256 f26ef3a7cf494becb903226ef01d86dfa7ca1e014c271e284bb0db1b9cee49c4；对应clean隔离快照全根build/typecheck/lint、781/65测试、smoke及18/18浏览器通过，npm ci审计0。原始远端收据：[JSON](reviews/ci-repair-2026-10-10/remote-ci-38064184377.json)。此门禁不包含尚未提交的GRP02、IDX03等候选。

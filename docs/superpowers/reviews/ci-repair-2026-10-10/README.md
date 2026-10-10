@@ -76,3 +76,7 @@
 冻结暂存树 `fefda8e74361853c252b2c75bb14d4a5c91d8220` = 已推送cfda22b（含IDX02/AG05/SEC）加本轮独立地图patch与三browser用例；不含用户AGENTS或GRP02产品改动。git archive到`/tmp/atlasmode-integration-20261010-1530`。首次复制1505安装产物构建在scan.ts230 ignore()出现TS2349，保留 [原失败](integration/atlasmode-integration2-build.log)；准确根因未确定，不能归因为产品缺陷或把setup失败冒充PASS。随后同冻结锁f26ef3a7 clean npm ci：397安装/405审计/0vulnerabilities，全部重新build/typecheck/lint、781测试/65文件（15:29:35 UTC起60.82s）、生产smoke、18/18 Chromium（1.7m）全部PASS。完整日志在integration目录，主控已查看final1600图确认双方可见。此证据不包含尚在实施的GRP02，也不能替代AG05真实外部Provider gate。
 
 之前77e4554实际CI38062761771三nativeOS全部通过，browser15/18通过；失败仍为旧分组入口2项和已复现地图遮挡1项，ResponsesAPI fixture通过。新修复提交后实际remoteCI仍待检查，不把本地18/18冒充远端收据。所有旧失败与初始REQUEST_CHANGES/最终APPROVE保持历史。
+
+## 远端完整门禁收尾
+
+2026-10-10 最终验收：提交7528f78302275acb11cb9a23b49cb284d2a7fd9f的远端CI [38064184377](https://github.com/huiyuanXP/AtlasMode/actions/runs/38064184377) 四个job全部SUCCESS：Linux、Windows、macOS native及Chromium。冻结锁SHA256 f26ef3a7cf494becb903226ef01d86dfa7ca1e014c271e284bb0db1b9cee49c4；对应clean隔离快照全根build/typecheck/lint、781/65测试、smoke及18/18浏览器通过，npm ci审计0。原始远端收据：[JSON](../ci-repair-2026-10-10/remote-ci-38064184377.json)。此门禁不包含尚未提交的GRP02、IDX03等候选。

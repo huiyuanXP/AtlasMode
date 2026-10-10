@@ -1,6 +1,10 @@
 # SEC-01 依赖审计与最小整改 — 2026-10-10
 
-## 结论
+## 当前结论
+
+SEC-01 已 DONE：2026-10-10 最终提交7528f78远端四job全部SUCCESS，精确收据见文末。下列基线/隔离检查点保留当时PARTIAL状态，不能代替最终收据。
+
+## 初始基线结论
 
 基线锁文件仍有 SEC-01 所列的高危链：`@codemap/indexer` → `fast-glob@3.3.3` → `micromatch@4.0.8` → `braces@3.0.3`。截至官方 GitHub Advisory 查询，braces 受影响版本为 `<=3.0.3`，patched version 为 None；npm registry 在兼容主版本中也只列到 `fast-glob@3.3.3`、`micromatch@4.0.8`、`braces@3.0.3`。`npm audit.fixAvailable` 对三项均为 `false`。这表示当前锁图没有 npm 可应用的自动修复，不等于已排除安全 override 或其他处置路径。
 
@@ -62,3 +66,7 @@ braces 的 [上游 issue #70](https://github.com/micromatch/braces/issues/70) �
 | 工作区 | `pending` | IDX/GRP/AG-05 有并行更改；未清理、未提交 |
 
 第一次审计命令曾因 npm 将同一个 `/dev/null` 同时作为 user/global 配置而在请求前退出。此失败的空 stdout、stderr 和元数据被保存在 `receipts/npm-audit-attempt-1-config-error.*`；官方 registry 的第二次调用是 pre-change 基线，第三次调用是 lock 更新后的独立 post-change 审计。
+
+## 远端完整门禁收尾
+
+2026-10-10 最终验收：提交7528f78302275acb11cb9a23b49cb284d2a7fd9f的远端CI [38064184377](https://github.com/huiyuanXP/AtlasMode/actions/runs/38064184377) 四个job全部SUCCESS：Linux、Windows、macOS native及Chromium。冻结锁SHA256 f26ef3a7cf494becb903226ef01d86dfa7ca1e014c271e284bb0db1b9cee49c4；对应clean隔离快照全根build/typecheck/lint、781/65测试、smoke及18/18浏览器通过，npm ci审计0。原始远端收据：[JSON](../ci-repair-2026-10-10/remote-ci-38064184377.json)。此门禁不包含尚未提交的GRP02、IDX03等候选。
