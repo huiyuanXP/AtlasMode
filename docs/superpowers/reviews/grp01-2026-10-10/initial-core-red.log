@@ -1,0 +1,84 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90m/home/agent/projects/AtlasMode[39m
+
+ [31m❯[39m apps/web/src/features/groups/selection.test.ts [2m([22m[2m0 test[22m[2m)[22m
+ [31m❯[39m apps/web/src/app/groups-workspace.test.ts [2m([22m[2m4 tests[22m[2m | [22m[31m3 failed[39m[2m)[22m[32m 65[2mms[22m[39m
+[31m   [31m×[31m edits all 25 IDs independent of bindings; circle union, removal and cancel preserve saved group[39m[32m 9[2mms[22m[39m
+[31m   [31m×[31m clears draft, selection and mode immediately on project switch[39m[32m 1[2mms[22m[39m
+[31m   [31m×[31m forwards edit ID, keeps one group, refreshes bindings and adopts server approval invalidation[39m[32m 50[2mms[22m[39m
+   [32m✓[39m late group save does not override a newly selected member page[32m 2[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Suites 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/features/groups/selection.test.ts[2m [ apps/web/src/features/groups/selection.test.ts ][22m
+[31m[1mError[22m: Cannot find module './selection.js' imported from /home/agent/projects/AtlasMode/apps/web/src/features/groups/selection.test.ts[39m
+[36m [2m❯[22m apps/web/src/features/groups/selection.test.ts:[2m2:1[22m[39m
+    [90m  1|[39m [35mimport[39m { expect[33m,[39mit } [35mfrom[39m [32m"vitest"[39m[33m;[39m
+    [90m  2|[39m [35mimport[39m { circleFunctions[33m,[39m circleSelectedNodes } [35mfrom[39m [32m"./selection.js"[39m[33m;[39m
+    [90m   |[39m [31m^[39m
+    [90m  3|[39m [35mimport[39m type { [33mGraphNode[39m } [35mfrom[39m [32m"../graph/projection.js"[39m[33m;[39m
+    [90m  4|[39m const n=(id:string,kind="function",layer="fact",domain=id)=>({id,posit…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯[22m[39m
+
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 3 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/app/groups-workspace.test.ts[2m > [22medits all 25 IDs independent of bindings; circle union, removal and cancel preserve saved group
+[31m[1mTypeError[22m: app.editGroup is not a function[39m
+[36m [2m❯[22m apps/web/src/app/groups-workspace.test.ts:[2m10:6[22m[39m
+    [90m  8|[39m it("edits all 25 IDs independent of bindings; circle union, removal an…
+    [90m  9|[39m  const app=createWorkspace(); app.store.setState({project,groups:[grou…
+    [90m 10|[39m  app.editGroup(group); expect(app.store.getState().groupDraft).toEqual…
+    [90m   |[39m      [31m^[39m
+    [90m 11|[39m  app.setGroupSelection([node("f0"),node("new"),node("new")]); app.addG…
+    [90m 12|[39m  [34mexpect[39m(app[33m.[39mstore[33m.[39m[34mgetState[39m()[33m.[39mgroupDraft[33m?.[39mmemberIds)[33m.[39m[34mtoHaveLength[39m([34m25[39m)[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/app/groups-workspace.test.ts[2m > [22mclears draft, selection and mode immediately on project switch
+[31m[1mTypeError[22m: app.editGroup is not a function[39m
+[36m [2m❯[22m apps/web/src/app/groups-workspace.test.ts:[2m19:52[22m[39m
+    [90m 17|[39m it("clears draft, selection and mode immediately on project switch", a…
+    [90m 18|[39m  const app=createWorkspace(new HttpApi((async(input: RequestInfo|URL)=…
+    [90m 19|[39m  app.store.setState({project,groups:[group]}); app.editGroup(group); a…
+    [90m   |[39m                                                    [31m^[39m
+    [90m 20|[39m  await app.selectProject({id:"other",name:"other",path:"/other"}); exp…
+    [90m 21|[39m })[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/app/groups-workspace.test.ts[2m > [22mforwards edit ID, keeps one group, refreshes bindings and adopts server approval invalidation
+[31m[1mAssertionError[22m: expected { groupId: 'g', offset: 20, …(1) } to match object { groupId: 'g', offset: +0, …(1) }[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[32m-   "bindings": [[39m
+[32m-     {[39m
+[32m-       "id": "f23",[39m
+[32m-       "status": "bound",[39m
+[32m-     },[39m
+[32m-     {[39m
+[32m-       "id": "f24",[39m
+[32m-       "status": "bound",[39m
+[32m-     },[39m
+[32m-   ],[39m
+[31m+   "bindings": [],[39m
+[2m    "groupId": "g",[22m
+[32m-   "offset": 0,[39m
+[31m+   "offset": 20,[39m
+[2m  }[22m
+
+[36m [2m❯[22m apps/web/src/app/groups-workspace.test.ts:[2m34:42[22m[39m
+
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m2 failed[39m[22m[90m (2)[39m
+[2m      Tests [22m [1m[31m3 failed[39m[22m[2m | [22m[1m[32m1 passed[39m[22m[90m (4)[39m
+[2m   Start at [22m 14:29:59
+[2m   Duration [22m 621ms[2m (transform 299ms, setup 0ms, import 333ms, tests 65ms, environment 0ms)[22m
+

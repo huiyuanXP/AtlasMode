@@ -7,6 +7,7 @@ import {
   Position,
   applyNodeChanges,
   MarkerType,
+  SelectionMode,
   type NodeProps,
   type ReactFlowInstance,
   type Viewport,
@@ -40,6 +41,7 @@ import {
   FunnelOffsets,
   inspectionPlacement,
 } from "./inspection.js";
+import { circleFunctions, circleSelectedNodes } from "../groups/selection.js";
 import { MapPanel } from "./MapPanel.js";
 import "./graph-inspection.css";
 function CodeCard({ data }: NodeProps<GraphNode>) {
@@ -199,6 +201,9 @@ export function Canvas(props: {
   graph?: SubgraphResult;
   projectId?: string;
   selectedNodeId?: string;
+  groupSelectionMode?: boolean;
+  groupSelectionIds?: string[];
+  onGroupSelection?: (nodes: CodeNode[]) => void;
   relationPreviewId?: string;
   fixedOperationRelationId?: string;
   previewRelation?: Relation;
@@ -454,7 +459,10 @@ export function Canvas(props: {
     props.focusRequest.sequence > activePages.focusSequence
       ? props.focusRequest
       : undefined;
-  const editable = props.canEdit && props.funnel?.root.kind !== "file";
+  const editable =
+    !props.groupSelectionMode &&
+    props.canEdit &&
+    props.funnel?.root.kind !== "file";
   const rawEdges = [...(funnelProjection?.edges ?? projection.edges)];
   if (
     props.previewRelation &&
@@ -490,9 +498,11 @@ export function Canvas(props: {
   const highlighted = inspectionHighlight(
     nodes,
     rawEdges,
-    props.selectedNodeId,
-    props.relationPreviewId ?? props.fixedOperationRelationId,
-    hovered,
+    props.groupSelectionMode ? undefined : props.selectedNodeId,
+    props.groupSelectionMode
+      ? undefined
+      : (props.relationPreviewId ?? props.fixedOperationRelationId),
+    props.groupSelectionMode ? undefined : hovered,
   );
   const edges = highlighted.edges.map((e) => ({
     ...e,
@@ -610,18 +620,45 @@ export function Canvas(props: {
           "controls.interactive.ariaLabel": zh.toggleInteraction,
           "minimap.ariaLabel": zh.minimap,
         }}
-        nodes={highlighted.nodes.map((n) => ({
+        selectionOnDrag={!!props.groupSelectionMode}
+        selectionMode={SelectionMode.Partial}
+        selectionKeyCode={props.groupSelectionMode ? null : "Shift"}
+        multiSelectionKeyCode={props.groupSelectionMode ? null : "Meta"}
+        panOnDrag={!props.groupSelectionMode}
+        nodes={(props.groupSelectionMode
+          ? circleSelectedNodes(
+              highlighted.nodes,
+              props.groupSelectionIds ?? [],
+            )
+          : highlighted.nodes
+        ).map((n) => ({
           ...n,
+          selectable:
+            !props.groupSelectionMode ||
+            (n.data.layer !== "plan" && n.data.node.kind === "function"),
           data: { ...n.data, locale: props.view.locale },
         }))}
         edges={edges}
         nodeTypes={nodeTypes}
         onNodesChange={(changes) => {
-          setNodes((current) => {
-            const next = applyNodeChanges(changes, current);
-            currentNodes.current = next;
-            return next;
-          });
+          const next = applyNodeChanges(
+            changes,
+            props.groupSelectionMode
+              ? circleSelectedNodes(
+                  currentNodes.current,
+                  props.groupSelectionIds ?? [],
+                )
+              : currentNodes.current,
+          );
+          currentNodes.current = next;
+          setNodes(next);
+          if (
+            props.groupSelectionMode &&
+            changes.some((change) => change.type === "select")
+          )
+            props.onGroupSelection?.(
+              circleFunctions(next.filter((node) => node.selected)),
+            );
           const dimensions = changes.filter(
             (c) => c.type === "dimensions" && c.dimensions,
           );
@@ -662,6 +699,7 @@ export function Canvas(props: {
           }
         }}
         onNodeClick={(event, node) => {
+          if (props.groupSelectionMode) return;
           if (!props.funnel && event.detail < 2)
             clickViewport.current = instance.current?.getViewport();
           clearTimeout(clickTimer.current);
@@ -673,6 +711,7 @@ export function Canvas(props: {
           );
         }}
         onNodeDoubleClick={(_, node) => {
+          if (props.groupSelectionMode) return;
           clearTimeout(clickTimer.current);
           if (
             node.data.node.kind === "file" ||
@@ -709,9 +748,10 @@ export function Canvas(props: {
               [node.id]: node.position,
             });
         }}
-        nodesDraggable
+        nodesDraggable={!props.groupSelectionMode}
         zoomOnDoubleClick={false}
         onEdgeClick={(_, edge) => {
+          if (props.groupSelectionMode) return;
           if (props.funnel?.root.kind !== "file" && edge.data)
             props.onEdge({ id: edge.id, ...edge.data });
         }}

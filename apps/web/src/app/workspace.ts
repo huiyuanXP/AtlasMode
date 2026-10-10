@@ -46,11 +46,23 @@ export interface AgentSyncToken {
   sequence: number;
   plans: PlanDetail[];
 }
+export type GroupDraft = Omit<FunctionGroup, "id" | "projectId"> & {
+  id?: string;
+};
 export type WorkspaceState = {
+  groupDraft?: GroupDraft;
+  groupSelection: CodeNode[];
+  groupSelectionMode: boolean;
+  groupEditorOpen: boolean;
   history?: PlanHistory;
   groups: FunctionGroup[];
   policies: DirectoryPolicy[];
-  memberPage?: { groupId: string; offset: number; bindings: MemberBinding[] };
+  memberPage?: {
+    groupId: string;
+    offset: number;
+    bindings: MemberBinding[];
+    snapshotId?: string;
+  };
   projects: Project[];
   project?: Project;
   summary?: ProjectSummary;
@@ -91,6 +103,10 @@ const emptyInspection = {
 };
 const blank = (): Omit<WorkspaceState, "projects"> => ({
   history: undefined,
+  groupDraft: undefined,
+  groupSelection: [],
+  groupSelectionMode: false,
+  groupEditorOpen: false,
   groups: [],
   policies: [],
   memberPage: undefined,
@@ -130,6 +146,7 @@ export function createWorkspace(
     ...blank(),
   }));
   const scope = new ProjectScope();
+  let memberNavigationSequence = 0;
   let focusGeneration = 0,
     dirtyPlanEditor = false;
   const histories = new Map<string, PlanHistory>();
@@ -1346,7 +1363,15 @@ export function createWorkspace(
     const { project, summary, groups } = get(),
       group = groups.find((g) => g.id === groupId);
     if (!project || !summary || !group) return;
-    set({ memberPage: { groupId, offset, bindings: [] } });
+    memberNavigationSequence++;
+    set({
+      memberPage: {
+        groupId,
+        offset,
+        bindings: [],
+        snapshotId: summary.snapshotId,
+      },
+    });
     await run(
       "members",
       async () => {
@@ -1363,26 +1388,36 @@ export function createWorkspace(
       },
       (bindings) => {
         if (get().summary?.snapshotId === summary.snapshotId)
-          set({ memberPage: { groupId, offset, bindings } });
+          set({
+            memberPage: {
+              groupId,
+              offset,
+              bindings,
+              snapshotId: summary.snapshotId,
+            },
+          });
       },
     );
   };
   const saveKnowledge = async (
     kind: "group" | "policy",
     input:
-      | Omit<FunctionGroup, "id" | "projectId">
+      | GroupDraft
       | (Omit<DirectoryPolicy, "projectId" | "id"> & { id?: string }),
   ) => {
-    const { project, busy } = get();
+    const { project, busy, memberPage, summary } = get();
+    const memberSequence = memberNavigationSequence;
+    const sameMemberNavigation = () =>
+      memberNavigationSequence === memberSequence &&
+      get().memberPage?.groupId === memberPage?.groupId &&
+      get().memberPage?.offset === memberPage?.offset;
+    let refreshPage: { groupId: string; offset: number } | undefined;
     if (!project || busy.knowledge || busy.plan || busy.project) return;
     await run(
       "knowledge",
       async () => {
         if (kind === "group")
-          await api.saveGroup(
-            project.id,
-            input as Omit<FunctionGroup, "id" | "projectId">,
-          );
+          await api.saveGroup(project.id, input as GroupDraft);
         else
           await api.savePolicy(
             project.id,
@@ -1400,9 +1435,108 @@ export function createWorkspace(
         set(data);
         const current = data.plans.find((p) => p.plan.id === selected);
         if (current) acceptPlan(current);
+        if (kind === "group" && get().groupDraft === input)
+          set({
+            groupDraft: undefined,
+            groupSelection: [],
+            groupSelectionMode: false,
+          });
+        if (
+          kind === "group" &&
+          memberPage &&
+          sameMemberNavigation() &&
+          get().summary?.snapshotId === summary?.snapshotId
+        ) {
+          const updated = data.groups.find((g) => g.id === memberPage.groupId);
+          if (updated)
+            refreshPage = {
+              groupId: updated.id,
+              offset: Math.min(
+                memberPage.offset,
+                Math.max(
+                  0,
+                  Math.floor((updated.memberIds.length - 1) / 20) * 20,
+                ),
+              ),
+            };
+        }
       },
     );
+    if (
+      refreshPage &&
+      get().project?.id === project.id &&
+      sameMemberNavigation() &&
+      get().summary?.snapshotId === summary?.snapshotId
+    )
+      await loadMembers(refreshPage.groupId, refreshPage.offset);
   };
+  const startGroup = () =>
+    set({
+      groupEditorOpen: true,
+      groupDraft: { title: "", description: "", source: "user", memberIds: [] },
+    });
+  const editGroup = (group: FunctionGroup) => {
+    if (group.projectId !== get().project?.id) return;
+    set({
+      groupEditorOpen: true,
+      groupDraft: {
+        id: group.id,
+        title: group.title,
+        description: group.description,
+        source: group.source,
+        memberIds: [...group.memberIds],
+      },
+    });
+    void loadMembers(group.id);
+  };
+  const updateGroupDraft = (
+    patch: Partial<Pick<GroupDraft, "title" | "description" | "memberIds">>,
+  ) =>
+    set((s) => ({
+      groupDraft: s.groupDraft ? { ...s.groupDraft, ...patch } : undefined,
+    }));
+  const setGroupSelection = (nodes: CodeNode[]) =>
+    set({
+      groupSelection: [
+        ...new Map(
+          nodes.filter((n) => n.kind === "function").map((n) => [n.id, n]),
+        ).values(),
+      ],
+    });
+  const setGroupSelectionMode = (active: boolean) => {
+    if (active) {
+      closeInspection();
+      exitFunnel();
+      if (!get().groupDraft) startGroup();
+    }
+    set({
+      groupSelectionMode: active,
+      groupEditorOpen: active || get().groupEditorOpen,
+    });
+  };
+  const addGroupSelection = () => {
+    if (!get().groupDraft) startGroup();
+    const { groupDraft, groupSelection } = get();
+    updateGroupDraft({
+      memberIds: [
+        ...new Set([
+          ...groupDraft!.memberIds,
+          ...groupSelection.map((n) => n.id),
+        ]),
+      ],
+    });
+  };
+  const removeGroupMember = (id: string) =>
+    updateGroupDraft({
+      memberIds:
+        get().groupDraft?.memberIds.filter((member) => member !== id) ?? [],
+    });
+  const cancelGroupDraft = () =>
+    set({
+      groupDraft: undefined,
+      groupSelection: [],
+      groupSelectionMode: false,
+    });
   const init = async () => {
     await run(
       "projects",
@@ -1426,8 +1560,15 @@ export function createWorkspace(
     captureAgentSync,
     syncAgentChanges,
     loadMembers,
-    saveGroup: (input: Omit<FunctionGroup, "id" | "projectId">) =>
-      saveKnowledge("group", input),
+    startGroup,
+    editGroup,
+    updateGroupDraft,
+    setGroupSelection,
+    setGroupSelectionMode,
+    addGroupSelection,
+    removeGroupMember,
+    cancelGroupDraft,
+    saveGroup: (input: GroupDraft) => saveKnowledge("group", input),
     savePolicy: (
       input: Omit<DirectoryPolicy, "projectId" | "id"> & { id?: string },
     ) => saveKnowledge("policy", input),

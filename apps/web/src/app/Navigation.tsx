@@ -152,6 +152,16 @@ export function Navigation({
         />
       </details>
       <button
+        type="button"
+        aria-expanded={state.groupEditorOpen}
+        onClick={() =>
+          app.store.setState({ groupEditorOpen: !state.groupEditorOpen })
+        }
+      >
+        {zh.manageGroups}
+      </button>
+      {state.groupEditorOpen && <GroupsPanel app={app} />}
+      <button
         className="advanced-navigation"
         aria-expanded={advanced}
         onClick={() => setAdvanced(!advanced)}
@@ -160,7 +170,6 @@ export function Navigation({
       </button>
       {advanced && (
         <div className="advanced-navigation-content">
-          <GroupsPanel app={app} />
           <PoliciesPanel app={app} />
           {summary && (
             <details>

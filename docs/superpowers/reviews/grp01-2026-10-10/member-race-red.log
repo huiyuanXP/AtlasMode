@@ -1,0 +1,39 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90m/home/agent/projects/AtlasMode[39m
+
+ [31m❯[39m apps/web/src/app/groups-workspace.test.ts [2m([22m[2m5 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[32m 114[2mms[22m[39m
+   [32m✓[39m edits all 25 IDs independent of bindings; circle union, removal and cancel preserve saved group[32m 10[2mms[22m[39m
+   [32m✓[39m clears draft, selection and mode immediately on project switch[32m 36[2mms[22m[39m
+   [32m✓[39m forwards edit ID, keeps one group, refreshes bindings and adopts server approval invalidation[32m 3[2mms[22m[39m
+   [32m✓[39m late group save does not override a newly selected member page[32m 1[2mms[22m[39m
+[31m   [31m×[31m refreshes removed members when the pre-save binding read completes during save[39m[32m 61[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/app/groups-workspace.test.ts[2m > [22mrefreshes removed members when the pre-save binding read completes during save
+[31m[1mAssertionError[22m: expected [ 'f23', 'f24' ] to deeply equal [ 'f23' ][39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  [[22m
+[2m    "f23",[22m
+[31m+   "f24",[39m
+[2m  ][22m
+
+[36m [2m❯[22m apps/web/src/app/groups-workspace.test.ts:[2m192:65[22m[39m
+    [90m190|[39m  releaseRead();await vi.waitFor(()=>expect(app.store.getState().member…
+    [90m191|[39m  [34mreleaseSave[39m()[33m;[39m[35mawait[39m pending[33m;[39m
+    [90m192|[39m  expect(app.store.getState().memberPage?.bindings.map(b=>b.id)).toEqua…
+    [90m   |[39m                                                                 [31m^[39m
+    [90m193|[39m })[33m;[39m
+    [90m194|[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m4 passed[39m[22m[90m (5)[39m
+[2m   Start at [22m 14:41:33
+[2m   Duration [22m 739ms[2m (transform 302ms, setup 0ms, import 342ms, tests 114ms, environment 0ms)[22m
+

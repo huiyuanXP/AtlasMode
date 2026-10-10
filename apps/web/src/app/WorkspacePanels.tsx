@@ -208,6 +208,21 @@ export function WorkspacePanels({
           }}
         />
         <div className="graph-toolbar">
+          <button
+            type="button"
+            aria-pressed={state.groupSelectionMode}
+            disabled={!!state.busy.project}
+            onClick={() => app.setGroupSelectionMode(!state.groupSelectionMode)}
+          >
+            {state.groupSelectionMode
+              ? zh.finishCircleSelection
+              : zh.circleSelect}
+          </button>
+          {state.groupSelectionMode && (
+            <span role="status">
+              {zh.circleSelectionHelp} · {state.groupSelection.length}
+            </span>
+          )}
           <label>
             {zh.layers}
             <select
@@ -252,6 +267,9 @@ export function WorkspacePanels({
           graph={graph}
           projectId={project.id}
           selectedNodeId={state.selectedNode?.id}
+          groupSelectionMode={state.groupSelectionMode}
+          groupSelectionIds={state.groupSelection.map((n) => n.id)}
+          onGroupSelection={app.setGroupSelection}
           relationPreviewId={state.relationPreviewId}
           fixedOperationRelationId={state.fixedOperationRelationId}
           previewRelation={[

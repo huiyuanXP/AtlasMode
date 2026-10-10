@@ -78,7 +78,10 @@ export class HttpApi {
     this.request<DirectoryPolicy[]>(
       `/projects/${encodeURIComponent(id)}/policies`,
     );
-  saveGroup = (id: string, input: Omit<FunctionGroup, "id" | "projectId">) =>
+  saveGroup = (
+    id: string,
+    input: Omit<FunctionGroup, "id" | "projectId"> & { id?: string },
+  ) =>
     this.request<FunctionGroup>(
       `/projects/${encodeURIComponent(id)}/groups`,
       "POST",
