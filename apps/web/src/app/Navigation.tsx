@@ -34,12 +34,7 @@ export function Navigation({
         <h1>{project.name}</h1>
         <code className="path">{project.path}</code>
       </div>
-      <ChatPanel
-        controller={chatSessions.get(project.id, "explore")}
-        locale={state.view.locale}
-        context={context}
-        onSend={onSend}
-      />
+      <p className="offline-guidance">{zh.offlineBrowseHint}</p>
       <section className="compact-search" aria-label={zh.search}>
         <form
           onSubmit={(e) => {
@@ -145,6 +140,15 @@ export function Navigation({
           snapshotId={summary?.snapshotId}
           onStep={(id, i) => void app.routeStep(id, i)}
           busy={!!state.busy.route || !!state.busy.project}
+        />
+      </details>
+      <details className="agent-disclosure explore-disclosure">
+        <summary>{zh.exploreChatOptional}</summary>
+        <ChatPanel
+          controller={chatSessions.get(project.id, "explore")}
+          locale={state.view.locale}
+          context={context}
+          onSend={onSend}
         />
       </details>
       <button

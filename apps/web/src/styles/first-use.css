@@ -1,0 +1,41 @@
+/* Preserve both mounted chats while revealing them on demand. */
+.agent-disclosure {
+  border-top: 1px solid var(--border);
+  padding-top: 14px;
+  margin: 18px 0;
+}
+.agent-disclosure > summary {
+  color: var(--accent);
+  font-size: 12px;
+  cursor: pointer;
+  padding: 8px 0;
+}
+.agent-disclosure[open] > summary {
+  margin-bottom: 12px;
+}
+.agent-disclosure .chat-heading {
+  display: none;
+}
+.offline-guidance {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.8;
+  margin: 14px 0 0;
+}
+.offline-plan-start {
+  margin: 12px 0 20px;
+}
+.offline-plan-start p {
+  line-height: 1.8;
+}
+.welcome .primary {
+  margin: 14px 0;
+  padding: 10px 22px;
+}
+.welcome-flow {
+  line-height: 1.8;
+  font-size: 13px;
+}
+.planning-chat[hidden] {
+  display: none;
+}

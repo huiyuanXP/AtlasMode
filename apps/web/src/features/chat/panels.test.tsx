@@ -104,7 +104,7 @@ it("plan overview presents readable changes and confirmation actions without raw
   );
   expect(html).toContain("fetchNotes");
   expect(html).toContain("requestWithRetry");
-  expect(html).toContain("Confirm current revision");
+  expect(html).toContain("Confirm this plan");
   expect(html).toContain("Export Markdown");
   expect(html).toContain("Choose plan");
   expect(html).not.toContain("tempId");

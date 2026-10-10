@@ -19,6 +19,8 @@ async function choose(page: Page, id: string) {
   await page
     .getByRole("combobox", { name: /切换项目|Switch project/, exact: true })
     .selectOption(id);
+  await page.locator(".explore-disclosure > summary").click();
+  await page.locator(".planning-disclosure > summary").click();
   await expect(page.locator(".chat-explore")).toBeVisible();
 }
 test("actual disconnected provider shows conversation shell and retains failed input; source and advanced controls are opt-in", async ({
@@ -63,6 +65,8 @@ test("actual disconnected provider shows conversation shell and retains failed i
       "real-project",
     );
     await expect(page.getByRole("dialog")).not.toBeVisible();
+    await page.locator(".explore-disclosure > summary").click();
+    await page.locator(".planning-disclosure > summary").click();
     await page.getByRole("combobox", { name: "界面语言" }).selectOption("en");
     const left = page.getByRole("region", {
         name: "Explore code",
@@ -99,6 +103,7 @@ test("actual disconnected provider shows conversation shell and retains failed i
     await page.getByRole("button", { name: /ƒ entry/ }).click();
     await expect(page.getByTestId("source-snippet")).toHaveCount(0);
     await page
+      .locator(".inspector .tabs")
       .getByRole("button", { name: "View source", exact: true })
       .click();
     await expect(page.getByTestId("source-snippet")).toContainText("return 1");

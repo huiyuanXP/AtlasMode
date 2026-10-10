@@ -1,6 +1,13 @@
 # AtlasMode 持续构建状态
 
-## 当前交付：图检查交互 UI-05～UI-10（2026-10-09 UTC）
+## 当前工作（2026-10-10 UTC）
+
+首用离线路径、AI渐进披露、可读初始图与手动规划入口已实现并独立审查通过；精确证据见 [验收](reviews/first-use-2026-10-10/README.md)。
+GitHub真实7个Issue均open；本地36票13DONE/23TODO，不能用本地状态代替远端结案。GRP-01和IDX-01正在实现，尚未验收完成。
+当前分支fix/first-use-20261010，保留已有AGENTS修改。用户最新授权按阶段同步文档后commit/push；不授权merge、生产部署或权限修改。下面旧阶段“不push”仅记录当时状态。
+neat-freak v3.0.0已配置并应用；生成记忆未写，临时预览已关闭，工作区与证据保留。
+
+## 前一轮交付：图检查交互 UI-05～UI-10（2026-10-09 UTC）
 
 用户批准的 [设计](specs/2026-10-09-graph-inspection-design.md) 已按 [实施计划](plans/2026-10-09-graph-inspection.md) 完成：普通/漏斗自由拖动、唯一关系高亮、函数/文件引用详情、可展开操作地图、AST类型与本地图标、显式待审入口。
 精确测试、独立审查、实际未批准规划和本地启动入口集中在 [验收报告](reviews/graph-inspection-2026-10-09/README.md)。

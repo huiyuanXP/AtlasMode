@@ -194,7 +194,7 @@ function OverviewViewport({
 const nodeTypes = { code: CodeCard };
 // React Flow queues explicit fit options. Stable overview options avoid a
 // parent render overwriting that queued request with a fit of every node.
-const overviewFitOptions = { padding: 0.25, maxZoom: 1 };
+const overviewFitOptions = { padding: 0.25, minZoom: 0.8, maxZoom: 1 };
 export function Canvas(props: {
   graph?: SubgraphResult;
   projectId?: string;

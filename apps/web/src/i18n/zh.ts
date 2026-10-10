@@ -1,5 +1,16 @@
 /** Authored names, paths, notes and service evidence remain verbatim. */
 export const zh = {
+  welcomeFlow:
+    "打开项目 → 搜索或浏览代码 → 查看引用和源码 → 创建图上规划。浏览与手动规划不需要连接 AI。",
+  offlineBrowseHint:
+    "先搜索函数，或展开“浏览代码”选择入口。单击查看引用，双击进入依赖视图。",
+  exploreChatOptional: "AI 探索代码 · 连接与对话",
+  planChatOptional: "AI 讨论规划 · 连接与对话",
+  manualPlanStart: "手动创建规划",
+  manualPlanHint:
+    "还没有规划？可先手动创建，或展开下方 AI 对话。规划只叠加在图上，不修改源码。",
+
+  welcomeOpenProject: "选择本地项目",
   browseCode: "浏览代码",
   advancedControls: "高级控件",
   advancedEditing: "高级编辑",

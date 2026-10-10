@@ -1,5 +1,16 @@
 import type { zh } from "./zh.js";
 export const en: Record<keyof typeof zh, string> = {
+  welcomeFlow:
+    "Open a project \u2192 search or browse code \u2192 inspect references and source \u2192 create a plan on the graph. Browsing and manual planning work without AI.",
+  offlineBrowseHint:
+    "Search for a function, or open Browse code to choose an entry. Click to inspect references; double-click for dependencies.",
+  exploreChatOptional: "AI exploration \u00b7 connection and chat",
+  planChatOptional: "AI planning \u00b7 connection and chat",
+  manualPlanStart: "Create a plan manually",
+  manualPlanHint:
+    "No plan yet? Create one manually, or open the AI conversation below. Plans overlay the graph without modifying source.",
+
+  welcomeOpenProject: "Choose a local project",
   browseCode: "Browse code",
   advancedControls: "Advanced controls",
   advancedEditing: "Advanced editing",

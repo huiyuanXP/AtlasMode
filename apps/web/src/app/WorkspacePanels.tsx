@@ -47,13 +47,16 @@ export function planningCandidates(
 export function WorkspacePanels({
   app,
   chatSessions,
+  onOpenProject,
 }: {
   app: Workspace;
   chatSessions: ChatSessions;
+  onOpenProject: () => void;
 }) {
   const zh = useStrings();
   const state = useStore(app.store),
     [tab, setTab] = useState<"chat" | "source" | "plan" | "verify">("chat"),
+    [planningChatOpen, setPlanningChatOpen] = useState(false),
     [edge, setEdge] = useState<EdgeReference>(),
     [relationType, setRelationType] =
       useState<PlannedRelation["type"]>("calls");
@@ -151,7 +154,10 @@ export function WorkspacePanels({
         <div className="welcome-symbol">⌘</div>
         <h1>{zh.empty}</h1>
         <p>{zh.emptyHint}</p>
-        <small>{zh.noServer}</small>
+        <button className="primary" type="button" onClick={onOpenProject}>
+          {zh.welcomeOpenProject}
+        </button>
+        <p className="welcome-flow">{zh.welcomeFlow}</p>
       </div>
     );
   return (
@@ -340,6 +346,7 @@ export function WorkspacePanels({
           }}
           onChat={() => {
             setTab("chat");
+            setPlanningChatOpen(true);
             requestAnimationFrame(() =>
               document
                 .querySelector<HTMLTextAreaElement>(".planning-chat textarea")
@@ -399,14 +406,32 @@ export function WorkspacePanels({
               }}
             />
           )}
-          <div hidden={tab !== "chat"} className="planning-chat">
+          {tab === "chat" && !plan && (
+            <div className="offline-plan-start">
+              <p className="muted">{zh.manualPlanHint}</p>
+              <button
+                type="button"
+                disabled={planBusy || !summary}
+                onClick={() => setTab("plan")}
+              >
+                {zh.manualPlanStart}
+              </button>
+            </div>
+          )}
+          <details
+            hidden={tab !== "chat"}
+            className="planning-chat agent-disclosure planning-disclosure"
+            open={planningChatOpen}
+            onToggle={(event) => setPlanningChatOpen(event.currentTarget.open)}
+          >
+            <summary>{zh.planChatOptional}</summary>
             <ChatPanel
               controller={chatSessions.get(project.id, "plan")}
               locale={state.view.locale}
               context={chatContext}
               onSend={onSend}
             />
-          </div>
+          </details>
           {tab === "source" && (
             <Inspector
               key={state.selectedNode?.id ?? "none"}

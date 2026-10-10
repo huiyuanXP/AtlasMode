@@ -3,6 +3,7 @@ import { useStore } from "zustand";
 import { dictionaries, LocaleProvider } from "../i18n/index.js";
 import { createWorkspace, type Workspace } from "./workspace.js";
 import { createChatSessions } from "../features/chat/sessions.js";
+import "../styles/first-use.css";
 import { WorkspacePanels } from "./WorkspacePanels.js";
 export function App({ workspace }: { workspace?: Workspace }) {
   const [app] = useState(
@@ -156,6 +157,7 @@ export function App({ workspace }: { workspace?: Workspace }) {
           key={state.project?.id ?? "none"}
           app={app}
           chatSessions={chatSessions}
+          onOpenProject={() => projectDialog.current?.showModal()}
         />
       </div>
     </LocaleProvider>
