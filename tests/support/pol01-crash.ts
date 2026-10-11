@@ -54,7 +54,21 @@ const service = new WorkspaceService({
           hardKill: "SIGKILL",
         }),
       );
-      process.kill(process.pid, "SIGKILL");
+      if (!process.send) throw new Error("owned crash requires IPC parent");
+      process.on("exit", () =>
+        writeFileSync(
+          join(root, "unexpected-graceful-exit"),
+          "exit handler ran",
+        ),
+      );
+      const hold = setInterval(() => {}, 1000);
+      process.send({
+        pid: process.pid,
+        boundary: "durable-intent/publish-hook",
+        hardKill: "SIGKILL",
+      });
+      await new Promise<never>(() => {});
+      clearInterval(hold);
       throw new Error("unreachable-after-crash");
     },
   },

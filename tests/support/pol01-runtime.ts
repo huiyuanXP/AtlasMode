@@ -1,3 +1,4 @@
+import type { ChildProcess } from "node:child_process";
 import { writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -55,4 +56,42 @@ export function assertOwnedPidAbsent(pid: number | undefined) {
     throw error;
   }
   throw new Error(`owned child still alive: ${pid}`);
+}
+
+// The parent owns the kill handle: Windows self-kill cannot report exit_signal.
+// Never accept a spontaneous exit (including exit 1) as evidence of a crash.
+export function killAtDurableBoundary(child: ChildProcess) {
+  return new Promise<[number | null, NodeJS.Signals | null]>(
+    (resolve, reject) => {
+      let witnessed = false,
+        killed = false,
+        failure: Error | undefined;
+      const timer = setTimeout(() => {
+        failure = new Error("owned crash did not reach durable boundary");
+        child.kill("SIGKILL");
+      }, 10000);
+      child.once("message", (message) => {
+        const receipt = message as Record<string, unknown> | null;
+        if (
+          !receipt ||
+          receipt.pid !== child.pid ||
+          receipt.boundary !== "durable-intent/publish-hook" ||
+          receipt.hardKill !== "SIGKILL"
+        ) {
+          failure = new Error("invalid owned durable boundary receipt");
+        } else witnessed = true;
+        killed = child.kill("SIGKILL");
+      });
+      child.once("error", (error) => {
+        failure = error;
+      });
+      child.once("close", (code, signal) => {
+        clearTimeout(timer);
+        if (failure) reject(failure);
+        else if (!witnessed || !killed)
+          reject(new Error("exit without owned durable hard kill"));
+        else resolve([code, signal]);
+      });
+    },
+  );
 }

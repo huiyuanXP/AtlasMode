@@ -1,5 +1,6 @@
 import {
   pol01Runtime,
+  killAtDurableBoundary,
   assertOwnedPidAbsent,
 } from "../../../tests/support/pol01-runtime.js";
 import { afterEach, expect, test, vi } from "vitest";
@@ -8,7 +9,6 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { randomUUID } from "node:crypto";
 import { spawn } from "node:child_process";
-import { once } from "node:events";
 import { WorkspaceService } from "@codemap/service";
 import { SourceIndexer } from "@codemap/indexer";
 import { SqliteStorage, StructureFileStore } from "@codemap/storage";
@@ -446,15 +446,18 @@ test.each(["before", "after", "unknown"])(
         env: {
           ...runtime.env,
         },
-        stdio: ["ignore", "pipe", "pipe"],
+        stdio: ["ignore", "pipe", "pipe", "ipc"],
       },
     );
     let stderr = "";
-    child.stderr.on("data", (value) => {
+    child.stderr!.on("data", (value) => {
       stderr += String(value);
     });
-    const exit = await once(child, "close");
+    const exit = await killAtDurableBoundary(child);
     assertOwnedPidAbsent(child.pid);
+    await expect(
+      readFile(join(f.roots[0]!, "unexpected-graceful-exit")),
+    ).rejects.toMatchObject({ code: "ENOENT" });
     expect(
       JSON.parse(
         await readFile(join(f.roots[0]!, "crash-checkpoint.json"), "utf8"),

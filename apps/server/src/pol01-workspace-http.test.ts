@@ -1,5 +1,6 @@
 import {
   pol01Runtime,
+  killAtDurableBoundary,
   assertOwnedPidAbsent,
 } from "../../../tests/support/pol01-runtime.js";
 import { afterEach, expect, test } from "vitest";
@@ -387,14 +388,14 @@ test.each(["before", "after", "third", "unknown"])(
         env: {
           ...runtime.env,
         },
-        stdio: ["ignore", "pipe", "pipe"],
+        stdio: ["ignore", "pipe", "pipe", "ipc"],
       },
     );
     let errors = "";
     child.stderr!.on("data", (data) => {
       errors += String(data);
     });
-    const [code, signal] = await once(child, "close");
+    const [code, signal] = await killAtDurableBoundary(child);
     assertOwnedPidAbsent(child.pid);
     expect(
       JSON.parse(await readFile(join(f.root, "crash-checkpoint.json"), "utf8")),
@@ -590,15 +591,18 @@ test("actual selected entrypoint recovers published intent before it listens", a
   const crashed = spawn(
     process.execPath,
     [...runtime.crashArgs, f.root, f.database, f.project.id, "after"],
-    { cwd: process.cwd(), env, stdio: ["ignore", "pipe", "pipe"] },
+    { cwd: process.cwd(), env, stdio: ["ignore", "pipe", "pipe", "ipc"] },
   );
   let crashErrors = "";
-  crashed.stderr.on("data", (value) => {
+  crashed.stderr!.on("data", (value) => {
     crashErrors += String(value);
   });
-  expect(await once(crashed, "close")).toEqual([null, "SIGKILL"]);
+  expect(await killAtDurableBoundary(crashed)).toEqual([null, "SIGKILL"]);
   expect(crashErrors).toBe("");
   assertOwnedPidAbsent(crashed.pid);
+  await expect(
+    readFile(join(f.root, "unexpected-graceful-exit")),
+  ).rejects.toMatchObject({ code: "ENOENT" });
   expect(
     JSON.parse(await readFile(join(f.root, "crash-checkpoint.json"), "utf8")),
   ).toMatchObject({
@@ -703,6 +707,9 @@ test("actual selected entrypoint recovers published intent before it listens", a
       clearTimeout(shutdownTimer);
     }
     assertOwnedPidAbsent(child.pid);
+    await expect(
+      readFile(join(f.root, "unexpected-graceful-exit")),
+    ).rejects.toMatchObject({ code: "ENOENT" });
     const reopened = new SqliteStorage(f.database);
     try {
       expect(reopened.get("plans", plan.id)).toMatchObject({ revision: 2 });

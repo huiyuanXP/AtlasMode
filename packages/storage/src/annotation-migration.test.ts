@@ -10,6 +10,7 @@ import {
   writeFileSync,
   watch,
   statSync,
+  realpathSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
@@ -501,7 +502,7 @@ test.each([
     const path = walFixture(condition),
       before = rawFingerprint(path),
       events: string[] = [];
-    const watcher = watch(join(path, ".."), (event, name) =>
+    const watcher = watch(realpathSync.native(dirname(path)), (event, name) =>
       events.push(`${event}:${String(name)}`),
     );
     const close = Database.prototype.close;
@@ -593,7 +594,7 @@ test("controlled preflight-to-write handoff detects a newly unsupported WAL main
     future = walFixture("main-future"),
     close = Database.prototype.close;
   const sidecarEvents: string[] = [],
-    watcher = watch(join(path, ".."), (event, name) => {
+    watcher = watch(realpathSync.native(dirname(path)), (event, name) => {
       if (/-(wal|shm|journal)$/.test(String(name)))
         sidecarEvents.push(`${event}:${String(name)}`);
     });

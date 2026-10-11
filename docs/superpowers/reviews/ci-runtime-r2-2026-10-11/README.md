@@ -1,0 +1,19 @@
+# Atlas CI runtime R2 — native acceptance pending
+
+2026-10-11 UTC. Scope: finish fixed-SHA cross-platform CI only; no next ticket.
+
+Baseline local and remote fix/pol01-ci-runtime-20261011 matched 734567b37bcf2c733e62415624e8974ffb67e40f; worktree clean before edits. Original checkout/publisher/PERF02 paused work preserved. No merge/deploy or credential reads.
+
+Run38109973171: Ubuntu/macOS build/types/lint/1377 tests/smoke SUCCESS; browser53 SUCCESS. Windows build/types/lint SUCCESS; tests1338 PASS/8 FAIL/18 SKIP, 1 unhandled worker error; smoke skipped. Full raw logs retained, failure not erased.
+
+Root causes and targeted test-only repair:
+1. Node24.19 libuv Windows self-kill terminates with code1; only parent uv_process_kill records exit_signal. Rather than accepting exit1, child writes unchanged durable publish checkpoint, registers a normal-exit sentinel, sends PID/boundary/SIGKILL IPC receipt then holds at that exact boundary. Parent validates ownership and kills through its child handle. Original strict [null,SIGKILL], empty stderr, PID absence, compiled resolution, plan/approval/freshDB recovery and no target mutation remain. Exit handler sentinel must be absent. No production changes.
+2. Raw Windows log native assertion src/win/fs-event.c:72 occurred immediately after controlled preflight-to-write annotation test start (PID3612). CI temp directory has RUNNER~1 short spelling. Native callback expands event paths to long names before comparing supplied watched path. Both directory watchers now use realpathSync.native(dirname(path)); all original watcher, raw identity, SQLite-open and synchronous mutation observers remain. dirname alone is insufficient because join(path,'..') already normalizes.
+
+Primary references: https://raw.githubusercontent.com/nodejs/node/v24.19.0/deps/uv/src/win/process.c (TerminateProcess(...,1); uv_process_kill exit_signal) and fs-event.c (GetLongPathNameW, directory prefix assertion). Runtime confirmation still requires new Windows CI.
+
+Validation: compiled five-file78 PASS (../targeted-r2.log), separate real-process guard4 PASS (../guard-r2.log): early exit0/1 rejected, forgedPID rejected, valid parent hardkill strict tuple. Fixture tsc passed. Initial lint caught unused once import; removed and final lint recorded separately. Source/runtime evidence and original failures preserved. No full local matrix repeated; new pushed SHA CI is authoritative native gate.
+
+Independent read-only complex review: gpt-6.1-sol high, C0/I0/M0 provisional, final receipt separate. No model settings changed. Scope6 source/test files; workflow/product code unchanged.
+
+neat-freak: code changed-and-verified locally; native runtime pending; docs changed-and-verified; rules verified-current/unmodified; memory generated-read-only/out-of-scope; workspaces retained, no cleanup. Native FS01/KN01/POL01 remain REVIEW until all platforms green. No next ticket started.
