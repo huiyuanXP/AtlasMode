@@ -1,7 +1,17 @@
-# 首轮实现接口约定
+# 实现接口约定
 
 本文件是实现 Ticket 之间的接口；变更需在 SDD ledger 记录，通知后续实现者。
 代码的最终公共类型以 packages/core/src/index.ts 为准。所有 ID 是 string，时间是 ISO string。
+
+## 2026-10-11 知识与目录同步接口
+
+现役公共类型以core为准：annotations.ts、approval-schema.ts、structure-types.ts/structure.ts。独立注释的作者/约束、失联记录与显式绑定有SQLite迁移及修订；网页unknown写入恢复不重放已提交请求，也不能用旧read解除较新unknown写锁。
+
+Approval.reviewContext 对历史读取可选；新v1批准必须有严格的 version:1 / knowledgeHash，当前批准守卫还核对source、结构和规划身份。历史批准保留用于核对，不能当当前写权限。MCP get_approved_plan 通过强新鲜度守卫，未批准/草稿/过期为 NOT_APPROVED/409，而不是成功返回valid:false。
+
+structure.json为schemaVersion:1，folders与dependencyRules保持原文/扩展元数据；folder purpose为描述性信息。结构写入携带mutationId、expectedStructureRevision和expectedFileDigest，服务队列协调文件原子发布、SQLite状态和审计；并发冲突、未知发布、非法文件均保留证据与原字节。保存成功后的网页工作区回调只有读取，不重新发送写入。POL02的allowed/forbidden/有理由例外编辑仍是后续票，不把结构元数据当规则满足的证明。
+
+本轮完整验收及未验平台见[报告](../reviews/final-acceptance-2026-10-11/final-acceptance-report-20261011.md)。后续KN02/IDX04/GRP03/PERF接线需在各自SDD ledger记录共享接口窗口。
 
 ## 核心实体（字段名固定）
 
@@ -45,6 +55,7 @@ type Plan = {
 type Approval = {
   id: string; planId: string; revision: number; semanticHash: string;
   baselineSnapshotId: string; baselineContentHash: string; approvedAt: string; actor: 'user';
+  reviewContext?: { version: 1; knowledgeHash: string };
 };
 type ValidationIssue = { severity: 'error' | 'warning'; code: string; message: string; operationIndex?: number };
 type PlanDetail = { plan: Plan; approval?: Approval; valid: boolean; issues: ValidationIssue[] };

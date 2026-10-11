@@ -1,5 +1,47 @@
 /** Authored names, paths, notes and service evidence remain verbatim. */
 export const zh = {
+  annotationSourceChanged:
+    "当前源码快照已变化。请刷新代码，再选择并确认真实目标；本地注释草稿会保留。",
+  annotationRefreshSource: "刷新代码并保留注释草稿",
+  annotationHistoricalExport: "导出已记录批准历史（只读）",
+  annotationExecutionBlocked:
+    "知识写入尚未完成当前读取确认。批准、验证与当前规划导出暂不可用；重新读取知识和批准状态，本地草稿会保留。",
+  annotationRecover: "重新读取并恢复规划操作",
+  annotationsTab: "知识注释",
+  annotationNextStep:
+    "先记录知识；如需关联源码，请在图中选中真实对象，再预览并确认目标。",
+  annotationLoading: "正在载入知识注释",
+  annotationSyncFailed:
+    "注释写入结果已保留，规划读取未完成。请重新加载；本地草稿已保留。",
+  annotationApprovalFailed: "无法读取批准时记录的知识。当前注释仍独立显示。",
+  ownershipLayout: "布局",
+  ownershipMode: "规划归属",
+  ownershipTargets: "结构目标",
+  ownershipHelp: "将函数拖到结构目标，或选中函数后选择目标。",
+  ownershipStart: "为选中函数选择目标",
+  ownershipPreview: "目标归属变更预览",
+  ownershipActual: "实际源码路径",
+  ownershipCurrent: "当前规划目标",
+  ownershipTarget: "新的完整目标",
+  ownershipFilename: "完整源码文件名",
+  ownershipFilenameHelp: "请输入带源码扩展名的单个文件名，不含目录。",
+  ownershipNoSource: "规划函数；暂无源码",
+  ownershipExpired: "捕获的上下文已变化。请取消后重新选择目标；输入已保留。",
+  ownershipFailed: "目标变更未被接受。请取消、重新加载规划并再次选择目标。",
+  ownershipPlanOnly:
+    "此操作仅修改规划草稿。源码文件保留在实际位置；确认规划是独立操作。",
+  ownershipSave: "将目标变更加入规划",
+  ownershipCancel: "取消目标预览",
+  ownershipChoose: "选择",
+  ownershipBrowse: "浏览",
+  ownershipParent: "上级目录",
+  ownershipMissing: "规划或缺失目录；不代表已存在索引文件事实。",
+  ownershipUnavailable: "目标暂不可用；请刷新当前上下文后重试。",
+  ownershipLiveSource:
+    "从实际路径读取的当前磁盘内容，不表示历史快照内容或哈希一致。",
+  ownershipEffective: "有效目标",
+  ownershipSuperseded: "已被后续目标替代",
+
   collapseGroup: "折叠",
   expandGroup: "展开",
   groupVisibleCards: "当前加载范围：分组卡片",

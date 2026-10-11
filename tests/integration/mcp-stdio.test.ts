@@ -362,7 +362,11 @@ test("HTTP user approval and SDK share the same revision/hash; draft edits revok
       { kind: "annotate", targetId: f.node("A"), text: "draft only" },
     ],
   });
-  expect(await success(client, "get_approved_plan", args)).toMatchObject({
+  expect(await call(client, "get_approved_plan", args)).toMatchObject({
+    error: true,
+    value: { code: "NOT_APPROVED", status: 409 },
+  });
+  expect(await http(`/api/plans/${created.plan.id}`)).toMatchObject({
     valid: false,
     plan: { status: "draft", revision: 3 },
   });
@@ -390,11 +394,18 @@ test("get_approved_plan refreshes disk before trusting approval and stale explic
   });
   await writeFile(join(f.path, "main.ts"), source + "// changed on disk\n");
   expect(
-    await success(client, "get_approved_plan", {
+    await call(client, "get_approved_plan", {
       projectId: f.project.id,
       planId: created.plan.id,
     }),
-  ).toMatchObject({ valid: false, plan: { status: "stale" } });
+  ).toMatchObject({
+    error: true,
+    value: { code: "NOT_APPROVED", status: 409 },
+  });
+  expect(await http(`/api/plans/${created.plan.id}`)).toMatchObject({
+    valid: false,
+    plan: { status: "stale" },
+  });
   expect(
     await call(client, "propose_plan", {
       projectId: f.project.id,
@@ -588,11 +599,15 @@ test("a newly connected SDK client reads retained approval/routes/groups after a
   await startApi();
   const next = await connect();
   expect(
-    await success(next.client, "get_approved_plan", {
+    await call(next.client, "get_approved_plan", {
       ...args,
       planId: plan.plan.id,
     }),
   ).toMatchObject({
+    error: true,
+    value: { code: "NOT_APPROVED", status: 409 },
+  });
+  expect(await http(`/api/plans/${plan.plan.id}`)).toMatchObject({
     valid: false,
     plan: { revision: 2, status: "draft" },
     approval: approval.approval,

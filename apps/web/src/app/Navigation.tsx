@@ -1,3 +1,4 @@
+import { OwnershipControls } from "../features/structure/OwnershipControls.js";
 import { ConfigurationProjectGraphPanel } from "./ConfigurationProjectGraphPanel.js";
 import { useState } from "react";
 import { ChatPanel } from "../features/chat/ChatPanel.js";
@@ -36,6 +37,7 @@ export function Navigation({
         <code className="path">{project.path}</code>
       </div>
       <p className="offline-guidance">{zh.offlineBrowseHint}</p>
+      <OwnershipControls app={app} />
       <section className="compact-search" aria-label={zh.search}>
         <form
           onSubmit={(e) => {
@@ -171,7 +173,11 @@ export function Navigation({
       </button>
       {advanced && (
         <div className="advanced-navigation-content">
-          <PoliciesPanel app={app} />
+          <PoliciesPanel
+            app={app}
+            onAccepted={app.acceptPolicyWrite}
+            onReadAccepted={app.acceptPolicyRead}
+          />
           {summary && (
             <details>
               <summary>

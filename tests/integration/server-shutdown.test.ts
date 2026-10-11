@@ -9,7 +9,7 @@ import type { CodeSnapshot, Project } from "@codemap/core";
 import { createServer } from "@codemap/server";
 import { WorkspaceService } from "@codemap/service";
 import { SourceIndexer } from "@codemap/indexer";
-import { SqliteStorage } from "@codemap/storage";
+import { SqliteStorage, StructureFileStore } from "@codemap/storage";
 import { startProduction, http } from "../support/production.mjs";
 
 // These connections have not submitted a complete request or started any
@@ -79,6 +79,7 @@ test("shutdown preserves slow complete requests before discarding incomplete pip
   const storage = new SqliteStorage(database);
   const indexer = new SourceIndexer();
   const service = new WorkspaceService({
+    structureFiles: new StructureFileStore(),
     storage,
     indexer: {
       async index(path, projectId) {

@@ -1,0 +1,146 @@
+.annotations-panel {
+  min-width: 0;
+  display: grid;
+  gap: 1.25rem;
+  color: var(--text, #202735);
+}
+.annotations-panel > header,
+.annotation-actions,
+.annotation-meta,
+.annotation-pagination {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+.annotations-panel > header {
+  justify-content: space-between;
+}
+.annotations-panel h2,
+.annotations-panel h3,
+.annotations-panel h4 {
+  margin: 0 0 0.65rem;
+}
+.annotations-panel section,
+.annotation-editor {
+  min-width: 0;
+  border-top: 1px solid var(--border, #c7cdd5);
+  padding-top: 1rem;
+}
+.annotation-list {
+  list-style: none;
+  padding: 0;
+  margin: 0.75rem 0;
+  display: grid;
+  gap: 0.75rem;
+}
+.annotation-list > li,
+.annotation-history article {
+  min-width: 0;
+  border: 1px solid var(--border, #c7cdd5);
+  border-radius: 0.5rem;
+  padding: 0.8rem;
+  background: var(--panel, transparent);
+}
+.annotation-meta,
+.annotation-help {
+  color: var(--muted, #657184);
+  font-size: 0.85rem;
+  line-height: 1.55;
+}
+.annotation-prose {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  line-height: 1.6;
+}
+.annotation-badge {
+  border: 1px solid var(--border, #c7cdd5);
+  padding: 0.1rem 0.45rem;
+  border-radius: 0.4rem;
+}
+.annotation-constraint {
+  color: var(--accent, #245bd1);
+  border-color: currentColor;
+}
+.annotation-provenance {
+  display: grid;
+  grid-template-columns: minmax(7rem, 1fr) minmax(0, 2fr);
+  gap: 0.4rem 0.65rem;
+  font-size: 0.85rem;
+}
+.annotation-provenance dt {
+  color: var(--muted, #657184);
+}
+.annotation-provenance dd {
+  margin: 0;
+  min-width: 0;
+}
+.annotations-panel code {
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+.annotation-editor {
+  display: grid;
+  gap: 0.75rem;
+}
+.annotation-editor label {
+  display: grid;
+  gap: 0.4rem;
+  min-width: 0;
+}
+.annotation-editor input:not([type="checkbox"]),
+.annotation-editor textarea {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+}
+.annotation-editor textarea {
+  min-height: 8rem;
+  resize: vertical;
+}
+.annotation-editor .annotation-check {
+  display: flex;
+  align-items: center;
+}
+.annotation-candidate,
+.annotation-delete-confirm {
+  margin-top: 0.8rem;
+  border: 1px solid var(--accent, #245bd1);
+  border-radius: 0.5rem;
+  padding: 0.8rem;
+}
+.annotation-status-orphan,
+.annotation-delete-confirm {
+  color: var(--warning, #9b4c08);
+}
+.annotations-panel [role="alert"] {
+  padding: 0.7rem;
+  border-left: 3px solid var(--warning, #9b4c08);
+  overflow-wrap: anywhere;
+}
+.annotation-history {
+  display: grid;
+  gap: 1rem;
+}
+.annotation-history article + article {
+  margin-top: 0.65rem;
+}
+.annotation-pagination {
+  justify-content: space-between;
+}
+.annotations-panel button:focus-visible,
+.annotations-panel input:focus-visible,
+.annotations-panel textarea:focus-visible {
+  outline: 2px solid var(--accent, #245bd1);
+  outline-offset: 3px;
+}
+@media (max-width: 950px) {
+  .annotation-provenance {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .annotation-actions > button {
+    max-width: 100%;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+}

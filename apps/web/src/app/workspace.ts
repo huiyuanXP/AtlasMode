@@ -1,9 +1,21 @@
+import type {
+  AcceptedPolicyResponse,
+  AcceptedPolicyReadResponse,
+} from "../features/structure/policy-controller.js";
+import { createAnnotationsController } from "../features/annotations/controller.js";
+import {
+  createOwnershipSession,
+  sameOwnershipCapture,
+  type OwnershipCapture,
+} from "../features/structure/ownership-session.js";
+import { effectiveFunctionPath } from "../features/planning/function-target.js";
 import {
   readMembers,
   SnapshotChangedError,
   type MemberBinding,
 } from "../features/groups/memberBindings.js";
 import { createStore } from "zustand/vanilla";
+import { planSchema, v1ApprovalSchema } from "@codemap/core";
 import type {
   BrowseRoute,
   FunctionGroup,
@@ -54,6 +66,7 @@ export type WorkspaceState = {
   groupSelection: CodeNode[];
   groupSelectionMode: boolean;
   groupEditorOpen: boolean;
+  dirtyPlanEditor: boolean;
   history?: PlanHistory;
   groups: FunctionGroup[];
   policies: DirectoryPolicy[];
@@ -107,6 +120,7 @@ const blank = (): Omit<WorkspaceState, "projects"> => ({
   groupSelection: [],
   groupSelectionMode: false,
   groupEditorOpen: false,
+  dirtyPlanEditor: false,
   groups: [],
   policies: [],
   memberPage: undefined,
@@ -148,10 +162,38 @@ export function createWorkspace(
   const scope = new ProjectScope();
   let memberNavigationSequence = 0;
   let focusGeneration = 0,
+    ownershipEpoch = 0,
     dirtyPlanEditor = false;
   const histories = new Map<string, PlanHistory>();
   const set = store.setState,
     get = store.getState;
+  const currentFacts = () => {
+    const state = get(),
+      snapshotId = state.summary?.snapshotId;
+    return [
+      ...(state.summary?.entrypoints ?? []),
+      ...(state.graph?.snapshotId === snapshotId
+        ? (state.graph?.nodes ?? [])
+        : []),
+      ...(state.search?.snapshotId === snapshotId
+        ? (state.search?.items ?? [])
+        : []),
+    ];
+  };
+  const capturePlan = (): OwnershipCapture | undefined => {
+    const state = get(),
+      plan = state.plan?.plan,
+      summary = state.summary;
+    if (!plan || !summary || state.project?.id !== plan.projectId) return;
+    return Object.freeze({
+      projectId: plan.projectId,
+      planId: plan.id,
+      revision: plan.revision,
+      snapshotId: summary.snapshotId,
+      snapshotHash: summary.contentHash,
+      epoch: ownershipEpoch,
+    });
+  };
   const fail = (key: string, error: unknown) =>
     set((s) => ({
       busy: { ...s.busy, [key]: false },
@@ -261,6 +303,7 @@ export function createWorkspace(
     return { summary, view, plans, routes, groups, policies, graph };
   };
   const selectProject = async (project: Project) => {
+    ownershipEpoch++;
     focusGeneration++;
     scope.select(project.id);
     set({ ...blank(), project });
@@ -272,6 +315,7 @@ export function createWorkspace(
     );
   };
   const openProject = async (path: string) => {
+    ownershipEpoch++;
     focusGeneration++;
     scope.select("");
     set(blank());
@@ -289,12 +333,13 @@ export function createWorkspace(
   const selectNode = async (
     node: CodeNode,
     offset = 0,
-    options: { focus?: boolean; source?: boolean } = {},
+    options: { focus?: boolean; source?: boolean; sequence?: number } = {},
   ) => {
     const project = get().project,
       snapshotId = get().summary?.snapshotId;
     if (!project) return;
-    const sequence = ++focusGeneration;
+    const snapshotHash = get().summary?.contentHash;
+    const sequence = options.sequence ?? ++focusGeneration;
     scope.invalidate("source");
     scope.invalidate("graph");
     scope.invalidate("route");
@@ -321,46 +366,53 @@ export function createWorkspace(
         source: false,
       },
     }));
-    const isFact =
-      get().graph?.nodes.some((n) => n.id === node.id) ||
-      get().summary?.entrypoints.some((n) => n.id === node.id) ||
-      get().search?.items.some((n) => n.id === node.id);
+    const isFact = currentFacts().some(
+      (n) => n.id === node.id && n.kind === node.kind,
+    );
+    const current = () =>
+      get().project?.id === project.id &&
+      get().summary?.snapshotId === snapshotId &&
+      get().summary?.contentHash === snapshotHash &&
+      get().selectedNode?.id === node.id &&
+      focusGeneration === sequence &&
+      get().detailsOpen;
     await run(
       "inspect",
       async () => {
-        const [context, fileContext, source] = await Promise.all([
+        const [context, fileContext] = await Promise.all([
           isFact && node.kind === "function"
             ? api.context(project.id, node.id, offset)
             : undefined,
           isFact && node.kind === "file"
             ? api.fileContext(project.id, node.id, offset)
             : undefined,
-          options.source !== false &&
-          isFact &&
-          node.filePath &&
-          node.kind !== "folder" &&
-          node.kind !== "external"
-            ? api.source(project.id, node.filePath)
-            : undefined,
         ]);
-        return { context, fileContext, source };
-      },
-      (data) => {
+        if (!current()) return undefined;
         if (
-          get().summary?.snapshotId !== snapshotId ||
-          get().selectedNode?.id !== node.id ||
-          !get().detailsOpen
-        )
-          return;
-        if (
-          (data.context && data.context.snapshotId !== snapshotId) ||
-          (data.fileContext && data.fileContext.snapshotId !== snapshotId)
+          (context && context.snapshotId !== snapshotId) ||
+          (fileContext && fileContext.snapshotId !== snapshotId)
         )
           throw new SnapshotChangedError();
-        set({
-          ...data,
-          selectedNode: data.context?.node ?? data.fileContext?.node ?? node,
-        });
+        const physical = context?.node ?? fileContext?.node;
+        if (
+          physical &&
+          (physical.id !== node.id || physical.kind !== node.kind)
+        )
+          throw new Error(
+            "Function context identity changed; select it again.",
+          );
+        let source: { filePath: string; content: string } | undefined;
+        if (options.source !== false && physical?.filePath && current()) {
+          source = await api.source(project.id, physical.filePath);
+          if (source.filePath !== physical.filePath)
+            throw new Error(
+              "Source path changed; select the current function again.",
+            );
+        }
+        return { context, fileContext, source, selectedNode: physical ?? node };
+      },
+      (data) => {
+        if (data && current()) set(data);
       },
     );
   };
@@ -390,23 +442,65 @@ export function createWorkspace(
     const { project, selectedNode: node, summary } = get();
     if (
       !project ||
-      !node?.filePath ||
-      node.kind === "folder" ||
-      node.kind === "external" ||
+      !node ||
+      !summary ||
+      (node.kind !== "function" && node.kind !== "file") ||
       get().plan?.plan.operations.some(
         (o) => o.kind === "add_function" && o.tempId === node.id,
       )
     )
       return;
+    if (!currentFacts().some((n) => n.id === node.id && n.kind === node.kind)) {
+      set({
+        source: undefined,
+        error:
+          "Current source identity is unavailable; refresh and select the function again.",
+      });
+      return;
+    }
+    const sequence = focusGeneration,
+      snapshotId = summary.snapshotId,
+      snapshotHash = summary.contentHash;
+    const current = () =>
+      get().project?.id === project.id &&
+      get().selectedNode?.id === node.id &&
+      get().summary?.snapshotId === snapshotId &&
+      get().summary?.contentHash === snapshotHash &&
+      sequence === focusGeneration;
+    set({ source: undefined });
     await run(
       "source",
-      () => api.source(project.id, node.filePath!),
-      (source) => {
+      async () => {
+        const context =
+          node.kind === "function"
+            ? await api.context(project.id, node.id)
+            : undefined;
+        const fileContext =
+          node.kind === "file"
+            ? await api.fileContext(project.id, node.id)
+            : undefined;
+        if (!current()) return undefined;
+        const proof = context ?? fileContext;
+        if (!proof || proof.snapshotId !== snapshotId)
+          throw new SnapshotChangedError();
+        const physical = proof.node;
         if (
-          get().selectedNode?.id === node.id &&
-          get().summary?.snapshotId === summary?.snapshotId
+          physical.id !== node.id ||
+          physical.kind !== node.kind ||
+          !physical.filePath
         )
-          set({ source });
+          throw new Error(
+            "Current source path is unavailable; refresh and select it again.",
+          );
+        const source = await api.source(project.id, physical.filePath);
+        if (source.filePath !== physical.filePath)
+          throw new Error(
+            "Source response path changed; refresh and select it again.",
+          );
+        return { source, context, fileContext, selectedNode: physical };
+      },
+      (data) => {
+        if (data && current()) set(data);
       },
     );
   };
@@ -435,8 +529,8 @@ export function createWorkspace(
     const previousFilter = state.funnel?.previousFilter ?? state.filter;
     // Selection starts source/context requests immediately; their scope guard
     // prevents an older double click from replacing this root's inspector.
-    void selectNode(node);
     const sequence = ++focusGeneration;
+    void selectNode(node, 0, { sequence });
     set({ focusRequest: undefined });
     const commit = (
       graph: SubgraphResult | undefined,
@@ -554,17 +648,14 @@ export function createWorkspace(
           );
           if (!graph.missing) {
             const focusIds = [
-              ...new Set([
-                ...graph.nodes.map((n) => n.id),
-                ...(kind === "folder" ? ids : []),
-              ]),
+              ...new Set([...graph.nodes.map((n) => n.id), ...ids]),
             ];
             return {
               graph: {
                 ...graph,
                 truncated: graph.truncated || focusIds.length > 80,
               },
-              planned: false,
+              planned: ids.length > 0,
               ids: focusIds.slice(0, 80),
             };
           }
@@ -625,13 +716,19 @@ export function createWorkspace(
     );
     await funneling;
   };
-  const expand = async (nodeId: string, depth = 1, budget = 80) => {
-    exitFunnel();
+  const expand = async (
+    nodeId: string,
+    depth = 1,
+    budget = 80,
+    capturedSequence?: number,
+  ) => {
+    if (capturedSequence === undefined) exitFunnel();
+    else restoreFunnel();
     const project = get().project;
     if (!project) return;
     // A manual expansion supersedes route navigation, including a response still
     // in flight under the separate route request key.
-    const sequence = ++focusGeneration;
+    const sequence = capturedSequence ?? ++focusGeneration;
     scope.invalidate("route");
     scope.invalidate("navigation");
     set((s) => ({
@@ -647,7 +744,11 @@ export function createWorkspace(
     );
   };
   const focus = async (node: CodeNode) => {
-    await Promise.all([selectNode(node), expand(node.id, 1)]);
+    const sequence = ++focusGeneration;
+    await Promise.all([
+      selectNode(node, 0, { sequence }),
+      expand(node.id, 1, 80, sequence),
+    ]);
   };
   const jumpToNode = async (id: string) => {
     const state = get(),
@@ -905,7 +1006,7 @@ export function createWorkspace(
                 : []),
             ].find((n) => n.id === ids[0])
           : undefined;
-      let selectedNode: CodeNode | undefined =
+      const selectedNode: CodeNode | undefined =
         op?.kind === "add_function"
           ? {
               id: op.tempId,
@@ -917,11 +1018,12 @@ export function createWorkspace(
               language: op.language,
             }
           : fact;
-      const move = detail.plan.operations.find(
+      const move = detail.plan.operations.findLast(
         (o) => o.kind === "move_function" && o.nodeId === selectedNode?.id,
       );
-      if (selectedNode && move?.kind === "move_function")
-        selectedNode = { ...selectedNode, filePath: move.filePath };
+      const effectivePath = selectedNode
+        ? effectiveFunctionPath(detail.plan.operations, selectedNode)
+        : undefined;
       const sameSelection =
         selectedNode &&
         selectedNode.id === s.selectedNode?.id &&
@@ -931,8 +1033,8 @@ export function createWorkspace(
       set({
         selectedNode,
         navigationLocation:
-          selectedNode?.filePath && (op || move)
-            ? { path: selectedNode.filePath, kind: "file", planned: true }
+          effectivePath && (op || move)
+            ? { path: effectivePath, kind: "file", planned: true }
             : undefined,
         ...(!sameSelection ? emptyInspection : {}),
         relationPreviewId: undefined,
@@ -974,6 +1076,7 @@ export function createWorkspace(
   };
   const setPlanEditorDirty = (dirty: boolean) => {
     dirtyPlanEditor = dirty;
+    set({ dirtyPlanEditor: dirty });
     if (!dirty && !get().busy.plan && !get().busy.knowledge) {
       const current = get().plan,
         latest = get().plans.find((p) => p.plan.id === current?.plan.id);
@@ -1168,8 +1271,23 @@ export function createWorkspace(
     title?: string,
     description?: string,
     action: HistoryAction = "edit",
+    expectedCapture: OwnershipCapture | undefined = capturePlan(),
   ) => {
     const detail = get().plan;
+    const currentCapture = capturePlan();
+    if (
+      expectedCapture &&
+      (!currentCapture ||
+        !sameOwnershipCapture(expectedCapture, currentCapture))
+    ) {
+      set({
+        error:
+          "SNAPSHOT_CHANGED: The captured planning context changed; start the edit again.",
+        errorHelp: "conflictHelp",
+      });
+      return undefined;
+    }
+    const capturedSelection = get().selectedNode?.id;
     if (
       !detail ||
       get().busy.plan ||
@@ -1183,6 +1301,7 @@ export function createWorkspace(
     scope.invalidate("route");
     set((s) => ({ busy: { ...s.busy, graph: false, route: false } }));
     let focusing: Promise<void> | undefined;
+    let acceptedResult: PlanDetail | undefined;
     await run(
       "plan",
       () =>
@@ -1192,9 +1311,31 @@ export function createWorkspace(
           operations,
           title ?? detail.plan.title,
           description ?? detail.plan.description,
+          expectedCapture?.snapshotId,
         ),
       (accepted) => {
-        restoreFunnel();
+        const now = capturePlan();
+        if (
+          expectedCapture &&
+          (!now || !sameOwnershipCapture(expectedCapture, now))
+        )
+          return;
+        if (
+          accepted.plan.projectId !== detail.plan.projectId ||
+          accepted.plan.id !== detail.plan.id ||
+          accepted.plan.revision !== detail.plan.revision + 1 ||
+          (expectedCapture &&
+            (accepted.plan.baselineSnapshotId !== expectedCapture.snapshotId ||
+              accepted.plan.baselineContentHash !==
+                expectedCapture.snapshotHash))
+        ) {
+          throw new SnapshotChangedError();
+        }
+        acceptedResult = accepted;
+        const canFocus =
+          sequence === focusGeneration &&
+          get().selectedNode?.id === capturedSelection;
+        if (canFocus) restoreFunnel();
         histories.set(
           historyKey(accepted.plan),
           commitHistory(
@@ -1205,11 +1346,19 @@ export function createWorkspace(
           ),
         );
         acceptPlan(accepted);
-        focusing = focusPlan(accepted, sequence, detail.plan.operations);
+        if (canFocus)
+          focusing = focusPlan(accepted, sequence, detail.plan.operations);
       },
     );
     await focusing;
+    return acceptedResult;
   };
+  const savePlanCaptured = (
+    capture: OwnershipCapture,
+    operations: Operation[],
+    title?: string,
+    description?: string,
+  ) => savePlan(operations, title, description, "edit", capture);
   const travel = async (direction: "undo" | "redo") => {
     const { plan, history } = get();
     if (!plan) return;
@@ -1285,7 +1434,7 @@ export function createWorkspace(
   };
   const approve = async () => {
     const detail = get().plan;
-    if (!detail) return;
+    if (!detail || dirtyPlanEditor || ownership.store.getState().intent) return;
     await run(
       "plan",
       () => api.approve(detail.plan.id, detail.plan.revision),
@@ -1571,8 +1720,483 @@ export function createWorkspace(
       },
     );
   };
+  const ownership = createOwnershipSession({
+    current: () => {
+      const state = get(),
+        capture = capturePlan(),
+        plan = state.plan?.plan;
+      if (!capture || !plan) return;
+      return {
+        ...capture,
+        stale:
+          plan.status === "stale" ||
+          plan.baselineSnapshotId !== capture.snapshotId ||
+          plan.baselineContentHash !== capture.snapshotHash,
+        operations: plan.operations,
+        title: plan.title,
+        description: plan.description,
+        selectedId: state.selectedNode?.id,
+        busy:
+          !!state.busy.plan || !!state.busy.project || !!state.busy.knowledge,
+        dirty: dirtyPlanEditor,
+        groupSelection: state.groupSelectionMode || !!state.groupDraft,
+      };
+    },
+    resolveSource: (id) => {
+      const state = get(),
+        addition = state.plan?.plan.operations.find(
+          (o) => o.kind === "add_function" && o.tempId === id,
+        );
+      if (addition?.kind === "add_function")
+        return {
+          node: {
+            id: addition.tempId,
+            kind: "function",
+            name: addition.name,
+            filePath: addition.filePath,
+            signature: addition.signature,
+          },
+          snapshotId: state.summary!.snapshotId,
+        };
+      const node = currentFacts().find(
+        (n) => n.id === id && n.kind === "function",
+      );
+      return node && state.summary
+        ? { node, snapshotId: state.summary.snapshotId }
+        : undefined;
+    },
+    fetchScope: (request) =>
+      api.scope(
+        request.projectId,
+        request.path,
+        "folder",
+        request.budget,
+        request.snapshotId,
+        true,
+      ),
+    save: async (capture, operations) => {
+      const selectedId = get().selectedNode?.id;
+      const accepted = await savePlanCaptured(capture, operations);
+      return get().selectedNode?.id === selectedId ? accepted : undefined;
+    },
+    conflict: () => get().errorHelp === "conflictHelp",
+  });
+  store.subscribe(() => ownership.reconcile());
+  const beginOwnership = (node: CodeNode) => {
+    if (
+      ownership.store.getState().mode !== "ownership" ||
+      dirtyPlanEditor ||
+      get().groupSelectionMode
+    )
+      return;
+    void inspectNode(node);
+    return ownership.begin(node.id);
+  };
+  const annotations = createAnnotationsController({
+    api,
+    current: () => {
+      const state = get(),
+        snapshotId = state.summary?.snapshotId;
+      const facts = currentFacts();
+      const selected =
+        state.selectedNode &&
+        facts.find(
+          (node) =>
+            node.id === state.selectedNode!.id &&
+            node.kind === state.selectedNode!.kind,
+        );
+      const relation =
+        state.relationPreviewId &&
+        state.graph &&
+        state.graph.snapshotId === snapshotId
+          ? state.graph.relations.find(
+              (item) => item.id === state.relationPreviewId,
+            )
+          : undefined;
+      return {
+        projectId: state.project?.id,
+        snapshotId,
+        planId: state.plan?.plan.id,
+        selection: relation
+          ? { kind: "relation" as const, id: relation.id }
+          : selected
+            ? { kind: "node" as const, id: selected.id }
+            : undefined,
+        busy: !!(
+          state.busy.project ||
+          state.busy.plan ||
+          state.busy.knowledge ||
+          state.busy.agentSync ||
+          state.busy.refresh
+        ),
+      };
+    },
+    afterMutation: async (projectId) => {
+      const epoch = ownershipEpoch,
+        sequence = focusGeneration,
+        selectedPlanId = get().plan?.plan.id,
+        selectedRevision = get().plan?.plan.revision,
+        capturedSnapshotId = get().summary?.snapshotId;
+      const contextMatches = (revision = selectedRevision) =>
+        get().project?.id === projectId &&
+        epoch === ownershipEpoch &&
+        sequence === focusGeneration &&
+        get().plan?.plan.id === selectedPlanId &&
+        get().plan?.plan.revision === revision &&
+        get().summary?.snapshotId === capturedSnapshotId;
+      const requireCurrentContext = () => {
+        if (!contextMatches())
+          throw new ApiError(
+            "SNAPSHOT_CHANGED",
+            "Planning context changed during the annotation reread; reload knowledge.",
+            409,
+          );
+      };
+      requireCurrentContext();
+      // A real mutation or unknown transport outcome makes the old current receipt unusable.
+      // Keep the captured revision/body of a dirty planning editor for its CAS conflict.
+      if (get().plan)
+        set({ plan: { ...get().plan!, valid: false }, report: undefined });
+      const received = await api.plans(projectId);
+      requireCurrentContext();
+      if (
+        !Array.isArray(received) ||
+        received.some(
+          (detail) => planSchema.parse(detail.plan).projectId !== projectId,
+        )
+      )
+        throw new ApiError(
+          "PROJECT_MISMATCH",
+          "Annotation plan reread has the wrong owner.",
+          409,
+        );
+      const selectedId = get().plan?.plan.id;
+      if (selectedId) {
+        try {
+          const current = await api.currentApproval(selectedId);
+          const plan = planSchema.parse(current.plan),
+            approval = v1ApprovalSchema.parse(current.approval);
+          if (
+            !received.some(
+              (detail) =>
+                detail.plan.id === selectedId &&
+                detail.plan.revision === plan.revision &&
+                detail.valid === current.valid,
+            ) ||
+            !current.valid ||
+            plan.projectId !== projectId ||
+            plan.id !== selectedId ||
+            approval.planId !== selectedId ||
+            approval.revision !== plan.revision ||
+            approval.baselineSnapshotId !== plan.baselineSnapshotId
+          )
+            throw new ApiError(
+              "APPROVAL_CONTEXT_INVALID",
+              "Current approval receipt is inconsistent.",
+              409,
+            );
+        } catch (error) {
+          if (!(
+            error instanceof ApiError &&
+            error.status === 409 &&
+            error.code === "NOT_APPROVED"
+          ))
+            throw error;
+        }
+      }
+      requireCurrentContext();
+      const state = get();
+      const plans = received.map(
+        (detail) =>
+          state.plans.find(
+            (local) =>
+              local.plan.id === detail.plan.id &&
+              local.plan.revision > detail.plan.revision,
+          ) ?? detail,
+      );
+      set({ plans });
+      const selected = plans.find(
+        (detail) => detail.plan.id === state.plan?.plan.id,
+      );
+      if (
+        selected &&
+        !dirtyPlanEditor &&
+        !state.dirtyPlanEditor &&
+        !state.busy.plan &&
+        sequence === focusGeneration &&
+        selected.plan.revision >= (state.plan?.plan.revision ?? 0)
+      )
+        acceptPlan(selected);
+      const synchronizedRevision = get().plan?.plan.revision;
+      // This receipt remains pinned through subsequent Notes/snapshot reads.
+      return { isCurrent: () => contextMatches(synchronizedRevision) };
+    },
+  });
+  let annotationBusyOwned = false;
+  const stopAnnotationBusy = annotations.store.subscribe((state) => {
+    if (state.mutating && !annotationBusyOwned) {
+      annotationBusyOwned = true;
+      set((s) => ({ busy: { ...s.busy, knowledge: true } }));
+    } else if (!state.mutating && annotationBusyOwned) {
+      annotationBusyOwned = false;
+      set((s) => ({ busy: { ...s.busy, knowledge: false } }));
+    }
+  });
+  const stopAnnotationScope = store.subscribe(() => {
+    if (annotationBusyOwned && !get().busy.knowledge)
+      set((s) => ({ busy: { ...s.busy, knowledge: true } }));
+    annotations.synchronize();
+  });
+  annotations.synchronize();
+  const annotationExecutionGate = <T>(
+    action: () => Promise<T>,
+  ): Promise<T | undefined> => {
+    const state = annotations.store.getState();
+    if (state.mutating || state.executionBlocked) {
+      set({ error: "KNOWLEDGE_READ_REQUIRED", errorHelp: "retryHelp" });
+      return Promise.resolve(undefined);
+    }
+    return action();
+  };
+  let policySyncGeneration = 0;
+  let activePolicySync: { token: number; epoch: number } | undefined;
+  const policyIdentity = (policies: DirectoryPolicy[]) =>
+    JSON.stringify(
+      policies
+        .map((p) => [
+          p.id,
+          p.projectId,
+          p.pathPrefix,
+          p.purpose,
+          p.forbiddenDependencies,
+        ])
+        .sort((a, b) => String(a[0]).localeCompare(String(b[0]))),
+    );
+  const acceptPolicyResponse = async (
+    response: AcceptedPolicyResponse | AcceptedPolicyReadResponse,
+    read: boolean,
+  ): Promise<void> => {
+    const projectId = response.projectId;
+    if (
+      get().project?.id !== projectId ||
+      ("result" in response && response.result.projectId !== projectId) ||
+      ("snapshot" in response && response.snapshot.projectId !== projectId)
+    )
+      throw new ApiError(
+        "PROJECT_MISMATCH",
+        "Policy response has the wrong owner.",
+        409,
+      );
+    const epoch = ownershipEpoch,
+      token = policySyncGeneration + 1,
+      sequence = focusGeneration,
+      selectedId = get().plan?.plan.id,
+      selectedRevision = get().plan?.plan.revision,
+      snapshotId = get().summary?.snapshotId,
+      snapshotHash = get().summary?.contentHash;
+    const ownerCurrent = () =>
+      get().project?.id === projectId &&
+      ownershipEpoch === epoch &&
+      token === policySyncGeneration;
+    const requireContext = () => {
+      if (
+        !ownerCurrent() ||
+        sequence !== focusGeneration ||
+        get().plan?.plan.id !== selectedId ||
+        get().plan?.plan.revision !== selectedRevision ||
+        get().summary?.snapshotId !== snapshotId ||
+        get().summary?.contentHash !== snapshotHash
+      )
+        throw new ApiError(
+          "SNAPSHOT_CHANGED",
+          "Policy synchronization context changed; read again.",
+          409,
+        );
+    };
+    // A confirmed write or a fresh structure read makes cached current validity untrusted.
+    // Preserve the original dirty editor object, revision, approval and source capture.
+    if (get().plan)
+      set({ plan: { ...get().plan!, valid: false }, report: undefined });
+    if (
+      "snapshot" in response &&
+      !["ready", "missing"].includes(response.snapshot.status)
+    )
+      throw new ApiError(
+        "INVALID_STRUCTURE",
+        "Current structure is quarantined; read again.",
+        422,
+      );
+    if (
+      annotations.store.getState().mutating ||
+      (get().busy.knowledge && activePolicySync?.epoch !== epoch) ||
+      get().busy.project ||
+      get().busy.plan ||
+      get().busy.refresh ||
+      get().busy.agentSync
+    )
+      throw new ApiError(
+        "KNOWLEDGE_READ_REQUIRED",
+        "Another workspace operation owns this context; read again.",
+        409,
+      );
+    policySyncGeneration = token;
+    activePolicySync = { token, epoch };
+    set((current) => ({
+      busy: { ...current.busy, knowledge: true },
+      error: "",
+    }));
+    try {
+      const [policies, received, summary] = await Promise.all([
+        api.policies(projectId),
+        api.plans(projectId),
+        api.summary(projectId),
+      ]);
+      requireContext();
+      if (
+        !Array.isArray(policies) ||
+        new Set(policies.map((p) => p.id)).size !== policies.length ||
+        policies.some(
+          (p) =>
+            p.projectId !== projectId ||
+            typeof p.id !== "string" ||
+            typeof p.pathPrefix !== "string" ||
+            typeof p.purpose !== "string" ||
+            !Array.isArray(p.forbiddenDependencies) ||
+            p.forbiddenDependencies.some((path) => typeof path !== "string"),
+        ) ||
+        !Array.isArray(received) ||
+        received.some(
+          (detail) => planSchema.parse(detail.plan).projectId !== projectId,
+        ) ||
+        summary.project.id !== projectId
+      )
+        throw new ApiError(
+          "PROJECT_MISMATCH",
+          "Policy reread has the wrong owner or invalid policy records.",
+          409,
+        );
+      if (
+        summary.snapshotId !== snapshotId ||
+        summary.contentHash !== snapshotHash ||
+        (read &&
+          "policies" in response &&
+          policyIdentity(policies) !== policyIdentity(response.policies))
+      )
+        throw new ApiError(
+          "SNAPSHOT_CHANGED",
+          "Captured policy/source state changed; explicitly read again.",
+          409,
+        );
+      let currentApproved: PlanDetail | undefined;
+      if (selectedId) {
+        try {
+          currentApproved = await api.currentApproval(selectedId);
+          const plan = planSchema.parse(currentApproved.plan),
+            approved = v1ApprovalSchema.parse(currentApproved.approval),
+            detail = received.find((p) => p.plan.id === selectedId);
+          if (
+            !currentApproved.valid ||
+            !detail?.valid ||
+            plan.projectId !== projectId ||
+            plan.id !== selectedId ||
+            plan.revision !== detail.plan.revision ||
+            approved.planId !== selectedId ||
+            approved.revision !== plan.revision ||
+            approved.baselineSnapshotId !== plan.baselineSnapshotId ||
+            approved.baselineContentHash !== plan.baselineContentHash ||
+            plan.baselineSnapshotId !== summary.snapshotId ||
+            plan.baselineContentHash !== summary.contentHash ||
+            JSON.stringify(approved) !== JSON.stringify(detail.approval)
+          )
+            throw new ApiError(
+              "APPROVAL_CONTEXT_INVALID",
+              "Current policy approval receipt is inconsistent.",
+              409,
+            );
+        } catch (error) {
+          if (!(
+            error instanceof ApiError &&
+            error.status === 409 &&
+            error.code === "NOT_APPROVED"
+          ))
+            throw error;
+        }
+      }
+      requireContext();
+      const state = get();
+      if (
+        received.some((detail) =>
+          state.plans.some(
+            (local) =>
+              local.plan.id === detail.plan.id &&
+              local.plan.revision > detail.plan.revision,
+          ),
+        )
+      )
+        throw new ApiError(
+          "SNAPSHOT_CHANGED",
+          "A newer planning receipt already exists; read again.",
+          409,
+        );
+      const plans = received.map((detail) =>
+        detail.plan.id === selectedId && !currentApproved
+          ? { ...detail, valid: false }
+          : detail,
+      );
+      set({ policies, plans, summary });
+      const selected = plans.find((detail) => detail.plan.id === selectedId);
+      if (
+        selected &&
+        !dirtyPlanEditor &&
+        !state.dirtyPlanEditor &&
+        !state.busy.plan
+      )
+        acceptPlan(selected);
+    } catch (error) {
+      // Do not use run(): it consumes rejection and would falsely acknowledge parent sync.
+      if (
+        ownerCurrent() &&
+        sequence === focusGeneration &&
+        get().plan?.plan.id === selectedId
+      )
+        set({
+          error: `${error instanceof ApiError ? `${error.code}: ` : ""}${error instanceof Error ? error.message : String(error)}`,
+          errorHelp: "retryHelp",
+        });
+      throw error;
+    } finally {
+      if (activePolicySync?.token === token) {
+        activePolicySync = undefined;
+        if (ownerCurrent())
+          set((current) => ({
+            busy: {
+              ...current.busy,
+              knowledge:
+                annotationBusyOwned || annotations.store.getState().mutating,
+            },
+          }));
+      }
+    }
+  };
+  const acceptPolicyWrite = (response: AcceptedPolicyResponse): Promise<void> =>
+    acceptPolicyResponse(response, false);
+  const acceptPolicyRead = (
+    response: AcceptedPolicyReadResponse,
+  ): Promise<void> => acceptPolicyResponse(response, true);
   return {
+    acceptPolicyWrite,
+    acceptPolicyRead,
+    annotations,
+    disposeAnnotations: () => {
+      stopAnnotationBusy();
+      stopAnnotationScope();
+      annotations.deactivate();
+    },
     store,
+    ownership,
+    beginOwnership,
+    capturePlan,
+    savePlanCaptured,
     setPlanEditorDirty,
     captureAgentSync,
     syncAgentChanges,
@@ -1615,9 +2239,12 @@ export function createWorkspace(
     choosePlan,
     createPlan,
     validate,
-    approve,
-    verify,
-    exportPlan,
+    approve: () => annotationExecutionGate(approve),
+    verify: () => annotationExecutionGate(verify),
+    exportPlan: (
+      format: "json" | "markdown",
+      download: (content: string, filename: string) => void,
+    ) => annotationExecutionGate(() => exportPlan(format, download)),
     routeStep,
   };
 }

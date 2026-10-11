@@ -1,0 +1,11 @@
+{
+  "count": 312,
+  "changed": {
+    "tests/integration/commonjs-resolution.test.ts": "736272c8eda52fe2c2a16bf5959e616c8de5b8e939ce507a5abe620b902f0347",
+    "tests/integration/forwarding-resolution.test.ts": "961a8dbbfc244a3094b9a3ec8c2e5d05a0dd4f842c05d65389761ecc12ecb56e",
+    "tests/integration/mcp-stdio.test.ts": "a3f2b7dbcf5c66653aae3f94cb024c059f2f0d006bebaecd154327d026c6bf1e",
+    "tests/integration/tsconfig-resolution.test.ts": "d043222550c14a29a141d6ddd4ed80f215df30c49d35a39b678feaaf9b5b1f9c"
+  },
+  "expectedFixtureDeltaOnly": true,
+  "sharedFixtureMatches": true
+}

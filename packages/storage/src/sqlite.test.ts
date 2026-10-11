@@ -31,7 +31,7 @@ test("migrations repeat safely and persisted records survive reopen without kind
   expect(reopened.list("routes")).toHaveLength(1);
   const raw = new Database(path);
   expect(raw.prepare("SELECT count(*) AS count FROM migrations").get()).toEqual(
-    { count: 1 },
+    { count: 2 },
   );
   raw.close();
 });

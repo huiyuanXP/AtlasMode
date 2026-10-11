@@ -3,7 +3,7 @@ import { mkdtemp, mkdir, writeFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { SourceIndexer } from "@codemap/indexer";
-import { SqliteStorage } from "@codemap/storage";
+import { SqliteStorage, StructureFileStore } from "@codemap/storage";
 import { WorkspaceService } from "@codemap/service";
 import {
   createServer,
@@ -196,6 +196,7 @@ test("labeled trusted test adapter streams through real bridge, journals drafts,
   try {
     storage = new SqliteStorage(join(root, "data.sqlite"));
     const service = new WorkspaceService({
+      structureFiles: new StructureFileStore(),
       storage,
       indexer: new SourceIndexer(),
     });

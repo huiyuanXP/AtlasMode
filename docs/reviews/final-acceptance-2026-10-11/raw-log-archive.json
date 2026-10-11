@@ -1,0 +1,37 @@
+[
+  {
+    "raw": "unit.log",
+    "sha256": "69b0cb8b3aefc15be91e697fb6b515bfadbdb7494502fdaf623fdc6276d551fe",
+    "gzip": "unit.log.gz"
+  },
+  {
+    "raw": "browser.log",
+    "sha256": "393573551bcdaa31fcbe40243024083fa1870949be9c53e3dfabed9f90113043",
+    "gzip": "browser.log.gz"
+  },
+  {
+    "raw": "smoke.log",
+    "sha256": "744c39f61f4e04c1f2e295889ad5db62645ddadacf754a4e7008563dbe2e57b2",
+    "gzip": "smoke.log.gz"
+  },
+  {
+    "raw": "unit-r1.log",
+    "sha256": "d2649b13e02640538fbbc0d2d77c4929c49bce74f9c5a89d418b611db8123eea",
+    "gzip": "unit-r1.log.gz"
+  },
+  {
+    "raw": "lint.log",
+    "sha256": "7800494729c08273ed821839df88b07aa887e163a5d86a3fd5f0a034acfa0ca4",
+    "gzip": "lint.log.gz"
+  },
+  {
+    "raw": "build.log",
+    "sha256": "31fe8249f8e3b54f0f8b3325f9aa3b2d55f70083c3c35053f829cfe8b43a963d",
+    "gzip": "build.log.gz"
+  },
+  {
+    "raw": "typecheck.log",
+    "sha256": "e664821bb282bf4a1b05895425ee8e0d8881e1a37570fe049944541f43c75e1e",
+    "gzip": "typecheck.log.gz"
+  }
+]

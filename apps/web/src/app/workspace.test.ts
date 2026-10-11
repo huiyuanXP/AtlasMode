@@ -72,6 +72,7 @@ it("switch immediately clears graph, plan, source, route and selection, and late
     name: "fn",
     filePath: "a.ts",
   });
+  await expect.poll(() => typeof resolve).toBe("function");
   await app.selectProject({ id: "b", name: "b", path: "/b" });
   expect(app.store.getState()).toMatchObject({
     selectedNode: undefined,
@@ -181,6 +182,7 @@ it("rapid same-project focus keeps the newer graph, context and source when olde
     name: "fn",
     filePath: "a.ts",
   });
+  await expect.poll(() => typeof oldSource).toBe("function");
   await app.focus({ id: "g", kind: "function", name: "g", filePath: "b.ts" });
   oldGraph(new Response(JSON.stringify(fixture("/api/projects/a/subgraph"))));
   oldSource(

@@ -72,7 +72,7 @@ export function PlanningPanel(props: PlanningPanelProps) {
             {zh.refreshPlan}
           </button>
           <PlanEditor
-            key={`${props.detail.plan.id}:${props.detail.plan.revision}:${props.node?.id ?? ""}:${props.edge?.id ?? ""}`}
+            key={`${props.detail.plan.projectId}:${props.detail.plan.id}:${props.node?.id ?? ""}:${props.edge?.id ?? ""}`}
             {...props}
             detail={props.detail}
           />

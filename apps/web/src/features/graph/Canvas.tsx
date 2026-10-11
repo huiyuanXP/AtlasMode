@@ -54,7 +54,47 @@ function CodeCard({ data }: NodeProps<GraphNode>) {
     lane = data.funnelLane as FunnelLane | undefined;
   return (
     <div
-      className={`code-card ${data.layer} kind-${n.kind} ${lane ? `funnel-${lane}` : ""} inspection-${data.highlight ?? "idle"}`}
+      className={`code-card ${data.ownershipMode ? "nodrag nopan" : ""} ${data.layer} kind-${n.kind} ${lane ? `funnel-${lane}` : ""} inspection-${data.highlight ?? "idle"}`}
+      draggable={
+        !!data.ownershipMode && !!data.ownershipEnabled && n.kind === "function"
+      }
+      onDragStart={(event) => {
+        if (!data.ownershipMode || n.kind !== "function") return;
+        const nonce = (
+          data.onOwnershipStart as
+            ((node: CodeNode) => string | undefined) | undefined
+        )?.(n);
+        if (!nonce) {
+          event.preventDefault();
+          return;
+        }
+        event.stopPropagation();
+        event.dataTransfer.effectAllowed = "move";
+        event.dataTransfer.setData("application/x-atlas-ownership", nonce);
+      }}
+      onDragEnd={() => (data.onOwnershipEnd as (() => void) | undefined)?.()}
+      onDragOver={(event) => {
+        if (
+          data.ownershipMode &&
+          (n.kind === "file" || n.kind === "folder") &&
+          event.dataTransfer.types.includes("application/x-atlas-ownership")
+        )
+          event.preventDefault();
+      }}
+      onDrop={(event) => {
+        if (!data.ownershipMode || (n.kind !== "file" && n.kind !== "folder"))
+          return;
+        event.preventDefault();
+        event.stopPropagation();
+        const nonce = event.dataTransfer.getData(
+          "application/x-atlas-ownership",
+        );
+        if (nonce)
+          (
+            data.onOwnershipDrop as
+              ((node: CodeNode, nonce?: string) => void) | undefined
+          )?.(n, nonce);
+      }}
       data-domain-id={n.id}
       data-group-id={data.groupId}
       data-funnel-lane={lane}
@@ -212,6 +252,11 @@ export function Canvas(props: {
   projectId?: string;
   selectedNodeId?: string;
   groups?: FunctionGroup[];
+  ownershipMode?: boolean;
+  ownershipEnabled?: boolean;
+  onOwnershipStart?: (node: CodeNode) => string | undefined;
+  onOwnershipEnd?: () => void;
+  onOwnershipDrop?: (node: CodeNode, nonce?: string) => void;
   onToggleGroup?: (id: string) => void;
   groupSelectionMode?: boolean;
   groupSelectionIds?: string[];
@@ -680,7 +725,7 @@ export function Canvas(props: {
         selectionMode={SelectionMode.Partial}
         selectionKeyCode={props.groupSelectionMode ? null : "Shift"}
         multiSelectionKeyCode={props.groupSelectionMode ? null : "Meta"}
-        panOnDrag={!props.groupSelectionMode}
+        panOnDrag={!props.groupSelectionMode && !props.ownershipMode}
         nodes={(props.groupSelectionMode
           ? circleSelectedNodes(
               highlighted.nodes,
@@ -695,6 +740,11 @@ export function Canvas(props: {
           data: {
             ...n.data,
             locale: props.view.locale,
+            ownershipMode: props.ownershipMode,
+            ownershipEnabled: props.ownershipEnabled,
+            onOwnershipStart: props.onOwnershipStart,
+            onOwnershipEnd: props.onOwnershipEnd,
+            onOwnershipDrop: props.onOwnershipDrop,
             onToggleGroup: props.onToggleGroup,
             onSelectMember: props.onSelect,
           },
@@ -764,6 +814,13 @@ export function Canvas(props: {
         }}
         onNodeClick={(event, node) => {
           if (props.groupSelectionMode || node.data.group) return;
+          if (props.ownershipMode) {
+            clearTimeout(clickTimer.current);
+            if (node.data.node.kind === "function")
+              props.onSelect(node.data.node);
+            else props.onOwnershipDrop?.(node.data.node);
+            return;
+          }
           if (!props.funnel && event.detail < 2)
             clickViewport.current = instance.current?.getViewport();
           clearTimeout(clickTimer.current);
@@ -775,7 +832,12 @@ export function Canvas(props: {
           );
         }}
         onNodeDoubleClick={(_, node) => {
-          if (props.groupSelectionMode || node.data.group) return;
+          if (
+            props.groupSelectionMode ||
+            props.ownershipMode ||
+            node.data.group
+          )
+            return;
           clearTimeout(clickTimer.current);
           if (
             node.data.node.kind === "file" ||
@@ -788,10 +850,12 @@ export function Canvas(props: {
           }
         }}
         onNodeDragStart={() => {
+          if (props.ownershipMode) return;
           dragging.current = true;
           stopMotion();
         }}
         onNodeDragStop={(_, node) => {
+          if (props.ownershipMode) return;
           dragging.current = false;
           if (props.funnel) {
             const base = funnelBase?.nodes.find(
@@ -812,7 +876,7 @@ export function Canvas(props: {
               [node.id]: node.position,
             });
         }}
-        nodesDraggable={!props.groupSelectionMode}
+        nodesDraggable={!props.groupSelectionMode && !props.ownershipMode}
         zoomOnDoubleClick={false}
         onEdgeClick={(_, edge) => {
           if (props.groupSelectionMode) return;

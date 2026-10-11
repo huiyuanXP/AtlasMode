@@ -138,9 +138,20 @@ test("compiled HTTP and SDK stale config-only baselines without rewriting approv
       false,
     );
     const stale = await api(`/api/plans/${plan.plan.id}`);
-    expect(
-      await mcp.call("get_approved_plan", { ...args, planId: plan.plan.id }),
-    ).toEqual(stale);
+    const unapproved = await mcp.client.callTool({
+      name: "get_approved_plan",
+      arguments: { ...args, planId: plan.plan.id },
+    });
+    expect(unapproved.isError).toBe(true);
+    const unapprovedContent = unapproved.content as {
+      type: string;
+      text: string;
+    }[];
+    expect(unapprovedContent[0]?.type).toBe("text");
+    expect(JSON.parse(unapprovedContent[0]!.text)).toMatchObject({
+      code: "NOT_APPROVED",
+      status: 409,
+    });
     expect(stale).toMatchObject({
       valid: false,
       plan: {

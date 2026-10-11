@@ -1,5 +1,54 @@
 import type { zh } from "./zh.js";
 export const en: Record<keyof typeof zh, string> = {
+  annotationSourceChanged:
+    "The current source capture changed. Refresh code, then select and confirm a real target; local annotation drafts are retained.",
+  annotationRefreshSource: "Refresh code and retain annotation drafts",
+  annotationHistoricalExport: "Export recorded approval history (read only)",
+  annotationExecutionBlocked:
+    "The knowledge write has not been confirmed by a complete current read. Approval, verification and current plan export are unavailable. Reread knowledge and approval status; local drafts are retained.",
+  annotationRecover: "Reread and recover plan actions",
+  annotationsTab: "Knowledge notes",
+  annotationNextStep:
+    "Record knowledge first. To bind it to source, select a real object in the graph, then preview and confirm the target.",
+  annotationLoading: "Loading knowledge notes",
+  annotationSyncFailed:
+    "The annotation outcome is retained, but plans could not be reread. Reload; local drafts are retained.",
+  annotationApprovalFailed:
+    "Could not read the knowledge recorded at approval. Current notes remain separate.",
+  ownershipLayout: "Layout",
+  ownershipMode: "Plan ownership",
+  ownershipTargets: "Structure targets",
+  ownershipHelp:
+    "Drag a function to a structure target, or select a function and choose a target.",
+  ownershipStart: "Choose target for selected function",
+  ownershipPreview: "Target change preview",
+  ownershipActual: "Actual source path",
+  ownershipCurrent: "Current planned target",
+  ownershipTarget: "New complete target",
+  ownershipFilename: "Complete source filename",
+  ownershipFilenameHelp:
+    "Enter one filename with its source extension, without directories.",
+  ownershipNoSource: "Planned function; source unavailable",
+  ownershipExpired:
+    "The captured context changed. Cancel and choose the target again; your input has been retained.",
+  ownershipFailed:
+    "The target change was not accepted. Cancel, reload the plan and choose the target again.",
+  ownershipPlanOnly:
+    "This changes the draft plan only. Source files stay in their actual locations; confirmation is a separate action.",
+  ownershipSave: "Add target change to plan",
+  ownershipCancel: "Cancel target preview",
+  ownershipChoose: "Choose",
+  ownershipBrowse: "Browse",
+  ownershipParent: "Parent folder",
+  ownershipMissing:
+    "Planned or missing folder; no indexed file fact is implied.",
+  ownershipUnavailable:
+    "Targets unavailable; refresh the current context and retry.",
+  ownershipLiveSource:
+    "Current live disk bytes from the actual path. No historical snapshot content or hash match is asserted.",
+  ownershipEffective: "Effective target",
+  ownershipSuperseded: "superseded by later target",
+
   collapseGroup: "Collapse",
   expandGroup: "Expand",
   groupVisibleCards: "Loaded scope: group cards",

@@ -3,7 +3,7 @@ import { mkdtemp, mkdir, writeFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { SourceIndexer } from "@codemap/indexer";
-import { SqliteStorage } from "@codemap/storage";
+import { SqliteStorage, StructureFileStore } from "@codemap/storage";
 import { WorkspaceService } from "@codemap/service";
 import { createServer } from "../server.js";
 import { createScopedGateway } from "./gateway.js";
@@ -19,6 +19,7 @@ async function setup() {
   const storage = new SqliteStorage(join(root, "data.sqlite"));
   cleanups.push(async () => storage.close());
   const service = new WorkspaceService({
+    structureFiles: new StructureFileStore(),
     storage,
     indexer: new SourceIndexer(),
   });

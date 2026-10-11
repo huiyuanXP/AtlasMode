@@ -1,9 +1,10 @@
 import { afterEach, expect, test } from "vitest";
 import { mkdtemp, mkdir, writeFile, rm, symlink } from "node:fs/promises";
+import { randomUUID } from "node:crypto";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { SourceIndexer } from "@codemap/indexer";
-import { SqliteStorage } from "@codemap/storage";
+import { SqliteStorage, StructureFileStore } from "@codemap/storage";
 import { WorkspaceService } from "@codemap/service";
 import {
   DomainError,
@@ -36,6 +37,7 @@ async function setup(options: { web?: boolean; indexer?: IndexerPort } = {}) {
   const storage = new SqliteStorage(join(root, "data.sqlite"));
   cleanups.push(async () => storage.close());
   const service = new WorkspaceService({
+    structureFiles: new StructureFileStore(),
     storage,
     indexer: options.indexer ?? new SourceIndexer(),
   });
@@ -562,8 +564,17 @@ test("routes carry evidence, groups policies and view persist with strict projec
       })
     ).statusCode,
   ).toBe(400);
+  const policyPreconditions = async (scope: string) => {
+    const state = (await request("GET", `${scope}/structure`)).json();
+    return {
+      mutationId: randomUUID(),
+      expectedStructureRevision: state.structureRevision,
+      expectedFileDigest: state.fileDigest,
+    };
+  };
   const policy = (
     await request("POST", `${base}/policies`, {
+      ...(await policyPreconditions(base)),
       pathPrefix: "src",
       purpose: "rules",
       forbiddenDependencies: ["private"],
@@ -575,6 +586,7 @@ test("routes carry evidence, groups policies and view persist with strict projec
   expect(
     (
       await request("POST", `${base}/policies`, {
+        ...(await policyPreconditions(base)),
         pathPrefix: "../bad",
         purpose: "rules",
         forbiddenDependencies: [],
@@ -584,6 +596,7 @@ test("routes carry evidence, groups policies and view persist with strict projec
   expect(
     (
       await request("POST", `/api/projects/${b.id}/policies`, {
+        ...(await policyPreconditions(`/api/projects/${b.id}`)),
         id: policy.id,
         pathPrefix: policy.pathPrefix,
         purpose: policy.purpose,

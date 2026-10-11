@@ -2,19 +2,9 @@
 
 用可编辑的代码关系图替代传统文字 Plan Mode。Agent 在实际修改代码之前，把规划叠加到现有项目图上；用户理解、调整并确认后，Agent 才实施。人通过图形理解项目，Agent 通过 MCP 查询同一份结构化模型。
 
-> 当前仓库已有本地 UI、真实 TS/JS/Python 索引、SQLite、stdio MCP、中文/英文、主题、功能集、目录约束及撤销重做。首轮 T01–T08 与整体审查通过，四项 Important 与两项 Minor 修复均独立复审通过；本轮精确检查结果见 [环境与验证](docs/environment.md)。固定目标的阶段、修订和统计见 [外部验证记录](docs/superpowers/validation-targets.md)，不将旧运行计数当作当前结果。基线86e6b12的原生 Linux/Windows/macOS CI及Linux Chromium已通过（[run37148507859](https://github.com/huiyuanXP/AtlasMode/actions/runs/37148507859)）；该历史阶段的实际 Codex/Claude 客户端连接尚未验证；本轮 Codex Profile 真实接入见下方更新。以下规格保留后续目标，组折叠已在GRP-02完成；高级流程、知识迁移/备份、完整 CommonJS 值流和 更广值流等仍有缺口；references 图已完成真实验收与新四平台CI，详见 [要求覆盖表](docs/superpowers/readme-coverage.md)。
+当前已实现本地代码关系图、真实 TS/JS/Python 静态索引、SQLite、stdio MCP、中文/英文、主题、功能集和版本化规划。2026-10-11 的文件归属、独立知识注释和目录约定同步已有整合及真实交互收据。原整合门禁1342项测试/51项浏览器保留为历史基线；整体独审发现的Python路径回归已完成两文件定向修复，142项单测和25项浏览器验证及独立复审通过，见 [兼容性修复](docs/reviews/python-compatibility-2026-10-11/README.md)。远端新提交CI另行记录，不能用本地通过代替Windows结论。精确结果见 [最新验收](docs/reviews/final-acceptance-2026-10-11/final-acceptance-report-20261011.md)，剩余工作见 [Tickets](docs/tickets/README.md)。
 
-
-本轮已完成 UI-05～UI-10 图检查交互，实际未批准规划和精确验证见 [验收报告](docs/superpowers/reviews/graph-inspection-2026-10-09/README.md)。
-已有自动聚焦、动画依赖漏斗、可点击路径、双侧Chat和既有Codex Profile复用。
-实际Mimo/API Profile已跑通原生模型→MCP→未批准规划，无需重新Device登录。
-此前 Focus/Chat 集成基线636项测试/12项Chromium通过，后续漏斗可读性修正有独立相关验证；
-当前精确结果见 [交付记录](docs/superpowers/reviews/focus-chat-2026-10-08/README.md)。
-
-历史已审查的Task2 PARTIAL检查点与待办见 [交接记录](docs/superpowers/reviews/static-forwarding-task2/README.md)。
-Task2的七包构建、类型检查、lint和541项/31文件测试通过，独立task/whole检查点评审已记录；
-唯一集中修复后根lint/541项31文件及forwarding browser1通过，限定复审已批准；
-该历史阶段完整Express入口FAIL，整票当时未完成。2026-10-10现有IDX-01已修复完整固定Express入口，35/35严格入口及实际源码/上下文/浏览器通过，见 [本轮证据](docs/superpowers/reviews/idx01-2026-10-10/README.md)；IDX-02静态workspace/exports映射已完成393项索引回归及真实生命周期验收，见[证据](docs/superpowers/reviews/idx02-2026-10-10/README.md)；references 图已有本地真实验收与独立review，见[IDX03](docs/superpowers/reviews/idx03-2026-10-10/README.md)，四平台CI38069639172已全部通过；更广值流仍有限制。
+此前图检查/漏斗、完整Express入口、workspace/exports和references图的历史范围与CI见 [状态与阶段记录](docs/superpowers/state.md) 和 [要求覆盖](docs/superpowers/readme-coverage.md)。更广值流、知识迁移/备份、增量索引、高级组合和平台验证仍有待办，不把历史通过当当前完整交付。
 
 本机使用 Node24.19.0/npm11.9.0；分析 Python 项目需 Python3.10+。从仓库根目录运行：
 
@@ -34,6 +24,12 @@ npm start
 角落小地图可展开、定位、缩放和返回选择，表示当前已加载范围；空间受限时暂收详情，收起地图后恢复同一选择。Esc 依次收起地图、关闭详情、退出漏斗。点击路径中的项目、文件夹、文件可切换范围。
 类型标识来自 AST 声明信息，区分函数、方法、类、目录与文件；本地 Nerd 图标字体随网页分发，字体不可用时保留通用图标与类型文字。旧快照可继续读取，刷新索引后补齐声明类型。
 源码通过「查看源码」展开，精确参数表单集中在「高级编辑」。直接函数搜索在 Agent 未连接时也可使用。
+
+选择“规划归属”后，将规划函数拖入文件或目录；目录必须填写完整文件名并预览目标路径。布局拖动只保存画布位置，归属修改只写规划，不移动或改写源码。提交后需要确认新版本；取消、撤销/重做和过期预览保护均保留。
+
+右侧“知识注释”保存作者、说明和约束。源码消失后注释仍保留，重新绑定必须显式选择当前对象；不自动猜测同名身份。历史为只读；冲突或未确认写入结果保留草稿，并通过明确重读恢复。
+
+左侧目录约定读取 `.codemap/structure.json`，显示状态、修订、摘要和校验时间。保存采用受控原子写回；保存后再次编辑需“重新读取结构”。外部修改发生冲突时保留输入，非法文件进入隔离并禁用写入。迁移旧DB策略必须先预览、再明确导入。自然语言目的不是依赖规则满足的证明。
 
 图上“圈选函数”进入矩形选择模式，可创建跨目录分组；“管理分组”可编辑名称、说明与完整成员，一个函数可属于多组。分组修改会使受影响规划需要重新确认，源码和路径保持原状。实际圈选、编辑与重启持久化见 [GRP-01验收](docs/superpowers/reviews/grp01-2026-10-10/README.md)。GRP-02已实现折叠/展开、共享函数镜像及真实外部端点，刷新恢复视图，见 [验收](docs/superpowers/reviews/grp02-2026-10-10/README.md)。未加载范围与全局布局规模评估、高级sequence/wrapper仍见后续票。
 

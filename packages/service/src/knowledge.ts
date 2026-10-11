@@ -1,7 +1,6 @@
 import { randomUUID } from "node:crypto";
 import {
   DomainError,
-  normalizeRepoPath,
   validateRoute,
   type BrowseRoute,
   type CodeSnapshot,
@@ -15,17 +14,6 @@ import { inputKeys } from "./planning.js";
 
 function text(value: unknown): value is string {
   return typeof value === "string";
-}
-function prefix(value: string, root = false): string {
-  if (!text(value)) throw new DomainError("INVALID_INPUT", "Expected a path.");
-  const trimmed = value.replaceAll("\\", "/").replace(/\/+$/, "");
-  if (
-    root &&
-    (trimmed === "" || trimmed === ".") &&
-    !value.replaceAll("\\", "/").startsWith("/")
-  )
-    return "";
-  return normalizeRepoPath(trimmed);
 }
 export class Knowledge {
   constructor(
@@ -167,39 +155,6 @@ export class Knowledge {
     return this.storage
       .list<DirectoryPolicy>("policies")
       .filter((p) => p.projectId === projectId);
-  }
-  savePolicy(
-    input: Omit<DirectoryPolicy, "id"> & { id?: string },
-  ): DirectoryPolicy {
-    inputKeys(input, [
-      "id",
-      "projectId",
-      "pathPrefix",
-      "purpose",
-      "forbiddenDependencies",
-    ]);
-    this.snapshot(input.projectId);
-    if (!text(input.purpose) || !Array.isArray(input.forbiddenDependencies))
-      throw new DomainError("INVALID_INPUT", "Invalid directory policy.");
-    const id = input.id ?? randomUUID();
-    this.checkOwner("policies", id, input.projectId);
-    const policy = {
-      ...input,
-      id,
-      pathPrefix: prefix(input.pathPrefix, true),
-      forbiddenDependencies: input.forbiddenDependencies.map((p) => prefix(p)),
-    };
-    this.saveDesign("policies", policy, (value) => {
-      const p = value as DirectoryPolicy;
-      return JSON.stringify([
-        prefix(p.pathPrefix, true),
-        p.purpose,
-        [
-          ...new Set(p.forbiddenDependencies.map((path) => prefix(path))),
-        ].sort(),
-      ]);
-    });
-    return policy;
   }
   // Knowledge is part of the review context. Advance current plan revisions in
   // the same transaction; immutable approval snapshots remain verifiable.

@@ -33,3 +33,41 @@ it("shows loaded scope, mirrored identity and real external endpoints without cl
   expect(html).toContain("src/a.ts");
   expect(html).toContain("Same function mirrored");
 });
+
+it("ownership makes only real loaded function endpoints draggable, preserving default inspection and excluding unknown members", () => {
+  const member = {
+    id: "real:a",
+    kind: "function" as const,
+    name: "alpha",
+    filePath: "src/a.ts",
+  };
+  const group = {
+    id: "group-alias",
+    title: "G",
+    total: 2,
+    loadedMembers: [member],
+    unknownMembers: 1,
+    collapsed: true,
+    portIds: [member.id, "unknown"],
+    internalRelationIds: [],
+    plannedInternalIds: [],
+  };
+  const render = (enabled: boolean) =>
+    renderToStaticMarkup(
+      <GroupCardContent
+        group={group}
+        locale="en"
+        onToggle={() => {}}
+        onSelect={() => {}}
+        ownershipEnabled={enabled}
+        onOwnershipStart={() => "captured-nonce"}
+      />,
+    );
+  expect(render(false)).toContain('draggable="false"');
+  const html = render(true);
+  expect(html).toContain('draggable="true"');
+  expect(html).toContain('data-domain-id="real:a"');
+  expect(html).not.toContain('data-domain-id="group-alias"');
+  expect(html).not.toContain('data-domain-id="unknown"');
+  expect((html.match(/class="group-endpoint /g) ?? []).length).toBe(1);
+});

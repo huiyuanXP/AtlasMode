@@ -1,4 +1,13 @@
 import type {
+  AnnotationDetail,
+  AnnotationPage,
+  AnnotationHistoryPage,
+  AnnotationListInput,
+  AnnotationHistoryInput,
+  CreateAnnotationInput,
+  UpdateAnnotationInput,
+  BindAnnotationInput,
+  DeleteAnnotationResult,
   BrowseRoute,
   CodeNode,
   FunctionGroup,
@@ -180,13 +189,43 @@ export class HttpApi {
     operations: Operation[],
     title: string,
     description: string,
+    expectedSnapshotId?: string,
   ) =>
     this.request<PlanDetail>(`/plans/${encodeURIComponent(id)}`, "PUT", {
       expectedRevision,
+      ...(expectedSnapshotId === undefined ? {} : { expectedSnapshotId }),
       operations,
       title,
       description,
     });
+  updateOwnershipPlan = async (input: {
+    planId: string;
+    expectedRevision: number;
+    expectedSnapshotId: string;
+    operations: Operation[];
+    title: string;
+    description: string;
+  }) => {
+    if (
+      typeof input.expectedSnapshotId !== "string" ||
+      !input.expectedSnapshotId.trim()
+    )
+      throw new ApiError(
+        "INVALID_INPUT",
+        "A captured snapshot is required for an ownership edit.",
+        400,
+      );
+    return this.updatePlan(
+      input.planId,
+      input.expectedRevision,
+      input.operations,
+      input.title,
+      input.description,
+      input.expectedSnapshotId,
+    );
+  };
+  currentApproval = (id: string) =>
+    this.request<PlanDetail>(`/plans/${encodeURIComponent(id)}/approved`);
   plan = (id: string) =>
     this.request<PlanDetail>(`/plans/${encodeURIComponent(id)}`);
   validate = (id: string) =>
@@ -213,5 +252,71 @@ export class HttpApi {
       "GET",
       undefined,
       true,
+    );
+  snapshot = (id: string) =>
+    this.request<CodeSnapshot>(`/projects/${encodeURIComponent(id)}/snapshot`);
+  annotations = (id: string, input: AnnotationListInput = {}) => {
+    const query = new URLSearchParams(
+      Object.entries(input)
+        .filter(([, value]) => value !== undefined)
+        .map(([key, value]) => [key, String(value)]),
+    );
+    return this.request<AnnotationPage>(
+      `/projects/${encodeURIComponent(id)}/annotations?${query}`,
+    );
+  };
+  annotation = (id: string, annotationId: string) =>
+    this.request<AnnotationDetail>(
+      `/projects/${encodeURIComponent(id)}/annotations/${encodeURIComponent(annotationId)}`,
+    );
+  annotationHistory = (
+    id: string,
+    annotationId: string,
+    input: AnnotationHistoryInput = {},
+  ) => {
+    const query = new URLSearchParams(
+      Object.entries(input)
+        .filter(([, value]) => value !== undefined)
+        .map(([key, value]) => [key, String(value)]),
+    );
+    return this.request<AnnotationHistoryPage>(
+      `/projects/${encodeURIComponent(id)}/annotations/${encodeURIComponent(annotationId)}/history?${query}`,
+    );
+  };
+  createAnnotation = (id: string, input: CreateAnnotationInput) =>
+    this.request<AnnotationDetail>(
+      `/projects/${encodeURIComponent(id)}/annotations`,
+      "POST",
+      input,
+    );
+  updateAnnotation = (
+    id: string,
+    annotationId: string,
+    input: UpdateAnnotationInput,
+  ) =>
+    this.request<AnnotationDetail>(
+      `/projects/${encodeURIComponent(id)}/annotations/${encodeURIComponent(annotationId)}`,
+      "PUT",
+      input,
+    );
+  bindAnnotation = (
+    id: string,
+    annotationId: string,
+    input: BindAnnotationInput,
+  ) =>
+    this.request<AnnotationDetail>(
+      `/projects/${encodeURIComponent(id)}/annotations/${encodeURIComponent(annotationId)}/binding`,
+      "PUT",
+      input,
+    );
+  deleteAnnotation = (
+    id: string,
+    annotationId: string,
+    input: { expectedRevision: number },
+  ) =>
+    this.request<DeleteAnnotationResult>(
+      `/projects/${encodeURIComponent(id)}/annotations/${encodeURIComponent(annotationId)}`,
+      "DELETE",
+      input,
     );
 }

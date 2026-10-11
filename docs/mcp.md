@@ -125,17 +125,17 @@ plan reads/edits also require `planId` and reject a plan owned by another projec
 | `propose_plan`          | Create a draft against required `baselineSnapshotId`, then apply supplied `operations`.   |
 | `update_plan`           | Apply operations/optional title/description with required `expectedRevision`.             |
 | `validate_plan`         | Current indexed validation issues; does not refresh disk or approve.                      |
-| `get_approved_plan`     | Refresh actual disk sources, then return the current plan, approval, validity and issues. |
+| `get_approved_plan`     | Refresh source and structure through the current approval guard; reject stale/draft/historical-only approval with NOT_APPROVED/409. |
 | `refresh_index`         | Reindex actual sources, then return summary metadata rather than the entire snapshot.     |
 | `verify_implementation` | Refresh and verify the latest actually approved historical revision with evidence.        |
 | `propose_group`         | Validate and create a new agent group; cannot supply an existing id or forge source.      |
 | `get_groups`            | Paged shared groups and current snapshot identity.                                        |
-| `get_folder_policies`   | Paged shared directory policies and current snapshot identity.                            |
+| `get_folder_policies`   | Fresh paged directory policies plus structure revision/digest/time and snapshot identity.                            |
 
 Start with `list_projects`, select the repository explicitly, and query its summary
 and functions. Keep the returned snapshot identity for proposals. Submit the
 draft, let the user inspect/edit/approve it in the UI, then call
-`get_approved_plan`. Implement only when `valid: true` and the approval's revision
+`get_approved_plan`. Stale, draft or historical-only approval returns `isError: true` with `code: NOT_APPROVED` and `status: 409`; do not treat it as an empty successful plan. Implement only when `valid: true` and the approval's revision
 and semantic hash match the current plan. A historical approval attached to a
 newer draft does not approve the draft. Semantic edits invalidate approval;
 layout edits do not. Source changes detected by refresh make old baselines stale.
@@ -145,7 +145,7 @@ There is no approve tool and MCP never writes target repository source files.
 leave revision 1; nonempty operations normally return revision 2. The two requests
 are **not atomic**. If update fails after create, the tool returns `isError: true`
 with the original error plus `createdPlanId` and `createdRevision` (the creation
-revision). Read that id over the UI/API or `get_approved_plan` before recovery;
+revision). Read that draft id over the UI/API (or project-bound `get_plan`) before recovery;
 another client may already have edited it. Do not retry by creating duplicate plans
 or blindly overwrite a concurrent revision.
 
@@ -189,9 +189,7 @@ knowledge change. Normalized no-op saves, provenance-only changes, browse routes
 layout, theme and language do not invalidate approval.
 
 Historical approval records and approved plan content remain available for
-verification. The MVP does not reconstruct historical group/policy context;
-revision invalidation protects current approval without changing the public
-Plan/Approval schema or semantic hash format.
+verification. Current approval also requires the versioned knowledge review context and fresh source/structure identity. Independent annotation and structure edits invalidate current approval while retaining historical revisions and receipts. A historical approval is usable for implementation verification, not permission to write a newer draft.
 
 
 For web Chat isolation and the trusted CLI setup, see [local Agent Chat](agent-chat.md). Optional immutable MCP scope uses `CODEMAP_MCP_PROJECT_ID` and `CODEMAP_MCP_CHANNEL=explore|plan`; generic clients keep their 16 tools. Project-bound clients additionally offer the read-only `list_plans` (paged drafts) and `get_plan` (owned current draft without reindex) for recovery, with up to 18 tools before channel filtering. Chat exposes only its channel allowlist and project list.

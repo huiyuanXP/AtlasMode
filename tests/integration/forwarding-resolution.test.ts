@@ -154,9 +154,20 @@ test("compiled HTTP and SDK preserve real forwarding leaf identity and immutable
       f.files["leaf-b.cjs"],
     );
     const stale = await api(`/api/plans/${draft.plan.id}`);
-    expect(
-      await mcp.call("get_approved_plan", { ...args, planId: draft.plan.id }),
-    ).toEqual(stale);
+    const unapproved = await mcp.client.callTool({
+      name: "get_approved_plan",
+      arguments: { ...args, planId: draft.plan.id },
+    });
+    expect(unapproved.isError).toBe(true);
+    const unapprovedContent = unapproved.content as {
+      type: string;
+      text: string;
+    }[];
+    expect(unapprovedContent[0]?.type).toBe("text");
+    expect(JSON.parse(unapprovedContent[0]!.text)).toMatchObject({
+      code: "NOT_APPROVED",
+      status: 409,
+    });
     expect(stale).toMatchObject({
       valid: false,
       plan: {
@@ -196,9 +207,21 @@ test("compiled HTTP and SDK preserve real forwarding leaf identity and immutable
     mcp = await connectMcp(server.url);
     mcp.client.onerror = (error: unknown) => protocolErrors.push(error);
     expect(await api(`${base}/snapshot`)).toEqual(current);
-    expect(
-      await mcp.call("get_approved_plan", { ...args, planId: draft.plan.id }),
-    ).toEqual(stale);
+    const unapprovedAfterRestart = await mcp.client.callTool({
+      name: "get_approved_plan",
+      arguments: { ...args, planId: draft.plan.id },
+    });
+    expect(unapprovedAfterRestart.isError).toBe(true);
+    const unapprovedContentAfterRestart = unapprovedAfterRestart.content as {
+      type: string;
+      text: string;
+    }[];
+    expect(unapprovedContentAfterRestart[0]?.type).toBe("text");
+    expect(JSON.parse(unapprovedContentAfterRestart[0]!.text)).toMatchObject({
+      code: "NOT_APPROVED",
+      status: 409,
+    });
+    expect(await api(`/api/plans/${draft.plan.id}`)).toEqual(stale);
     expect(
       await mcp.call("get_function_context", { ...args, nodeId: entry.id }),
     ).toEqual(after);

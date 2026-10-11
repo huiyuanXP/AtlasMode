@@ -1,6 +1,15 @@
 import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { z } from "zod";
-import { operationSchema, routeSchema } from "@codemap/core";
+import {
+  DomainError,
+  annotationSchema,
+  createAnnotationSchema,
+  updateAnnotationSchema,
+  bindAnnotationSchema,
+  operationSchema,
+  routeSchema,
+  type StructureWriteInput,
+} from "@codemap/core";
 import type { WorkspaceService } from "@codemap/service";
 import { projectQueries } from "./queries.js";
 
@@ -10,6 +19,15 @@ const nonblank = z
   .refine((s) => s.trim().length > 0, "Expected nonempty text");
 const empty = z.strictObject({});
 const projectParams = z.strictObject({ id });
+const annotationProjectParams = z.strictObject({
+  id: annotationSchema.shape.projectId,
+});
+const annotationParams = annotationProjectParams.extend({
+  annotationId: annotationSchema.shape.id,
+});
+const deleteAnnotationBody = z.strictObject({
+  expectedRevision: annotationSchema.shape.revision,
+});
 const functionParams = z.strictObject({ id, nodeId: id });
 const queryInteger = (min: number, max: number) =>
   z
@@ -21,6 +39,15 @@ const page = {
   offset: queryInteger(0, Number.MAX_SAFE_INTEGER).optional(),
   limit: queryInteger(1, 200).optional(),
 };
+const annotationPage = {
+  offset: queryInteger(0, Number.MAX_SAFE_INTEGER).optional(),
+  limit: queryInteger(1, 100).optional(),
+};
+const annotationQuery = z.strictObject({
+  ...annotationPage,
+  status: z.literal("orphan").optional(),
+});
+const annotationHistoryQuery = z.strictObject(annotationPage);
 const searchQuery = z.strictObject({ q: z.string().optional(), ...page });
 const contextQuery = z.strictObject(page);
 const graphBody = z
@@ -57,6 +84,7 @@ const createPlan = z.strictObject({
 });
 const updatePlan = z.strictObject({
   expectedRevision: z.number().int().positive(),
+  expectedSnapshotId: nonblank.optional(),
   operations: z.array(operationSchema),
   title: nonblank.optional(),
   description: z.string().optional(),
@@ -68,12 +96,70 @@ const group = z.strictObject({
   source: z.enum(["agent", "user"]),
   memberIds: z.array(id),
 });
+const preconditions = {
+  mutationId: z.string().uuid().optional(),
+  expectedStructureRevision: z.number().int().nonnegative().optional(),
+  expectedFileDigest: z
+    .string()
+    .regex(/^[0-9a-f]{64}$/)
+    .nullable()
+    .optional(),
+};
 const policy = z.strictObject({
+  ...preconditions,
   id: id.optional(),
   pathPrefix: z.string(),
   purpose: z.string(),
   forbiddenDependencies: z.array(z.string()),
 });
+const structureBody = z.strictObject({
+  ...preconditions,
+  operation: z.discriminatedUnion("kind", [
+    z.strictObject({
+      kind: z.literal("upsertFolder"),
+      previousPath: z.string().optional(),
+      path: z.string(),
+      purpose: z.string(),
+    }),
+    z.strictObject({
+      kind: z.literal("upsertLegacyPolicy"),
+      id: id.optional(),
+      pathPrefix: z.string(),
+      purpose: z.string(),
+      forbiddenDependencies: z.array(z.string()),
+    }),
+    z.strictObject({ kind: z.literal("importLegacy") }),
+  ]),
+});
+const structureQuery = z.strictObject({
+  acceptExternalConflict: z.literal("1").optional(),
+});
+const policyQuery = z.strictObject({
+  includeStructure: z.literal("1").optional(),
+});
+const auditQuery = z.strictObject({
+  offset: queryInteger(0, Number.MAX_SAFE_INTEGER).optional(),
+  limit: queryInteger(1, 100).optional(),
+});
+function structureInput(
+  value: z.infer<typeof structureBody>,
+): StructureWriteInput {
+  if (
+    value.mutationId === undefined ||
+    value.expectedStructureRevision === undefined ||
+    value.expectedFileDigest === undefined
+  )
+    throw new DomainError(
+      "STRUCTURE_PRECONDITION_REQUIRED",
+      "Supply mutation id, structure revision and file digest from an explicit read.",
+    );
+  return {
+    ...value,
+    mutationId: value.mutationId,
+    expectedStructureRevision: value.expectedStructureRevision,
+    expectedFileDigest: value.expectedFileDigest,
+  };
+}
 const view = z.strictObject({
   collapsedGroupIds: z.array(z.string().min(1).max(200)).max(200).optional(),
   positions: z.record(id, z.strictObject({ x: z.number(), y: z.number() })),
@@ -105,7 +191,7 @@ export function registerRoutes(
     });
   }
   function write(
-    method: "POST" | "PUT",
+    method: "POST" | "PUT" | "DELETE",
     path: string,
     body: z.ZodType,
     handler: (request: FastifyRequest, reply: FastifyReply) => unknown,
@@ -141,6 +227,92 @@ export function registerRoutes(
   );
   write("POST", "/api/projects/:id/refresh", empty.optional(), (request) =>
     service.refreshIndex(projectId(request)),
+  );
+  const notesPath = "/api/projects/:id/annotations";
+  get(
+    notesPath,
+    (request) =>
+      service.listAnnotations(
+        annotationProjectParams.parse(request.params).id,
+        annotationQuery.parse(request.query),
+      ),
+    annotationQuery,
+    annotationProjectParams,
+  );
+  get(
+    `${notesPath}/:annotationId`,
+    (request) => {
+      const { id, annotationId } = annotationParams.parse(request.params);
+      return service.getAnnotation(id, annotationId);
+    },
+    empty,
+    annotationParams,
+  );
+  get(
+    `${notesPath}/:annotationId/history`,
+    (request) => {
+      const { id, annotationId } = annotationParams.parse(request.params);
+      return service.annotationHistory(
+        id,
+        annotationId,
+        annotationHistoryQuery.parse(request.query),
+      );
+    },
+    annotationHistoryQuery,
+    annotationParams,
+  );
+  write(
+    "POST",
+    notesPath,
+    createAnnotationSchema,
+    (request) =>
+      service.createAnnotation(
+        annotationProjectParams.parse(request.params).id,
+        createAnnotationSchema.parse(request.body),
+      ),
+    annotationProjectParams,
+  );
+  write(
+    "PUT",
+    `${notesPath}/:annotationId`,
+    updateAnnotationSchema,
+    (request) => {
+      const { id, annotationId } = annotationParams.parse(request.params);
+      return service.updateAnnotation(
+        id,
+        annotationId,
+        updateAnnotationSchema.parse(request.body),
+      );
+    },
+    annotationParams,
+  );
+  write(
+    "PUT",
+    `${notesPath}/:annotationId/binding`,
+    bindAnnotationSchema,
+    (request) => {
+      const { id, annotationId } = annotationParams.parse(request.params);
+      return service.bindAnnotation(
+        id,
+        annotationId,
+        bindAnnotationSchema.parse(request.body),
+      );
+    },
+    annotationParams,
+  );
+  write(
+    "DELETE",
+    `${notesPath}/:annotationId`,
+    deleteAnnotationBody,
+    (request) => {
+      const { id, annotationId } = annotationParams.parse(request.params);
+      return service.deleteAnnotation(
+        id,
+        annotationId,
+        deleteAnnotationBody.parse(request.body).expectedRevision,
+      );
+    },
+    annotationParams,
   );
   get("/api/projects/:id/summary", (request) =>
     queries.summary(projectId(request)),
@@ -192,24 +364,27 @@ export function registerRoutes(
     sourceQuery,
   );
   get("/api/projects/:id/plans", (request) =>
-    service.listPlans(projectId(request)),
+    service.readPlans(projectId(request)),
   );
   write(
     "POST",
     "/api/plans",
     createPlan,
-    (request) => service.createPlan(createPlan.parse(request.body)),
+    (request) => service.createPlanFresh(createPlan.parse(request.body)),
     empty,
   );
-  get("/api/plans/:id", (request) => service.getPlan(projectId(request)));
+  get("/api/plans/:id", (request) => service.readPlan(projectId(request)));
   write("PUT", "/api/plans/:id", updatePlan, (request) =>
-    service.updatePlan(projectId(request), updatePlan.parse(request.body)),
+    service.updatePlanFresh(projectId(request), updatePlan.parse(request.body)),
   );
   write(
     "POST",
     "/api/plans/:id/validate",
     empty.optional(),
-    (request) => service.getPlan(projectId(request)).issues,
+    async (request) => (await service.readPlan(projectId(request))).issues,
+  );
+  get("/api/plans/:id/approved", (request) =>
+    service.getCurrentApproval(projectId(request)),
   );
   const approval = z.strictObject({
     expectedRevision: z.number().int().positive(),
@@ -226,7 +401,7 @@ export function registerRoutes(
   const exportQuery = z.strictObject({ format: z.enum(["json", "markdown"]) });
   get(
     "/api/plans/:id/export",
-    (request, reply) => {
+    async (request, reply) => {
       const { format } = exportQuery.parse(request.query);
       return reply
         .type(
@@ -234,7 +409,7 @@ export function registerRoutes(
             ? "application/json; charset=utf-8"
             : "text/markdown; charset=utf-8",
         )
-        .send(service.exportPlan(projectId(request), format));
+        .send(await service.exportPlanFresh(projectId(request), format));
     },
     exportQuery,
   );
@@ -262,8 +437,44 @@ export function registerRoutes(
       projectId: projectId(request),
     }),
   );
-  get("/api/projects/:id/policies", (request) =>
-    service.listPolicies(projectId(request)),
+  get(
+    "/api/projects/:id/structure",
+    (request) =>
+      service.getStructure(projectId(request), {
+        acceptExternalConflict:
+          structureQuery.parse(request.query).acceptExternalConflict === "1",
+      }),
+    structureQuery,
+  );
+  write("PUT", "/api/projects/:id/structure", structureBody, (request) =>
+    service.updateStructure(
+      projectId(request),
+      structureInput(structureBody.parse(request.body)),
+    ),
+  );
+  get("/api/projects/:id/structure/legacy-preview", (request) =>
+    service.legacyPreview(projectId(request)),
+  );
+  get(
+    "/api/projects/:id/structure/audit",
+    (request) => {
+      const query = auditQuery.parse(request.query);
+      return service.listStructureAudit(projectId(request), {
+        offset: query.offset ?? 0,
+        limit: query.limit ?? 50,
+      });
+    },
+    auditQuery,
+  );
+  get(
+    "/api/projects/:id/policies",
+    async (request) => {
+      const result = await service.readPolicies(projectId(request));
+      return policyQuery.parse(request.query).includeStructure
+        ? result
+        : result.policies;
+    },
+    policyQuery,
   );
   write("POST", "/api/projects/:id/policies", policy, (request) =>
     service.savePolicy({

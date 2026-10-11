@@ -1,0 +1,199 @@
+{
+  "candidate": "/tmp/atlas-final-fs-kn-pol-20261011-luyk2kob/workspace",
+  "build": 0,
+  "typecheck": 0,
+  "lint": 0,
+  "smoke": 0,
+  "unit-r1": {
+    "exitCode": 0,
+    "filesPassed": 112,
+    "testsPassed": 1342,
+    "durationSeconds": 71.69
+  },
+  "browser": {
+    "exitCode": 0,
+    "startTime": "2026-10-11T02:18:20.495Z",
+    "duration": 217277.633,
+    "expected": 51,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "initialUnit": {
+    "passed": 1336,
+    "failed": 6,
+    "log": "unit.log"
+  },
+  "source": {
+    "count": 312,
+    "changed": {
+      "tests/integration/commonjs-resolution.test.ts": "736272c8eda52fe2c2a16bf5959e616c8de5b8e939ce507a5abe620b902f0347",
+      "tests/integration/forwarding-resolution.test.ts": "961a8dbbfc244a3094b9a3ec8c2e5d05a0dd4f842c05d65389761ecc12ecb56e",
+      "tests/integration/mcp-stdio.test.ts": "a3f2b7dbcf5c66653aae3f94cb024c059f2f0d006bebaecd154327d026c6bf1e",
+      "tests/integration/tsconfig-resolution.test.ts": "d043222550c14a29a141d6ddd4ed80f215df30c49d35a39b678feaaf9b5b1f9c"
+    },
+    "expectedFixtureDeltaOnly": true,
+    "sharedFixtureMatches": true
+  },
+  "resources": {
+    "checkedAt": "2026-10-11T02:24:40.612463+00:00",
+    "scope": "only runtime IDs registered in this final browser candidate; no signals or global process scan",
+    "checks": [
+      {
+        "pid": 168706,
+        "port": 45619,
+        "pidAlive": false,
+        "portConnectResult": 111,
+        "receipt": "/tmp/atlas-final-fs-kn-pol-20261011-luyk2kob/workspace/artifacts/e2e/results/ownership-layout-pointer-d-f92c2-and-reloads-the-same-intent/server-e5eac80c-4380-43c7-9d5d-062f39c02e13.json"
+      },
+      {
+        "pid": 168595,
+        "port": 44485,
+        "pidAlive": false,
+        "portConnectResult": 111,
+        "receipt": "/tmp/atlas-final-fs-kn-pol-20261011-luyk2kob/workspace/artifacts/e2e/results/ownership-native-folder-dr-e9322--retain-truthful-boundaries/server-7287aba1-9547-48f1-aa45-a94d312779fe.json"
+      },
+      {
+        "pid": 168765,
+        "port": 40537,
+        "pidAlive": false,
+        "portConnectResult": 111,
+        "receipt": "/tmp/atlas-final-fs-kn-pol-20261011-luyk2kob/workspace/artifacts/e2e/results/ownership-a-folded-group-e-b195e-ns-membership-across-reload/server-1fbeafa5-2878-496c-91a9-2330c98b3ae0.json"
+      },
+      {
+        "pid": 168832,
+        "port": 34673,
+        "pidAlive": false,
+        "portConnectResult": 111,
+        "receipt": "/tmp/atlas-final-fs-kn-pol-20261011-luyk2kob/workspace/artifacts/e2e/results/ownership-dirty-advanced-t-14047-an-actual-external-revision/server-27442410-8795-451f-990e-2d8ab7f689d1.json"
+      },
+      {
+        "pid": 168942,
+        "port": 43125,
+        "pidAlive": false,
+        "portConnectResult": 111,
+        "receipt": "/tmp/atlas-final-fs-kn-pol-20261011-luyk2kob/workspace/artifacts/e2e/results/ownership-idle-S0-ownershi-00f63-draft-without-a-fresh-scope/server-4d31c997-0645-486a-941a-3ade81f448fb.json"
+      },
+      {
+        "pid": 169007,
+        "port": 38521,
+        "pidAlive": false,
+        "portConnectResult": 111,
+        "receipt": "/tmp/atlas-final-fs-kn-pol-20261011-luyk2kob/workspace/artifacts/e2e/results/ownership-visible-ownershi-11e6f-fter-real-project-selection/server-175b310b-065d-4001-8878-1c87fb4d72ed.json"
+      },
+      {
+        "pid": 168879,
+        "port": 42711,
+        "pidAlive": false,
+        "portConnectResult": 111,
+        "receipt": "/tmp/atlas-final-fs-kn-pol-20261011-luyk2kob/workspace/artifacts/e2e/results/ownership-non-saving-owner-ea936-til-an-explicit-fresh-begin/server-34b8cacb-88f1-4854-92f5-e3c16748e0bb.json"
+      },
+      {
+        "pid": 168658,
+        "port": 36417,
+        "pidAlive": false,
+        "portConnectResult": 111,
+        "receipt": "/tmp/atlas-final-fs-kn-pol-20261011-luyk2kob/workspace/artifacts/e2e/results/ownership-a-real-late-cont-9c8ff--another-function-selection/server-8eb1b0a2-b37b-414c-b810-2ad6d39856c9.json"
+      },
+      {
+        "pid": 168552,
+        "port": 34803,
+        "pidAlive": false,
+        "portConnectResult": 111,
+        "receipt": "/tmp/atlas-final-fs-kn-pol-20261011-luyk2kob/workspace/artifacts/e2e/results/ownership-native-function--79a34-mation-and-survives-restart/server-08bf21f1-2d9f-466e-8852-0478c22d5da0.json"
+      },
+      {
+        "pid": 168533,
+        "port": 43603,
+        "pidAlive": false,
+        "portConnectResult": 111,
+        "receipt": "/tmp/atlas-final-fs-kn-pol-20261011-luyk2kob/workspace/artifacts/e2e/results/ownership-native-function--79a34-mation-and-survives-restart/server-89143fab-690e-4420-b2ea-aa0e9af2395c.json"
+      },
+      {
+        "pid": 166946,
+        "port": 35299,
+        "pidAlive": false,
+        "portConnectResult": 111,
+        "receipt": "/tmp/atlas-final-fs-kn-pol-20261011-luyk2kob/workspace/artifacts/e2e/results/annotations-mounted-I1-not-1bdd4-nd-current-execution-locked/attachments/owned-runtime-cleanup-e9b8adbaae74e242b490d0c4a5f66b52dcb6f89d.json"
+      },
+      {
+        "pid": 166660,
+        "port": 38369,
+        "pidAlive": false,
+        "portConnectResult": 111,
+        "receipt": "/tmp/atlas-final-fs-kn-pol-20261011-luyk2kob/workspace/artifacts/e2e/results/annotations-zh-mounted-pro-7a32e-ry-and-owned-SQLite-restart/attachments/owned-runtime-cleanup-3188bf32415630c4330b25bc04e8082a19879c50.json"
+      },
+      {
+        "pid": 166681,
+        "port": 39329,
+        "pidAlive": false,
+        "portConnectResult": 111,
+        "receipt": "/tmp/atlas-final-fs-kn-pol-20261011-luyk2kob/workspace/artifacts/e2e/results/annotations-zh-mounted-pro-7a32e-ry-and-owned-SQLite-restart/attachments/owned-runtime-cleanup-3188bf32415630c4330b25bc04e8082a19879c50.json"
+      },
+      {
+        "pid": 166725,
+        "port": 40377,
+        "pidAlive": false,
+        "portConnectResult": 111,
+        "receipt": "/tmp/atlas-final-fs-kn-pol-20261011-luyk2kob/workspace/artifacts/e2e/results/annotations-en-mounted-pro-cfe53-ry-and-owned-SQLite-restart/attachments/owned-runtime-cleanup-3e8b9f8d265b6095a795df7b5915a740ee570ef0.json"
+      },
+      {
+        "pid": 166760,
+        "port": 43509,
+        "pidAlive": false,
+        "portConnectResult": 111,
+        "receipt": "/tmp/atlas-final-fs-kn-pol-20261011-luyk2kob/workspace/artifacts/e2e/results/annotations-en-mounted-pro-cfe53-ry-and-owned-SQLite-restart/attachments/owned-runtime-cleanup-3e8b9f8d265b6095a795df7b5915a740ee570ef0.json"
+      },
+      {
+        "pid": 169289,
+        "port": 39389,
+        "pidAlive": false,
+        "portConnectResult": 111,
+        "receipt": "/tmp/atlas-final-fs-kn-pol-20261011-luyk2kob/workspace/artifacts/e2e/results/pol01-structure-production-41aaf-reserves-invalid-file-bytes/attachments/owned-runtime-receipt-454d5473fcf8ba0e80a6b098d8093f91d181ce70.json"
+      },
+      {
+        "pid": 169328,
+        "port": 35881,
+        "pidAlive": false,
+        "portConnectResult": 111,
+        "receipt": "/tmp/atlas-final-fs-kn-pol-20261011-luyk2kob/workspace/artifacts/e2e/results/pol01-structure-production-41aaf-reserves-invalid-file-bytes/attachments/owned-runtime-receipt-454d5473fcf8ba0e80a6b098d8093f91d181ce70.json"
+      },
+      {
+        "pid": 166848,
+        "port": 42749,
+        "pidAlive": false,
+        "portConnectResult": 111,
+        "receipt": "/tmp/atlas-final-fs-kn-pol-20261011-luyk2kob/workspace/artifacts/e2e/results/annotations-mounted-produc-22901-ead-without-duplicate-write/attachments/owned-runtime-cleanup-04f2925bfff8d69b63c9f96e7ea3a6502d630d19.json"
+      },
+      {
+        "pid": 166803,
+        "port": 38437,
+        "pidAlive": false,
+        "portConnectResult": 111,
+        "receipt": "/tmp/atlas-final-fs-kn-pol-20261011-luyk2kob/workspace/artifacts/e2e/results/annotations-mounted-produc-719ef-ty-body-and-creation-source/attachments/owned-runtime-cleanup-59acb1dc162e72cb3b9e6378f5777c7374a5b35b.json"
+      },
+      {
+        "pid": 166897,
+        "port": 39055,
+        "pidAlive": false,
+        "portConnectResult": 111,
+        "receipt": "/tmp/atlas-final-fs-kn-pol-20261011-luyk2kob/workspace/artifacts/e2e/results/annotations-mounted-I1-str-9398a-nd-current-execution-locked/attachments/owned-runtime-cleanup-ff0fd6f552def10e2a2fc91114c15330cb9fc7a9.json"
+      },
+      {
+        "pid": 167012,
+        "port": 42883,
+        "pidAlive": false,
+        "portConnectResult": 111,
+        "receipt": "/tmp/atlas-final-fs-kn-pol-20261011-luyk2kob/workspace/artifacts/e2e/results/annotations-mounted-I2-old-b605c-replay-or-dirty-replacement/attachments/owned-runtime-cleanup-bce0e0b697164342ed6a15a32b06a63608e03f02.json"
+      },
+      {
+        "pid": 169240,
+        "port": 41851,
+        "pidAlive": false,
+        "portConnectResult": 111,
+        "receipt": "/tmp/atlas-final-fs-kn-pol-20261011-luyk2kob/workspace/artifacts/e2e/results/pol01-structure-production-60b0b-09-requires-explicit-reload/attachments/owned-runtime-receipt-36e8848e27d108962fcac23ecf932579961b655d.json"
+      }
+    ],
+    "allRegisteredGone": true
+  }
+}

@@ -1,0 +1,237 @@
+{
+  "config": {
+    "argv": [
+      "/home/agent/.node/node-v24.19.0-linux-x64/bin/node",
+      "/tmp/atlas-python-compat-r1-20261011/workspace/node_modules/.bin/playwright",
+      "test",
+      "tests/e2e/ownership.spec.ts",
+      "--grep",
+      "Python",
+      "--output=/tmp/atlas-python-compat-r1-20261011/evidence/browser-red"
+    ],
+    "configFile": "/tmp/atlas-python-compat-r1-20261011/workspace/playwright.config.ts",
+    "rootDir": "/tmp/atlas-python-compat-r1-20261011/workspace/tests/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/tmp/atlas-python-compat-r1-20261011/evidence/browser-red",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "",
+        "name": "",
+        "testDir": "/tmp/atlas-python-compat-r1-20261011/workspace/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 120000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "artifacts/e2e/results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.63.0",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "ownership.spec.ts",
+      "file": "ownership.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "Python indexed metadata save and native file/folder ownership preserve physical source and semantic history",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 14801,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeEnabled\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('form').filter({ has: getByRole('button', { name: 'Save function intent', exact: true }) }).getByRole('button', { name: 'Save function intent', exact: true })\nExpected: enabled\nReceived: disabled\nTimeout:  10000ms\n\nCall log:\n\u001b[2m  - Expect \"toBeEnabled\" locator('form').filter({ has: getByRole('button', { name: 'Save function intent', exact: true }) }).getByRole('button', { name: 'Save function intent', exact: true }) with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for locator('form').filter({ has: getByRole('button', { name: 'Save function intent', exact: true }) }).getByRole('button', { name: 'Save function intent', exact: true })\u001b[22m\n\u001b[2m    24 × locator resolved to <button disabled type=\"submit\" class=\"primary\">Save function intent</button>\u001b[22m\n\u001b[2m       - unexpected value \"disabled\"\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeEnabled\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('form').filter({ has: getByRole('button', { name: 'Save function intent', exact: true }) }).getByRole('button', { name: 'Save function intent', exact: true })\nExpected: enabled\nReceived: disabled\nTimeout:  10000ms\n\nCall log:\n\u001b[2m  - Expect \"toBeEnabled\" locator('form').filter({ has: getByRole('button', { name: 'Save function intent', exact: true }) }).getByRole('button', { name: 'Save function intent', exact: true }) with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for locator('form').filter({ has: getByRole('button', { name: 'Save function intent', exact: true }) }).getByRole('button', { name: 'Save function intent', exact: true })\u001b[22m\n\u001b[2m    24 × locator resolved to <button disabled type=\"submit\" class=\"primary\">Save function intent</button>\u001b[22m\n\u001b[2m       - unexpected value \"disabled\"\u001b[22m\n\n    at /tmp/atlas-python-compat-r1-20261011/workspace/tests/e2e/ownership.spec.ts:1558:91",
+                    "location": {
+                      "file": "/tmp/atlas-python-compat-r1-20261011/workspace/tests/e2e/ownership.spec.ts",
+                      "column": 91,
+                      "line": 1558
+                    },
+                    "snippet": "  1556 |     await form.getByRole(\"textbox\", { name: \"Function responsibility\", exact: true }).fill(\"Python metadata intent\");\n  1557 |     await page.screenshot({ path: info.outputPath(\"python-metadata-before-save.png\"), fullPage: true });\n> 1558 |     await expect(form.getByRole(\"button\", { name: \"Save function intent\", exact: true })).toBeEnabled();\n       |                                                                                           ^\n  1559 |     await form.getByRole(\"button\", { name: \"Save function intent\", exact: true }).click();\n  1560 |     await expect.poll(async () => (await f.api(planPath)).plan.revision).toBe(2);\n  1561 |     const metadata = await f.api(planPath);"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/tmp/atlas-python-compat-r1-20261011/workspace/tests/e2e/ownership.spec.ts",
+                        "column": 91,
+                        "line": 1558
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeEnabled\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('form').filter({ has: getByRole('button', { name: 'Save function intent', exact: true }) }).getByRole('button', { name: 'Save function intent', exact: true })\nExpected: enabled\nReceived: disabled\nTimeout:  10000ms\n\nCall log:\n\u001b[2m  - Expect \"toBeEnabled\" locator('form').filter({ has: getByRole('button', { name: 'Save function intent', exact: true }) }).getByRole('button', { name: 'Save function intent', exact: true }) with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for locator('form').filter({ has: getByRole('button', { name: 'Save function intent', exact: true }) }).getByRole('button', { name: 'Save function intent', exact: true })\u001b[22m\n\u001b[2m    24 × locator resolved to <button disabled type=\"submit\" class=\"primary\">Save function intent</button>\u001b[22m\n\u001b[2m       - unexpected value \"disabled\"\u001b[22m\n\n\n  1556 |     await form.getByRole(\"textbox\", { name: \"Function responsibility\", exact: true }).fill(\"Python metadata intent\");\n  1557 |     await page.screenshot({ path: info.outputPath(\"python-metadata-before-save.png\"), fullPage: true });\n> 1558 |     await expect(form.getByRole(\"button\", { name: \"Save function intent\", exact: true })).toBeEnabled();\n       |                                                                                           ^\n  1559 |     await form.getByRole(\"button\", { name: \"Save function intent\", exact: true }).click();\n  1560 |     await expect.poll(async () => (await f.api(planPath)).plan.revision).toBe(2);\n  1561 |     const metadata = await f.api(planPath);\n    at /tmp/atlas-python-compat-r1-20261011/workspace/tests/e2e/ownership.spec.ts:1558:91"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-11T02:50:25.422Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/tmp/atlas-python-compat-r1-20261011/evidence/browser-red/ownership-Python-indexed-m-81ce0-source-and-semantic-history/test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/tmp/atlas-python-compat-r1-20261011/evidence/browser-red/ownership-Python-indexed-m-81ce0-source-and-semantic-history/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/tmp/atlas-python-compat-r1-20261011/evidence/browser-red/ownership-Python-indexed-m-81ce0-source-and-semantic-history/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/tmp/atlas-python-compat-r1-20261011/workspace/tests/e2e/ownership.spec.ts",
+                    "column": 91,
+                    "line": 1558
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "d4d6a40ebc7c4dfca9d2-a5397cdfc1b84b275a57",
+          "file": "ownership.spec.ts",
+          "line": 1535,
+          "column": 1
+        },
+        {
+          "title": "Python temporary addition saves metadata and folder ownership through compiled controls",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 15597,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeEnabled\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('.plan-editor details').filter({ has: locator('summary').filter({ hasText: /^New planned function$/ }) }).locator('form').locator('button[type=\"submit\"]')\nExpected: enabled\nReceived: disabled\nTimeout:  10000ms\n\nCall log:\n\u001b[2m  - Expect \"toBeEnabled\" locator('.plan-editor details').filter({ has: locator('summary').filter({ hasText: /^New planned function$/ }) }).locator('form').locator('button[type=\"submit\"]') with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for locator('.plan-editor details').filter({ has: locator('summary').filter({ hasText: /^New planned function$/ }) }).locator('form').locator('button[type=\"submit\"]')\u001b[22m\n\u001b[2m    24 × locator resolved to <button disabled type=\"submit\" class=\"primary\">Add function</button>\u001b[22m\n\u001b[2m       - unexpected value \"disabled\"\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeEnabled\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('.plan-editor details').filter({ has: locator('summary').filter({ hasText: /^New planned function$/ }) }).locator('form').locator('button[type=\"submit\"]')\nExpected: enabled\nReceived: disabled\nTimeout:  10000ms\n\nCall log:\n\u001b[2m  - Expect \"toBeEnabled\" locator('.plan-editor details').filter({ has: locator('summary').filter({ hasText: /^New planned function$/ }) }).locator('form').locator('button[type=\"submit\"]') with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for locator('.plan-editor details').filter({ has: locator('summary').filter({ hasText: /^New planned function$/ }) }).locator('form').locator('button[type=\"submit\"]')\u001b[22m\n\u001b[2m    24 × locator resolved to <button disabled type=\"submit\" class=\"primary\">Add function</button>\u001b[22m\n\u001b[2m       - unexpected value \"disabled\"\u001b[22m\n\n    at /tmp/atlas-python-compat-r1-20261011/workspace/tests/e2e/ownership.spec.ts:1633:56",
+                    "location": {
+                      "file": "/tmp/atlas-python-compat-r1-20261011/workspace/tests/e2e/ownership.spec.ts",
+                      "column": 56,
+                      "line": 1633
+                    },
+                    "snippet": "  1631 |     await add.getByRole(\"textbox\", { name: \"Function responsibility\", exact: true }).fill(\"initial Python addition\");\n  1632 |     await page.screenshot({ path: info.outputPath(\"python-temp-before-add.png\"), fullPage: true });\n> 1633 |     await expect(add.locator('button[type=\"submit\"]')).toBeEnabled();\n       |                                                        ^\n  1634 |     await add.locator('button[type=\"submit\"]').click();\n  1635 |     await expect.poll(async () => (await f.api(planPath)).plan.revision).toBe(2);\n  1636 |     const added = await f.api(planPath);"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/tmp/atlas-python-compat-r1-20261011/workspace/tests/e2e/ownership.spec.ts",
+                        "column": 56,
+                        "line": 1633
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeEnabled\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('.plan-editor details').filter({ has: locator('summary').filter({ hasText: /^New planned function$/ }) }).locator('form').locator('button[type=\"submit\"]')\nExpected: enabled\nReceived: disabled\nTimeout:  10000ms\n\nCall log:\n\u001b[2m  - Expect \"toBeEnabled\" locator('.plan-editor details').filter({ has: locator('summary').filter({ hasText: /^New planned function$/ }) }).locator('form').locator('button[type=\"submit\"]') with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for locator('.plan-editor details').filter({ has: locator('summary').filter({ hasText: /^New planned function$/ }) }).locator('form').locator('button[type=\"submit\"]')\u001b[22m\n\u001b[2m    24 × locator resolved to <button disabled type=\"submit\" class=\"primary\">Add function</button>\u001b[22m\n\u001b[2m       - unexpected value \"disabled\"\u001b[22m\n\n\n  1631 |     await add.getByRole(\"textbox\", { name: \"Function responsibility\", exact: true }).fill(\"initial Python addition\");\n  1632 |     await page.screenshot({ path: info.outputPath(\"python-temp-before-add.png\"), fullPage: true });\n> 1633 |     await expect(add.locator('button[type=\"submit\"]')).toBeEnabled();\n       |                                                        ^\n  1634 |     await add.locator('button[type=\"submit\"]').click();\n  1635 |     await expect.poll(async () => (await f.api(planPath)).plan.revision).toBe(2);\n  1636 |     const added = await f.api(planPath);\n    at /tmp/atlas-python-compat-r1-20261011/workspace/tests/e2e/ownership.spec.ts:1633:56"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-11T02:50:42.570Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/tmp/atlas-python-compat-r1-20261011/evidence/browser-red/ownership-Python-temporary-d99e7-p-through-compiled-controls/test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/tmp/atlas-python-compat-r1-20261011/evidence/browser-red/ownership-Python-temporary-d99e7-p-through-compiled-controls/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/tmp/atlas-python-compat-r1-20261011/evidence/browser-red/ownership-Python-temporary-d99e7-p-through-compiled-controls/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/tmp/atlas-python-compat-r1-20261011/workspace/tests/e2e/ownership.spec.ts",
+                    "column": 56,
+                    "line": 1633
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "d4d6a40ebc7c4dfca9d2-e80512c19a25acc4c534",
+          "file": "ownership.spec.ts",
+          "line": 1622,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-10-11T02:50:23.274Z",
+    "duration": 35782.08,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 2,
+    "flaky": 0
+  }
+}

@@ -22,10 +22,37 @@ test("production UI and SDK share the complete planning, approval, persistence a
   const root = await mkdtemp(join(tmpdir(), "atlas-e2e-"));
   let server, mcp;
   const errors = [],
-    external = [];
+    external = [],
+    rawConsoleErrors = [],
+    currentApprovalResponses = [];
+  let expectedCurrentApprovalUrl;
   page.on("pageerror", (error) => errors.push(`pageerror: ${error.message}`));
   page.on("console", (message) => {
-    if (message.type() === "error") errors.push(`console: ${message.text()}`);
+    if (message.type() === "error") {
+      rawConsoleErrors.push({
+        errorIndex: errors.length,
+        url: message.location().url,
+        text: message.text(),
+      });
+      errors.push(`console: ${message.text()}`);
+    }
+  });
+  page.on("response", (response) => {
+    if (
+      !expectedCurrentApprovalUrl ||
+      response.url() !== expectedCurrentApprovalUrl ||
+      response.request().method() !== "GET" ||
+      response.status() !== 409
+    ) return;
+    const receipt = {
+      url: response.url(),
+      method: response.request().method(),
+      status: response.status(),
+    };
+    currentApprovalResponses.push(response.json().then(
+      body => ({ ...receipt, body }),
+      error => ({ ...receipt, parseError: String(error) }),
+    ));
   });
   // Keep the local service reachable; deny every external browser request.
   await context.route("**/*", (route) => {
@@ -36,7 +63,7 @@ test("production UI and SDK share the complete planning, approval, persistence a
     }
     return route.continue();
   });
-  const evidence = { errors, external };
+  const evidence = { errors, external, rawConsoleErrors };
   const screenshots = resolve("artifacts/e2e");
   await mkdir(screenshots, { recursive: true });
   try {
@@ -255,6 +282,7 @@ test("production UI and SDK share the complete planning, approval, persistence a
     });
     const planId = proposed.plan.id,
       detail = () => api(`/api/plans/${planId}`);
+    expectedCurrentApprovalUrl = `${server.url}/api/plans/${encodeURIComponent(planId)}/approved`;
     await page.reload();
     await expect(
       page.getByRole("heading", { name: "typescript", exact: true }),
@@ -293,17 +321,17 @@ test("production UI and SDK share the complete planning, approval, persistence a
     await expect(
       page.getByRole("heading", { name: "Shared membership", exact: true }),
     ).toBeVisible();
-    await page.getByLabel("Directory scope", { exact: true }).fill("services");
+    await page.getByLabel("Path prefix", { exact: true }).fill("services");
     await page
-      .getByLabel("Responsibility", { exact: true })
+      .getByLabel("Purpose", { exact: true })
       .fill("Reuse existing request behavior");
     await page
-      .getByLabel("Forbidden dependencies (one directory per line)", {
+      .getByLabel("Forbidden dependencies", {
         exact: true,
       })
       .fill("internal");
     await page
-      .getByRole("button", { name: "Save directory policy", exact: true })
+      .getByRole("button", { name: "Save policy", exact: true })
       .click();
     await expect
       .poll(async () => (await detail()).plan.revision)
@@ -488,18 +516,25 @@ test("production UI and SDK share the complete planning, approval, persistence a
     expect(beforeKnowledge.valid).toBe(true);
     const [policy] = await api(`/api/projects/${project.id}/policies`);
     await page
+      .getByRole("button", { name: "Read structure again", exact: true })
+      .click();
+    await expect(
+      page.getByRole("button", { name: "Save policy", exact: true }),
+    ).toBeEnabled();
+    expect((await detail()).plan.revision).toBe(beforeKnowledge.plan.revision);
+    await page
       .getByRole("combobox", {
-        name: "Directory responsibilities",
+        name: "Edit policy",
         exact: true,
       })
-      .selectOption(policy.id);
+      .selectOption(`legacy:${policy.id}`);
     await page
-      .getByLabel("Forbidden dependencies (one directory per line)", {
+      .getByLabel("Forbidden dependencies", {
         exact: true,
       })
       .fill("requests.ts");
     await page
-      .getByRole("button", { name: "Save directory policy", exact: true })
+      .getByRole("button", { name: "Save policy", exact: true })
       .click();
     await expect
       .poll(async () => (await detail()).plan.revision)
@@ -511,22 +546,35 @@ test("production UI and SDK share the complete planning, approval, persistence a
       prohibited.issues.some((issue) => issue.code === "FORBIDDEN_DEPENDENCY"),
     ).toBe(true);
     await page
-      .getByLabel("Forbidden dependencies (one directory per line)", {
+      .getByRole("button", { name: "Read structure again", exact: true })
+      .click();
+    await expect(
+      page.getByRole("button", { name: "Save policy", exact: true }),
+    ).toBeEnabled();
+    expect((await detail()).plan.revision).toBe(prohibited.plan.revision);
+    await page
+      .getByLabel("Forbidden dependencies", {
         exact: true,
       })
       .fill("internal");
     await page
-      .getByLabel("Responsibility", { exact: true })
+      .getByLabel("Purpose", { exact: true })
       .fill("Reuse requests; reviewed policy version");
     await page
-      .getByRole("button", { name: "Save directory policy", exact: true })
+      .getByRole("button", { name: "Save policy", exact: true })
       .click();
     await expect
       .poll(async () => (await detail()).plan.revision)
       .toBe(beforeKnowledge.plan.revision + 2);
-    expect(
-      (await mcp.call("get_approved_plan", { ...args, planId })).valid,
-    ).toBe(false);
+    const deniedApproval = await mcp.client.callTool({
+      name: "get_approved_plan",
+      arguments: { ...args, planId },
+    });
+    expect(deniedApproval.isError).toBe(true);
+    expect(JSON.parse(deniedApproval.content[0].text)).toMatchObject({
+      code: "NOT_APPROVED",
+      status: 409,
+    });
     await page
       .getByRole("button", { name: "Confirm current revision", exact: true })
       .click();
@@ -761,6 +809,33 @@ test("production UI and SDK share the complete planning, approval, persistence a
     await expect(page.locator(".app")).toHaveAttribute("data-theme", "dark");
     await f.assertNotExecuted();
     expect(external).toEqual([]);
+    // Only this selected plan's typed strong-read negatives are expected.
+    // Retain every raw message, and keep the original assertion for every other error.
+    const typedNegatives = await Promise.all(currentApprovalResponses);
+    evidence.typedCurrentApprovalResponses = typedNegatives;
+    const matchedConsole = rawConsoleErrors.filter(message =>
+      message.url === expectedCurrentApprovalUrl &&
+      message.text === "Failed to load resource: the server responded with a status of 409 (Conflict)",
+    );
+    evidence.matchedCurrentApprovalConsole = matchedConsole;
+    expect(typedNegatives).toHaveLength(3);
+    expect(matchedConsole).toHaveLength(typedNegatives.length);
+    expect(new Set(matchedConsole.map(message => message.errorIndex)).size)
+      .toBe(typedNegatives.length);
+    evidence.expectedStrongReadNegatives = typedNegatives.map((receipt, index) => {
+      expect(receipt).toMatchObject({
+        url: expectedCurrentApprovalUrl,
+        method: "GET",
+        status: 409,
+        body: { code: "NOT_APPROVED" },
+      });
+      expect(matchedConsole[index].url).toBe(receipt.url);
+      return { response: receipt, console: matchedConsole[index] };
+    });
+    for (const message of matchedConsole.toSorted((a, b) => b.errorIndex - a.errorIndex)) {
+      expect(errors[message.errorIndex]).toBe(`console: ${message.text}`);
+      errors.splice(message.errorIndex, 1);
+    }
     expect(errors).toEqual([]);
     expect(mcp.stderr()).toBe("");
   } finally {
