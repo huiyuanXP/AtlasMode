@@ -17,3 +17,11 @@ Validation: compiled five-file78 PASS (../targeted-r2.log), separate real-proces
 Independent read-only complex review: gpt-6.1-sol high, C0/I0/M0 provisional, final receipt separate. No model settings changed. Scope6 source/test files; workflow/product code unchanged.
 
 neat-freak: code changed-and-verified locally; native runtime pending; docs changed-and-verified; rules verified-current/unmodified; memory generated-read-only/out-of-scope; workspaces retained, no cleanup. Native FS01/KN01/POL01 remain REVIEW until all platforms green. No next ticket started.
+
+## R2 native green, browser retained failure; R3 pointer readiness
+
+FixedSHA d8ec5c4 run38110644618: Ubuntu/mac113files1381PASS; Windows112PASSfiles/1SKIPfile,1361PASS/18SKIPtests (1379total), build/types/lint/smokeSUCCESS and zero worker error. Browser52PASS/1FAIL:ownership.spec.ts702 positions0 after layout mouse drag. Three tickets remain REVIEW until full current run succeeds.
+
+CI failure screenshot+trace preserved in owner/browser-r2 and ROG. Trace shows gesture146442–146770ms during250ms fitView focus; raw mouse used one visible-card box atx1099.86/y550.378, lacked stable/actionable target or dragging witness. Local unchanged case threePASS does not erase CI failure; timing-specific. R3 only fixes this fixture: actionable hover on selected outer node, fresh proportional point, actual threshold and dragging witness, measured55/30 screen displacement<2, exact selected-node persisted position. Original unchanged plan, no ownership native event, real native folderdrop/save/reload, source hashes remain. No sleeps, retries, production changes or weakened assertion.
+
+R3 amended three targeted browser executions PASS, original three targeted PASS retained distinctly. Final lint and independent narrow review separately recorded. Full new fixedSHA CI remains required.
