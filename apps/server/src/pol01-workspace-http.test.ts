@@ -1,3 +1,7 @@
+import {
+  pol01Runtime,
+  assertOwnedPidAbsent,
+} from "../../../tests/support/pol01-runtime.js";
 import { afterEach, expect, test } from "vitest";
 import { mkdtemp, mkdir, readFile, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
@@ -368,12 +372,11 @@ test.each(["before", "after", "third", "unknown"])(
     await f.service.approvePlan(plan.id, 1);
     await f.app.close();
     f.storage.close();
+    const runtime = await pol01Runtime(f.root);
     const child = spawn(
       process.execPath,
       [
-        "--import",
-        "tsx",
-        "tests/support/pol01-crash.ts",
+        ...runtime.crashArgs,
         f.root,
         f.database,
         f.project.id,
@@ -382,17 +385,24 @@ test.each(["before", "after", "third", "unknown"])(
       {
         cwd: process.cwd(),
         env: {
-          ...process.env,
-          TSX_TSCONFIG_PATH: "/tmp/atlasmode-pol01-runtime-tsconfig.json",
+          ...runtime.env,
         },
         stdio: ["ignore", "pipe", "pipe"],
       },
     );
     let errors = "";
-    child.stderr.on("data", (data) => {
+    child.stderr!.on("data", (data) => {
       errors += String(data);
     });
-    const [code, signal] = await once(child, "exit");
+    const [code, signal] = await once(child, "close");
+    assertOwnedPidAbsent(child.pid);
+    expect(
+      JSON.parse(await readFile(join(f.root, "crash-checkpoint.json"), "utf8")),
+    ).toMatchObject({
+      pid: child.pid,
+      phase: phase === "unknown" ? "after" : phase,
+      productMode: runtime.mode,
+    });
     expect({ code, signal, errors }).toEqual({
       code: null,
       signal: "SIGKILL",
@@ -566,7 +576,7 @@ test("HTTP published-file finalize failure blocks policies/approval then atomica
   expect(f.storage.list("approvals")).toHaveLength(1);
 });
 
-test("actual source entrypoint recovers published intent before it listens", async () => {
+test("actual selected entrypoint recovers published intent before it listens", async () => {
   const f = await fixture();
   const plan = f.service.createPlan({
     projectId: f.project.id,
@@ -575,29 +585,27 @@ test("actual source entrypoint recovers published intent before it listens", asy
   await f.service.approvePlan(plan.id, 1);
   await f.app.close();
   f.storage.close();
-  const env = {
-    ...process.env,
-    TSX_TSCONFIG_PATH: "/tmp/atlasmode-pol01-runtime-tsconfig.json",
-  };
+  const runtime = await pol01Runtime(f.root);
+  const env = runtime.env;
   const crashed = spawn(
     process.execPath,
-    [
-      "--import",
-      "tsx",
-      "tests/support/pol01-crash.ts",
-      f.root,
-      f.database,
-      f.project.id,
-      "after",
-    ],
+    [...runtime.crashArgs, f.root, f.database, f.project.id, "after"],
     { cwd: process.cwd(), env, stdio: ["ignore", "pipe", "pipe"] },
   );
   let crashErrors = "";
   crashed.stderr.on("data", (value) => {
     crashErrors += String(value);
   });
-  expect(await once(crashed, "exit")).toEqual([null, "SIGKILL"]);
+  expect(await once(crashed, "close")).toEqual([null, "SIGKILL"]);
   expect(crashErrors).toBe("");
+  assertOwnedPidAbsent(crashed.pid);
+  expect(
+    JSON.parse(await readFile(join(f.root, "crash-checkpoint.json"), "utf8")),
+  ).toMatchObject({
+    pid: crashed.pid,
+    phase: "after",
+    productMode: runtime.mode,
+  });
   console.info(
     JSON.stringify({
       receipt: "POL01_OWNED_RUNTIME",
@@ -622,29 +630,25 @@ test("actual source entrypoint recovers published intent before it listens", asy
   await new Promise<void>((resolve, reject) =>
     reservation.close((error) => (error ? reject(error) : resolve())),
   );
-  const child = spawn(
-    process.execPath,
-    ["--import", "tsx", "apps/server/src/index.ts"],
-    {
-      cwd: process.cwd(),
-      env: {
-        ...env,
-        CODEMAP_DATA_DIR: f.root,
-        CODEMAP_PORT: String(port),
-        CODEMAP_WORKSPACE_ROOT: "",
-        CODEMAP_DEV_PROXY: "0",
-      },
-      stdio: ["ignore", "pipe", "pipe"],
+  const child = spawn(process.execPath, runtime.serverArgs, {
+    cwd: process.cwd(),
+    env: {
+      ...env,
+      CODEMAP_DATA_DIR: f.root,
+      CODEMAP_PORT: String(port),
+      CODEMAP_WORKSPACE_ROOT: "",
+      CODEMAP_DEV_PROXY: "0",
     },
-  );
-  const exited = once(child, "exit"),
+    stdio: ["ignore", "pipe", "pipe", "ipc"],
+  });
+  const exited = once(child, "close"),
     ready = gate();
   let output = "";
-  child.stdout.on("data", (value) => {
+  child.stdout!.on("data", (value) => {
     output += String(value);
     if (output.includes("AtlasMode API listening")) ready.resolve();
   });
-  child.stderr.on("data", (value) => {
+  child.stderr!.on("data", (value) => {
     output += String(value);
   });
   try {
@@ -691,8 +695,21 @@ test("actual source entrypoint recovers published intent before it listens", asy
       ]),
     );
     expect(await readFile(f.path, "utf8")).toContain("candidate B");
-    child.kill("SIGTERM");
-    expect(await exited).toEqual([0, null]);
+    child.send({ testSignal: "SIGTERM" });
+    const shutdownTimer = setTimeout(() => child.kill("SIGKILL"), 10000);
+    try {
+      expect(await exited).toEqual([0, null]);
+    } finally {
+      clearTimeout(shutdownTimer);
+    }
+    assertOwnedPidAbsent(child.pid);
+    const reopened = new SqliteStorage(f.database);
+    try {
+      expect(reopened.get("plans", plan.id)).toMatchObject({ revision: 2 });
+      expect(reopened.list("approvals")).toHaveLength(1);
+    } finally {
+      reopened.close();
+    }
     await new Promise<void>((resolve, reject) => {
       const socket = createConnection({ host: "127.0.0.1", port });
       const timer = setTimeout(() => {
@@ -714,7 +731,10 @@ test("actual source entrypoint recovers published intent before it listens", asy
     console.info(
       JSON.stringify({
         receipt: "POL01_OWNED_RUNTIME",
-        phase: "source-entrypoint",
+        phase: `${runtime.mode}-entrypoint`,
+        stdioClosed: true,
+        pidAbsent: true,
+        freshDatabaseReopened: true,
         pid: child.pid,
         exitCode: 0,
         signal: null,

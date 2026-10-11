@@ -1,0 +1,59 @@
+{
+  "base": "ed793266b9dcac5cfa65f1a5358ec97d5184a69f",
+  "branch": "fix/pol01-ci-runtime-20261011",
+  "repo": "/home/agent/projects/AtlasMode-checkpoints/2026-10-11-ci-runtime/workspace",
+  "files": [
+    {
+      "path": "apps/server/src/pol01-workspace-http.test.ts",
+      "beforeSha256": "bcb974862bbc6f72ca8f9b0ed8accb7225a24bd41719ec695e19279e8ff44bce",
+      "afterSha256": "cd01e5abe01dad82c515c93437da3c333fc1e5808b6c80a32536186eb4df903b",
+      "ownership": "CI fixture only",
+      "change": "owned runtime mode/config; actual dist/source entrypoint; durable crash checkpoint + strict SIGKILL; existing IPC handler shutdown + close/PID/port/freshDB assertions; original recovery/history/domain assertions retained"
+    },
+    {
+      "path": "apps/server/src/pol01-http-repair.test.ts",
+      "beforeSha256": "9dcbab7689aca7f4c58a6f389fb2a53d4ee8f4b1e7dba7f861cb49be81eeb41c",
+      "afterSha256": "8febd1c039dc71ed6a3e239c5459d62caa8035a9eb47c8b0e95a7b25befd0cf8",
+      "ownership": "CI fixture only",
+      "change": "owned runtime + checkpoint and strict hardkill; I2 durable before/after/unknown claim and loser recovery assertions retained"
+    },
+    {
+      "path": "packages/storage/src/annotation-migration.test.ts",
+      "beforeSha256": "e6572599d5ab22602a5faa3da888f62c2ba901ccb09f691c69f5700b1635e63e",
+      "afterSha256": "2dbb09c3f3ed831d0143fbb074bfced985bfad65fcd684f2d8d67f0b3f8a15eb",
+      "ownership": "CI fixture only",
+      "change": "original-path SQLite open slice, sync fs mutation observation, bytes/existence/identity; watcher diagnostic; 3 real negative controls; bounded per-test native phase receipts; typing-only corrections to existing mocks"
+    },
+    {
+      "path": "packages/storage/src/structure-file.test.ts",
+      "beforeSha256": "cb40238c98e285d661426e2cfd209e51c22d02fec53f14294a3f0762d5ae5fe4",
+      "afterSha256": "88d70c77494ff3ed93cd0488c803002482c74c79e0a785965eca9d1d56c313ab",
+      "ownership": "CI fixture only",
+      "change": "prewrite actual mode exact preservation, POSIX 640 assertion retained; 30 readers/no-unlink/barrier retained"
+    },
+    {
+      "path": "tests/support/pol01-acceptance.ts",
+      "beforeSha256": "f5506eaa40d2bf29725b7506417504b74777975ae865325f3ff7790fd5116b0f",
+      "afterSha256": "5cbc236454511f04daed15e1cc0ea756eb9d15f43daf10ca2b957184ccfe1086",
+      "ownership": "CI fixture only",
+      "change": "existing graceful-preload IPC actual entrypoint; strict exit0/closed stdio/PID/port and fresh DB reopen; SDK behavior unchanged"
+    },
+    {
+      "path": "tests/support/pol01-crash.ts",
+      "beforeSha256": "c3bddb3a439d7f057e73cdd4acbff991bf90df9e5ce3e30ad459f689648a1cd3",
+      "afterSha256": "664790639f45858c55875b054ef26b82e8b03451b1666f6cee42667031de5456",
+      "ownership": "CI fixture only",
+      "change": "write checkpoint only after original publish/externalC ordering, immediately before original self SIGKILL; resolved actual package URLs retained"
+    },
+    {
+      "path": "tests/support/pol01-runtime.ts",
+      "beforeSha256": null,
+      "afterSha256": "7f271a951f685a6ac0a2903ee8dff712e9cea214887609eb47ca1566417b65c6",
+      "ownership": "CI fixture only",
+      "change": "new test-only helper; compiled native Node24 typestrip and package dist exports; source fixture-owned config/absolute paths; cross-platform preload file URL"
+    }
+  ],
+  "productionChanged": false,
+  "workflowChanged": false,
+  "stagedCommittedPushed": false
+}

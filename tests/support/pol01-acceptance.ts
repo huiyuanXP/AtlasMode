@@ -146,24 +146,32 @@ export async function pol01Fixture(mode: "source" | "compiled" = "source") {
       mode === "source"
         ? ["--import", "tsx", resolve("apps/server/src/index.ts")]
         : [resolve("apps/server/dist/index.js")];
-    const child = spawn(process.execPath, args, {
-      env: { ...env, CODEMAP_PORT: String(port) },
-      stdio: ["ignore", "pipe", "pipe"],
-    });
+    const child = spawn(
+      process.execPath,
+      [
+        "--import",
+        new URL("./graceful-preload.mjs", import.meta.url).href,
+        ...args,
+      ],
+      {
+        env: { ...env, CODEMAP_PORT: String(port) },
+        stdio: ["ignore", "pipe", "pipe", "ipc"],
+      },
+    );
     let output = "";
-    child.stdout.on("data", (bytes) => {
+    child.stdout!.on("data", (bytes) => {
       output += bytes;
     });
-    child.stderr.on("data", (bytes) => {
+    child.stderr!.on("data", (bytes) => {
       output += bytes;
     });
-    const exit = once(child, "exit");
+    const exit = once(child, "close");
     let stopped = false;
     const stop = async () => {
       if (stopped) return;
       stopped = true;
       if (child.exitCode === null && child.signalCode === null)
-        child.kill("SIGTERM");
+        child.send({ testSignal: "SIGTERM" });
       const force = setTimeout(() => child.kill("SIGKILL"), 10000);
       let result;
       try {
@@ -172,16 +180,31 @@ export async function pol01Fixture(mode: "source" | "compiled" = "source") {
         clearTimeout(force);
       }
       const closed = await portClosed(port);
+      assert(pidAbsent(child.pid ?? null), "owned API PID must disappear");
+      assert.deepEqual(result, [0, null], output);
+      const reopened = new SqliteStorage(database);
+      let freshRows;
+      try {
+        freshRows = {
+          plans: reopened.list("plans").length,
+          approvals: reopened.list("approvals").length,
+        };
+      } finally {
+        reopened.close();
+      }
       records.push({
         kind: "server",
         mode,
         pid: child.pid,
         port,
         exit: result,
+        shutdown: "installed-production-handler-via-IPC",
+        stdioClosed: true,
+        pidAbsent: true,
+        freshDatabaseReopened: freshRows,
         portClosed: closed,
         output,
       });
-      assert.deepEqual(result, [0, null], output);
       assert.equal(closed, true, "owned API port must close");
     };
     try {
