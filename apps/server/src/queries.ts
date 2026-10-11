@@ -1,3 +1,4 @@
+import { getLayoutTarget } from "@codemap/core";
 import {
   getFunctionContext,
   getFileContext,
@@ -17,6 +18,8 @@ import { navigationScope, type ScopeInput } from "./navigation-query.js";
 /** Transport glue only: every query receives the project's current service snapshot. */
 export function projectQueries(service: WorkspaceService) {
   return {
+    layoutTarget: (id: string, input: { expectedSnapshotId: string }) =>
+      getLayoutTarget(service.getSnapshot(id), input.expectedSnapshotId),
     scope: (id: string, input: ScopeInput) =>
       navigationScope(service.getSnapshot(id), input),
     dependencies: (

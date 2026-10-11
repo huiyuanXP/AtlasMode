@@ -314,6 +314,16 @@ export function registerRoutes(
     },
     annotationParams,
   );
+  write(
+    "POST",
+    "/api/projects/:id/layout-target",
+    z.strictObject({ expectedSnapshotId: nonblank }),
+    (request) =>
+      queries.layoutTarget(
+        projectId(request),
+        z.strictObject({ expectedSnapshotId: nonblank }).parse(request.body),
+      ),
+  );
   get("/api/projects/:id/summary", (request) =>
     queries.summary(projectId(request)),
   );

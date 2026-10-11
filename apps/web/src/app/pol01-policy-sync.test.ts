@@ -209,7 +209,11 @@ test("ACK synchronizes full policy/summary/actual plan revision read-only and pr
   expect(after.source).toBe(before.source);
   expect(after.groupDraft).toBe(before.groupDraft);
   expect(after.busy.knowledge).toBe(false);
-  expect(f.calls.every((c) => c.startsWith("GET "))).toBe(true);
+  expect(
+    f.calls.every(
+      (c) => c.startsWith("GET ") || c === "POST /api/projects/p/layout-target",
+    ),
+  ).toBe(true);
   expect(f.calls.filter((c) => c.endsWith("/approved"))).toHaveLength(1);
 });
 test("dirty plan retains exact body/revision/CAS while refreshed list and validity change", async () => {

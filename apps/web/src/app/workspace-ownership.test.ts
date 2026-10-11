@@ -407,7 +407,9 @@ it("source reads never use a temporary planned function path", async () => {
     },
   });
   await f.app.loadSource();
-  expect(f.calls).toEqual([]);
+  expect(f.calls.filter((path) => !path.endsWith("/layout-target"))).toEqual(
+    [],
+  );
 });
 it("captured advanced/ownership save includes snapshot and rejects a changed tuple before HTTP", async () => {
   const f = fixture();

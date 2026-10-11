@@ -5,3 +5,5 @@ export * from "./structure-types.js";
 export * from "./structure.js";
 export * from "./annotations.js";
 export * from "./approval-schema.js";
+
+export * from "./layout-target.js";

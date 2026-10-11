@@ -1,5 +1,33 @@
 import type { zh } from "./zh.js";
 export const en: Record<keyof typeof zh, string> = {
+  overviewExactCards: "Exact estimated cards",
+  overviewCardsLowerBound: "Observed card lower bound",
+  overviewRouteUpperBound: "Conservative route upper bound (not generated)",
+  overviewRouteEstimateSubtotal:
+    "Observed route-estimate subtotal (not emitted)",
+  overviewLayout: "Overview layout",
+  overviewRecompute: "Recompute project auto layout",
+  overviewRearrange: "Rearrange current view",
+  overviewReplace: "Replace current-view positions",
+  overviewKeepOther: "Other positions are retained",
+  overviewProject: "Project indexed layout",
+  overviewCurrent: "Current display",
+  overviewFacts: "facts",
+  overviewRelations: "relations",
+  overviewCards: "visual cards",
+  overviewMeasured: "Current measured correction",
+  overviewIncomplete: "Scope incomplete",
+  overviewRawCounts: "Raw facts/relations",
+  overviewStoredOperations: "Stored plan operations",
+  overviewExact: "Exact count",
+  overviewLowerBound: "Observed lower bound",
+  overviewFactFallback: "Plan/group layers omitted; bounded local facts only",
+  overviewEmptyFallback:
+    "No safe current canvas; original scope was not clipped",
+  overviewTruncated: "Local query truncated",
+  overviewManualOverlap: "Manual position overlaps",
+  overviewRearrangeFunnel: "Rearrange funnel",
+  overviewViewUnsaved: "Layout not saved; local positions retained",
   annotationSourceChanged:
     "The current source capture changed. Refresh code, then select and confirm a real target; local annotation drafts are retained.",
   annotationRefreshSource: "Refresh code and retain annotation drafts",

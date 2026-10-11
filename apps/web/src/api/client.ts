@@ -1,3 +1,4 @@
+import { requestLayoutTarget } from "./layout-target-client.js";
 import type {
   AnnotationDetail,
   AnnotationPage,
@@ -67,6 +68,11 @@ export class HttpApi {
   }
   projects = () => this.request<Project[]>("/projects");
   open = (path: string) => this.request<Project>("/projects", "POST", { path });
+  layoutTarget = (
+    id: string,
+    expectedSnapshotId: string,
+    signal?: AbortSignal,
+  ) => requestLayoutTarget(this.transport, id, expectedSnapshotId, signal);
   summary = (id: string) =>
     this.request<ProjectSummary>(`/projects/${encodeURIComponent(id)}/summary`);
   view = (id: string) =>

@@ -1,4 +1,11 @@
-import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 import {
   ReactFlow,
   Background,
@@ -25,7 +32,6 @@ import type {
 } from "@codemap/core";
 import { useStrings } from "../../i18n/index.js";
 import {
-  projectGraph,
   focusTargets,
   type GraphNode,
   type GraphEdge,
@@ -43,7 +49,28 @@ import {
   inspectionPlacement,
 } from "./inspection.js";
 import { circleFunctions, circleSelectedNodes } from "../groups/selection.js";
-import { projectGroups } from "../groups/projection.js";
+import type {
+  LayoutCapture,
+  OverviewLayoutState,
+} from "../../app/workspace.js";
+import {
+  guardedOverviewProjection,
+  OverviewSession,
+  measurementsChanged,
+  sameOverviewCapture,
+  saveCapturedVisualPosition,
+  readOverviewMeasurements,
+  resolveCurrentOverviewCapture,
+  completeOverviewFrame,
+  CompactOverviewCache,
+  type OverviewMeasurementFrame,
+  type OverviewSessionToken,
+} from "./overview-session.js";
+import {
+  resolveVisualPins,
+  type LayoutBox,
+  type VisibleLayoutResult,
+} from "./overview-visual.js";
 import { GroupCard } from "../groups/GroupCard.js";
 import { MapPanel } from "./MapPanel.js";
 import "./graph-inspection.css";
@@ -243,6 +270,37 @@ function OverviewViewport({
   }, [active, saved, getViewport, setViewport]);
   return null;
 }
+/** Actual current cards only: an old projection with reused IDs is not a measurement. */
+function OverviewMeasurements({
+  targets,
+  onMeasure,
+}: {
+  targets: GraphNode[];
+  onMeasure: (boxes: Record<string, LayoutBox>) => void;
+}) {
+  const rendered = useNodes<GraphNode>(),
+    initialized = useNodesInitialized();
+  useEffect(() => {
+    if (!initialized || !targets.length) return;
+    const boxes: Record<string, LayoutBox> = {};
+    for (const target of targets) {
+      const node = rendered.find((item) => item.id === target.id);
+      if (
+        !node ||
+        node.data.projectionData !== target.data ||
+        !node.measured?.width ||
+        !node.measured.height
+      )
+        return;
+      boxes[node.id] = {
+        width: node.measured.width,
+        height: node.measured.height,
+      };
+    }
+    onMeasure(boxes);
+  }, [rendered, initialized, targets, onMeasure]);
+  return null;
+}
 const nodeTypes = { code: CodeCard, group: GroupCard };
 // React Flow queues explicit fit options. Stable overview options avoid a
 // parent render overwriting that queued request with a fit of every node.
@@ -254,6 +312,16 @@ export function Canvas(props: {
   groups?: FunctionGroup[];
   ownershipMode?: boolean;
   ownershipEnabled?: boolean;
+  overviewBlocked?: boolean;
+  overviewScopeKey?: string;
+  overviewLayout?: OverviewLayoutState;
+  layoutCapture?: LayoutCapture;
+  onCaptureLayout?: () => LayoutCapture | undefined;
+  onSaveLayoutPositions?: (
+    patch: ViewState["positions"],
+    capture: LayoutCapture,
+  ) => boolean;
+  onRecomputeProjectLayout?: () => Promise<void>;
   onOwnershipStart?: (node: CodeNode) => string | undefined;
   onOwnershipEnd?: () => void;
   onOwnershipDrop?: (node: CodeNode, nonce?: string) => void;
@@ -317,6 +385,7 @@ export function Canvas(props: {
   );
   const layoutFrame = useRef(0);
   const dragging = useRef(false);
+  const dragCapture = useRef<LayoutCapture | undefined>(undefined);
   const offsets = useRef(new FunnelOffsets());
   const [offsetVersion, setOffsetVersion] = useState(0);
   const [cameraBlocked, setCameraBlocked] = useState(false);
@@ -361,46 +430,256 @@ export function Canvas(props: {
     observer.observe(canvas.current);
     return () => observer.disconnect();
   }, []);
-  const baseProjection = useMemo(
+  const guarded = useMemo(
     () =>
-      projectGraph(
-        props.graph,
-        props.operations,
-        props.filter,
-        props.view.positions,
-        props.view.locale,
-        props.referenceNodes,
-      ),
+      guardedOverviewProjection({
+        graph: props.graph,
+        operations: props.operations,
+        filter: props.filter,
+        references: props.referenceNodes ?? [],
+        groups: props.groups ?? [],
+        collapsed: props.view.collapsedGroupIds ?? [],
+        positions: props.view.positions,
+        locale: props.view.locale,
+        skipGroups: !!props.groupSelectionMode || !!props.funnel,
+      }),
     [
       props.graph,
       props.operations,
       props.filter,
-      props.view.positions,
-      props.view.locale,
       props.referenceNodes,
-    ],
-  );
-  const projection = useMemo(
-    () =>
-      props.groupSelectionMode || props.funnel
-        ? baseProjection
-        : projectGroups(
-            baseProjection,
-            props.groups ?? [],
-            props.view.collapsedGroupIds ?? [],
-            props.view.positions,
-            props.view.locale,
-          ),
-    [
-      baseProjection,
-      props.groupSelectionMode,
-      props.funnel,
       props.groups,
       props.view.collapsedGroupIds,
       props.view.positions,
       props.view.locale,
+      props.groupSelectionMode,
+      props.funnel,
     ],
   );
+  const baseProjection = guarded.base;
+  const rawProjection = guarded.projection;
+  const scopeKey = `${props.overviewScopeKey ?? "project"}:${props.filter}:${guarded.rejection ? "rejected" : (props.view.collapsedGroupIds ?? []).join("|")}`;
+  const measurementKey = `${props.projectId}:${props.graph?.snapshotId}:${scopeKey}:${props.layoutCapture?.projectionGeneration}:${props.view.theme}:${props.view.locale}`;
+  const auto = useRef(new CompactOverviewCache());
+  const measurementBinding = useMemo(
+    () => ({
+      key: measurementKey,
+      projection: rawProjection,
+      projectionGeneration: props.layoutCapture?.projectionGeneration ?? -1,
+    }),
+    [measurementKey, rawProjection, props.layoutCapture?.projectionGeneration],
+  );
+  const latestMeasurement = useRef(measurementBinding);
+  latestMeasurement.current = measurementBinding;
+  const localProjection = useRef<typeof rawProjection | undefined>(undefined);
+  const [autoVersion, setAutoVersion] = useState(0);
+  const pins = useMemo(
+    () =>
+      resolveVisualPins(
+        rawProjection.nodes,
+        guarded.fallback || props.funnel || props.groupSelectionMode
+          ? []
+          : (props.groups ?? []),
+        props.view.positions,
+      ),
+    [
+      rawProjection,
+      guarded.fallback,
+      props.funnel,
+      props.groupSelectionMode,
+      props.groups,
+      props.view.positions,
+    ],
+  );
+  const projection = useMemo(
+    () => ({
+      ...rawProjection,
+      nodes: rawProjection.nodes.map((node) => ({
+        ...node,
+        position:
+          pins[node.id]?.position ??
+          auto.current.current(
+            props.projectId ?? "",
+            scopeKey,
+            props.graph?.snapshotId ?? "",
+          )[node.id] ??
+          node.position,
+      })),
+    }),
+    [
+      rawProjection,
+      pins,
+      props.projectId,
+      props.graph?.snapshotId,
+      scopeKey,
+      autoVersion,
+    ],
+  );
+  const session = useRef(new OverviewSession());
+  const [dragActive, setDragActive] = useState(false);
+  useEffect(() => {
+    if (props.ownershipMode) {
+      dragging.current = false;
+      dragCapture.current = undefined;
+      setDragActive(false);
+      session.current.cancel();
+    }
+  }, [props.ownershipMode]);
+  const blocked =
+    !!props.overviewBlocked ||
+    !!props.ownershipMode ||
+    !!props.groupSelectionMode ||
+    !!props.funnel ||
+    !!props.funnelPending ||
+    dragActive;
+  const [localStatus, setLocalStatus] = useState<
+    VisibleLayoutResult["status"] | "pending" | "idle"
+  >("idle");
+  const [localResult, setLocalResult] = useState<VisibleLayoutResult>();
+  const [job, setJob] = useState<{
+    token: OverviewSessionToken;
+    explicit: boolean;
+  }>();
+  const [reflow, setReflow] = useState(0);
+  const requestedReflow = useRef<
+    { sequence: number; capture: LayoutCapture } | undefined
+  >(undefined);
+  const [actual, setActual] = useState<OverviewMeasurementFrame>({
+    key: "",
+    projection: rawProjection,
+    projectionGeneration: -1,
+    boxes: {},
+    generation: 0,
+  });
+  const onMeasure = useCallback(
+    (boxes: Record<string, LayoutBox>) => {
+      // A queued callback from an obsolete producer cannot repopulate the cache.
+      if (latestMeasurement.current !== measurementBinding) return;
+      setActual((previous) => {
+        if (latestMeasurement.current !== measurementBinding) return previous;
+        return readOverviewMeasurements(previous, measurementBinding) &&
+          !measurementsChanged(previous.boxes, boxes)
+          ? previous
+          : {
+              ...measurementBinding,
+              boxes,
+              generation: previous.generation + 1,
+            };
+      });
+    },
+    [measurementBinding],
+  );
+  const latest = useRef(props);
+  latest.current = props;
+  useEffect(() => {
+    session.current.cancel();
+    setJob(undefined);
+    const capture = resolveCurrentOverviewCapture(props),
+      global = props.overviewLayout?.result;
+    localProjection.current = rawProjection;
+    if (
+      blocked ||
+      guarded.rejection ||
+      !capture ||
+      props.overviewLayout?.status !== "ready" ||
+      !global
+    ) {
+      setLocalStatus("idle");
+      return;
+    }
+    const request = requestedReflow.current;
+    const explicit =
+      request?.sequence === reflow &&
+      sameOverviewCapture(request.capture, capture);
+    if (request?.sequence === reflow && !explicit)
+      requestedReflow.current = undefined;
+    const result = session.current.begin({
+      projection: rawProjection,
+      global,
+      pins,
+      retained: auto.current.retained(
+        capture.projectId,
+        scopeKey,
+        capture.snapshotId,
+        rawProjection.nodes.map((node) => node.id),
+        global,
+      ),
+      ignorePinsFor: explicit ? rawProjection.nodes.map((node) => node.id) : [],
+      capture,
+      measurementGeneration: actual.generation,
+    });
+    setLocalStatus(result.status === "cancelled" ? "idle" : result.status);
+    if (result.status === "pending")
+      setJob({ token: result.token, explicit: !!explicit });
+    else if (result.status === "rejected") setLocalResult(result);
+    return () => session.current.cancel();
+  }, [
+    rawProjection,
+    pins,
+    scopeKey,
+    blocked,
+    guarded.rejection,
+    props.overviewLayout?.status,
+    props.overviewLayout?.result,
+    props.layoutCapture?.projectId,
+    props.layoutCapture?.snapshotId,
+    props.layoutCapture?.projectionGeneration,
+    props.layoutCapture?.viewGeneration,
+    actual.generation,
+    reflow,
+  ]);
+  useEffect(() => {
+    if (!job || !session.current.isCurrent(job.token)) return;
+    const readCurrent = () => {
+      const current = latest.current;
+      return {
+        capture: resolveCurrentOverviewCapture(current),
+        blocked:
+          latestMeasurement.current !== measurementBinding ||
+          !!current.overviewBlocked ||
+          !!current.ownershipMode ||
+          !!current.groupSelectionMode ||
+          !!current.funnel ||
+          !!current.funnelPending ||
+          dragging.current,
+      };
+    };
+    const result = completeOverviewFrame(
+      session.current,
+      job.token,
+      actual,
+      measurementBinding,
+      readCurrent,
+      (ready, capture) => {
+        if (latestMeasurement.current !== measurementBinding) return;
+        const global = latest.current.overviewLayout?.result;
+        if (!global) return;
+        auto.current.commit(
+          capture.projectId,
+          scopeKey,
+          capture.snapshotId,
+          ready.positions,
+          global,
+        );
+        localProjection.current = rawProjection;
+        setAutoVersion((version) => version + 1);
+      },
+      job.explicit
+        ? (patch, capture) =>
+            !!latest.current.onSaveLayoutPositions?.(patch, capture)
+        : undefined,
+    );
+    if (result.status === "pending") return;
+    setJob(undefined);
+    if (job.explicit) requestedReflow.current = undefined;
+    if (result.status === "cancelled") {
+      setLocalStatus("idle");
+      return;
+    }
+    setLocalStatus(result.status);
+    setLocalResult(result);
+  }, [job, actual, measurementBinding, scopeKey, rawProjection]);
+  useEffect(() => () => session.current.cancel(), []);
   const [nodes, setNodes] = useState(projection.nodes);
   const currentNodes = useRef(nodes);
   const instance = useRef<ReactFlowInstance<GraphNode, GraphEdge> | undefined>(
@@ -851,12 +1130,16 @@ export function Canvas(props: {
         }}
         onNodeDragStart={() => {
           if (props.ownershipMode) return;
+          dragCapture.current = resolveCurrentOverviewCapture(props);
           dragging.current = true;
+          setDragActive(true);
+          session.current.cancel();
           stopMotion();
         }}
         onNodeDragStop={(_, node) => {
           if (props.ownershipMode) return;
           dragging.current = false;
+          setDragActive(false);
           if (props.funnel) {
             const base = funnelBase?.nodes.find(
               (n) => n.id === node.id,
@@ -870,11 +1153,19 @@ export function Canvas(props: {
                 base,
               );
             setOffsetVersion((v) => v + 1);
-          } else
-            props.onLayout({
-              ...props.view.positions,
-              [node.id]: node.position,
-            });
+          } else {
+            const capture = dragCapture.current;
+            dragCapture.current = undefined;
+            if (props.onSaveLayoutPositions)
+              saveCapturedVisualPosition(
+                node.id,
+                node.position,
+                capture,
+                resolveCurrentOverviewCapture(props),
+                props.onSaveLayoutPositions,
+              );
+            else props.onLayout({ [node.id]: node.position });
+          }
         }}
         nodesDraggable={!props.groupSelectionMode && !props.ownershipMode}
         zoomOnDoubleClick={false}
@@ -909,6 +1200,12 @@ export function Canvas(props: {
         maxZoom={2}
         colorMode={props.view.theme}
       >
+        {!props.funnel && (
+          <OverviewMeasurements
+            targets={projection.nodes}
+            onMeasure={onMeasure}
+          />
+        )}
         <OverviewViewport active={!!props.funnel} saved={savedViewport} />
         <FocusViewport
           blocked={cameraBlocked}
@@ -976,6 +1273,101 @@ export function Canvas(props: {
           }
         />
       </ReactFlow>
+      <section
+        aria-label={zh.overviewLayout}
+        className="overview-layout-controls"
+        style={{
+          position: "absolute",
+          top: 12,
+          left: 12,
+          maxWidth: "calc(100% - 24px)",
+          zIndex: 5,
+          background: "var(--panel-bg, var(--bg))",
+          padding: 8,
+        }}
+      >
+        <div className="button-row">
+          <button
+            disabled={
+              blocked ||
+              !props.onRecomputeProjectLayout ||
+              props.overviewLayout?.status === "pending"
+            }
+            onClick={() => void props.onRecomputeProjectLayout?.()}
+          >
+            {zh.overviewRecompute}
+          </button>
+          <button
+            disabled={
+              blocked ||
+              !!guarded.rejection ||
+              !props.layoutCapture ||
+              props.overviewLayout?.status !== "ready" ||
+              !props.onSaveLayoutPositions ||
+              localStatus === "pending"
+            }
+            onClick={() => {
+              const capture = resolveCurrentOverviewCapture(props);
+              if (!capture) return;
+              requestedReflow.current = { sequence: reflow + 1, capture };
+              setReflow((value) => value + 1);
+            }}
+          >
+            {zh.overviewRearrange}
+          </button>
+        </div>
+        <small>
+          {zh.overviewReplace} {rawProjection.nodes.length} ·{" "}
+          {zh.overviewKeepOther}
+        </small>
+        <div role="status">
+          {zh.overviewProject}: {props.overviewLayout?.status ?? "idle"}
+          {props.overviewLayout?.target &&
+            ` · ${props.overviewLayout.target.counts.nodes} ${zh.overviewFacts} / ${props.overviewLayout.target.counts.relations} ${zh.overviewRelations}`}
+          {props.overviewLayout?.reason && ` · ${props.overviewLayout.reason}`}
+          {` · ${zh.overviewCurrent}: ${new Set(rawProjection.nodes.filter((node) => node.data.layer !== "plan" && !node.data.group).map((node) => node.data.node.id)).size} ${zh.overviewFacts} / ${rawProjection.nodes.length} ${zh.overviewCards} / ${rawProjection.edges.length} ${zh.overviewRelations}`}
+          {props.graph?.truncated && ` · ${zh.overviewTruncated}`}
+          {` · ${zh.overviewMeasured}: ${localProjection.current === rawProjection ? localStatus : "idle"}`}
+        </div>
+        {guarded.rejection && (
+          <div role="status">
+            {zh.overviewIncomplete}: {guarded.rejection.reason} ·{" "}
+            {zh.overviewRawCounts} {guarded.rejection.counts.graphNodes}/
+            {guarded.rejection.counts.graphRelations} ·{" "}
+            {zh.overviewStoredOperations}{" "}
+            {guarded.estimate.counts.storedOperations} ·{" "}
+            {guarded.rejection.countStatus === "complete"
+              ? zh.overviewExactCards
+              : zh.overviewCardsLowerBound}{" "}
+            {guarded.rejection.nodes ?? guarded.rejection.nodesLowerBound} ·{" "}
+            {guarded.rejection.countStatus === "complete"
+              ? zh.overviewRouteUpperBound
+              : zh.overviewRouteEstimateSubtotal}{" "}
+            {guarded.rejection.edgeUpperBound ??
+              guarded.rejection.edgesLowerBound}{" "}
+            ·{" "}
+            {guarded.fallback === "facts"
+              ? zh.overviewFactFallback
+              : zh.overviewEmptyFallback}
+          </div>
+        )}
+        {localStatus === "rejected" && localResult?.status === "rejected" && (
+          <div role="status">
+            {zh.overviewIncomplete}: {localResult.reason} · {localResult.stage}
+          </div>
+        )}
+        {localStatus === "ready" &&
+          localResult?.manualOverlaps.pairsObserved !== undefined &&
+          localResult.manualOverlaps.pairsObserved > 0 && (
+            <div role="status">
+              {zh.overviewManualOverlap}:{" "}
+              {localResult.manualOverlaps.complete
+                ? zh.overviewExact
+                : zh.overviewLowerBound}{" "}
+              {localResult.manualOverlaps.pairsObserved}
+            </div>
+          )}
+      </section>
       {groupEvidence?.data && (
         <section className="group-evidence" aria-label={zh.groupEvidence}>
           <button
@@ -1099,7 +1491,7 @@ export function Canvas(props: {
               setCameraBlocked(false);
             }}
           >
-            {props.view.locale === "en" ? "Rearrange" : "重新排列"}
+            {zh.overviewRearrangeFunnel}
           </button>
           <button onClick={props.onExitFunnel}>{zh.exitFunnel}</button>
         </div>

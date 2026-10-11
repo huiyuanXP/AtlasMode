@@ -305,6 +305,21 @@ export function WorkspacePanels({
           groups={state.groups}
           ownershipMode={ownership.mode === "ownership"}
           ownershipEnabled={ownershipReady}
+          overviewLayout={state.overviewLayout}
+          overviewScopeKey={JSON.stringify(
+            state.navigationLocation ?? { kind: "project", path: "" },
+          )}
+          layoutCapture={app.captureLayout()}
+          onCaptureLayout={app.captureLayout}
+          onSaveLayoutPositions={app.saveLayoutPositions}
+          onRecomputeProjectLayout={app.recomputeProjectLayout}
+          overviewBlocked={
+            ownership.mode === "ownership" ||
+            !!ownership.intent ||
+            ownership.status === "saving" ||
+            state.dirtyPlanEditor ||
+            !!state.groupDraft
+          }
           onOwnershipStart={app.beginOwnership}
           onOwnershipEnd={app.ownership.endDrag}
           onOwnershipDrop={(node, nonce) => {
@@ -389,7 +404,10 @@ export function WorkspacePanels({
             setEdge(undefined);
           }}
           onExpand={(id) => void app.expand(id)}
-          onLayout={(positions) => app.saveView({ ...state.view, positions })}
+          onLayout={(patch) => {
+            const capture = app.captureLayout();
+            if (capture) app.saveLayoutPositions(patch, capture);
+          }}
           onEdge={(e) => {
             setEdge(e);
             setTab("plan");
@@ -398,7 +416,13 @@ export function WorkspacePanels({
         />
         <footer>
           <span>{zh.bounded}</span>
-          <span>{busy ? zh.working : zh.viewSaved}</span>
+          <span>
+            {state.viewUnsaved
+              ? zh.overviewViewUnsaved
+              : busy
+                ? zh.working
+                : zh.viewSaved}
+          </span>
         </footer>
       </section>
       <aside className="inspector" aria-label={zh.inspector}>

@@ -21,6 +21,7 @@ export function App({ workspace }: { workspace?: Workspace }) {
     void app.init();
   }, [app]);
   useEffect(() => () => chatSessions.dispose(), [chatSessions]);
+  useEffect(() => () => app.disposeOverview(), [app]);
   return (
     <LocaleProvider locale={state.view.locale}>
       <div className="app" data-theme={state.view.theme}>

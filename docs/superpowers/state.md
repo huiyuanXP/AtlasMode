@@ -1,6 +1,12 @@
 # AtlasMode 持续构建状态
 
-## 当前工作（2026-10-11 UTC）
+## 当前工作：原 PERF02 Task4 Window C（2026-10-11 UTC）
+
+Task4源码接线与保存生命周期完成，隔离分支 `task/perf02-window-c-20261011`，基于当前accepted130a64ad产品字节。最终19文件221/221PASS、生产源码/owned测试noEmit与修改lint通过；独审R1 C0/I3/M1定向修复并限项关闭，精确终态、原失败、SHA与恢复见[Task4交付](reviews/perf02-task4-2026-10-11/README.md)。Task1/2/3按14份SHA依赖组装，共享文件只合薄hunks；主checkout与旧dirty/checkpoints保留，未merge/deploy。
+
+本轮只完成Task4源级窗口。Task5真实productionWorker/DOM/pointer/reload/restart、固定Express/Flask冷热10次/p95/Vite仍NOT RUN；固定目标durable路径/provenance待父/用户提供。PERF02保持TODO，FS01/KN01/POL01 DONE与36票22DONE/13TODO/1PARTIAL不变。旧Task3CI130a64ad/run38114356100success只保留为历史，不作为Task4门禁。正常commit/push后当前任务停止，未来Task5另行启动。
+
+## 历史交付：跨平台 CI 修复（2026-10-11 UTC）
 
 本轮仅完成跨平台CI定向修复与验收。隔离分支 `fix/pol01-ci-runtime-20261011` 的代码SHA `e48f927fcd7711b5ad5847a6de1e0b0da299d010`，[真实CI](https://github.com/huiyuanXP/AtlasMode/actions/runs/38112226930) Linux/macOS/Windows/browser全部成功；FS01/KN01/POL01为DONE，36票累计22DONE/14剩余。Linux/mac113文件1384PASS；Windows1364PASS/18skip（1382total，原dev/index平台条件少2例），精确日志见[验收证据](reviews/ci-runtime-r2-2026-10-11/README.md)，浏览器53PASS。build/types/lint/smoke在三个native runner通过，零workererror。
 

@@ -1,3 +1,28 @@
+import {
+  OverviewLayoutController,
+  type LayoutToken,
+  type WorkerPort,
+} from "../features/graph/overview-layout-controller.js";
+import type {
+  GlobalLayoutResult,
+  XY,
+} from "../features/graph/overview-layout.js";
+import { validateLayoutTarget } from "../api/layout-target.js";
+import type { LayoutTargetResult } from "@codemap/core";
+export type LayoutCapture = {
+  projectId: string;
+  snapshotId: string;
+  projectionGeneration: number;
+  viewGeneration: number;
+};
+export type OverviewLayoutState = {
+  status: "idle" | "pending" | "ready" | "rejected" | "failed";
+  token?: LayoutToken;
+  target?: LayoutTargetResult;
+  result?: Extract<GlobalLayoutResult, { status: "ready" }>;
+  reason?: string;
+  computeMilliseconds?: number;
+};
 import type {
   AcceptedPolicyResponse,
   AcceptedPolicyReadResponse,
@@ -99,6 +124,10 @@ export type WorkspaceState = {
   routeStep: number;
   report?: VerificationReport;
   view: ViewState;
+  viewGeneration: number;
+  projectionGeneration: number;
+  overviewLayout: OverviewLayoutState;
+  viewUnsaved: boolean;
   filter: LayerFilter;
   busy: Record<string, boolean>;
   error: string;
@@ -146,6 +175,10 @@ const blank = (): Omit<WorkspaceState, "projects"> => ({
   routeStep: 0,
   report: undefined,
   view: { positions: {}, theme: "light", locale: "zh" },
+  viewGeneration: 0,
+  projectionGeneration: 0,
+  overviewLayout: { status: "idle" },
+  viewUnsaved: false,
   filter: "both",
   busy: {},
   error: "",
@@ -154,6 +187,7 @@ const blank = (): Omit<WorkspaceState, "projects"> => ({
 export function createWorkspace(
   api = new HttpApi(),
   preferences?: Pick<Storage, "getItem" | "setItem">,
+  layoutPorts?: { createWorker?: () => WorkerPort | undefined },
 ) {
   const store = createStore<WorkspaceState>(() => ({
     projects: [],
@@ -167,6 +201,264 @@ export function createWorkspace(
   const histories = new Map<string, PlanHistory>();
   const set = store.setState,
     get = store.getState;
+  let layoutGeneration = 0,
+    layoutSessionEpoch = 0,
+    disposedOverview = false;
+  let targetAbort: AbortController | undefined;
+  let activeLayout:
+    | { token: LayoutToken; projectionGeneration: number; contentHash: string }
+    | undefined;
+  let attemptedTarget = "";
+  const autoCache = new Map<string, Record<string, XY>>();
+  const layoutCurrent = (token: LayoutToken) => {
+    const state = get();
+    return (
+      !disposedOverview &&
+      !!activeLayout &&
+      activeLayout.token.layoutGeneration === token.layoutGeneration &&
+      activeLayout.token.projectId === token.projectId &&
+      activeLayout.token.snapshotId === token.snapshotId &&
+      state.project?.id === token.projectId &&
+      state.summary?.snapshotId === token.snapshotId &&
+      state.summary.contentHash === activeLayout.contentHash &&
+      state.viewGeneration === token.viewGeneration &&
+      state.projectionGeneration === activeLayout.projectionGeneration
+    );
+  };
+  const overviewController = new OverviewLayoutController({
+    createWorker:
+      layoutPorts?.createWorker ??
+      (() =>
+        typeof Worker === "undefined"
+          ? undefined
+          : (new Worker(
+              new URL(
+                "../features/graph/overview-layout.worker.ts",
+                import.meta.url,
+              ),
+              { type: "module" },
+            ) as WorkerPort)),
+    setTimer: (callback, delay) => setTimeout(callback, delay),
+    clearTimer: (handle) =>
+      clearTimeout(handle as ReturnType<typeof setTimeout>),
+    onResult: (token, outcome) => {
+      if (!layoutCurrent(token)) return;
+      activeLayout = undefined;
+      if (outcome.status === "failed") {
+        set({
+          overviewLayout: {
+            ...get().overviewLayout,
+            status: "failed",
+            reason: outcome.reason,
+          },
+        });
+        return;
+      }
+      if (outcome.result.status === "rejected") {
+        set({
+          overviewLayout: {
+            ...get().overviewLayout,
+            status: "rejected",
+            reason: outcome.result.reason,
+          },
+        });
+        return;
+      }
+      autoCache.delete(token.projectId);
+      autoCache.set(token.projectId, outcome.result.positions);
+      while (autoCache.size > 2)
+        autoCache.delete(autoCache.keys().next().value!);
+      set({
+        overviewLayout: {
+          ...get().overviewLayout,
+          status: "ready",
+          result: outcome.result,
+          reason: undefined,
+          computeMilliseconds: outcome.computeMilliseconds,
+        },
+      });
+    },
+  });
+  const cancelOverview = () => {
+    targetAbort?.abort();
+    targetAbort = undefined;
+    overviewController.cancel();
+    activeLayout = undefined;
+    if (get().overviewLayout.status === "pending")
+      set({
+        overviewLayout: {
+          ...get().overviewLayout,
+          status: "failed",
+          reason: "cancelled",
+        },
+      });
+  };
+  const requestOverview = async (recompute: boolean): Promise<void> => {
+    let state = get();
+    const project = state.project,
+      summary = state.summary;
+    if (
+      disposedOverview ||
+      !project ||
+      !summary ||
+      state.busy.project ||
+      summary.project?.id !== project.id
+    )
+      return;
+    cancelOverview();
+    if (recompute) {
+      set((current) => ({
+        projectionGeneration: current.projectionGeneration + 1,
+      }));
+      state = get();
+    }
+    const token: LayoutToken = {
+      projectId: project.id,
+      snapshotId: summary.snapshotId,
+      layoutGeneration: ++layoutGeneration,
+      viewGeneration: state.viewGeneration,
+    };
+    activeLayout = {
+      token,
+      projectionGeneration: state.projectionGeneration,
+      contentHash: summary.contentHash,
+    };
+    const abort = new AbortController();
+    targetAbort = abort;
+    set({ overviewLayout: { status: "pending", token } });
+    try {
+      const raw = await api.layoutTarget(
+        project.id,
+        summary.snapshotId,
+        abort.signal,
+      );
+      if (!layoutCurrent(token)) return;
+      const target = validateLayoutTarget(raw, {
+        projectId: project.id,
+        snapshotId: summary.snapshotId,
+        contentHash: summary.contentHash,
+      });
+      set({
+        overviewLayout: {
+          status: target.status === "ready" ? "pending" : "rejected",
+          token,
+          target,
+          ...(target.status === "rejected" ? { reason: target.reason } : {}),
+        },
+      });
+      if (target.status === "rejected") {
+        activeLayout = undefined;
+        return;
+      }
+      const pins: Record<string, XY> = Object.create(null),
+        retained: Record<string, XY> = Object.create(null);
+      const previous = recompute ? undefined : autoCache.get(project.id);
+      for (const node of target.nodes) {
+        const pin = get().view.positions[`fact:${node.id}`];
+        if (pin) pins[node.id] = { ...pin };
+        const old = previous?.[node.id];
+        if (old) retained[node.id] = { ...old };
+      }
+      overviewController.request(token, { target, pins, retained });
+    } catch (error) {
+      if (layoutCurrent(token)) {
+        activeLayout = undefined;
+        set({
+          overviewLayout: {
+            status: "failed",
+            token,
+            reason: error instanceof ApiError ? error.code : "invalid_target",
+          },
+        });
+      }
+    } finally {
+      if (targetAbort === abort) targetAbort = undefined;
+    }
+  };
+  const captureLayout = (): LayoutCapture | undefined => {
+    const state = get(),
+      own = ownership.store.getState();
+    return !disposedOverview &&
+      state.project &&
+      state.summary &&
+      !state.busy.project &&
+      !state.busy.funnel &&
+      !state.dirtyPlanEditor &&
+      !state.groupDraft &&
+      !state.funnel &&
+      !state.groupSelectionMode &&
+      own.mode === "layout" &&
+      !own.intent &&
+      own.status !== "dragging" &&
+      own.status !== "preview" &&
+      own.status !== "saving"
+      ? {
+          projectId: state.project.id,
+          snapshotId: state.summary.snapshotId,
+          projectionGeneration: state.projectionGeneration,
+          viewGeneration: state.viewGeneration,
+        }
+      : undefined;
+  };
+  const saveLayoutPositions = (
+    patch: Record<string, XY>,
+    capture: LayoutCapture,
+  ): boolean => {
+    const current = captureLayout(),
+      state = get(),
+      own = ownership.store.getState();
+    if (
+      !current ||
+      !capture ||
+      current.projectId !== capture.projectId ||
+      current.snapshotId !== capture.snapshotId ||
+      current.projectionGeneration !== capture.projectionGeneration ||
+      current.viewGeneration !== capture.viewGeneration ||
+      state.funnel ||
+      state.groupSelectionMode ||
+      own.mode !== "layout" ||
+      own.intent ||
+      own.status === "dragging" ||
+      own.status === "preview" ||
+      own.status === "saving"
+    )
+      return false;
+    const entries = Object.entries(patch);
+    if (
+      entries.length > 500 ||
+      entries.some(
+        ([id, xy]) =>
+          !id || !xy || !Number.isFinite(xy.x) || !Number.isFinite(xy.y),
+      )
+    )
+      return false;
+    saveView({
+      ...state.view,
+      positions: {
+        ...state.view.positions,
+        ...Object.fromEntries(
+          entries.map(([id, xy]) => [id, { x: xy.x, y: xy.y }]),
+        ),
+      },
+    });
+    return true;
+  };
+  const recomputeProjectLayout = async () => {
+    const state = get(),
+      own = ownership.store.getState();
+    if (
+      state.funnel ||
+      state.groupSelectionMode ||
+      state.dirtyPlanEditor ||
+      own.mode !== "layout" ||
+      own.intent ||
+      own.status === "dragging" ||
+      own.status === "preview" ||
+      own.status === "saving"
+    )
+      return;
+    await requestOverview(true);
+  };
   const currentFacts = () => {
     const state = get(),
       snapshotId = state.summary?.snapshotId;
@@ -908,7 +1200,19 @@ export function createWorkspace(
   };
   const saveView = (view: ViewState) => {
     if (!get().project || get().busy.project) return;
-    set({ view });
+    const payload: ViewState = {
+      ...view,
+      positions: Object.fromEntries(
+        Object.entries(view.positions).map(([id, xy]) => [id, { ...xy }]),
+      ),
+      ...(view.collapsedGroupIds
+        ? { collapsedGroupIds: [...view.collapsedGroupIds] }
+        : {}),
+    };
+    set({ view: payload, viewUnsaved: true });
+    const capturedGeneration = get().viewGeneration;
+    const capturedProject = get().project!.id;
+    const capturedEpoch = layoutSessionEpoch;
     // Explicitly captured payload + scope-cancelled timer. Serialized writes avoid an
     // earlier drag overwriting a later theme/layout change in persistent storage.
     scope.schedule(
@@ -916,7 +1220,20 @@ export function createWorkspace(
       (id) => {
         viewWrites = viewWrites
           .catch(() => {})
-          .then(() => api.saveView(id, view));
+          .then(() =>
+            get().project?.id === capturedProject &&
+            layoutSessionEpoch === capturedEpoch
+              ? api.saveView(id, payload)
+              : undefined,
+          )
+          .then(() => {
+            if (
+              get().project?.id === capturedProject &&
+              layoutSessionEpoch === capturedEpoch &&
+              get().viewGeneration === capturedGeneration
+            )
+              set({ viewUnsaved: false });
+          });
         void run(
           "view",
           () => viewWrites,
@@ -2183,11 +2500,91 @@ export function createWorkspace(
   const acceptPolicyRead = (
     response: AcceptedPolicyReadResponse,
   ): Promise<void> => acceptPolicyResponse(response, true);
+  const stopOverviewScope = store.subscribe((state, previous) => {
+    const projectChanged = state.project?.id !== previous.project?.id;
+    const snapshotChanged =
+      state.summary?.snapshotId !== previous.summary?.snapshotId ||
+      state.summary?.contentHash !== previous.summary?.contentHash;
+    const viewChanged = state.view !== previous.view;
+    const projectionChanged =
+      projectChanged ||
+      snapshotChanged ||
+      state.graph !== previous.graph ||
+      state.groups !== previous.groups ||
+      state.plan !== previous.plan ||
+      state.filter !== previous.filter ||
+      state.navigationLocation !== previous.navigationLocation ||
+      state.context !== previous.context ||
+      state.fileContext !== previous.fileContext ||
+      state.funnel !== previous.funnel ||
+      state.groupSelectionMode !== previous.groupSelectionMode ||
+      state.dirtyPlanEditor !== previous.dirtyPlanEditor ||
+      state.groupDraft !== previous.groupDraft ||
+      state.busy.project !== previous.busy.project ||
+      state.busy.funnel !== previous.busy.funnel;
+    if (projectChanged || snapshotChanged) layoutSessionEpoch++;
+    if (viewChanged || projectionChanged) {
+      set({
+        viewGeneration: previous.viewGeneration + (viewChanged ? 1 : 0),
+        projectionGeneration:
+          previous.projectionGeneration + (projectionChanged ? 1 : 0),
+      });
+      cancelOverview();
+    }
+    if (projectChanged || snapshotChanged) {
+      attemptedTarget = "";
+      if (projectChanged)
+        set({ overviewLayout: { status: "idle" }, viewUnsaved: false });
+      else if (state.overviewLayout.status === "ready")
+        set({ overviewLayout: { status: "idle" } });
+    }
+    const current = get();
+    if (
+      current.project &&
+      current.summary &&
+      !current.busy.project &&
+      current.project.id === current.summary.project?.id
+    ) {
+      const key = `${current.project.id}\0${current.summary.snapshotId}\0${current.summary.contentHash}`;
+      if (key !== attemptedTarget) {
+        attemptedTarget = key;
+        queueMicrotask(() => {
+          if (!disposedOverview && attemptedTarget === key)
+            void requestOverview(false);
+        });
+      }
+    }
+  });
+  const stopOverviewOwnership = ownership.store.subscribe((state, previous) => {
+    if (
+      state.mode !== previous.mode ||
+      state.intent !== previous.intent ||
+      state.status !== previous.status
+    ) {
+      set((current) => ({
+        projectionGeneration: current.projectionGeneration + 1,
+      }));
+      cancelOverview();
+    }
+  });
+  const disposeOverview = () => {
+    disposedOverview = true;
+    stopOverviewScope();
+    stopOverviewOwnership();
+    cancelOverview();
+    overviewController.dispose();
+    autoCache.clear();
+  };
   return {
+    captureLayout,
+    saveLayoutPositions,
+    recomputeProjectLayout,
+    disposeOverview,
     acceptPolicyWrite,
     acceptPolicyRead,
     annotations,
     disposeAnnotations: () => {
+      disposeOverview();
       stopAnnotationBusy();
       stopAnnotationScope();
       annotations.deactivate();
