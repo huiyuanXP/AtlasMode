@@ -33,3 +33,9 @@ Fixed SHA eba72916dc4c0c2131b7d2da67ccc7d8cab4f7d8, run38111183282: browser53PAS
 Identical native test sources passed on R2. R2/R3 Windows root durations104.28/186.19s; annotation23.06/66.08s, structure-sync5.84/23.52s, POL01 HTTP9.33/39.17s. Contention is supported inference, not proved without OS telemetry. R4 limits independent Windows test-file workers to1; isolation, inclusion, deadlines, assertions and explicit internal concurrent operations remain. Linux/mac scheduling unchanged. Pinned Vitest4.1.11 installed cli-api.CnMVyzaz.js3832–3837 defaults to max(availableParallelism()-1,1), isolated worker1 serializes files at3884.
 
 Eight targeted files166PASS in51.36s with --maxWorkers=1; root lint and diff check PASS. Fresh native matrix pending. Tickets remain REVIEW. No unrelated ticket, merge or deploy.
+
+## R4 Linux close-observer failure; R5 targeted observation
+
+R4 fixed27acddc run38111834140: browser53PASS/mac1381PASS; Linux1380PASS/1FAIL plus one unhandled rejection, server-shutdown partial headers readECONNRESET. Windows pending at repair preparation. Raw Linux log retained. This is distinct from the worker cap.
+
+events.once(socket,close) rejects on error even with another error listener, and its precreated promise rejected during await server.stop before awaitclosed. Incomplete request bytes may be discarded through TCP reset. R5 observer resolves on actualclose and captures errors; onlyECONNRESET allowed after close, codeundefined/other errors fail. Added explicit connection-open assertion immediately beforestop, retained server exit0/null, unchanged20s bound, cleanup receipt. Fourth slow complete-request/pipelined test and production code untouched. Deterministic realSocket regressions for cleanclose/reset/EIO verify observer and unexpected-error rejection. Native CI error is RED; final local7PASS10.39s incl all4 originalcases, lint/diffPASS. Full new fixedSHA matrix still required; no ticket closed.

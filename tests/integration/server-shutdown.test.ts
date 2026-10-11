@@ -1,7 +1,7 @@
 import { expect, test } from "vitest";
 import { once } from "node:events";
 import { mkdtemp, mkdir, writeFile, rm, access } from "node:fs/promises";
-import { createConnection, type Socket } from "node:net";
+import { createConnection, Socket } from "node:net";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { setTimeout as delay } from "node:timers/promises";
@@ -11,6 +11,32 @@ import { WorkspaceService } from "@codemap/service";
 import { SourceIndexer } from "@codemap/indexer";
 import { SqliteStorage, StructureFileStore } from "@codemap/storage";
 import { startProduction, http } from "../support/production.mjs";
+
+function discardedConnectionClose(socket: Socket): Promise<NodeJS.ErrnoException[]> {
+  const errors: NodeJS.ErrnoException[] = [];
+  socket.on("error", (error: NodeJS.ErrnoException) => errors.push(error));
+  // Incomplete requests can be reset while the server discards their bytes.
+  // Observe actual closure instead of events.once's implicit error rejection.
+  return new Promise((resolve) => socket.once("close", () => resolve(errors)));
+}
+
+function expectOnlyDiscardResets(errors: NodeJS.ErrnoException[]): void {
+  expect(errors.map((error) => error.code).filter((code) => code !== "ECONNRESET")).toEqual([]);
+}
+
+test.each([undefined, "ECONNRESET", "EIO"])(
+  "discarded connection observer waits for close and validates %s",
+  async (code) => {
+    const socket = new Socket();
+    const closed = discardedConnectionClose(socket);
+    socket.destroy(code ? Object.assign(new Error(code), { code }) : undefined);
+    const errors = await closed;
+    expect(socket.destroyed).toBe(true);
+    expect(errors.map((error) => error.code)).toEqual(code ? [code] : []);
+    if (code === "EIO") expect(() => expectOnlyDiscardResets(errors)).toThrow();
+    else expectOnlyDiscardResets(errors);
+  },
+);
 
 // These connections have not submitted a complete request or started any
 // application work. They must not prevent the installed shutdown handler from
@@ -26,11 +52,9 @@ test.each(["raw", "partial headers", "partial body"])(
       server = await startProduction(root);
       evidence.pid = server.child.pid;
       socket = createConnection({ host: "127.0.0.1", port: server.port });
-      const errors: string[] = [];
-      socket.on("error", (error) => errors.push(error.message));
+      const closed = discardedConnectionClose(socket);
       socket.resume();
       await once(socket, "connect");
-      const closed = once(socket, "close");
       if (state !== "raw") {
         socket.write(
           state === "partial headers"
@@ -42,6 +66,7 @@ test.each(["raw", "partial headers", "partial body"])(
       evidence.localPort = socket.localPort;
       evidence.bytesWritten = socket.bytesWritten;
       evidence.openAtStop = !socket.destroyed;
+      expect(socket.destroyed).toBe(false);
       const start = performance.now();
       server.child.once("disconnect", () => {
         evidence.handlerEmittedAndIpcDisconnectedMs = performance.now() - start;
@@ -52,9 +77,10 @@ test.each(["raw", "partial headers", "partial body"])(
         evidence.stopMs = performance.now() - start;
         evidence.exitCode = server.child.exitCode;
         evidence.signalCode = server.child.signalCode;
-        evidence.socketErrors = errors;
       }
-      await closed;
+      const errors = await closed;
+      evidence.socketErrors = errors.map((error) => ({ code: error.code, message: error.message }));
+      expectOnlyDiscardResets(errors);
       expect(server.child.exitCode).toBe(0);
       expect(server.child.signalCode).toBeNull();
     } finally {
