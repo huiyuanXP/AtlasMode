@@ -2,19 +2,13 @@
 
 ## 当前工作（2026-10-11 UTC）
 
-当前分支目标 `fix/first-use-20261010`。用户明确授权按票/重大范围同步neat-freak文档后commit/push GitHub，持续推进可做任务；不授权merge、部署或权限修改。
+本轮仅完成跨平台CI定向修复与验收。隔离分支 `fix/pol01-ci-runtime-20261011` 的代码SHA `e48f927fcd7711b5ad5847a6de1e0b0da299d010`，[真实CI](https://github.com/huiyuanXP/AtlasMode/actions/runs/38112226930) Linux/macOS/Windows/browser全部成功；FS01/KN01/POL01为DONE，36票累计22DONE/14剩余。Linux/mac113文件1384PASS；Windows1364PASS/18skip（1382total，原dev/index平台条件少2例），精确日志见[验收证据](reviews/ci-runtime-r2-2026-10-11/README.md)，浏览器53PASS。build/types/lint/smoke在三个native runner通过，零workererror。
 
-FS01/KN01/POL01隔离冻结候选已完成实施与独立审查：build/typecheck/lint/smoke通过，全根1342/1342（112文件）、真实Chromium单轮51/51无skip/flaky。原1336PASS/6FAIL保存；4fixture七个旧negative SDK契约精确修复后15定向及全量通过。源码312路径SHA逐一相同，已审4fixture增量单独记录。见[最新验收](../reviews/final-acceptance-2026-10-11/final-acceptance-report-20261011.md)。
+原734567b的Windows8FAIL和native watcher断言、ed793三平台失败均保留。修复限于test/support与Windows测试worker配置：parent-owned durable边界强杀保严格SIGKILL及恢复断言，native canonical watcher保原文件身份/变更观测；浏览器真实拖动稳定观测与未完成连接close/reset观测修复，完整请求持久化不变。新增earlyexit0/1与forgedPID拒绝负例；本地78+4、166及关闭观测7项定向通过，fixturetypes/lint及独审APPROVE C0/I0/M0。
 
-整体独审唯一Python路径I1已定向修复并独立复审关闭（C0/I0/M0）；两产品文件/三测试文件，定向142单测及25浏览器通过，原失败证据保留。见 [修复证据](../reviews/python-compatibility-2026-10-11/README.md)。新组合全量门禁与远端CI另行记录。
+远端 `fix/first-use-20261010`保持ed793；原checkout0991dbc、publisher和PERF02所有未提交成果保留，未merge/deploy。用户授权每票文档/commit/普通push；不授权凭据读取或权限扩展。完成此项后停止交接，父另开线程。下一最小任务为原PERF02 Task3续接，先修私有Vitest解析后真正RED→GREEN；A/B已有审查源码保留，Task3预检/局部几何仍未实现，不重复派工或进入Task4。
 
-最终组合（Python产品修复+CI夹具/workflow）已新跑build/typecheck/lint/smoke、compiled全根112文件/1374测试、Chromium53场景，零skip/flaky。314路径与publisher一致，179编译文件SHA记录；本轮登记24服务PID/端口已释放。见 [组合门禁](../reviews/ci-python-fixture-r1-2026-10-11/README.md)。用户要求本步备份后暂停以重启服务器，后续票据不启动；原worktree及证据保留。
-
-三票当前REVIEW，等待这轮推送的真实CI；原36票仍19 DONE/17未完成，CI闭合后再更新DONE。下一步为已审Python夹具接入和真实Windows门禁，再按依赖推进其余14票。PERF02 A/B模块已有源码APPROVE，Task3局部几何/预检尚未实现，先独占完成Task3，再进入Workspace/Canvas/Worker接线与真实规模验证；其余设计不当作实现。
-
-当前Provider真调用、真实Codex/Claude双客户端、Windows交互式Ctrl+C和新云部署仍未验收。AG03 native R1仅SOURCE APPROVE，Unicode/进程树Windows门禁未运行；不得解除原生Chat限制。0991dbc的Windows CI两Python5秒失败仍保留，不使用旧绿色覆盖。
-
-neat-freak：代码/本地候选运行态verified-current，文档changed-and-verified；用户AGENTS改动保留、vendored skills不变；生成记忆只读；GitHub CI与平台边界pending。隔离worktree、截图和原始证据保留，不清场；本轮浏览器登记22自有PID已退出、端口关闭，不泛指全部项目资源。
+QA02真实Codex/Claude双客户端与Windows交互Ctrl+C、AG03nativeJob门禁、外部Provider真实调用、新云部署仍未验；不因本轮CI通过清除其它票边界。neat-freak代码/nativeCI verified-current，文档changed-and-verified，规则校验通过/不改，生成记忆只读；10本轮ownedPID退出/1端口关闭，现场与源码/截图/原日志保留，无长驻测试。
 
 ## 前一轮交付：图检查交互 UI-05～UI-10（2026-10-09 UTC）
 

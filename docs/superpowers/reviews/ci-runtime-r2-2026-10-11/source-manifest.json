@@ -1,0 +1,18 @@
+{
+  "codeSha": "e48f927fcd7711b5ad5847a6de1e0b0da299d010",
+  "baseSha": "ed793266b9dcac5cfa65f1a5358ec97d5184a69f",
+  "sourceFiles": {
+    "apps/server/src/pol01-http-repair.test.ts": "3b05293ef3ce455f64cfe872472ed2700a3ce68351adb185d882b3cb13de4c67",
+    "apps/server/src/pol01-workspace-http.test.ts": "5fc0ae897a2911bbeb194b6686c93ac37ced3435f01c728f949e6b8751918759",
+    "packages/storage/src/annotation-migration.test.ts": "7b836a76048bbaa22f9bb519888bc679e2a7611ff152b6efae2c0e7edf3055ab",
+    "packages/storage/src/structure-file.test.ts": "88d70c77494ff3ed93cd0488c803002482c74c79e0a785965eca9d1d56c313ab",
+    "tests/e2e/ownership.spec.ts": "ea626b641024682873a98375359191810462240866137dc62798dbc7cfef8a79",
+    "tests/integration/pol01-runtime-guard.test.ts": "5221f0852f91868c61eb8a71a32dc60fe1e2efce1e4477375788ea84edc227a1",
+    "tests/integration/server-shutdown.test.ts": "6868efc5fa6a106319489bf5a0d62ce658df9fb401c7156efbaffe6b6968a5b1",
+    "tests/support/pol01-acceptance.ts": "5cbc236454511f04daed15e1cc0ea756eb9d15f43daf10ca2b957184ccfe1086",
+    "tests/support/pol01-crash.ts": "93fa46efa7870be74c5f89e9c34ff5a754a1c1d21a70c0188ccba452372494cf",
+    "tests/support/pol01-runtime.ts": "2f538082b2a199d46b52e7ac087e474c1f746b012d4059a8017c6ac9a9c1ca96",
+    "vitest.config.ts": "0f6bc0fd28945ee82ed192a0404ef1958247c447e0d2e42e167bf741ae264358"
+  },
+  "productionWorkflowChanged": false
+}

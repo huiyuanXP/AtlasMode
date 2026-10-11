@@ -1,6 +1,8 @@
-# Atlas CI runtime R2 — native acceptance pending
+# Atlas CI runtime R2 — cross-platform acceptance passed
 
 2026-10-11 UTC. Scope: finish fixed-SHA cross-platform CI only; no next ticket.
+
+## R2 preparation — historical
 
 Baseline local and remote fix/pol01-ci-runtime-20261011 matched 734567b37bcf2c733e62415624e8974ffb67e40f; worktree clean before edits. Original checkout/publisher/PERF02 paused work preserved. No merge/deploy or credential reads.
 
@@ -16,7 +18,7 @@ Validation: compiled five-file78 PASS (../targeted-r2.log), separate real-proces
 
 Independent read-only complex review: gpt-6.1-sol high, C0/I0/M0 provisional, final receipt separate. No model settings changed. Scope6 source/test files; workflow/product code unchanged.
 
-neat-freak: code changed-and-verified locally; native runtime pending; docs changed-and-verified; rules verified-current/unmodified; memory generated-read-only/out-of-scope; workspaces retained, no cleanup. Native FS01/KN01/POL01 remain REVIEW until all platforms green. No next ticket started.
+neat-freak: code changed-and-verified locally; native runtime pending at R2 preparation; docs changed-and-verified; rules verified-current/unmodified; memory generated-read-only/out-of-scope; workspaces retained, no cleanup. FS01/KN01/POL01 now DONE on the tested isolated branch; all native/browser gates passed. No next ticket started.
 
 ## R2 native green, browser retained failure; R3 pointer readiness
 
@@ -39,3 +41,17 @@ Eight targeted files166PASS in51.36s with --maxWorkers=1; root lint and diff che
 R4 fixed27acddc run38111834140: browser53PASS/mac1381PASS; Linux1380PASS/1FAIL plus one unhandled rejection, server-shutdown partial headers readECONNRESET. Windows pending at repair preparation. Raw Linux log retained. This is distinct from the worker cap.
 
 events.once(socket,close) rejects on error even with another error listener, and its precreated promise rejected during await server.stop before awaitclosed. Incomplete request bytes may be discarded through TCP reset. R5 observer resolves on actualclose and captures errors; onlyECONNRESET allowed after close, codeundefined/other errors fail. Added explicit connection-open assertion immediately beforestop, retained server exit0/null, unchanged20s bound, cleanup receipt. Fourth slow complete-request/pipelined test and production code untouched. Deterministic realSocket regressions for cleanclose/reset/EIO verify observer and unexpected-error rejection. Native CI error is RED; final local7PASS10.39s incl all4 originalcases, lint/diffPASS. Full new fixedSHA matrix still required; no ticket closed.
+
+## Fixed-SHA final native receipt
+
+Code SHA `e48f927fcd7711b5ad5847a6de1e0b0da299d010`, [run38112226930](https://github.com/huiyuanXP/AtlasMode/actions/runs/38112226930), all four jobs SUCCESS.
+
+- Ubuntu/macOS:113 files,1384 tests PASS; build/typecheck/lint/smoke PASS.
+- Windows:112 files PASS/1 file SKIP;1364 tests PASS/18 SKIP (1382 total), zero worker errors; two dev/index POSIX signal tests conditionally absent versus Linux1384, matching the original platform definition. build/typecheck/lint/smoke PASS.
+- Browser:53 PASS, original real UI coverage retained.
+
+No tests disabled, retry strategy added or security assertion weakened. Windows independent test-file workers capped at1; existing5000ms deadlines and explicit concurrent operations retained. Browser selected-node actionable drag and displacement witness passed. Windows strict hardkill, IPC/freshDB and canonical watcher executed on native runner. macOS observer controls and all40 migration tests executed. These close FS-01/KN-01/POL-01 acceptance on this isolated branch,36 tickets22DONE/14remaining. QA-02 real clients/interactiveCtrl+C, AG-03 nativeJob gates and Provider/live deployment remain separately untested.
+
+Remote fix/first-use-20261010 remains ed793; original local checkout0991dbc and paused PERF02 dirty files preserved. Tested repair branch was not merged. Next minimal task: new thread resumes existing PERF02 Task3 from its frozen source/handoff; this thread stops.
+
+neat-freak final: code/nativeCI verified-current; docs changed-and-verified; rules verified-current (vendor checksum passed), memory generated-read-only; production/live out-of-scope; retained workspaces/evidence verified-current.10 owned PIDs absent,1 port closed,guard4 ownedPIDs absent. R4 nine owned PIDs absent and one port closed; R5 three compiled processes exit0/null and absent. No cleanup beyond existing owned fixture teardown, new service or target execution. Vite chunk-size warning and Windows existing conditional skips retained.
