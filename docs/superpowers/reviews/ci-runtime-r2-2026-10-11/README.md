@@ -25,3 +25,11 @@ FixedSHA d8ec5c4 run38110644618: Ubuntu/mac113files1381PASS; Windows112PASSfiles
 CI failure screenshot+trace preserved in owner/browser-r2 and ROG. Trace shows gesture146442–146770ms during250ms fitView focus; raw mouse used one visible-card box atx1099.86/y550.378, lacked stable/actionable target or dragging witness. Local unchanged case threePASS does not erase CI failure; timing-specific. R3 only fixes this fixture: actionable hover on selected outer node, fresh proportional point, actual threshold and dragging witness, measured55/30 screen displacement<2, exact selected-node persisted position. Original unchanged plan, no ownership native event, real native folderdrop/save/reload, source hashes remain. No sleeps, retries, production changes or weakened assertion.
 
 R3 amended three targeted browser executions PASS, original three targeted PASS retained distinctly. Final lint and independent narrow review separately recorded. Full new fixedSHA CI remains required.
+
+## R3 native timeout failure; R4 bounded Windows workers
+
+Fixed SHA eba72916dc4c0c2131b7d2da67ccc7d8cab4f7d8, run38111183282: browser53PASS and Linux/mac1381PASS. Windows1356PASS/5FAIL/18SKIP, all five failures at existing5000ms timeouts; no termination-tuple/watcher/worker-exit recurrence. Raw run-specific logs preserved in owner/evidence-r3.
+
+Identical native test sources passed on R2. R2/R3 Windows root durations104.28/186.19s; annotation23.06/66.08s, structure-sync5.84/23.52s, POL01 HTTP9.33/39.17s. Contention is supported inference, not proved without OS telemetry. R4 limits independent Windows test-file workers to1; isolation, inclusion, deadlines, assertions and explicit internal concurrent operations remain. Linux/mac scheduling unchanged. Pinned Vitest4.1.11 installed cli-api.CnMVyzaz.js3832–3837 defaults to max(availableParallelism()-1,1), isolated worker1 serializes files at3884.
+
+Eight targeted files166PASS in51.36s with --maxWorkers=1; root lint and diff check PASS. Fresh native matrix pending. Tickets remain REVIEW. No unrelated ticket, merge or deploy.
