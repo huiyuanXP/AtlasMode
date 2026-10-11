@@ -13,3 +13,5 @@
 2026-10-11：本地隔离候选实施、独审、全根1342项测试与51项真实浏览器均通过；随本轮提交推送。新远端CI待收据，状态保持REVIEW直到门禁闭合。[验收](../reviews/final-acceptance-2026-10-11/final-acceptance-report-20261011.md)。Windows/外部Provider/真实客户端限制单独保留，不随本票清除。
 
 整体独审发现的已有Python编辑兼容性I1已关闭：共享文件后缀恢复`.py`，定向142单测/25浏览器与独立窄复审通过。[修复及原失败](../reviews/python-compatibility-2026-10-11/README.md)。组合全量与新远端CI待主控记录，状态保持REVIEW。
+
+最终组合本地门禁：1374全仓单测/53浏览器，build/types/lint/smoke全通过，source/编译/资源收据完整。[组合证据](../reviews/ci-python-fixture-r1-2026-10-11/README.md)。用户要求备份后暂停重启；真实新CI完成前仍REVIEW。

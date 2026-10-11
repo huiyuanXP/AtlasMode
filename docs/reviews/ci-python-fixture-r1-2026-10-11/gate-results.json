@@ -1,0 +1,72 @@
+[
+  {
+    "gate": "build",
+    "command": [
+      "npm",
+      "run",
+      "build"
+    ],
+    "environmentOverrides": {},
+    "exitCode": 0,
+    "durationSeconds": 20.584
+  },
+  {
+    "gate": "typecheck",
+    "command": [
+      "npm",
+      "run",
+      "typecheck"
+    ],
+    "environmentOverrides": {},
+    "exitCode": 0,
+    "durationSeconds": 27.629
+  },
+  {
+    "gate": "lint",
+    "command": [
+      "npm",
+      "run",
+      "lint"
+    ],
+    "environmentOverrides": {},
+    "exitCode": 0,
+    "durationSeconds": 4.726
+  },
+  {
+    "gate": "unit",
+    "command": [
+      "npm",
+      "test"
+    ],
+    "environmentOverrides": {
+      "POL01_ACCEPTANCE_MODE": "compiled"
+    },
+    "exitCode": 0,
+    "durationSeconds": 91.006
+  },
+  {
+    "gate": "smoke",
+    "command": [
+      "npm",
+      "run",
+      "smoke"
+    ],
+    "environmentOverrides": {},
+    "exitCode": 0,
+    "durationSeconds": 5.704
+  },
+  {
+    "gate": "browser",
+    "command": [
+      "npm",
+      "run",
+      "test:e2e"
+    ],
+    "environmentOverrides": {
+      "POL01_PRODUCTION_GATE": "1",
+      "POL01_ACCEPTANCE_MODE": "compiled"
+    },
+    "exitCode": 0,
+    "durationSeconds": 210.092
+  }
+]

@@ -2,7 +2,7 @@
 
 用可编辑的代码关系图替代传统文字 Plan Mode。Agent 在实际修改代码之前，把规划叠加到现有项目图上；用户理解、调整并确认后，Agent 才实施。人通过图形理解项目，Agent 通过 MCP 查询同一份结构化模型。
 
-当前已实现本地代码关系图、真实 TS/JS/Python 静态索引、SQLite、stdio MCP、中文/英文、主题、功能集和版本化规划。2026-10-11 的文件归属、独立知识注释和目录约定同步已有整合及真实交互收据。原整合门禁1342项测试/51项浏览器保留为历史基线；整体独审发现的Python路径回归已完成两文件定向修复，142项单测和25项浏览器验证及独立复审通过，见 [兼容性修复](docs/reviews/python-compatibility-2026-10-11/README.md)。远端新提交CI另行记录，不能用本地通过代替Windows结论。精确结果见 [最新验收](docs/reviews/final-acceptance-2026-10-11/final-acceptance-report-20261011.md)，剩余工作见 [Tickets](docs/tickets/README.md)。
+当前已实现本地代码关系图、真实 TS/JS/Python 静态索引、SQLite、stdio MCP、中文/英文、主题、功能集和版本化规划。2026-10-11 的文件归属、独立知识注释和目录约定同步已有整合及真实交互收据。原整合门禁1342项测试/51项浏览器保留为历史基线；整体独审发现的Python路径回归已完成两文件定向修复，142项单测和25项浏览器验证及独立复审通过，见 [兼容性修复](docs/reviews/python-compatibility-2026-10-11/README.md)。修复与已审CI夹具的最终组合通过1374项全仓单测、53项浏览器场景及build/typecheck/lint/smoke，见 [组合门禁](docs/reviews/ci-python-fixture-r1-2026-10-11/README.md)。远端新提交CI另行记录，不能用本地通过代替Windows结论。精确结果见 [最新验收](docs/reviews/final-acceptance-2026-10-11/final-acceptance-report-20261011.md)，剩余工作见 [Tickets](docs/tickets/README.md)。
 
 此前图检查/漏斗、完整Express入口、workspace/exports和references图的历史范围与CI见 [状态与阶段记录](docs/superpowers/state.md) 和 [要求覆盖](docs/superpowers/readme-coverage.md)。更广值流、知识迁移/备份、增量索引、高级组合和平台验证仍有待办，不把历史通过当当前完整交付。
 

@@ -1,0 +1,175 @@
+{
+  "checkedAt": "2026-10-11T03:10:01.624239+00:00",
+  "scope": "Only recorded runtimes in this fresh full browser run; no signals or global scan",
+  "checks": [
+    {
+      "pid": 186454,
+      "port": 38891,
+      "pidAlive": false,
+      "portConnectResult": 111,
+      "receipt": "/tmp/atlas-ci-windows-r1-integration-20261011/workspace/artifacts/e2e/results/ownership-layout-pointer-d-f92c2-and-reloads-the-same-intent/server-9fdbbad3-99b1-4c81-aa0e-d41a4f4e9354.json"
+    },
+    {
+      "pid": 186358,
+      "port": 41271,
+      "pidAlive": false,
+      "portConnectResult": 111,
+      "receipt": "/tmp/atlas-ci-windows-r1-integration-20261011/workspace/artifacts/e2e/results/ownership-native-folder-dr-e9322--retain-truthful-boundaries/server-f7d0fd49-4e54-4db0-88e3-b8f1bccd86eb.json"
+    },
+    {
+      "pid": 186520,
+      "port": 37239,
+      "pidAlive": false,
+      "portConnectResult": 111,
+      "receipt": "/tmp/atlas-ci-windows-r1-integration-20261011/workspace/artifacts/e2e/results/ownership-a-folded-group-e-b195e-ns-membership-across-reload/server-e25f07bd-5919-40c6-964f-1c646aa63503.json"
+    },
+    {
+      "pid": 186775,
+      "port": 44221,
+      "pidAlive": false,
+      "portConnectResult": 111,
+      "receipt": "/tmp/atlas-ci-windows-r1-integration-20261011/workspace/artifacts/e2e/results/ownership-Python-indexed-m-81ce0-source-and-semantic-history/server-fd96f16f-4541-4623-ad0d-7e89b384c85e.json"
+    },
+    {
+      "pid": 186567,
+      "port": 35617,
+      "pidAlive": false,
+      "portConnectResult": 111,
+      "receipt": "/tmp/atlas-ci-windows-r1-integration-20261011/workspace/artifacts/e2e/results/ownership-dirty-advanced-t-14047-an-actual-external-revision/server-f24bf3af-19b7-40f5-a8a7-7323f80fdf59.json"
+    },
+    {
+      "pid": 186663,
+      "port": 43543,
+      "pidAlive": false,
+      "portConnectResult": 111,
+      "receipt": "/tmp/atlas-ci-windows-r1-integration-20261011/workspace/artifacts/e2e/results/ownership-idle-S0-ownershi-00f63-draft-without-a-fresh-scope/server-14875e61-8ad4-43c4-9741-31ea2440094a.json"
+    },
+    {
+      "pid": 186727,
+      "port": 43059,
+      "pidAlive": false,
+      "portConnectResult": 111,
+      "receipt": "/tmp/atlas-ci-windows-r1-integration-20261011/workspace/artifacts/e2e/results/ownership-visible-ownershi-11e6f-fter-real-project-selection/server-65460112-ea5a-49e1-ae27-38051e532b5d.json"
+    },
+    {
+      "pid": 186614,
+      "port": 35383,
+      "pidAlive": false,
+      "portConnectResult": 111,
+      "receipt": "/tmp/atlas-ci-windows-r1-integration-20261011/workspace/artifacts/e2e/results/ownership-non-saving-owner-ea936-til-an-explicit-fresh-begin/server-2223b206-194b-47e8-97f0-b0475f950c03.json"
+    },
+    {
+      "pid": 186407,
+      "port": 40661,
+      "pidAlive": false,
+      "portConnectResult": 111,
+      "receipt": "/tmp/atlas-ci-windows-r1-integration-20261011/workspace/artifacts/e2e/results/ownership-a-real-late-cont-9c8ff--another-function-selection/server-2294043d-214e-4029-a66c-afe3924e2b4f.json"
+    },
+    {
+      "pid": 186315,
+      "port": 39463,
+      "pidAlive": false,
+      "portConnectResult": 111,
+      "receipt": "/tmp/atlas-ci-windows-r1-integration-20261011/workspace/artifacts/e2e/results/ownership-native-function--79a34-mation-and-survives-restart/server-9a560fea-e6a5-489e-8d61-2fd65e7ed7e7.json"
+    },
+    {
+      "pid": 186294,
+      "port": 42903,
+      "pidAlive": false,
+      "portConnectResult": 111,
+      "receipt": "/tmp/atlas-ci-windows-r1-integration-20261011/workspace/artifacts/e2e/results/ownership-native-function--79a34-mation-and-survives-restart/server-281ab377-8af3-4046-b6d1-82134084da0d.json"
+    },
+    {
+      "pid": 186826,
+      "port": 42617,
+      "pidAlive": false,
+      "portConnectResult": 111,
+      "receipt": "/tmp/atlas-ci-windows-r1-integration-20261011/workspace/artifacts/e2e/results/ownership-Python-temporary-d99e7-p-through-compiled-controls/server-ab7086ac-8c2f-4502-9946-461220eb51c7.json"
+    },
+    {
+      "pid": 184933,
+      "port": 35335,
+      "pidAlive": false,
+      "portConnectResult": 111,
+      "receipt": "/tmp/atlas-ci-windows-r1-integration-20261011/workspace/artifacts/e2e/results/annotations-mounted-I1-not-1bdd4-nd-current-execution-locked/attachments/owned-runtime-cleanup-26028bffc208ea1c1a78470d73042550228e2139.json"
+    },
+    {
+      "pid": 184643,
+      "port": 41381,
+      "pidAlive": false,
+      "portConnectResult": 111,
+      "receipt": "/tmp/atlas-ci-windows-r1-integration-20261011/workspace/artifacts/e2e/results/annotations-zh-mounted-pro-7a32e-ry-and-owned-SQLite-restart/attachments/owned-runtime-cleanup-14060524a5ebe149bd2885e1f6b75779c77c1165.json"
+    },
+    {
+      "pid": 184665,
+      "port": 44891,
+      "pidAlive": false,
+      "portConnectResult": 111,
+      "receipt": "/tmp/atlas-ci-windows-r1-integration-20261011/workspace/artifacts/e2e/results/annotations-zh-mounted-pro-7a32e-ry-and-owned-SQLite-restart/attachments/owned-runtime-cleanup-14060524a5ebe149bd2885e1f6b75779c77c1165.json"
+    },
+    {
+      "pid": 184707,
+      "port": 33489,
+      "pidAlive": false,
+      "portConnectResult": 111,
+      "receipt": "/tmp/atlas-ci-windows-r1-integration-20261011/workspace/artifacts/e2e/results/annotations-en-mounted-pro-cfe53-ry-and-owned-SQLite-restart/attachments/owned-runtime-cleanup-7edf1893fd43cfa82b1660d21caa6ae320e2f765.json"
+    },
+    {
+      "pid": 184730,
+      "port": 44549,
+      "pidAlive": false,
+      "portConnectResult": 111,
+      "receipt": "/tmp/atlas-ci-windows-r1-integration-20261011/workspace/artifacts/e2e/results/annotations-en-mounted-pro-cfe53-ry-and-owned-SQLite-restart/attachments/owned-runtime-cleanup-7edf1893fd43cfa82b1660d21caa6ae320e2f765.json"
+    },
+    {
+      "pid": 187092,
+      "port": 40759,
+      "pidAlive": false,
+      "portConnectResult": 111,
+      "receipt": "/tmp/atlas-ci-windows-r1-integration-20261011/workspace/artifacts/e2e/results/pol01-structure-production-41aaf-reserves-invalid-file-bytes/attachments/owned-runtime-receipt-5e334709d341cf5666c76dc9d0c91262e066be1e.json"
+    },
+    {
+      "pid": 187108,
+      "port": 45209,
+      "pidAlive": false,
+      "portConnectResult": 111,
+      "receipt": "/tmp/atlas-ci-windows-r1-integration-20261011/workspace/artifacts/e2e/results/pol01-structure-production-41aaf-reserves-invalid-file-bytes/attachments/owned-runtime-receipt-5e334709d341cf5666c76dc9d0c91262e066be1e.json"
+    },
+    {
+      "pid": 184820,
+      "port": 37495,
+      "pidAlive": false,
+      "portConnectResult": 111,
+      "receipt": "/tmp/atlas-ci-windows-r1-integration-20261011/workspace/artifacts/e2e/results/annotations-mounted-produc-22901-ead-without-duplicate-write/attachments/owned-runtime-cleanup-63e442c733954975836deeab8c9827e693364e98.json"
+    },
+    {
+      "pid": 184773,
+      "port": 42165,
+      "pidAlive": false,
+      "portConnectResult": 111,
+      "receipt": "/tmp/atlas-ci-windows-r1-integration-20261011/workspace/artifacts/e2e/results/annotations-mounted-produc-719ef-ty-body-and-creation-source/attachments/owned-runtime-cleanup-898abf0839a1891976c8b066d36ba308efafc73f.json"
+    },
+    {
+      "pid": 184867,
+      "port": 39649,
+      "pidAlive": false,
+      "portConnectResult": 111,
+      "receipt": "/tmp/atlas-ci-windows-r1-integration-20261011/workspace/artifacts/e2e/results/annotations-mounted-I1-str-9398a-nd-current-execution-locked/attachments/owned-runtime-cleanup-a26f8f6abe15f0cfb2c160ea2aabb96a0040a582.json"
+    },
+    {
+      "pid": 184984,
+      "port": 42845,
+      "pidAlive": false,
+      "portConnectResult": 111,
+      "receipt": "/tmp/atlas-ci-windows-r1-integration-20261011/workspace/artifacts/e2e/results/annotations-mounted-I2-old-b605c-replay-or-dirty-replacement/attachments/owned-runtime-cleanup-0fe1b2cc790473d6e21801986e612b396dc1e218.json"
+    },
+    {
+      "pid": 187028,
+      "port": 37169,
+      "pidAlive": false,
+      "portConnectResult": 111,
+      "receipt": "/tmp/atlas-ci-windows-r1-integration-20261011/workspace/artifacts/e2e/results/pol01-structure-production-60b0b-09-requires-explicit-reload/attachments/owned-runtime-receipt-0e8f9ab42541b3a3bd010002848df1f8223de3ea.json"
+    }
+  ],
+  "allRegisteredGone": true
+}

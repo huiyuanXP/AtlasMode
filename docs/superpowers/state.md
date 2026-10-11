@@ -8,6 +8,8 @@ FS01/KN01/POL01隔离冻结候选已完成实施与独立审查：build/typechec
 
 整体独审唯一Python路径I1已定向修复并独立复审关闭（C0/I0/M0）；两产品文件/三测试文件，定向142单测及25浏览器通过，原失败证据保留。见 [修复证据](../reviews/python-compatibility-2026-10-11/README.md)。新组合全量门禁与远端CI另行记录。
 
+最终组合（Python产品修复+CI夹具/workflow）已新跑build/typecheck/lint/smoke、compiled全根112文件/1374测试、Chromium53场景，零skip/flaky。314路径与publisher一致，179编译文件SHA记录；本轮登记24服务PID/端口已释放。见 [组合门禁](../reviews/ci-python-fixture-r1-2026-10-11/README.md)。用户要求本步备份后暂停以重启服务器，后续票据不启动；原worktree及证据保留。
+
 三票当前REVIEW，等待这轮推送的真实CI；原36票仍19 DONE/17未完成，CI闭合后再更新DONE。下一步为已审Python夹具接入和真实Windows门禁，再按依赖推进其余14票。PERF02 A/B模块已有源码APPROVE，Task3局部几何/预检尚未实现，先独占完成Task3，再进入Workspace/Canvas/Worker接线与真实规模验证；其余设计不当作实现。
 
 当前Provider真调用、真实Codex/Claude双客户端、Windows交互式Ctrl+C和新云部署仍未验收。AG03 native R1仅SOURCE APPROVE，Unicode/进程树Windows门禁未运行；不得解除原生Chat限制。0991dbc的Windows CI两Python5秒失败仍保留，不使用旧绿色覆盖。
