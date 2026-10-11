@@ -1,0 +1,14 @@
+{
+  "headSha": "5ccf5a15f364ff7357b11bcd415bcdc4760cd041",
+  "runId": 38112726792,
+  "status": "completed",
+  "conclusion": "success",
+  "jobs": {
+    "browser": "success",
+    "native (macos-latest)": "success",
+    "native (ubuntu-latest)": "success",
+    "native (windows-latest)": "success"
+  },
+  "method": "gh run view read-only; no rerun",
+  "scope": "previous docs/code baseline, not Task3 production integration"
+}

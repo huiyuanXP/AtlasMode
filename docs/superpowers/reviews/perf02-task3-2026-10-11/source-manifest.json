@@ -1,0 +1,107 @@
+{
+  "timestamp": "2026-10-11T05:14:08.509197+00:00",
+  "status": "R2_AUTHOR_FREEZE_FOR_SCOPED_RE_REVIEW_NOT_APPROVED",
+  "base": "ed793266b9dcac5cfa65f1a5358ec97d5184a69f",
+  "branch": "task/perf02-visual-20261011",
+  "owned": {
+    "apps/web/src/features/graph/overview-visual.ts": "ce1aa93d597714c3975b53739ff658b1d72cbc8877064b6b45dbcce08781e979",
+    "apps/web/src/features/graph/overview-visual.test.ts": "db89507d20f190316b8ce6fc93e73ad78ac3d695355030ff94f8947bdfef7e55"
+  },
+  "reviewFindings": {
+    "I1": "group fallback width360 height220+60*portIds.length",
+    "I2": "raw source caps preserve exact counts but no invented visual lower bound",
+    "M1": "bounded generated/header/retained projected-ID preflight collision rejection"
+  },
+  "r1PackageManifestSHA": "02d3a88583739b60a4ed7dc223b80f47edfb6b7094f736b3a4bc4043b98b1aa1",
+  "r1ProtectedFiles": 21,
+  "r1PackageMismatches": {},
+  "beforeManifestPaths": 1387,
+  "beforeManifestMismatches": {},
+  "priorSources": {
+    "packages/core/src/layout-target.ts": {
+      "expected": "3f5f3290193fc75900434bb2dfd9e670e18cebf19a52170b54d20b92566262e6",
+      "actual": "3f5f3290193fc75900434bb2dfd9e670e18cebf19a52170b54d20b92566262e6"
+    },
+    "packages/core/src/layout-target.test.ts": {
+      "expected": "c0dbf1c5c453e566078960f47b08cf816b566aed6f3eb5781ce7e45dc598f089",
+      "actual": "c0dbf1c5c453e566078960f47b08cf816b566aed6f3eb5781ce7e45dc598f089"
+    },
+    "apps/web/src/api/layout-target.ts": {
+      "expected": "058839e79ff807800f1c7f3e34f5d9bc65d2b093f1f7668cf5b11a4db0ce9c17",
+      "actual": "058839e79ff807800f1c7f3e34f5d9bc65d2b093f1f7668cf5b11a4db0ce9c17"
+    },
+    "apps/web/src/api/layout-target.test.ts": {
+      "expected": "46151bda9f65b1e08207031144b4bbee2fc1e5dd269e7e50247394a01cf5b310",
+      "actual": "46151bda9f65b1e08207031144b4bbee2fc1e5dd269e7e50247394a01cf5b310"
+    },
+    "apps/web/src/features/graph/overview-layout.ts": {
+      "expected": "35ed32f228f33fc00fb6dda4346d44565659edf32f4f24d350bd981885a554d6",
+      "actual": "35ed32f228f33fc00fb6dda4346d44565659edf32f4f24d350bd981885a554d6"
+    },
+    "apps/web/src/features/graph/overview-layout.test.ts": {
+      "expected": "cf1da33ba91585fdf264a9231bc2fbb1cdf2f332f4c1c43e2110dd50056421b6",
+      "actual": "cf1da33ba91585fdf264a9231bc2fbb1cdf2f332f4c1c43e2110dd50056421b6"
+    },
+    "apps/web/src/features/graph/overview-layout.worker.ts": {
+      "expected": "73fb9db1cd11657eee84d7697107a42ae77cced74cba56dd48cd8f40f904ee03",
+      "actual": "73fb9db1cd11657eee84d7697107a42ae77cced74cba56dd48cd8f40f904ee03"
+    },
+    "apps/web/src/features/graph/overview-layout-controller.ts": {
+      "expected": "8c1c6265fcb0566f83b3612798067e6721967f356515a4298040572727eea539",
+      "actual": "8c1c6265fcb0566f83b3612798067e6721967f356515a4298040572727eea539"
+    },
+    "apps/web/src/features/graph/overview-layout-controller.test.ts": {
+      "expected": "780baa42b1d5b2f0e6f7a585aad288913a399d78f27013458a50f3840af72572",
+      "actual": "780baa42b1d5b2f0e6f7a585aad288913a399d78f27013458a50f3840af72572"
+    },
+    "packages/core/src/index.ts": {
+      "expected": "5c32f683752f321504c3c3abd6cb557aa752399973c9384535ef73a29bbdc9c5",
+      "actual": "5c32f683752f321504c3c3abd6cb557aa752399973c9384535ef73a29bbdc9c5"
+    },
+    "apps/server/src/queries.ts": {
+      "expected": "6ca8563aa93c7b4a7f6a2384aba97b322a40bf3a831618902559b021959958b2",
+      "actual": "8f6ef62561d355bfcb7df9838a9a52de0108096c0c352efd830d0d604fe2e70e"
+    },
+    "apps/server/src/routes.ts": {
+      "expected": "9a906e8e637aeafacc2197e3959b27ac76636dd0fb0a62ad50549374d872cfdb",
+      "actual": "3d02ef217ca51eb9a4b0072a8e24ff89ff70a1337e856af45c916f62266f19a1"
+    },
+    "apps/server/src/layout-target.test.ts": {
+      "expected": "9eb6c0350f70759484e9bb56472e0282e7213a3696a9b0651aaff29f7cb7114f",
+      "actual": "9eb6c0350f70759484e9bb56472e0282e7213a3696a9b0651aaff29f7cb7114f"
+    },
+    "apps/web/src/api/layout-target-client.ts": {
+      "expected": "dade820730d12798a447803f13edc0879372859ddca14c274eb2a64125dc7ad0",
+      "actual": "dade820730d12798a447803f13edc0879372859ddca14c274eb2a64125dc7ad0"
+    },
+    "apps/web/src/api/layout-target-client.test.ts": {
+      "expected": "bf42d917d5996527e6e9fbfd62f00b696afd7b475b0409e273b9746feb455f26",
+      "actual": "bf42d917d5996527e6e9fbfd62f00b696afd7b475b0409e273b9746feb455f26"
+    }
+  },
+  "preservedPauseActualMismatches": {},
+  "config": {
+    "config/vitest.config.mts": "e5794e2ad2a9a5bb1efd00d66a35de0ac00230b5edd72fa763b5189a0a36e5aa",
+    "config/tsconfig.owned.json": "b3277ed96ef37e9ae7c59ffed29805beba268c3189f5e3125380269a18d9dbe5"
+  },
+  "evidence": {
+    "review-findings-red.log": "c13aa561eb3db77b8136b1eb6c90faceb868b6b5f6b51af271ed387d68e924e9",
+    "r2-owned-repair-red.log": "3180d03cb70c4334e1f05cb16a30edd03e2af1957c7fe02f072c65feef2e9a87",
+    "r2-owned-repair-green.log": "ed17a0bfcd276416a02aa11ba3d7b62446b8b16614c99371381a50e16bc6cb95",
+    "r2-green-task3-regression.log": "77d6cfeeeced551e5974cdb57ba5b1d76ca7a04658b62bfcb56e53c1d1668bfc",
+    "r2-typecheck-owned.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "r2-lint-owned.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "validation": {
+    "targetedFormalRED": "4FAIL/63 intentionally deselected",
+    "targetedFormalGREEN": "4PASS/63 intentionally deselected",
+    "neighborGREEN": "5files123testsPASS no skip",
+    "task3Tests": 67,
+    "ownedTypecheckExit": 0,
+    "ownedLintExit": 0,
+    "singleWorker": true
+  },
+  "unchangedUnrunBoundaries": "No full-root/build/browser/DOM/performance; controller scope retained; Task4/5 pending",
+  "noStageCommitPush": true,
+  "gitStatus": " M packages/core/src/index.ts\n?? apps/server/src/layout-target.test.ts\n?? apps/web/src/api/layout-target-client.test.ts\n?? apps/web/src/api/layout-target-client.ts\n?? apps/web/src/api/layout-target.test.ts\n?? apps/web/src/api/layout-target.ts\n?? apps/web/src/features/graph/overview-layout-controller.test.ts\n?? apps/web/src/features/graph/overview-layout-controller.ts\n?? apps/web/src/features/graph/overview-layout.test.ts\n?? apps/web/src/features/graph/overview-layout.ts\n?? apps/web/src/features/graph/overview-layout.worker.ts\n?? apps/web/src/features/graph/overview-visual.test.ts\n?? apps/web/src/features/graph/overview-visual.ts\n?? packages/core/src/layout-target.test.ts\n?? packages/core/src/layout-target.ts\n"
+}
