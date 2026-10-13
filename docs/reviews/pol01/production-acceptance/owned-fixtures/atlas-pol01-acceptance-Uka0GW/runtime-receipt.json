@@ -1,0 +1,20 @@
+{
+  "root": "/tmp/atlas-pol01-acceptance-Uka0GW",
+  "database": "/tmp/atlas-pol01-acceptance-Uka0GW/data/atlasmode.sqlite",
+  "rootCleanup": "retained-evidence",
+  "sourceDigest": "a334943d6c45b85f97cc9e0231d1426322f3984a8d51ffb7cc94fb2905ca258f",
+  "records": [
+    {
+      "kind": "server",
+      "mode": "source",
+      "pid": 125807,
+      "port": 40575,
+      "exit": [
+        0,
+        null
+      ],
+      "portClosed": true,
+      "output": "AtlasMode API listening on 127.0.0.1:40575 (built web assets available)\n"
+    }
+  ]
+}

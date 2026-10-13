@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "ownerMetadata": {
+    "team": "owned acceptance",
+    "keep": [
+      1,
+      null,
+      "中文"
+    ]
+  },
+  "folders": [
+    {
+      "path": "src",
+      "purpose": "用户职责说明；待人工判断",
+      "allowed": [
+        "src/**"
+      ],
+      "forbidden": [
+        "vendor/**"
+      ],
+      "custom": {
+        "retained": true
+      }
+    }
+  ],
+  "dependencyRules": [
+    {
+      "from": "src/**",
+      "mustNotImport": [
+        "vendor/**"
+      ],
+      "reason": "metadata only",
+      "customRule": 7
+    }
+  ]
+}

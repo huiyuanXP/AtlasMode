@@ -1,0 +1,135 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90m/home/agent/projects/AtlasMode[39m
+
+ [31m❯[39m apps/web/src/features/structure/policy-controller.test.ts [2m([22m[2m26 tests[22m[2m | [22m[31m7 failed[39m[2m)[22m[32m 52[2mms[22m[39m
+   [32m✓[39m same-id DB legacy form captures actual rev/digest/uuid without migrating[32m 9[2mms[22m[39m
+   [32m✓[39m 409 keeps all input and old capture; save remains blocked until explicit reload[32m 3[2mms[22m[39m
+   [32m✓[39m network failure only exact retry uses same immutable request and UUID[32m 1[2mms[22m[39m
+   [32m✓[39m migration requires preview and explicit command, with preview capture[32m 1[2mms[22m[39m
+   [32m✓[39m stale preview refuses migration without auto reread[32m 1[2mms[22m[39m
+   [32m✓[39m folder edit sends only path/purpose preserving raw unknown and allowed/forbidden server fields[32m 1[2mms[22m[39m
+   [32m✓[39m A→B→A read responses never contaminate the new epoch[32m 1[2mms[22m[39m
+   [32m✓[39m late write ACK has no accepted callback or state after project switch[32m 1[2mms[22m[39m
+   [32m✓[39m invalid state remains visible and cannot write[32m 1[2mms[22m[39m
+   [32m✓[39m recovery_pending state remains visible and cannot write[32m 1[2mms[22m[39m
+   [32m✓[39m unavailable state remains visible and cannot write[32m 0[2mms[22m[39m
+   [32m✓[39m two inconsistent read captures fail closed without hiding form or automatically fetching latest[32m 0[2mms[22m[39m
+   [32m✓[39m foreign ACK never reaches accepted-response workspace callback[32m 1[2mms[22m[39m
+   [32m✓[39m missing digest/revision capture is never submitted as an undefined precondition[32m 1[2mms[22m[39m
+   [32m✓[39m successful new policy ACK retains actual id for the next explicit edit[32m 1[2mms[22m[39m
+   [32m✓[39m successful folder rename ACK advances previousPath for the next explicit edit[32m 1[2mms[22m[39m
+   [32m✓[39m accepted read response supplies exact full policies/snapshot for future Workspace synchronization[32m 1[2mms[22m[39m
+   [32m✓[39m an asynchronous accepted-read callback cannot unlock editing or publish failure into a new project[32m 1[2mms[22m[39m
+[31m   [31m×[31m I1 migration ACK preserves unsent dirty legacy:db-only draft B[39m[32m 10[2mms[22m[39m
+[31m   [31m×[31m I1 migration ACK preserves unsent dirty folder:src draft B[39m[32m 1[2mms[22m[39m
+[31m   [31m×[31m I2 unknown write retains immutable replay after failed state reread[39m[32m 1[2mms[22m[39m
+[31m   [31m×[31m I2 unknown write retains immutable replay after failed policies reread[39m[32m 1[2mms[22m[39m
+[31m   [31m×[31m I2 unknown write retains immutable replay after failed accepted reread[39m[32m 1[2mms[22m[39m
+[31m   [31m×[31m M1 write callback keeps busy through known ACK and blocks concurrent public reload/edit[39m[32m 7[2mms[22m[39m
+   [32m✓[39m M1 known ACK then sync rejection stays saved, exposes reread and never retries publication[32m 1[2mms[22m[39m
+[31m   [31m×[31m M1 superseded same-epoch callback rejection cannot overwrite a newer accepted read[39m[32m 3[2mms[22m[39m
+ [31m❯[39m apps/web/src/features/structure/StructurePolicyPanel.test.tsx [2m([22m[2m11 tests[22m[2m | [22m[31m2 failed[39m[2m)[22m[32m 110[2mms[22m[39m
+   [32m✓[39m en retains accessible old form and explicit reread/preview/save controls[32m 29[2mms[22m[39m
+   [32m✓[39m zh retains accessible old form and explicit reread/preview/save controls[32m 3[2mms[22m[39m
+   [32m✓[39m real component conflict read is explicit and passes a distinct callback[32m 3[2mms[22m[39m
+   [32m✓[39m read-only schema metadata and diagnostics are escaped, never rendered as satisfied rules[32m 5[2mms[22m[39m
+   [32m✓[39m actual DB-only and file-extension provenance is distinct from unexecuted folder metadata[32m 5[2mms[22m[39m
+   [32m✓[39m existing wrapper retains knowledge busy gating without hiding old controls[32m 9[2mms[22m[39m
+   [32m✓[39m existing wrapper retains project busy gating without hiding old controls[32m 4[2mms[22m[39m
+   [32m✓[39m existing wrapper retains plan busy gating without hiding old controls[32m 4[2mms[22m[39m
+   [32m✓[39m controlled form retains unsaved purpose and dependency input while conflict requires reread[32m 4[2mms[22m[39m
+[31m   [31m×[31m I1 import acknowledgment describes unsaved form B rather than claiming it saved[39m[32m 30[2mms[22m[39m
+[31m   [31m×[31m M1 known save with workspace sync failure shows saved-sync-failed and reread, without uncertain replay[39m[32m 11[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 9 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/features/structure/StructurePolicyPanel.test.tsx[2m > [22mI1 import acknowledgment describes unsaved form B rather than claiming it saved
+[31m[1mAssertionError[22m: expected '<section class="knowledge-panel" aria…' to contain 'Import completed; form edits remain u…'[39m
+
+Expected: [32m"Import completed; form edits remain unsaved"[39m
+Received: [31m"<section class="knowledge-panel" aria-busy="false"><h2>Folder policies</h2><p><code>.codemap/structure.json</code> · schema v1</p><p class="muted">Edit directory purpose or legacy path rules. Descriptive metadata does not prove a dependency rule is satisfied.</p><button data-action="reload">Read structure again</button><p role="status">Read current structure before saving.</p><div><button data-action="new-policy">New policy</button><button data-action="new-folder">New file folder</button></div><label>Edit policy<select aria-label="Edit policy"><option value="new-policy" selected="">New policy</option><option value="new-folder">New file folder</option></select></label><form><fieldset><label>Path prefix<input aria-label="Path prefix" placeholder="src/" value=""/></label><label>Purpose<textarea aria-label="Purpose" required="">local unsaved B</textarea></label><label>Forbidden dependencies<textarea aria-label="Forbidden dependencies" placeholder="src/internal"></textarea></label><button data-action="save" disabled="">Save policy</button></fieldset></form><h3>Legacy path policies</h3><p>No policies</p><h3>structure.json folders</h3><p class="muted">Purpose description; requires human judgment</p><details><summary>Read-only metadata</summary><p>allowed / forbidden, dependencyRules and unknown fields are retained. This editor changes only path and purpose for a file folder.</p><p>Import constraints synchronized; checks not executed</p><pre>∅</pre></details><p>Preview first. Import is explicit and invalidates current approval; historical approvals remain recorded.</p><button data-action="preview" disabled="">Preview DB policy migration</button></section>"[39m
+
+[36m [2m❯[22m apps/web/src/features/structure/StructurePolicyPanel.test.tsx:[2m209:332[22m[39m
+
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/9]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/features/structure/StructurePolicyPanel.test.tsx[2m > [22mM1 known save with workspace sync failure shows saved-sync-failed and reread, without uncertain replay
+[31m[1mAssertionError[22m: expected '<section class="knowledge-panel" aria…' to contain 'Saved; workspace synchronization fail…'[39m
+
+Expected: [32m"Saved; workspace synchronization failed"[39m
+Received: [31m"<section class="knowledge-panel" aria-busy="false"><h2>Folder policies</h2><p><code>.codemap/structure.json</code> · schema v1</p><p class="muted">Edit directory purpose or legacy path rules. Descriptive metadata does not prove a dependency rule is satisfied.</p><button data-action="reload">Read structure again</button><p role="alert"><strong>WORKSPACE_SYNC_REQUIRED</strong>: offline</p><p role="status">Saved. Read again before another edit.</p><p role="status">Shared workspace synchronization is pending integration.</p><div><button data-action="new-policy">New policy</button><button data-action="new-folder">New file folder</button></div><label>Edit policy<select aria-label="Edit policy"><option value="new-policy" selected="">New policy</option><option value="new-folder">New file folder</option></select></label><form><fieldset><label>Path prefix<input aria-label="Path prefix" placeholder="src/" value=""/></label><label>Purpose<textarea aria-label="Purpose" required=""></textarea></label><label>Forbidden dependencies<textarea aria-label="Forbidden dependencies" placeholder="src/internal"></textarea></label><button data-action="save" disabled="">Save policy</button></fieldset></form><h3>Legacy path policies</h3><p>No policies</p><h3>structure.json folders</h3><p class="muted">Purpose description; requires human judgment</p><details><summary>Read-only metadata</summary><p>allowed / forbidden, dependencyRules and unknown fields are retained. This editor changes only path and purpose for a file folder.</p><p>Import constraints synchronized; checks not executed</p><pre>∅</pre></details><p>Preview first. Import is explicit and invalidates current approval; historical approvals remain recorded.</p><button data-action="preview" disabled="">Preview DB policy migration</button></section>"[39m
+
+[36m [2m❯[22m apps/web/src/features/structure/StructurePolicyPanel.test.tsx:[2m210:345[22m[39m
+
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/9]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/features/structure/policy-controller.test.ts[2m > [22mI1 migration ACK preserves unsent dirty legacy:db-only draft B
+[41m[1m FAIL [22m[49m apps/web/src/features/structure/policy-controller.test.ts[2m > [22mI1 migration ACK preserves unsent dirty folder:src draft B
+[31m[1mAssertionError[22m: expected false to be true // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- true[39m
+[31m+ false[39m
+
+[36m [2m❯[22m apps/web/src/features/structure/policy-controller.test.ts:[2m357:527[22m[39m
+
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/9]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/features/structure/policy-controller.test.ts[2m > [22mI2 unknown write retains immutable replay after failed state reread
+[41m[1m FAIL [22m[49m apps/web/src/features/structure/policy-controller.test.ts[2m > [22mI2 unknown write retains immutable replay after failed policies reread
+[41m[1m FAIL [22m[49m apps/web/src/features/structure/policy-controller.test.ts[2m > [22mI2 unknown write retains immutable replay after failed accepted reread
+[31m[1mAssertionError[22m: expected false to be true // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- true[39m
+[31m+ false[39m
+
+[36m [2m❯[22m apps/web/src/features/structure/policy-controller.test.ts:[2m360:61[22m[39m
+
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/9]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/features/structure/policy-controller.test.ts[2m > [22mM1 write callback keeps busy through known ACK and blocks concurrent public reload/edit
+[31m[1mAssertionError[22m: expected false to be true // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- true[39m
+[31m+ false[39m
+
+[36m [2m❯[22m apps/web/src/features/structure/policy-controller.test.ts:[2m362:401[22m[39m
+
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/9]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/features/structure/policy-controller.test.ts[2m > [22mM1 superseded same-epoch callback rejection cannot overwrite a newer accepted read
+[31m[1mAssertionError[22m: expected { …(2) } to be undefined[39m
+
+[32m- Expected:[39m
+undefined
+
+[31m+ Received:[39m
+{
+  "code": "WORKSPACE_SYNC_REQUIRED",
+  "message": "old callback failure",
+}
+
+[36m [2m❯[22m apps/web/src/features/structure/policy-controller.test.ts:[2m366:183[22m[39m
+
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/9]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m2 failed[39m[22m[90m (2)[39m
+[2m      Tests [22m [1m[31m9 failed[39m[22m[2m | [22m[1m[32m28 passed[39m[22m[90m (37)[39m
+[2m   Start at [22m 18:44:09
+[2m   Duration [22m 1.04s[2m (transform 677ms, setup 0ms, import 1.14s, tests 162ms, environment 0ms)[22m
+

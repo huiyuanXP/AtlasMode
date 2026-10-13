@@ -1,0 +1,39 @@
+{
+  "root": "/tmp/atlas-pol01-acceptance-NfxEVu",
+  "database": "/tmp/atlas-pol01-acceptance-NfxEVu/data/atlasmode.sqlite",
+  "rootCleanup": "retained-evidence",
+  "sourceDigest": "5177f5ee00baedf64d064028ca6b1822a74042fe8e6d053a6e781b31e10f280b",
+  "records": [
+    {
+      "kind": "mcp-stdio",
+      "mode": "compiled",
+      "pid": 158824,
+      "pidAbsent": true,
+      "stderr": ""
+    },
+    {
+      "kind": "server",
+      "mode": "compiled",
+      "pid": 158810,
+      "port": 44537,
+      "exit": [
+        0,
+        null
+      ],
+      "portClosed": true,
+      "output": "AtlasMode API listening on 127.0.0.1:44537 (built web assets available)\n"
+    },
+    {
+      "kind": "server",
+      "mode": "compiled",
+      "pid": 158834,
+      "port": 36919,
+      "exit": [
+        0,
+        null
+      ],
+      "portClosed": true,
+      "output": "AtlasMode API listening on 127.0.0.1:36919 (built web assets available)\n"
+    }
+  ]
+}

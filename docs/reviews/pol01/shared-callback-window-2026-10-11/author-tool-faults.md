@@ -1,0 +1,9 @@
+# Author tool/fixture fault records
+
+This is an explicitly reconstructed author record referring to the original visible tool outputs; it is not a fabricated raw shell log. All genuine Vitest/Playwright/type/lint/format execution logs remain unchanged separately.
+
+- Original /tmp/pol01-sync-implementation.py executed Workspace/Navigation writes then rejected global Responsibility locator replacement (count2), before any planning-file write. Actual tool output showed AssertionError ('Responsibility', 2); original planningSHA5efae…remained. Subsequent scopedgetByLabel/getByRole mappings replaced only actual9locator calls.
+- Original /tmp/pol01-planning-explicit-read.py similarly rejected ambiguous fill('internal') pattern, count2; no planning bytes written. The following independent shell invocation accidentally repeated the prior selector-only case; planning-browser-r2.txt is the genuine repeated failure, not proof of the proposed read-step delta. Corrected writer used unique prohibited.issues and const[policy] context, and only after successful write ran actual read-step r3.
+- Nativefixture openPanel used PUT, not POST. The first progress summary described POST incorrectly; all archived actualsource/logs retain PUT and the fixture repair preserved that method. Completeviewshape400 and encodedURL timeout were actual fixture faults from previouslyUNRUN browser cases; no product callback RED is inferred from them.
+- New unitfixture coverage originally used nonexistent included/excluded/unsupported/staticAnalysis fields; source-types-first.txt preserves real TS2353, then current public coverage fields excludedPatterns/unresolvedCount fixed only fixture.
+- Original pnpm summary error is already corrected in immutable prior production-acceptance/before/ui-mcp-window/historical-command-correction.md; current commands use real existing node_modules CLIs.

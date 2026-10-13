@@ -1,0 +1,13 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90m/home/agent/projects/AtlasMode[39m
+
+ [32m✓[39m apps/server/src/pol01-workspace-http.test.ts [2m([22m[2m7 tests[22m[2m)[22m[33m 4762[2mms[22m[39m
+   [33m[2m✓[22m[39m owned process crash before recovers before HTTP availability without touching user files [33m 1490[2mms[22m[39m
+   [33m[2m✓[22m[39m owned process crash after recovers before HTTP availability without touching user files [33m 1297[2mms[22m[39m
+   [33m[2m✓[22m[39m owned process crash third recovers before HTTP availability without touching user files [33m 1278[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m7 passed[39m[22m[90m (7)[39m
+[2m   Start at [22m 17:01:36
+[2m   Duration [22m 6.46s[2m (transform 675ms, setup 0ms, import 1.51s, tests 4.76s, environment 0ms)[22m
+

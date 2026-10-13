@@ -1,0 +1,11 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90m/home/agent/projects/AtlasMode[39m
+
+ [32m✓[39m apps/server/src/pol01-http-repair.test.ts [2m([22m[2m6 tests[22m[2m)[22m[33m 1518[2mms[22m[39m
+   [33m[2m✓[22m[39m I1 direct json HTTP export synchronizes external semantics and preserves immutable history [33m 595[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m6 passed[39m[22m[90m (6)[39m
+[2m   Start at [22m 17:48:26
+[2m   Duration [22m 4.58s[2m (transform 1.02s, setup 0ms, import 2.75s, tests 1.52s, environment 0ms)[22m
+

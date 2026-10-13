@@ -1,0 +1,45 @@
+{
+  "name": "atlasmode",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": "24.19.0",
+    "npm": "11.9.0"
+  },
+  "packageManager": "npm@11.9.0",
+  "workspaces": [
+    "packages/core",
+    "packages/indexer",
+    "packages/storage",
+    "packages/service",
+    "apps/server",
+    "apps/web",
+    "apps/mcp"
+  ],
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "build": "node scripts/workspaces.mjs build",
+    "start": "node apps/server/dist/index.js",
+    "typecheck": "node scripts/workspaces.mjs typecheck",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "mcp": "node apps/mcp/dist/index.js",
+    "smoke": "node scripts/smoke.mjs",
+    "validate:repository": "node scripts/validate-repository.mjs",
+    "test:mcp": "node scripts/test-mcp-connection.mjs",
+    "test:agent": "node scripts/test-agent-connection.mjs"
+  },
+  "devDependencies": {
+    "typescript": "5.9.3",
+    "tsx": "4.23.15",
+    "@types/node": "24.19.1",
+    "concurrently": "10.0.6",
+    "vitest": "4.1.11",
+    "eslint": "10.11.0",
+    "typescript-eslint": "8.71.0",
+    "prettier": "3.9.9",
+    "@playwright/test": "1.63.0"
+  }
+}

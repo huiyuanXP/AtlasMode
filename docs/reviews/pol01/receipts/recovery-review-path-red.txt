@@ -1,0 +1,47 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90m/home/agent/projects/AtlasMode[39m
+
+ [31m❯[39m packages/core/src/structure.test.ts [2m([22m[2m20 tests[22m[2m | [22m[31m3 failed[39m[2m)[22m[32m 36[2mms[22m[39m
+   [32m✓[39m roundtrips v1 optional omission[32m 5[2mms[22m[39m
+   [32m✓[39m rename keeps nested unknowns and does not mutate source[32m 3[2mms[22m[39m
+   [32m✓[39m rejects schema/key/path/type input with a pointer: {"schemaVersion":1,"schemaVersion":1,"folders":[],"dependencyRules":[]}[32m 1[2mms[22m[39m
+   [32m✓[39m rejects schema/key/path/type input with a pointer: {"schemaVersion":2,"folders":[],"dependencyRules":[]}[32m 0[2mms[22m[39m
+   [32m✓[39m rejects schema/key/path/type input with a pointer: {"schemaVersion":1,"folders":[{"path":"../src","purpose":"x"}],"dependencyRules":[]}[32m 0[2mms[22m[39m
+   [32m✓[39m rejects schema/key/path/type input with a pointer: {"schemaVersion":1,"folders":[{"path":"C:/src","purpose":"x"}],"dependencyRules":[]}[32m 0[2mms[22m[39m
+   [32m✓[39m rejects schema/key/path/type input with a pointer: {"schemaVersion":1,"folders":[{"path":"/src","purpose":"x"}],"dependencyRules":[]}[32m 0[2mms[22m[39m
+   [32m✓[39m rejects schema/key/path/type input with a pointer: {"schemaVersion":1,"folders":[{"path":"src","purpose":"x","forbidden":"HTTP"}],"dependencyRules":[]}[32m 0[2mms[22m[39m
+   [32m✓[39m rejects schema/key/path/type input with a pointer: {"schemaVersion":1,"folders":[{"path":"src/","purpose":"x"},{"path":"src","purpose":"y"}],"dependencyRules":[]}[32m 1[2mms[22m[39m
+   [32m✓[39m rejects schema/key/path/type input with a pointer: {"schemaVersion":1,"folders":[],"dependencyRules":[{"from":"../**","mustNotImport":[],"reason":"x"}]}[32m 0[2mms[22m[39m
+   [32m✓[39m rejects schema/key/path/type input with a pointer: {"schemaVersion":1,"folders":[],"dependencyRules":[],"number":1e999}[32m 1[2mms[22m[39m
+   [32m✓[39m root and portable slashes normalize without reinterpreting import specifiers[32m 1[2mms[22m[39m
+   [32m✓[39m canonical equivalence does not rewrite serialized data[32m 1[2mms[22m[39m
+   [32m✓[39m reserved extension legacy policies are portable and preserve unknowns[32m 3[2mms[22m[39m
+   [32m✓[39m patch rejects missing previous folder and occupied rename target[32m 2[2mms[22m[39m
+   [32m✓[39m prototype-shaped JSON keys remain own data without pollution[32m 1[2mms[22m[39m
+   [32m✓[39m portable legacy ids cannot shadow a generated folder projection[32m 1[2mms[22m[39m
+[31m   [31m×[31m absolute separator-only folder path / is rejected before normalization[39m[32m 9[2mms[22m[39m
+[31m   [31m×[31m absolute separator-only folder path /// is rejected before normalization[39m[32m 2[2mms[22m[39m
+[31m   [31m×[31m absolute separator-only folder path \ is rejected before normalization[39m[32m 1[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 3 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m packages/core/src/structure.test.ts[2m > [22mabsolute separator-only folder path / is rejected before normalization
+[41m[1m FAIL [22m[49m packages/core/src/structure.test.ts[2m > [22mabsolute separator-only folder path /// is rejected before normalization
+[41m[1m FAIL [22m[49m packages/core/src/structure.test.ts[2m > [22mabsolute separator-only folder path \ is rejected before normalization
+[31m[1mAssertionError[22m: expected function to throw an error, but it didn't[39m
+[36m [2m❯[22m packages/core/src/structure.test.ts:[2m231:105[22m[39m
+    [90m229|[39m })[33m;[39m
+    [90m230|[39m test.each(["/", "///", "\\"])("absolute separator-only folder path %s …
+    [90m231|[39m   expect(() => parseStructure(JSON.stringify({ ...base(), folders: [{ …
+    [90m   |[39m                                                                                                         [31m^[39m
+    [90m232|[39m })[33m;[39m
+    [90m233|[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m3 failed[39m[22m[2m | [22m[1m[32m17 passed[39m[22m[90m (20)[39m
+[2m   Start at [22m 16:42:11
+[2m   Duration [22m 873ms[2m (transform 278ms, setup 0ms, import 433ms, tests 36ms, environment 0ms)[22m
+

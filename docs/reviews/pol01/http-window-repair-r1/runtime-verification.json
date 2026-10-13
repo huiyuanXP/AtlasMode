@@ -1,0 +1,970 @@
+{
+  "runtime": [
+    {
+      "receipt": "POL01_OWNED_RUNTIME",
+      "phase": "before",
+      "pid": 99714,
+      "exitCode": null,
+      "signal": "SIGKILL",
+      "root": "/tmp/atlas-pol01-http-ugkQjc",
+      "database": "/tmp/atlas-pol01-http-ugkQjc/atlasmode.sqlite",
+      "port": null,
+      "portState": "no-listener",
+      "processExited": true,
+      "rootCleanup": "retained-evidence",
+      "pidProbe": "absent-ESRCH"
+    },
+    {
+      "receipt": "POL01_OWNED_RUNTIME",
+      "phase": "before",
+      "pid": 99741,
+      "exitCode": null,
+      "signal": "SIGKILL",
+      "database": "/tmp/atlas-pol01-repair-skfl41/owned.sqlite",
+      "root": "/tmp/atlas-pol01-repair-skfl41",
+      "port": null,
+      "portState": "no-listener",
+      "rootCleanup": "retained-evidence",
+      "processExited": true,
+      "pidProbe": "absent-ESRCH"
+    },
+    {
+      "receipt": "POL01_OWNED_RUNTIME",
+      "phase": "after",
+      "pid": 99783,
+      "exitCode": null,
+      "signal": "SIGKILL",
+      "root": "/tmp/atlas-pol01-http-0o7sCb",
+      "database": "/tmp/atlas-pol01-http-0o7sCb/atlasmode.sqlite",
+      "port": null,
+      "portState": "no-listener",
+      "processExited": true,
+      "rootCleanup": "retained-evidence",
+      "pidProbe": "absent-ESRCH"
+    },
+    {
+      "receipt": "POL01_OWNED_RUNTIME",
+      "phase": "after",
+      "pid": 99835,
+      "exitCode": null,
+      "signal": "SIGKILL",
+      "database": "/tmp/atlas-pol01-repair-uPT0nv/owned.sqlite",
+      "root": "/tmp/atlas-pol01-repair-uPT0nv",
+      "port": null,
+      "portState": "no-listener",
+      "rootCleanup": "retained-evidence",
+      "processExited": true,
+      "pidProbe": "absent-ESRCH"
+    },
+    {
+      "receipt": "POL01_OWNED_RUNTIME",
+      "phase": "third",
+      "pid": 99878,
+      "exitCode": null,
+      "signal": "SIGKILL",
+      "root": "/tmp/atlas-pol01-http-hTp3sr",
+      "database": "/tmp/atlas-pol01-http-hTp3sr/atlasmode.sqlite",
+      "port": null,
+      "portState": "no-listener",
+      "processExited": true,
+      "rootCleanup": "retained-evidence",
+      "pidProbe": "absent-ESRCH"
+    },
+    {
+      "receipt": "POL01_OWNED_RUNTIME",
+      "phase": "unknown",
+      "pid": 99903,
+      "exitCode": null,
+      "signal": "SIGKILL",
+      "database": "/tmp/atlas-pol01-repair-PmIsqB/owned.sqlite",
+      "root": "/tmp/atlas-pol01-repair-PmIsqB",
+      "port": null,
+      "portState": "no-listener",
+      "rootCleanup": "retained-evidence",
+      "processExited": true,
+      "pidProbe": "absent-ESRCH"
+    },
+    {
+      "receipt": "POL01_OWNED_RUNTIME",
+      "phase": "unknown",
+      "pid": 99929,
+      "exitCode": null,
+      "signal": "SIGKILL",
+      "root": "/tmp/atlas-pol01-http-ayNr02",
+      "database": "/tmp/atlas-pol01-http-ayNr02/atlasmode.sqlite",
+      "port": null,
+      "portState": "no-listener",
+      "processExited": true,
+      "rootCleanup": "retained-evidence",
+      "pidProbe": "absent-ESRCH"
+    },
+    {
+      "receipt": "POL01_OWNED_RUNTIME",
+      "phase": "entrypoint-prepared-crash",
+      "pid": 99982,
+      "exitCode": null,
+      "signal": "SIGKILL",
+      "root": "/tmp/atlas-pol01-http-mbQ2RE",
+      "database": "/tmp/atlas-pol01-http-mbQ2RE/atlasmode.sqlite",
+      "port": null,
+      "portState": "no-listener",
+      "processExited": true,
+      "rootCleanup": "retained-evidence",
+      "pidProbe": "absent-ESRCH"
+    },
+    {
+      "receipt": "POL01_OWNED_RUNTIME",
+      "phase": "source-entrypoint",
+      "pid": 100040,
+      "exitCode": 0,
+      "signal": null,
+      "root": "/tmp/atlas-pol01-http-mbQ2RE",
+      "database": "/tmp/atlas-pol01-http-mbQ2RE/atlasmode.sqlite",
+      "port": 38847,
+      "portState": "closed-ECONNREFUSED",
+      "processExited": true,
+      "rootCleanup": "retained-evidence",
+      "pidProbe": "absent-ESRCH",
+      "portProbe": "closed-ECONNREFUSED"
+    }
+  ],
+  "fixtureClosures": [
+    {
+      "receipt": "POL01_OWNED_FIXTURE_CLOSED",
+      "root": "/tmp/atlas-pol01-repair-EdcCCZ",
+      "sqliteConnections": "closed",
+      "apps": "closed",
+      "listener": "inject-only/no-listener",
+      "rootCleanup": "retained-evidence",
+      "workerPid": 99540
+    },
+    {
+      "receipt": "POL01_OWNED_FIXTURE_CLOSED",
+      "root": "/tmp/atlas-pol01-http-maubnc",
+      "sqliteConnections": "closed",
+      "apps": "closed",
+      "rootCleanup": "retained-evidence",
+      "workerPid": 99539
+    },
+    {
+      "receipt": "POL01_OWNED_FIXTURE_CLOSED",
+      "root": "/tmp/atlas-pol01-repair-jgbdhD",
+      "sqliteConnections": "closed",
+      "apps": "closed",
+      "listener": "inject-only/no-listener",
+      "rootCleanup": "retained-evidence",
+      "workerPid": 99540
+    },
+    {
+      "receipt": "POL01_OWNED_FIXTURE_CLOSED",
+      "root": "/tmp/atlas-pol01-http-l3fEUV",
+      "sqliteConnections": "closed",
+      "apps": "closed",
+      "rootCleanup": "retained-evidence",
+      "workerPid": 99539
+    },
+    {
+      "receipt": "POL01_OWNED_FIXTURE_CLOSED",
+      "root": "/tmp/atlas-pol01-repair-hXR7Ld",
+      "sqliteConnections": "closed",
+      "apps": "closed",
+      "listener": "inject-only/no-listener",
+      "rootCleanup": "retained-evidence",
+      "workerPid": 99540
+    },
+    {
+      "receipt": "POL01_OWNED_FIXTURE_CLOSED",
+      "root": "/tmp/atlas-pol01-http-7SWxUa",
+      "sqliteConnections": "closed",
+      "apps": "closed",
+      "rootCleanup": "retained-evidence",
+      "workerPid": 99539
+    },
+    {
+      "receipt": "POL01_OWNED_FIXTURE_CLOSED",
+      "root": "/tmp/atlas-pol01-repair-6ZpzI8",
+      "sqliteConnections": "closed",
+      "apps": "closed",
+      "listener": "inject-only/no-listener",
+      "rootCleanup": "retained-evidence",
+      "workerPid": 99540
+    },
+    {
+      "receipt": "POL01_OWNED_FIXTURE_CLOSED",
+      "root": "/tmp/atlas-pol01-repair-pdzPkT",
+      "sqliteConnections": "closed",
+      "apps": "closed",
+      "listener": "inject-only/no-listener",
+      "rootCleanup": "retained-evidence",
+      "workerPid": 99540
+    },
+    {
+      "receipt": "POL01_OWNED_FIXTURE_CLOSED",
+      "root": "/tmp/atlas-pol01-http-Ru4ClZ",
+      "sqliteConnections": "closed",
+      "apps": "closed",
+      "rootCleanup": "retained-evidence",
+      "workerPid": 99539
+    },
+    {
+      "receipt": "POL01_OWNED_FIXTURE_CLOSED",
+      "root": "/tmp/atlas-pol01-repair-E11wSg",
+      "sqliteConnections": "closed",
+      "apps": "closed",
+      "listener": "inject-only/no-listener",
+      "rootCleanup": "retained-evidence",
+      "workerPid": 99540
+    },
+    {
+      "receipt": "POL01_OWNED_FIXTURE_CLOSED",
+      "root": "/tmp/atlas-pol01-repair-7FsusY",
+      "sqliteConnections": "closed",
+      "apps": "closed",
+      "listener": "inject-only/no-listener",
+      "rootCleanup": "retained-evidence",
+      "workerPid": 99540
+    },
+    {
+      "receipt": "POL01_OWNED_FIXTURE_CLOSED",
+      "root": "/tmp/atlas-pol01-repair-oeRMlS",
+      "sqliteConnections": "closed",
+      "apps": "closed",
+      "listener": "inject-only/no-listener",
+      "rootCleanup": "retained-evidence",
+      "workerPid": 99540
+    },
+    {
+      "receipt": "POL01_OWNED_FIXTURE_CLOSED",
+      "root": "/tmp/atlas-pol01-http-ugkQjc",
+      "sqliteConnections": "closed",
+      "apps": "closed",
+      "rootCleanup": "retained-evidence",
+      "workerPid": 99539
+    },
+    {
+      "receipt": "POL01_OWNED_FIXTURE_CLOSED",
+      "root": "/tmp/atlas-pol01-repair-skfl41",
+      "sqliteConnections": "closed",
+      "apps": "closed",
+      "listener": "inject-only/no-listener",
+      "rootCleanup": "retained-evidence",
+      "workerPid": 99540
+    },
+    {
+      "receipt": "POL01_OWNED_FIXTURE_CLOSED",
+      "root": "/tmp/atlas-pol01-http-0o7sCb",
+      "sqliteConnections": "closed",
+      "apps": "closed",
+      "rootCleanup": "retained-evidence",
+      "workerPid": 99539
+    },
+    {
+      "receipt": "POL01_OWNED_FIXTURE_CLOSED",
+      "root": "/tmp/atlas-pol01-repair-uPT0nv",
+      "sqliteConnections": "closed",
+      "apps": "closed",
+      "listener": "inject-only/no-listener",
+      "rootCleanup": "retained-evidence",
+      "workerPid": 99540
+    },
+    {
+      "receipt": "POL01_OWNED_FIXTURE_CLOSED",
+      "root": "/tmp/atlas-pol01-http-hTp3sr",
+      "sqliteConnections": "closed",
+      "apps": "closed",
+      "rootCleanup": "retained-evidence",
+      "workerPid": 99539
+    },
+    {
+      "receipt": "POL01_OWNED_FIXTURE_CLOSED",
+      "root": "/tmp/atlas-pol01-repair-PmIsqB",
+      "sqliteConnections": "closed",
+      "apps": "closed",
+      "listener": "inject-only/no-listener",
+      "rootCleanup": "retained-evidence",
+      "workerPid": 99540
+    },
+    {
+      "receipt": "POL01_OWNED_FIXTURE_CLOSED",
+      "root": "/tmp/atlas-pol01-repair-GqXFDc",
+      "sqliteConnections": "closed",
+      "apps": "closed",
+      "listener": "inject-only/no-listener",
+      "rootCleanup": "retained-evidence",
+      "workerPid": 99540
+    },
+    {
+      "receipt": "POL01_OWNED_FIXTURE_CLOSED",
+      "root": "/tmp/atlas-pol01-http-ayNr02",
+      "sqliteConnections": "closed",
+      "apps": "closed",
+      "rootCleanup": "retained-evidence",
+      "workerPid": 99539
+    },
+    {
+      "receipt": "POL01_OWNED_FIXTURE_CLOSED",
+      "root": "/tmp/atlas-pol01-http-YZufvu",
+      "sqliteConnections": "closed",
+      "apps": "closed",
+      "rootCleanup": "retained-evidence",
+      "workerPid": 99539
+    },
+    {
+      "receipt": "POL01_OWNED_FIXTURE_CLOSED",
+      "root": "/tmp/atlas-pol01-http-mbQ2RE",
+      "sqliteConnections": "closed",
+      "apps": "closed",
+      "rootCleanup": "retained-evidence",
+      "workerPid": 99539
+    },
+    {
+      "receipt": "POL01_OWNED_FIXTURE_CLOSED",
+      "root": "/tmp/atlas-pol01-http-hYvscZ",
+      "sqliteConnections": "closed",
+      "apps": "closed",
+      "rootCleanup": "retained-evidence",
+      "workerPid": 99539
+    },
+    {
+      "receipt": "POL01_OWNED_FIXTURE_CLOSED",
+      "root": "/tmp/atlas-pol01-http-lzy8yi",
+      "sqliteConnections": "closed",
+      "apps": "closed",
+      "rootCleanup": "retained-evidence",
+      "workerPid": 99539
+    }
+  ],
+  "workers": [
+    {
+      "pid": 99539,
+      "probe": "absent-ESRCH"
+    },
+    {
+      "pid": 99540,
+      "probe": "absent-ESRCH"
+    }
+  ],
+  "sealedRoots": [
+    {
+      "root": "/tmp/atlas-pol01-http-0o7sCb",
+      "cleanup": "runtime closed; root retained as sealed evidence",
+      "files": [
+        {
+          "path": ".codemap/structure.json",
+          "sha256": "c5778b31ff1da5d5ea74afaffb088ad0dee6161837e7ddd81ec54b651624238e",
+          "size": 186
+        },
+        {
+          "path": "atlasmode.sqlite",
+          "sha256": "eaaf64e5a6a52826f5a5a9897dc85c4734d3405feda644025f1bfdbfc449e483",
+          "size": 32768
+        },
+        {
+          "path": "main.ts",
+          "sha256": "1d9659cdaf2f7da1078fba1c8f1330a0fd576829d8bf77eb192dd037a8a47210",
+          "size": 38
+        }
+      ]
+    },
+    {
+      "root": "/tmp/atlas-pol01-http-7SWxUa",
+      "cleanup": "runtime closed; root retained as sealed evidence",
+      "files": [
+        {
+          "path": ".codemap/structure.json",
+          "sha256": "29e16e811ea48e569a0a2c21567d6a37ff75090f4fdb2474de57a6e8862d2dfa",
+          "size": 178
+        },
+        {
+          "path": "atlasmode.sqlite",
+          "sha256": "823356c5cd0262f046e4137ad17ad749094d4a67d29b715a63da29dd3921bd14",
+          "size": 32768
+        },
+        {
+          "path": "main.ts",
+          "sha256": "1d9659cdaf2f7da1078fba1c8f1330a0fd576829d8bf77eb192dd037a8a47210",
+          "size": 38
+        }
+      ]
+    },
+    {
+      "root": "/tmp/atlas-pol01-http-Ru4ClZ",
+      "cleanup": "runtime closed; root retained as sealed evidence",
+      "files": [
+        {
+          "path": ".codemap/structure.json",
+          "sha256": "29e16e811ea48e569a0a2c21567d6a37ff75090f4fdb2474de57a6e8862d2dfa",
+          "size": 178
+        },
+        {
+          "path": "atlasmode.sqlite",
+          "sha256": "804027bf01dd98cf973d85f6d6dcc032cc299551a02a29719eb8d8f9f0de9586",
+          "size": 32768
+        },
+        {
+          "path": "main.ts",
+          "sha256": "1d9659cdaf2f7da1078fba1c8f1330a0fd576829d8bf77eb192dd037a8a47210",
+          "size": 38
+        }
+      ]
+    },
+    {
+      "root": "/tmp/atlas-pol01-http-YZufvu",
+      "cleanup": "runtime closed; root retained as sealed evidence",
+      "files": [
+        {
+          "path": ".codemap/structure.json",
+          "sha256": "29e16e811ea48e569a0a2c21567d6a37ff75090f4fdb2474de57a6e8862d2dfa",
+          "size": 178
+        },
+        {
+          "path": "atlasmode.sqlite",
+          "sha256": "3e26831f070a034144956b565f65ff1fe0a75234f4dfa8ae7cbe110a00175828",
+          "size": 32768
+        },
+        {
+          "path": "main.ts",
+          "sha256": "1d9659cdaf2f7da1078fba1c8f1330a0fd576829d8bf77eb192dd037a8a47210",
+          "size": 38
+        }
+      ]
+    },
+    {
+      "root": "/tmp/atlas-pol01-http-ayNr02",
+      "cleanup": "runtime closed; root retained as sealed evidence",
+      "files": [
+        {
+          "path": ".codemap/structure.json",
+          "sha256": "c5778b31ff1da5d5ea74afaffb088ad0dee6161837e7ddd81ec54b651624238e",
+          "size": 186
+        },
+        {
+          "path": "atlasmode.sqlite",
+          "sha256": "561eca3b18ee28d9f85e8edc49c9a6f7ec11ba1cf74dfdc0dc7b7dbb62976cdb",
+          "size": 32768
+        },
+        {
+          "path": "main.ts",
+          "sha256": "1d9659cdaf2f7da1078fba1c8f1330a0fd576829d8bf77eb192dd037a8a47210",
+          "size": 38
+        }
+      ]
+    },
+    {
+      "root": "/tmp/atlas-pol01-http-hTp3sr",
+      "cleanup": "runtime closed; root retained as sealed evidence",
+      "files": [
+        {
+          "path": ".codemap/structure.json",
+          "sha256": "a026416a7d0b97544a27d4e1cdf454892cf7630cfd47d6f197cb671b9a5a54ae",
+          "size": 90
+        },
+        {
+          "path": "atlasmode.sqlite",
+          "sha256": "202667670fde01cab34a03f7b40aa1b43e37009656c8911ec98bdd15dd129c36",
+          "size": 32768
+        },
+        {
+          "path": "main.ts",
+          "sha256": "1d9659cdaf2f7da1078fba1c8f1330a0fd576829d8bf77eb192dd037a8a47210",
+          "size": 38
+        }
+      ]
+    },
+    {
+      "root": "/tmp/atlas-pol01-http-hYvscZ",
+      "cleanup": "runtime closed; root retained as sealed evidence",
+      "files": [
+        {
+          "path": ".codemap/structure.json",
+          "sha256": "29e16e811ea48e569a0a2c21567d6a37ff75090f4fdb2474de57a6e8862d2dfa",
+          "size": 178
+        },
+        {
+          "path": "atlasmode.sqlite",
+          "sha256": "0fdd59d4fc88bcedf65f08c7ccccae114a77859fb0fdd6ce3bc16e552a04a605",
+          "size": 32768
+        },
+        {
+          "path": "main.ts",
+          "sha256": "1d9659cdaf2f7da1078fba1c8f1330a0fd576829d8bf77eb192dd037a8a47210",
+          "size": 38
+        }
+      ]
+    },
+    {
+      "root": "/tmp/atlas-pol01-http-l3fEUV",
+      "cleanup": "runtime closed; root retained as sealed evidence",
+      "files": [
+        {
+          "path": ".codemap/structure.json",
+          "sha256": "e988d92f2e69fc33a568b9d1214a52bba2ce1b4b18af1ee1dab71e42e488f502",
+          "size": 426
+        },
+        {
+          "path": "atlasmode.sqlite",
+          "sha256": "0aca65ea35fd660295c38ea64d451d4bcedbb512b7fa657fa5ef63f534cabfe5",
+          "size": 32768
+        },
+        {
+          "path": "main.ts",
+          "sha256": "1d9659cdaf2f7da1078fba1c8f1330a0fd576829d8bf77eb192dd037a8a47210",
+          "size": 38
+        }
+      ]
+    },
+    {
+      "root": "/tmp/atlas-pol01-http-lzy8yi",
+      "cleanup": "runtime closed; root retained as sealed evidence",
+      "files": [
+        {
+          "path": ".codemap/structure.json",
+          "sha256": "41dfd9e2fcb7e8b450bf729953349b1b80530f6220d6914d0238dbe5c9468ba6",
+          "size": 102
+        },
+        {
+          "path": "atlasmode.sqlite",
+          "sha256": "7e0e84a8216b715f2028f1d7b89d59384ceadecc13e9df6bc13e4871b9d5b468",
+          "size": 28672
+        },
+        {
+          "path": "main.ts",
+          "sha256": "1d9659cdaf2f7da1078fba1c8f1330a0fd576829d8bf77eb192dd037a8a47210",
+          "size": 38
+        }
+      ]
+    },
+    {
+      "root": "/tmp/atlas-pol01-http-maubnc",
+      "cleanup": "runtime closed; root retained as sealed evidence",
+      "files": [
+        {
+          "path": ".codemap/structure.json",
+          "sha256": "f1234d75178d892a133a410355a5a990cf75d2f33eba25d575943d4df632f3a4",
+          "size": 7
+        },
+        {
+          "path": "atlasmode.sqlite",
+          "sha256": "022ecbb34df40e9b053f2c7f5c7a1b444f3e5e9c3e51fe4426686825aa18cb1a",
+          "size": 32768
+        },
+        {
+          "path": "main.ts",
+          "sha256": "1d9659cdaf2f7da1078fba1c8f1330a0fd576829d8bf77eb192dd037a8a47210",
+          "size": 38
+        }
+      ]
+    },
+    {
+      "root": "/tmp/atlas-pol01-http-mbQ2RE",
+      "cleanup": "runtime closed; root retained as sealed evidence",
+      "files": [
+        {
+          "path": ".codemap/structure.json",
+          "sha256": "c5778b31ff1da5d5ea74afaffb088ad0dee6161837e7ddd81ec54b651624238e",
+          "size": 186
+        },
+        {
+          "path": "atlasmode.sqlite",
+          "sha256": "e75f6ca9a6b6e8c27df21fbbaf086bca4469be0ca8f20750de7f12abaa74439d",
+          "size": 32768
+        },
+        {
+          "path": "main.ts",
+          "sha256": "1d9659cdaf2f7da1078fba1c8f1330a0fd576829d8bf77eb192dd037a8a47210",
+          "size": 38
+        }
+      ]
+    },
+    {
+      "root": "/tmp/atlas-pol01-http-ugkQjc",
+      "cleanup": "runtime closed; root retained as sealed evidence",
+      "files": [
+        {
+          "path": ".codemap/structure.json",
+          "sha256": "41dfd9e2fcb7e8b450bf729953349b1b80530f6220d6914d0238dbe5c9468ba6",
+          "size": 102
+        },
+        {
+          "path": "atlasmode.sqlite",
+          "sha256": "c770b51d4bdbd37fb87c253c3f705982cdd2b24ae8762ba49728f1e65506097a",
+          "size": 32768
+        },
+        {
+          "path": "main.ts",
+          "sha256": "1d9659cdaf2f7da1078fba1c8f1330a0fd576829d8bf77eb192dd037a8a47210",
+          "size": 38
+        }
+      ]
+    },
+    {
+      "root": "/tmp/atlas-pol01-repair-6ZpzI8",
+      "cleanup": "runtime closed; root retained as sealed evidence",
+      "files": [
+        {
+          "path": "a/.codemap/structure.json",
+          "sha256": "40b5cafe045b9c9e31a1c3fdcfbc89f934906ff06a6276b55c2a0e517be21655",
+          "size": 8
+        },
+        {
+          "path": "a/main.ts",
+          "sha256": "1d9659cdaf2f7da1078fba1c8f1330a0fd576829d8bf77eb192dd037a8a47210",
+          "size": 38
+        },
+        {
+          "path": "b/.codemap/structure.json",
+          "sha256": "cf009e0eb90c6b193d6c53420dc9d2df014ad51828f8f10d1f6bcbe68c8f0513",
+          "size": 86
+        },
+        {
+          "path": "b/main.ts",
+          "sha256": "1d9659cdaf2f7da1078fba1c8f1330a0fd576829d8bf77eb192dd037a8a47210",
+          "size": 38
+        },
+        {
+          "path": "owned.sqlite",
+          "sha256": "d64bb840a29f664a873aa5aace73ec39530f54872e84e7abc1991136645564b0",
+          "size": 32768
+        }
+      ]
+    },
+    {
+      "root": "/tmp/atlas-pol01-repair-7FsusY",
+      "cleanup": "runtime closed; root retained as sealed evidence",
+      "files": [
+        {
+          "path": "a/.codemap/structure.json",
+          "sha256": "7aaf45af486891788a67117f5db4129ee7c01c0ff0fe434709780ff4733f3e2a",
+          "size": 130
+        },
+        {
+          "path": "a/main.ts",
+          "sha256": "1d9659cdaf2f7da1078fba1c8f1330a0fd576829d8bf77eb192dd037a8a47210",
+          "size": 38
+        },
+        {
+          "path": "b/.codemap/structure.json",
+          "sha256": "cf009e0eb90c6b193d6c53420dc9d2df014ad51828f8f10d1f6bcbe68c8f0513",
+          "size": 86
+        },
+        {
+          "path": "b/main.ts",
+          "sha256": "1d9659cdaf2f7da1078fba1c8f1330a0fd576829d8bf77eb192dd037a8a47210",
+          "size": 38
+        },
+        {
+          "path": "owned.sqlite",
+          "sha256": "f1e39e3e70d7dccaa834d474f888dee768649ff059afff58f88f9d6901aee193",
+          "size": 36864
+        }
+      ]
+    },
+    {
+      "root": "/tmp/atlas-pol01-repair-E11wSg",
+      "cleanup": "runtime closed; root retained as sealed evidence",
+      "files": [
+        {
+          "path": "a/.codemap/structure.json",
+          "sha256": "59be01a3e05196164eb0a86b824e19d48638461e805b8ae062b190cda25acb19",
+          "size": 361
+        },
+        {
+          "path": "a/main.ts",
+          "sha256": "1d9659cdaf2f7da1078fba1c8f1330a0fd576829d8bf77eb192dd037a8a47210",
+          "size": 38
+        },
+        {
+          "path": "b/.codemap/structure.json",
+          "sha256": "cf009e0eb90c6b193d6c53420dc9d2df014ad51828f8f10d1f6bcbe68c8f0513",
+          "size": 86
+        },
+        {
+          "path": "b/main.ts",
+          "sha256": "1d9659cdaf2f7da1078fba1c8f1330a0fd576829d8bf77eb192dd037a8a47210",
+          "size": 38
+        },
+        {
+          "path": "owned.sqlite",
+          "sha256": "19c3660c94cd348f618539d10f1ac45395b965c0a4e26fd467df65c6a64c41f7",
+          "size": 36864
+        }
+      ]
+    },
+    {
+      "root": "/tmp/atlas-pol01-repair-EdcCCZ",
+      "cleanup": "runtime closed; root retained as sealed evidence",
+      "files": [
+        {
+          "path": "a/.codemap/structure.json",
+          "sha256": "aaff8fd9cb98be247fd347c6b5dc1ac78563c90b514737dae76486870993c3ea",
+          "size": 102
+        },
+        {
+          "path": "a/main.ts",
+          "sha256": "1d9659cdaf2f7da1078fba1c8f1330a0fd576829d8bf77eb192dd037a8a47210",
+          "size": 38
+        },
+        {
+          "path": "b/.codemap/structure.json",
+          "sha256": "cf009e0eb90c6b193d6c53420dc9d2df014ad51828f8f10d1f6bcbe68c8f0513",
+          "size": 86
+        },
+        {
+          "path": "b/main.ts",
+          "sha256": "1d9659cdaf2f7da1078fba1c8f1330a0fd576829d8bf77eb192dd037a8a47210",
+          "size": 38
+        },
+        {
+          "path": "owned.sqlite",
+          "sha256": "661442ea486a3133d7eef8e9320e6cf30b69e6ed73eeea991886340f535c5ff9",
+          "size": 36864
+        }
+      ]
+    },
+    {
+      "root": "/tmp/atlas-pol01-repair-GqXFDc",
+      "cleanup": "runtime closed; root retained as sealed evidence",
+      "files": [
+        {
+          "path": "a/.codemap/structure.json",
+          "sha256": "cc10c5d49d250e1e37f2a676b0db81feaf54cbc463e881fda7703bc8054af2f8",
+          "size": 368
+        },
+        {
+          "path": "a/main.ts",
+          "sha256": "1d9659cdaf2f7da1078fba1c8f1330a0fd576829d8bf77eb192dd037a8a47210",
+          "size": 38
+        },
+        {
+          "path": "b/.codemap/structure.json",
+          "sha256": "cf009e0eb90c6b193d6c53420dc9d2df014ad51828f8f10d1f6bcbe68c8f0513",
+          "size": 86
+        },
+        {
+          "path": "b/main.ts",
+          "sha256": "1d9659cdaf2f7da1078fba1c8f1330a0fd576829d8bf77eb192dd037a8a47210",
+          "size": 38
+        },
+        {
+          "path": "owned.sqlite",
+          "sha256": "a8d3e2cfdc8e001252ade522be77157eef0faf9c0c92107049eeacb4eb9fe999",
+          "size": 36864
+        }
+      ]
+    },
+    {
+      "root": "/tmp/atlas-pol01-repair-PmIsqB",
+      "cleanup": "runtime closed; root retained as sealed evidence",
+      "files": [
+        {
+          "path": "a/.codemap/structure.json",
+          "sha256": "46f5a6181f052b5e09936876dde7ce13eedc648a52773a4d810933383e3fc64a",
+          "size": 363
+        },
+        {
+          "path": "a/main.ts",
+          "sha256": "1d9659cdaf2f7da1078fba1c8f1330a0fd576829d8bf77eb192dd037a8a47210",
+          "size": 38
+        },
+        {
+          "path": "b/.codemap/structure.json",
+          "sha256": "cf009e0eb90c6b193d6c53420dc9d2df014ad51828f8f10d1f6bcbe68c8f0513",
+          "size": 86
+        },
+        {
+          "path": "b/main.ts",
+          "sha256": "1d9659cdaf2f7da1078fba1c8f1330a0fd576829d8bf77eb192dd037a8a47210",
+          "size": 38
+        },
+        {
+          "path": "owned.sqlite",
+          "sha256": "f334cb11355e5dacb06f3204b55b6df8e9d3fe292d06ca5ea6d66e94d908823b",
+          "size": 36864
+        }
+      ]
+    },
+    {
+      "root": "/tmp/atlas-pol01-repair-hXR7Ld",
+      "cleanup": "runtime closed; root retained as sealed evidence",
+      "files": [
+        {
+          "path": "a/.codemap/structure.json",
+          "sha256": "90f8e6bdf67262c9899eb1376ea17d7ae9c18e1545ea70d7b3d186516973bace",
+          "size": 364
+        },
+        {
+          "path": "a/main.ts",
+          "sha256": "1d9659cdaf2f7da1078fba1c8f1330a0fd576829d8bf77eb192dd037a8a47210",
+          "size": 38
+        },
+        {
+          "path": "b/.codemap/structure.json",
+          "sha256": "cf009e0eb90c6b193d6c53420dc9d2df014ad51828f8f10d1f6bcbe68c8f0513",
+          "size": 86
+        },
+        {
+          "path": "b/main.ts",
+          "sha256": "1d9659cdaf2f7da1078fba1c8f1330a0fd576829d8bf77eb192dd037a8a47210",
+          "size": 38
+        },
+        {
+          "path": "owned.sqlite",
+          "sha256": "3eda14fc1e88f92a8d543b776fce82f72d2c7f4ef22228a9146443b01ef7cff3",
+          "size": 36864
+        }
+      ]
+    },
+    {
+      "root": "/tmp/atlas-pol01-repair-jgbdhD",
+      "cleanup": "runtime closed; root retained as sealed evidence",
+      "files": [
+        {
+          "path": "a/.codemap/structure.json",
+          "sha256": "aaff8fd9cb98be247fd347c6b5dc1ac78563c90b514737dae76486870993c3ea",
+          "size": 102
+        },
+        {
+          "path": "a/main.ts",
+          "sha256": "1d9659cdaf2f7da1078fba1c8f1330a0fd576829d8bf77eb192dd037a8a47210",
+          "size": 38
+        },
+        {
+          "path": "b/.codemap/structure.json",
+          "sha256": "cf009e0eb90c6b193d6c53420dc9d2df014ad51828f8f10d1f6bcbe68c8f0513",
+          "size": 86
+        },
+        {
+          "path": "b/main.ts",
+          "sha256": "1d9659cdaf2f7da1078fba1c8f1330a0fd576829d8bf77eb192dd037a8a47210",
+          "size": 38
+        },
+        {
+          "path": "owned.sqlite",
+          "sha256": "7cfa77205b5d9da807e886c969c9023d5e9ee3ff170fa7a8604dd0ccfc2f82b9",
+          "size": 36864
+        }
+      ]
+    },
+    {
+      "root": "/tmp/atlas-pol01-repair-oeRMlS",
+      "cleanup": "runtime closed; root retained as sealed evidence",
+      "files": [
+        {
+          "path": "a/.codemap/structure.json",
+          "sha256": "7aaf45af486891788a67117f5db4129ee7c01c0ff0fe434709780ff4733f3e2a",
+          "size": 130
+        },
+        {
+          "path": "a/main.ts",
+          "sha256": "1d9659cdaf2f7da1078fba1c8f1330a0fd576829d8bf77eb192dd037a8a47210",
+          "size": 38
+        },
+        {
+          "path": "b/.codemap/structure.json",
+          "sha256": "cf009e0eb90c6b193d6c53420dc9d2df014ad51828f8f10d1f6bcbe68c8f0513",
+          "size": 86
+        },
+        {
+          "path": "b/main.ts",
+          "sha256": "1d9659cdaf2f7da1078fba1c8f1330a0fd576829d8bf77eb192dd037a8a47210",
+          "size": 38
+        },
+        {
+          "path": "owned.sqlite",
+          "sha256": "ce0ae3f66c6cdffc72dc5e55a0c4ddf871cf1df1cb4d7d096e87a2bbfcbfc0fb",
+          "size": 36864
+        }
+      ]
+    },
+    {
+      "root": "/tmp/atlas-pol01-repair-pdzPkT",
+      "cleanup": "runtime closed; root retained as sealed evidence",
+      "files": [
+        {
+          "path": "a/main.ts",
+          "sha256": "1d9659cdaf2f7da1078fba1c8f1330a0fd576829d8bf77eb192dd037a8a47210",
+          "size": 38
+        },
+        {
+          "path": "b/.codemap/structure.json",
+          "sha256": "cf009e0eb90c6b193d6c53420dc9d2df014ad51828f8f10d1f6bcbe68c8f0513",
+          "size": 86
+        },
+        {
+          "path": "b/main.ts",
+          "sha256": "1d9659cdaf2f7da1078fba1c8f1330a0fd576829d8bf77eb192dd037a8a47210",
+          "size": 38
+        },
+        {
+          "path": "owned.sqlite",
+          "sha256": "44fd9974a16131bdafe5e5be10010d1fc167e9ae209a81aa7bbb378d6be2bd61",
+          "size": 32768
+        }
+      ]
+    },
+    {
+      "root": "/tmp/atlas-pol01-repair-skfl41",
+      "cleanup": "runtime closed; root retained as sealed evidence",
+      "files": [
+        {
+          "path": "a/.codemap/structure.json",
+          "sha256": "cf009e0eb90c6b193d6c53420dc9d2df014ad51828f8f10d1f6bcbe68c8f0513",
+          "size": 86
+        },
+        {
+          "path": "a/main.ts",
+          "sha256": "1d9659cdaf2f7da1078fba1c8f1330a0fd576829d8bf77eb192dd037a8a47210",
+          "size": 38
+        },
+        {
+          "path": "b/.codemap/structure.json",
+          "sha256": "eb02eefa93e6b4b8677ba9be2bb3e764e8c752ee7f4fc7303a0295194ae1372b",
+          "size": 364
+        },
+        {
+          "path": "b/main.ts",
+          "sha256": "1d9659cdaf2f7da1078fba1c8f1330a0fd576829d8bf77eb192dd037a8a47210",
+          "size": 38
+        },
+        {
+          "path": "owned.sqlite",
+          "sha256": "b6a567061dfaa53e711a7aad129b80cf2abdac09c37f2088c5d9d8b102aaf50b",
+          "size": 40960
+        }
+      ]
+    },
+    {
+      "root": "/tmp/atlas-pol01-repair-uPT0nv",
+      "cleanup": "runtime closed; root retained as sealed evidence",
+      "files": [
+        {
+          "path": "a/.codemap/structure.json",
+          "sha256": "ca02907b7270b79ecba625d00e57bba2fa56a34aa319fe15365a2354430dbe47",
+          "size": 361
+        },
+        {
+          "path": "a/main.ts",
+          "sha256": "1d9659cdaf2f7da1078fba1c8f1330a0fd576829d8bf77eb192dd037a8a47210",
+          "size": 38
+        },
+        {
+          "path": "b/.codemap/structure.json",
+          "sha256": "cf009e0eb90c6b193d6c53420dc9d2df014ad51828f8f10d1f6bcbe68c8f0513",
+          "size": 86
+        },
+        {
+          "path": "b/main.ts",
+          "sha256": "1d9659cdaf2f7da1078fba1c8f1330a0fd576829d8bf77eb192dd037a8a47210",
+          "size": 38
+        },
+        {
+          "path": "owned.sqlite",
+          "sha256": "dccaa6858a9eb8472296f860a1939a09ceacff963ae65611ef7c79a7dff4cf58",
+          "size": 36864
+        }
+      ]
+    }
+  ],
+  "tunnelsCreated": 0,
+  "runtimeCleanup": "All owned children/workers exited; sole real listener closed; SQLite and inject apps closed. Evidence roots retained. No unrelated instances touched."
+}

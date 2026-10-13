@@ -1,0 +1,94 @@
+# PERF-01 增量索引与可停止监听设计
+
+日期：2026-10-10。作者：原 `gpt-6.1-sol high`。状态：设计提交独立审查；未实现、未测性能、未标票 DONE。
+
+## 目标与边界
+
+落实 `docs/tickets/PERF-01.md`：源码改动、删除和配置变化后的结果与完整索引一致；知识保存；失败可回退；用真实中型目标证明性能。用户希望打开项目后能选择自动获得新索引，又能知道当前状态、停止自动更新和手工完整刷新。
+
+最小交付由同一个索引生命周期完成：完整捕获实际字节 → 按上下文复用 TypeScript Program 的解析结构 → 全量重算静态语义和图 → 现有项目队列内发布。监听只请求这个生命周期，不独立构建或写快照。Python 仍走当前完整 AST 分析，不声称 Python 已有局部解析加速。不修改目标源码，不安装或运行目标脚本，不新增第三方依赖，不实现磁盘 AST 缓存、监控平台、身份迁移或模糊自动绑定。
+
+本轮只写本 spec、配套 plan 和作者收据；产品代码、测试、运行实例、DB、构建、stage/commit 均不在窗口内。KN/POL 当前共同失效事务正在实施，必须接其最终已冻结契约，不能以本设计替换它。
+
+## 真实依据与方案选择
+
+当前 `SourceIndexer.index` 每次 `scan` 完整采集来源、配置和包清单，TypeScript 为提取和授权 scope 新建 ts-morph Project，Python 全量分析，Graph 每次新建。`scan.ts` 排序路径、拒绝 symlink/越界、读取同一份字节做解析与 contentHash；配置和包读取有已有预算。`Graph.edge` 的 ID 包含当前 relations.length，顺序也是身份的一部分，不能重排后宣称等价。
+
+`WorkspaceService.openProject/refreshIndex/withStructure` 复用 `StructureSync.withProject` 的项目队列；`storeSnapshot` 是同步存储事务，含快照、project 指针及 annotation reconciliation。同 ID 回到既有快照，不覆盖历史。当前 `WorkspaceService` 尚无完整监听/close 生命周期；`apps/server/src/index.ts` 在 app.close 后 finally storage.close，因此新增 owned 工作必须有明确 drain/storage 保持契约。
+
+比较三种选择：仅缓存 mtime 并按事件拼图不能证明删除、漏报或配置授权；持久化依赖图并局部更新 calls 涉及全局 namespace veto、跨 scope、Python 和关系序号，范围过大；选择完整字节 reconciliation 加 TypeScript 官方 oldProgram 复用，保留完整语义分析和完整 builder 回退。它减少重复语法/绑定工作，不假设未变文件的调用语义未变。
+
+TypeScript 官方 Compiler API 支持 oldProgram 复用结构，普通 Program 与缓存语义诊断的 builder 是不同选择。本票选择普通 Program，不复用语义结果。[TypeScript Compiler API](https://github.com/microsoft/TypeScript/wiki/Using-the-Compiler-API)
+
+本机实际 TypeScript 5.9.3 更具体：`typescript.js` bindSourceFile2 会写 `file.locals/symbolCount/classifiableNames`，其他节点也持有绑定/flow 状态；getNodeLinks/getSymbolLinks 的非 transient 链接表属于 checker，getTypeChecker 是当前 Program 的惰性 checker；tryReuseStructureFromOldProgram 还会写 SourceFile 路径及 package 状态。因此“相同 bytes 的 AST 是纯不可变对象”不成立。`typescript.d.ts` 的 getSourceFile 明确带 shouldCreateNewSourceFile，hasInvalidatedResolutions 配合自定义 resolver 决定未改路径是否重新解析。这些已只读核验并记录实际文件 SHA；属于设计支持依据，不是复用实现已通过测试的声明。
+
+## 捕获与增量协议
+
+### 每轮输入和完整回退
+
+自动与手工索引均继续调用现有完整 scan：检查 canonical root/regular-file/containment，捕获排序文件集合、源码 bytes、配置闭包、包清单、ignore/排除规则、availability、capture diagnostics。mtime、inode 大小和 watch 事件只是提示，不能替代源字节 hash；消失事件不能直接删图或把 annotation 变 orphan。解析始终只读取本轮捕获，不让 CompilerHost 回读目标目录或猜 dist→src。
+
+`IndexerPort.index(rootPath, projectId, options?)` 拟增可选 `{ mode?: "auto" | "full"; signal?: AbortSignal }`，旧两参数实现仍兼容；未给 mode 默认为 auto。另增可选 `releaseProject?(projectId):void`，只清私有缓存/使 generation 失效，供 stop/close 调用；不影响快照/存储。`full` 必须绕过所有 Program 缓存，走保留的当前 ts-morph 完整 builder，不能暗用缓存作为测试 oracle。HTTP 既有 refresh 明确调用 full；approve/verify 必需的 freshness 可以 auto，但仍每次完整捕获。full 和 auto 共用同一 capture、Graph 和指纹规则，不新增 snapshot schema/hash version。
+
+配置/extends/references、package exports/workspaces/module mode、ignore/exclusion 证据变化，解析授权 scope 身份/归属变化，rename/大小写冲突提示，未知事件/overflow、capture 不完整、配置授权不确定或 compiler 版本/options 改变，丢弃本项目 Program 缓存，执行完整 builder。未知授权仍按 IDX-02/03 给 unknown，不放宽错误连边。普通源码 edit、明确 add/delete 经完整字节 inventory 证实后可以走 oldProgram；root 集合变化由编译器拒绝结构复用并重新建 Program，不手工保留被删 SourceFile。新图与旧图的差异不改变现有 identity；rename 本票 full fallback，后续 IDX-04 迁移由独立契约处理。
+
+完成分析后再完整捕获一次，对比其输入 witness（包括源码/config/package bytes、排除规则、availability/diagnostics 的语义字段）；相同才返回可发布候选。变化最多重新尝试一次，两次仍变则抛 INDEX_INPUTS_CHANGED，保留旧快照、标记 dirty 并等待下一次事件或 reconciliation。发现 parse diagnostics 并不等于不能发布：稳定捕获下的当前完整 builder 保守 partial/unknown 行为保持；解析异常/缓存异常先清 cache，使用当前捕获完整重算一次，完整重算仍失败则不发布。采集不是整个文件系统原子快照；这里只证明发布候选基于捕获字节，且完成时重读相同，仍保留随后变更的刷新提示，不宣称不存在下一瞬间变更。
+
+### Program cache 的所有权
+
+新增私有 `CapturedPrograms`。每项属于 `(projectId, canonicalRoot, rootIdentity, compilerVersion, extraction|authorizedScope, semanticPolicyWitness)`；policy witness 包含实际 compiler options、scope/project-reference 授权图、配置和包清单 bytes、module mode、ignore/排除策略。保留同一上下文上一轮普通 Program；不以单文件 hash 为唯一 cache key。不同 scope、提取 Program、不同项目、同路径重开的不同 root，均不得共享 SourceFile、Symbol、checker 或 Program。
+
+新 `createProgram` 使用新捕获的只读 CompilerHost 和新 resolver；getSourceFile 只在相同上下文、相同 canonical virtual path、raw bytes hash、ScriptKind、languageVersion/CreateSourceFileOptions 相同且 shouldCreateNewSourceFile=false 时返回该 oldProgram 的 SourceFile，否则 createSourceFile 新建。完整选项/NodeNext implied module format 等语义条件若不能比较，整项放弃复用。删除路径 fileExists/getSourceFile 均只回答本轮 inventory，不能从 oldProgram 補回；新增路径以新 AST 加入。
+
+每轮 resolver host/cache 重新建，hasInvalidatedResolutions 对每个文件返回 true（包括未变 import 文本的 importer），确保模块目标删除、新增、module exports 改变不保留旧解析。保留当前 captured configuration/workspace resolver 的授权与 imports 条件，禁止由自定义 host 放宽 package、reference 或 ambient globals。普通新 Program 的 checker 与当前分析 Map 重新创建，不复用上轮 checker/符号链接/exports/call 结果；未改 SourceFile 上存在的本地 binder 状态仅沿 TypeScript oldProgram 官方协议保留，不能称所有绑定都会重新运行，也不能手工清理局部字段伪造“无绑定 AST”。
+
+所有声明枚举、语法诊断、CommonJS 模块分析、跨 scope physical-target namespace/prototype veto、导入、call/relation 和 unresolved 均按完整算法与完整顺序重算。尤其变更另一个 scope 的 prototype 写入可撤销未改 caller 的边；referenced global 无 import/只有 side-effect import 均不能成为 callable binding。混合语言中的 Python 仍完整分析。缓存只作为性能状态，不能持久化进 snapshot/coverage 或修改历史。
+
+同一 context 的旧 Program 只允许当前 index invocation 独占；项目队列通常保证这一点，Indexer 自身还要对直接调用加 busy guard：同项目并发不借出同一项，竞争 invocation 走 full，不在完成后覆盖更晚的 cache generation。缓存仅在整个候选成功校验后替换；异常/abort 立即释放引用。上限为两个项目、每项目 4096 个 TS 源文件、64 个 Program 上下文、64 MiB 原始 TS 源字节，全局至多 128 MiB 原始源字节；超过则不保留 cache，完整分析照常。数字限制保留的输入规模，不冒称 AST heap 的字节上限。10 分钟闲置在下次请求懒淘汰，无额外定时器；watch stop/Workspace close 清相应 cache。峰值 RSS/heap 另在真实性能门检验。
+
+## Owned 监听生命周期
+
+服务 trusted option `watch.enabled` 来自 server 环境 `CODEMAP_WATCH=1`，默认 false；client、目标 package 配置和 MCP 参数不能把它打开。open 成功后每项目一个 WatchSession，属于项目原 path 对应的 canonical root 和可可靠取得的 dev/ino/root metadata。project ID 的现有路径算法保持，不在 PERF 迁移。不能证明根归属、根消失/替换或 canonical root 改变时停止 session、clear cache，状态 root_changed，要求用户确认路径并手工完整重新打开；不自动把旧根知识绑定新目录。
+
+事件机制只用 Node 24 既有 fs.watch recursive/signal/close API；递归支持或挂载行为不能保证时转 polling，30 秒完整 reconciliation 继续。Node 文档明确 filename 可缺失，Linux/macOS watcher 跟随 inode，部分网络/虚拟文件系统不可靠，故事件不能单独成为完整性依据。[Node.js fs.watch](https://nodejs.org/docs/latest-v24.x/api/fs.html)
+
+首次 attach 后立即安排一次 reconciliation，覆盖 open 索引与 attach 的间隙。所有 event 提示均先归属到 session；缺 filename/unsafe path/rename/error → forceFull；只允许安全相对 hint，不读取提示路径、不跟 symlink，不能把提示路径当授权源码。事件 Set 最多 1024 项，超过折叠为一个 forceFull 布尔量，不存无限路径。250ms debounce，首个事件起最多 1000ms 入队；稳定期每 30s 执行一次完整字节 reconciliation，补 event 漏报，polling 模式同样使用。忽略已知恒定排除目录的事件只是减噪，周期扫描仍验证规则；`.gitignore`、配置、包清单和 `.codemap/structure.json` 都是 freshness 提示。Structure 文件即使 source contentHash 不变，也走现有 joint freshness，不由索引 cache 提前跳过。
+
+每项目最多一个排队或运行中的自动任务，以及一个 dirty/forceFull pending 标志。watch scheduler 不建第二个发布队列；自动任务只调用既有 refresh authority，在 `StructureSync.withProject` 内到实际执行时才 capture。运行时收到 burst 只标 dirty，结束后最多安排一次下一任务，不能递归占住队列或排几千个 refresh。手工 refresh/approve/verify 维持业务请求队列语义；自动每次最多一个票据，后续 auto 排到已到达的手工请求之后。手工完整刷新完成若已覆盖当前 dirty generation，清 auto pending；不取消已执行业务调用。内存仅保留 hints/generation 和 cache，持久化知识不属于监听。
+
+`stopWatching(projectId)` 先使 session epoch 失效，关闭 watcher/abort watcher、清 debounce/reconciliation timer、丢 hint，阻止已排 auto 任务进入 capture，并阻止已运行 auto 候选发布；手工刷新仍允许。停止不撤回之前已提交快照；返回 stopped 状态，若工作仍未 settle 标明 pending，最终 settle 后 idle。停用 session 在本次服务进程保持，重新 open 不隐式恢复；重新启用需启用 trusted env 的服务重启，不新增 UI 开启平台。服务全局 close 的 closing fence 同样阻止所有新 open/refresh/watch 请求及后续发布。
+
+新增 `WorkspaceService.beginClose()/close({timeoutMs:5000})`：beginClose 同步关闭所有 owned watcher/timer、abort active owned index 工作，close 等待已有项目队列和 owned promise（包含已经 dispatch 的业务 work）settle；超时返回 `{settled:false, whenIdle}`，不可把有限等待冒充全部完成。StructureSync 同时设置 closing admission fence，不接受新业务队列任务；已经进入的工作在后续 mutation/commit 边界检查全局 epoch。Indexer 在 scan/Program/图分析边界检查 abort，不再启动 Python helper；已启动的本仓 Python AST helper 需要 owned abort/termination、wait close，并保留实际 pending，不扩大到目标脚本或 AG03 native helper。同步 compiler 阶段不可硬抢占，不能保证 event-loop 被阻塞时 wall-clock 5000ms。server preClose 先 fence，最终仅在 service.whenIdle 后 close storage；deadline 超时保留 storage/隔离 pending 禁后续发布，并报告关闭失败，不 finally 提前关 DB。具体 hook 与 AG03 closing owner registry 合并，由主控授予共享窗口后实施，不能并行建第二套关闭所有权。仅 watch stop 不等待无关手工请求；全局 close 必须纳入业务队列。
+
+## 公开状态与最小 UI
+
+新增 strict `IndexWatchStatus`：`projectId`，`mode: disabled|events|polling|stopped|error`，`phase: idle|queued|indexing|pending`，`dirty:boolean`，`latestSnapshotId?:string`，`lastAttemptAt?:string`，`reason?:root_changed|watch_unavailable|capture_changed|index_failed|stopping|cache_fallback`。仅 enum/ID/ISO 时间/布尔量，禁止绝对路径、error stack、内部 handle/cache/Program、目标环境/密钥。无最新成功快照不填 ID；只读 status 不触发 capture、重新启用或覆盖知识。不存在/跨项目按现有 NOT_FOUND。
+
+`GET /api/projects/:id/index-watch` 返回真实当前 status；`POST /api/projects/:id/index-watch/stop` 空 DTO 调 service.stopWatching，复用现有 HTTP 写授权/项目归属。MCP 增量与监听不新增控制工具；现有 open/refresh/get_snapshot/source/approval 仍读同 publication authority，refresh 完整语义不变。SDK smoke 验证无需真实 client 交互，不宣称 Codex/Claude 交互已经验收。
+
+Navigation 已有高级索引诊断内新增小型状态区和“停止自动更新”按钮，不堆首用外层。默认“自动更新已关闭；完整刷新可用”，events“正在监听”，polling“事件监听不可用，30 秒检查”，queued/indexing“更新中”，error/root_changed 显示对应下一步，stopped“自动更新已停止；完整刷新可用”。出现不同 latestSnapshotId 时提示“有新索引，完整刷新以载入”；使用现有 workspace.refresh 加载最新 graph，并保留已选 plan 的真实 stale/context 处理，不后台静默替换用户图/规划基线。
+
+诊断展开且 mode active 时每 2 秒最多一个状态请求；折叠、切换项目、dispose 或服务停止取消请求和 owned timer，epoch 防旧项目返回写入新状态。关闭模式只在打开项目/手工刷新时读一次，无持续后台 UI timer。status polling 不是 source freshness 证明。中英文都验证实际按钮和状态；UI 未加载新快照时明确当前 graph 仍是旧 snapshot。
+
+## Snapshot、知识和失败一致性
+
+只能从既有队列的 lock-held joint refresh 进入 `storeSnapshot`。PERF 不新建写事务，不调整 annotation orphan/rebind、policy revision 或 group/plan ownership。最终 KN/POL 合同应在同一项目队列里采集 source 和 structure freshness，快照/project 指针/knowledge reconcile/一次 plan invalidation 共同 commit；已有相同 source 与 structure 内容不增 revision，不生成假历史。watch 请求不能先单独 publish snapshot 再另调 joint invalidate。后续修改必须建立在 KN/POL 冻结 API 上，并用联合变化真实用例证明一次 invalidation。
+
+采集/缓存/完整重算/DB commit 失败均不能覆盖已发布指针，回滚知识/history/context，status 明示失败和完整刷新下一步。stable partial/unknown 的知识处理沿 KN01：unavailable、预算截断、解析失败或历史缺证据不能仅因目标不在图就 orphan；已完整证明删除可记录 orphan，但原文、revision/history、批准记录不删除，不自动按相似路径 rebind。source 的新增与正常删除保持现有 ID；关系序号变化不迁移旧 annotation。
+
+## 必须通过的未来门禁
+
+以下全是待实施要求，没有本轮 PASS。
+
+1. 强制 full oracle 与 warmed auto 各用独立 cache/Graph、同一稳定捕获、固定 gitRevision/clock：只剔除 createdAt 比较；projectId/id/contentHash/hashVersion、nodes/relations 的完整数组顺序和 IDs、source evidence、diagnostics、coverage/configurationProjectGraph 全等。若两次直接索引同输入，createdAt 可不同，但 id 仍相同；storeSnapshot 历史回用既有对象也验证。不能仅比较总数或排序后比较。
+2. 真实 fixture edit/add/delete、只更改 mtime 但 bytes 相同、bytes 改变 mtime 不变、module target 删除→恢复/缺失→新增、未改 importer 改 exporter/re-export、global script 新增/删除、conditional package/config/extends/reference/ignore变化、rename/case/root替换均测等价和保守 fallback。
+3. 两项目同相对路径、两个隔离 scopes、reference global no-import/side-effect-only/named-binding、另 scope namespace/prototype 写入撤销旧 call、CommonJS 逃逸/循环、type-only imports、UTF16 等，证明没有复用旧解析/旧 callable 授权。保留 IDX01 全 Express 入口、IDX02 workspace 条件 exports/真实 AtlasMode dist 排除 unknown、IDX03 references 的历史失败/修复证据。
+4. 真实 fs.watch 触发 edit/delete/config/rename，不依赖只 mock event；丢失 filename/overflow、watch error/unsupported 注入验证 polling 和 forceFull。barrier 阻塞 analysis，期间手工 refresh/approve/stop/close 到达，断言单 auto pending、有界 hints、手工不饿死、no post-stop publication、source/structure joint 仅一次 invalidation、rollback preserves所有知识。根 symlink/替换不能串旧知识。停止及全局关闭后 owned watcher/timer/helper 无遗留；未 settle 的 DB 保持可用，whenIdle 后才关。
+5. 同 snapshot 的 HTTP/MCP SDK/source/context 和真实浏览器诊断展开、状态更新、停止、手工完整刷新、切项目/折叠取消请求，四态截图及 en/zh 文案；使用独立 DB/random ports，不操作现有实例。Linux/macOS/Windows 原生监听机制验证；无 native Windows 环境保持外部未验证，不能以 Linux 或 mock 填补。
+6. 真实中型性能：已有完整 Express v5.2.1 checkout `/tmp/atlasmode-idx01-express`，固定 commit `dbac741a49a5a64336b70c06e85c2e2706e36336`，本轮只读 HEAD 相符、working tree clean。以前的 142 文件/3070 函数/35 entry 是功能记录，不是 PERF 测量。未来在 owned 完整副本上测当前源 freeze 的 cold/warm full baseline 与最终 full/auto，禁止执行目标代码/安装目标依赖。每组至少 5 次预热、20 次交错配对（每次同 edit，另一进程 full oracle）；计完整 capture、二次验证、queue wait、TS/Python/semantic/store 总 wall time、p50/p95、RSS/heap、cache复用/回退数。增量 single-file update p50 至少比最终 forced-full 低 20%，p95、cold total 与峰值 RSS 相较原 full baseline 不退化超过 10%；记录硬件/OS/Node/lock/源码 SHA、目标原始和修改后 bytes SHA及原始每样本记录，不删异常值。add/delete/config/fallback测一致性与 latency，不用小 synthetic 的快数字替换真实 medium。达不到提升或必要机制门缺失就是 PARTIAL，附原因，不能以 build/schema PASS 标 DONE。
+
+## 共享窗口与作者自审
+
+未来最小窗口：indexer 捕获/program helper 与 index/TS/Python owned cancellation；core IndexerPort 可选 options 和单独 status DTO/schema；service owned watch scheduler + workspace/StructureSync drain（接 KN/POL joint）；server routes/bootstrap/preClose（接 AG03）；web client/workspace/Navigation + en/zh 与专属小 status component；专属测试/benchmark/evidence helper。storage 不加表、migration 或身份算法；MCP 不加 tools，只验已有路径。应先独立设计审查、KN/POL joint 冻结、主控授予共享文件窗口，再实施。所有 commit/push 归主控，不能直接根 build 或共享 dist。
+
+作者自审：安全充分性依赖完整 bytes/captured 授权，不依赖 event/mtime；mutable AST 使用编译器协议且 scope 独占，不复用 checker/calls；capture 稳定性有有界重试；authority/joint事务唯一；自动队列与 timer 有 owner/stop fence；visible status 不是文档虚称监听；历史知识保留；真实 medium/native/HTTP/MCP/browser 均列未来门。尚待独立高审查；Program 复用正确性和足够性能必须由实现后证据决定。

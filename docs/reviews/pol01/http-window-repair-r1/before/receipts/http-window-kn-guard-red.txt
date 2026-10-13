@@ -1,0 +1,163 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90m/home/agent/projects/AtlasMode[39m
+
+ [31m❯[39m apps/server/src/pol01-workspace-http.test.ts [2m([22m[2m12 tests[22m[2m | [22m[31m4 failed[39m[2m | [22m[33m8 skipped[39m[2m)[22m[33m 1467[2mms[22m[39m
+   [2m[90m↓[39m[22m HTTP real file write, array/meta policies, stale CAS and invalid diagnostics use one service boundary
+   [2m[90m↓[39m[22m old policy POST requires explicit CAS, preserves DB source until preview plus migration, then edits file
+[31m   [31m×[31m actual Workspace approval/current-read queue blocks prepared structure write[39m[33m 652[2mms[22m[39m
+[31m   [31m×[31m actual Workspace approval/current-read queue blocks published structure write[39m[33m 343[2mms[22m[39m
+   [2m[90m↓[39m[22m owned process crash before recovers before HTTP availability without touching user files
+   [2m[90m↓[39m[22m owned process crash after recovers before HTTP availability without touching user files
+   [2m[90m↓[39m[22m owned process crash third recovers before HTTP availability without touching user files
+   [2m[90m↓[39m[22m owned process crash unknown recovers before HTTP availability without touching user files
+   [2m[90m↓[39m[22m HTTP published-file finalize failure blocks policies/approval then atomically recovers once
+   [2m[90m↓[39m[22m actual source entrypoint recovers published intent before it listens
+[31m   [31m×[31m HTTP current approval requires the current revision while verification retains immutable approval history[39m[32m 299[2mms[22m[39m
+[31m   [31m×[31m HTTP malformed approval context is an explicit conflict without a historical fallback[39m[32m 169[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 4 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m apps/server/src/pol01-workspace-http.test.ts[2m > [22mactual Workspace approval/current-read queue blocks prepared structure write
+[31m[1mAssertionError[22m: promise resolved "{ plan: { …(11) }, …(3) }" instead of rejecting[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- Error {[39m
+[32m-   "message": "rejected promise",[39m
+[31m+ {[39m
+[31m+   "approval": {[39m
+[31m+     "actor": "user",[39m
+[31m+     "approvedAt": "2026-10-10T17:21:40.009Z",[39m
+[31m+     "baselineContentHash": "0903ca34d57823816b23408e43b6c3cd504ca316421c32d4fc25c6f166d2816b",[39m
+[31m+     "baselineSnapshotId": "snapshot:a1807104c14f2e1175116f997aa82ad5",[39m
+[31m+     "id": "991edb53-9ece-4e4d-94bf-6a7324cc317a",[39m
+[31m+     "planId": "53e397aa-5599-4cba-82cd-eeb1759db2b1",[39m
+[31m+     "reviewContext": {[39m
+[31m+       "knowledgeHash": "0bc54e18e402cee0460f6517781c8f639169066a1c9c172465b74fb3ba0bad7a",[39m
+[31m+       "version": 1,[39m
+[31m+     },[39m
+[31m+     "revision": 1,[39m
+[31m+     "semanticHash": "11a38fe9407fad27ba3a1ae5f365ecb4022b6a00f2f824ea2f4148d04afe16b0",[39m
+[31m+   },[39m
+[31m+   "issues": [],[39m
+[31m+   "plan": {[39m
+[31m+     "baselineContentHash": "0903ca34d57823816b23408e43b6c3cd504ca316421c32d4fc25c6f166d2816b",[39m
+[31m+     "baselineSnapshotId": "snapshot:a1807104c14f2e1175116f997aa82ad5",[39m
+[31m+     "createdAt": "2026-10-10T17:21:39.971Z",[39m
+[31m+     "description": "",[39m
+[31m+     "id": "53e397aa-5599-4cba-82cd-eeb1759db2b1",[39m
+[31m+     "operations": [],[39m
+[31m+     "projectId": "project:bc56311b9c90245e1be369ce2760d128",[39m
+[31m+     "revision": 2,[39m
+[31m+     "status": "draft",[39m
+[31m+     "title": "barrier",[39m
+[31m+     "updatedAt": "2026-10-10T17:21:40.047Z",[39m
+[31m+   },[39m
+[31m+   "valid": false,[39m
+[2m  }[22m
+
+[36m [2m❯[22m apps/server/src/pol01-workspace-http.test.ts:[2m305:25[22m[39m
+    [90m303|[39m       code[33m:[39m [32m"REVISION_CONFLICT"[39m[33m,[39m
+    [90m304|[39m     })[33m;[39m
+    [90m305|[39m     await expect(current).rejects.toMatchObject({ code: "NOT_APPROVED"…
+    [90m   |[39m                         [31m^[39m
+    [90m306|[39m     [34mexpect[39m(service[33m.[39m[34mgetPlan[39m(plan[33m.[39mid))[33m.[39m[34mtoMatchObject[39m({
+    [90m307|[39m       valid[33m:[39m [35mfalse[39m[33m,[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/server/src/pol01-workspace-http.test.ts[2m > [22mactual Workspace approval/current-read queue blocks published structure write
+[31m[1mAssertionError[22m: promise resolved "{ plan: { …(11) }, …(3) }" instead of rejecting[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- Error {[39m
+[32m-   "message": "rejected promise",[39m
+[31m+ {[39m
+[31m+   "approval": {[39m
+[31m+     "actor": "user",[39m
+[31m+     "approvedAt": "2026-10-10T17:21:40.330Z",[39m
+[31m+     "baselineContentHash": "0903ca34d57823816b23408e43b6c3cd504ca316421c32d4fc25c6f166d2816b",[39m
+[31m+     "baselineSnapshotId": "snapshot:a522840f632f5b9eab48367058ff19a8",[39m
+[31m+     "id": "f899c8d1-afaf-4034-b045-4b67898ff5e9",[39m
+[31m+     "planId": "69ecb614-f393-4131-b2f7-44496618610f",[39m
+[31m+     "reviewContext": {[39m
+[31m+       "knowledgeHash": "09797b92d93d6e05d98d8097c938f2731500b9073b5f7049da794c44973d5fd9",[39m
+[31m+       "version": 1,[39m
+[31m+     },[39m
+[31m+     "revision": 1,[39m
+[31m+     "semanticHash": "186f2d0ba34c1ea1eb879ab8e39bb38fab1a8c5704b338921269aa7bb8e37e05",[39m
+[31m+   },[39m
+[31m+   "issues": [],[39m
+[31m+   "plan": {[39m
+[31m+     "baselineContentHash": "0903ca34d57823816b23408e43b6c3cd504ca316421c32d4fc25c6f166d2816b",[39m
+[31m+     "baselineSnapshotId": "snapshot:a522840f632f5b9eab48367058ff19a8",[39m
+[31m+     "createdAt": "2026-10-10T17:21:40.302Z",[39m
+[31m+     "description": "",[39m
+[31m+     "id": "69ecb614-f393-4131-b2f7-44496618610f",[39m
+[31m+     "operations": [],[39m
+[31m+     "projectId": "project:5e315c44ac902568c00bae631e13d1bd",[39m
+[31m+     "revision": 2,[39m
+[31m+     "status": "draft",[39m
+[31m+     "title": "barrier",[39m
+[31m+     "updatedAt": "2026-10-10T17:21:40.404Z",[39m
+[31m+   },[39m
+[31m+   "valid": false,[39m
+[2m  }[22m
+
+[36m [2m❯[22m apps/server/src/pol01-workspace-http.test.ts:[2m305:25[22m[39m
+    [90m303|[39m       code[33m:[39m [32m"REVISION_CONFLICT"[39m[33m,[39m
+    [90m304|[39m     })[33m;[39m
+    [90m305|[39m     await expect(current).rejects.toMatchObject({ code: "NOT_APPROVED"…
+    [90m   |[39m                         [31m^[39m
+    [90m306|[39m     [34mexpect[39m(service[33m.[39m[34mgetPlan[39m(plan[33m.[39mid))[33m.[39m[34mtoMatchObject[39m({
+    [90m307|[39m       valid[33m:[39m [35mfalse[39m[33m,[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/server/src/pol01-workspace-http.test.ts[2m > [22mHTTP current approval requires the current revision while verification retains immutable approval history
+[31m[1mAssertionError[22m: expected 200 to be 409 // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- 409[39m
+[31m+ 200[39m
+
+[36m [2m❯[22m apps/server/src/pol01-workspace-http.test.ts:[2m628:28[22m[39m
+    [90m626|[39m   [35mconst[39m currentPath [33m=[39m [32m`/api/plans/[39m[36m${[39mplan[33m.[39mid[36m}[39m[32m/approved`[39m[33m;[39m
+    [90m627|[39m   const draft = await f.app.inject({ method: "GET", url: currentPath }…
+    [90m628|[39m   [34mexpect[39m(draft[33m.[39mstatusCode)[33m.[39m[34mtoBe[39m([34m409[39m)[33m;[39m
+    [90m   |[39m                            [31m^[39m
+    [90m629|[39m   [34mexpect[39m(draft[33m.[39m[34mjson[39m())[33m.[39m[34mtoMatchObject[39m({ code[33m:[39m [32m"NOT_APPROVED"[39m })[33m;[39m
+    [90m630|[39m   [35mawait[39m f[33m.[39mservice[33m.[39m[34mapprovePlan[39m(plan[33m.[39mid[33m,[39m [34m1[39m)[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/server/src/pol01-workspace-http.test.ts[2m > [22mHTTP malformed approval context is an explicit conflict without a historical fallback
+[31m[1mAssertionError[22m: expected 200 to be 409 // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- 409[39m
+[31m+ 200[39m
+
+[36m [2m❯[22m apps/server/src/pol01-workspace-http.test.ts:[2m678:30[22m[39m
+    [90m676|[39m     url[33m:[39m [32m`/api/plans/[39m[36m${[39mplan[33m.[39mid[36m}[39m[32m/approved`[39m[33m,[39m
+    [90m677|[39m   })[33m;[39m
+    [90m678|[39m   [34mexpect[39m(current[33m.[39mstatusCode)[33m.[39m[34mtoBe[39m([34m409[39m)[33m;[39m
+    [90m   |[39m                              [31m^[39m
+    [90m679|[39m   expect(current.json()).toMatchObject({ code: "APPROVAL_CONTEXT_INVAL…
+    [90m680|[39m   [35mconst[39m ordinary [33m=[39m [35mawait[39m f[33m.[39mapp[33m.[39m[34minject[39m({
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m4 failed[39m[22m[2m | [22m[33m8 skipped[39m[90m (12)[39m
+[2m   Start at [22m 17:21:36
+[2m   Duration [22m 4.89s[2m (transform 1.37s, setup 0ms, import 3.21s, tests 1.47s, environment 0ms)[22m
+

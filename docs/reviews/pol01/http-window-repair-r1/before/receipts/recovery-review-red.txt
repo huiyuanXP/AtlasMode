@@ -1,0 +1,134 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90m/home/agent/projects/AtlasMode[39m
+
+ [31m❯[39m apps/server/src/structure-sync.test.ts [2m([22m[2m25 tests[22m[2m | [22m[31m5 failed[39m[2m)[22m[33m 1893[2mms[22m[39m
+   [32m✓[39m UI write commits matching real file state plans history and audit[32m 144[2mms[22m[39m
+   [32m✓[39m same-version concurrent writes have one success and one conflict[32m 79[2mms[22m[39m
+   [32m✓[39m mutation retry finalizes once and different payload cannot reuse id[32m 80[2mms[22m[39m
+   [32m✓[39m external formatting changes structure version but does not invalidate plan[32m 55[2mms[22m[39m
+   [32m✓[39m invalid repeated read and deletion never reuse a valid current context[32m 60[2mms[22m[39m
+   [32m✓[39m DB-only same-id editing keeps bytes and explicit migration switches source once[32m 135[2mms[22m[39m
+   [32m✓[39m equal extension migration changes only source and approval, not file[32m 63[2mms[22m[39m
+   [32m✓[39m rename then database failure recovers on a new SQLite instance only once[32m 101[2mms[22m[39m
+   [32m✓[39m prepublication failure preserves original file and migration DB records[32m 60[2mms[22m[39m
+   [32m✓[39m failed audit distinguishes attempted B from external observed C[32m 73[2mms[22m[39m
+   [32m✓[39m third-digest recovery retains external bytes until explicit refresh[32m 67[2mms[22m[39m
+   [32m✓[39m queue scope blocks an approved read during prepared publication[32m 82[2mms[22m[39m
+   [32m✓[39m queue scope blocks an approved read during published publication[32m 73[2mms[22m[39m
+   [32m✓[39m zero-record migration does not create a missing file or change revisions[32m 55[2mms[22m[39m
+   [32m✓[39m equivalent migrated legacy editing preserves unknown values and original bytes[32m 62[2mms[22m[39m
+   [32m✓[39m prepared interruption aborts before-digest recovery without replay or deleting legacy[32m 95[2mms[22m[39m
+   [32m✓[39m unrecoverable finalize blocks fresh approval context and migration deletion until atomic recovery[32m 96[2mms[22m[39m
+   [32m✓[39m external same-id disagreement is an explicit blocked state with no current projection[32m 62[2mms[22m[39m
+   [32m✓[39m equal extension migration rechecks actual disk before switching DB source[32m 62[2mms[22m[39m
+   [32m✓[39m roundtrips the repository actual v1 document[32m 3[2mms[22m[39m
+[31m   [31m×[31m direct mutation retry respects recovered before-digest terminal outcome[39m[32m 92[2mms[22m[39m
+[31m   [31m×[31m direct mutation retry respects recovered after-digest terminal outcome[39m[32m 75[2mms[22m[39m
+[31m   [31m×[31m transient unknown disk read stays pending then recovers actual before digest[39m[32m 62[2mms[22m[39m
+[31m   [31m×[31m transient unknown disk read stays pending then recovers actual after digest[39m[32m 82[2mms[22m[39m
+[31m   [31m×[31m transient unknown disk read stays pending then recovers actual third digest[39m[32m 68[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 5 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m apps/server/src/structure-sync.test.ts[2m > [22mdirect mutation retry respects recovered before-digest terminal outcome
+[31m[1mAssertionError[22m: promise resolved "{ projectId: 'p', …(10) }" instead of rejecting[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- Error {[39m
+[32m-   "message": "rejected promise",[39m
+[31m+ {[39m
+[31m+   "diagnostics": [],[39m
+[31m+   "document": {[39m
+[31m+     "dependencyRules": [],[39m
+[31m+     "folders": [[39m
+[31m+       {[39m
+[31m+         "extra": {[39m
+[31m+           "kept": [[39m
+[31m+             1,[39m
+[31m+             null,[39m
+[31m+           ],[39m
+[31m+         },[39m
+[31m+         "path": "src",[39m
+[31m+         "purpose": "new",[39m
+[31m+       },[39m
+[31m+     ],[39m
+[31m+     "schemaVersion": 1,[39m
+[31m+   },[39m
+[31m+   "fileDigest": "71405bc68cbb19b7c30dabd6fc5cb1751860e94d5841fcb3428248fd55370253",[39m
+[31m+   "lastGood": {[39m
+[31m+     "document": {[39m
+[31m+       "dependencyRules": [],[39m
+[31m+       "folders": [[39m
+[31m+         {[39m
+[31m+           "extra": {[39m
+[31m+             "kept": [[39m
+[31m+               1,[39m
+[31m+               null,[39m
+[31m+             ],[39m
+[31m+           },[39m
+[31m+           "path": "src",[39m
+[31m+           "purpose": "new",[39m
+[31m+         },[39m
+[31m+       ],[39m
+[31m+       "schemaVersion": 1,[39m
+[31m+     },[39m
+[31m+     "fileDigest": "71405bc68cbb19b7c30dabd6fc5cb1751860e94d5841fcb3428248fd55370253",[39m
+[31m+     "semanticDigest": "448903ef02bc42375622687b463f836523adcf9d475086d851b565daaa8d69c2",[39m
+[31m+   },[39m
+[31m+   "legacyPendingCount": 0,[39m
+[31m+   "projectId": "p",[39m
+[31m+   "schemaVersion": 1,[39m
+[31m+   "semanticDigest": "448903ef02bc42375622687b463f836523adcf9d475086d851b565daaa8d69c2",[39m
+[31m+   "status": "ready",[39m
+[31m+   "structureRevision": 2,[39m
+[31m+   "verifiedAt": "2026-10-10T16:39:04.218Z",[39m
+[2m  }[22m
+
+[36m [2m❯[22m apps/server/src/structure-sync.test.ts:[2m713:52[22m[39m
+    [90m711|[39m     [34mexpect[39m(f[33m.[39mdb[33m.[39m[35mget[39m([32m"plans"[39m[33m,[39m [32m"plan"[39m))[33m.[39m[34mtoMatchObject[39m({ revision[33m:[39m [34m2[39m })[33m;[39m
+    [90m712|[39m   } [35melse[39m {
+    [90m713|[39m     await expect(sync.updateStructure("p", request)).rejects.toMatchOb…
+    [90m   |[39m                                                    [31m^[39m
+    [90m714|[39m     await expect(sync.updateStructure("p", request)).rejects.toMatchOb…
+    [90m715|[39m     [34mexpect[39m([35mawait[39m [34mreadFile[39m(f[33m.[39mpath[33m,[39m [32m"utf8"[39m))[33m.[39m[34mtoBe[39m([34mtext[39m())[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/server/src/structure-sync.test.ts[2m > [22mdirect mutation retry respects recovered after-digest terminal outcome
+[31m[1mDomainError[22m: Structure file or version changed. Reread before saving.[39m
+[36m [2m❯[22m StructureSync.updateLocked packages/service/src/structure-sync.ts:[2m468:13[22m[39m
+    [90m466|[39m       state[33m.[39mfileDigest [33m!==[39m input[33m.[39mexpectedFileDigest
+    [90m467|[39m     )
+    [90m468|[39m       [35mthrow[39m [35mnew[39m [33mStructureError[39m(
+    [90m   |[39m             [31m^[39m
+    [90m469|[39m         [32m"STRUCTURE_CONFLICT"[39m[33m,[39m
+    [90m470|[39m         [32m"Structure file or version changed. Reread before saving."[39m[33m,[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/server/src/structure-sync.test.ts[2m > [22mtransient unknown disk read stays pending then recovers actual before digest
+[41m[1m FAIL [22m[49m apps/server/src/structure-sync.test.ts[2m > [22mtransient unknown disk read stays pending then recovers actual after digest
+[41m[1m FAIL [22m[49m apps/server/src/structure-sync.test.ts[2m > [22mtransient unknown disk read stays pending then recovers actual third digest
+[31m[1mAssertionError[22m: expected 'conflict' to be 'recovery_pending' // Object.is equality[39m
+
+Expected: [32m"recovery_pending"[39m
+Received: [31m"conflict"[39m
+
+[36m [2m❯[22m apps/server/src/structure-sync.test.ts:[2m739:49[22m[39m
+    [90m737|[39m   await expect(sync.updateStructure("p", request)).rejects.toMatchObje…
+    [90m738|[39m   expect(await sync.recoverStructureWrites()).toMatchObject({ recovere…
+    [90m739|[39m   expect((await sync.getStructure("p")).status).toBe("recovery_pending…
+    [90m   |[39m                                                 [31m^[39m
+    [90m740|[39m   await expect(sync.withProject("p", async (session) => { await sessio…
+    [90m741|[39m   [34mexpect[39m(f[33m.[39mdb[33m.[39m[35mget[39m([32m"approvals"[39m[33m,[39m [32m"unknown-disk"[39m))[33m.[39m[34mtoBeUndefined[39m()[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m5 failed[39m[22m[2m | [22m[1m[32m20 passed[39m[22m[90m (25)[39m
+[2m   Start at [22m 16:39:01
+[2m   Duration [22m 2.69s[2m (transform 351ms, setup 0ms, import 561ms, tests 1.89s, environment 1ms)[22m
+

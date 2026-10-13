@@ -1,0 +1,40 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90m/home/agent/projects/AtlasMode[39m
+
+ [31m❯[39m apps/web/src/features/structure/policy-controller.test.ts [2m([22m[2m16 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[32m 40[2mms[22m[39m
+   [32m✓[39m same-id DB legacy form captures actual rev/digest/uuid without migrating[32m 8[2mms[22m[39m
+   [32m✓[39m 409 keeps all input and old capture; save remains blocked until explicit reload[32m 4[2mms[22m[39m
+[31m   [31m×[31m network failure only exact retry uses same immutable request and UUID[39m[32m 12[2mms[22m[39m
+   [32m✓[39m migration requires preview and explicit command, with preview capture[32m 3[2mms[22m[39m
+   [32m✓[39m stale preview refuses migration without auto reread[32m 2[2mms[22m[39m
+   [32m✓[39m folder edit sends only path/purpose preserving raw unknown and allowed/forbidden server fields[32m 1[2mms[22m[39m
+   [32m✓[39m A→B→A read responses never contaminate the new epoch[32m 1[2mms[22m[39m
+   [32m✓[39m late write ACK has no accepted callback or state after project switch[32m 1[2mms[22m[39m
+   [32m✓[39m invalid state remains visible and cannot write[32m 1[2mms[22m[39m
+   [32m✓[39m recovery_pending state remains visible and cannot write[32m 0[2mms[22m[39m
+   [32m✓[39m unavailable state remains visible and cannot write[32m 0[2mms[22m[39m
+   [32m✓[39m two inconsistent read captures fail closed without hiding form or automatically fetching latest[32m 1[2mms[22m[39m
+   [32m✓[39m foreign ACK never reaches accepted-response workspace callback[32m 1[2mms[22m[39m
+   [32m✓[39m missing digest/revision capture is never submitted as an undefined precondition[32m 0[2mms[22m[39m
+   [32m✓[39m successful new policy ACK retains actual id for the next explicit edit[32m 1[2mms[22m[39m
+   [32m✓[39m successful folder rename ACK advances previousPath for the next explicit edit[32m 1[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/features/structure/policy-controller.test.ts[2m > [22mnetwork failure only exact retry uses same immutable request and UUID
+[31m[1mAssertionError[22m: expected 'old' to be 'mine' // Object.is equality[39m
+
+Expected: [32m"mine"[39m
+Received: [31m"old"[39m
+
+[36m [2m❯[22m apps/web/src/features/structure/policy-controller.test.ts:[2m16:413[22m[39m
+
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m15 passed[39m[22m[90m (16)[39m
+[2m   Start at [22m 18:26:03
+[2m   Duration [22m 929ms[2m (transform 355ms, setup 0ms, import 565ms, tests 40ms, environment 0ms)[22m
+

@@ -1,0 +1,94 @@
+[
+  {
+    "pid": 125552,
+    "kind": "server",
+    "absent": true,
+    "originalLog": "source-run-2.txt",
+    "port": 34225,
+    "connectResult": 111
+  },
+  {
+    "pid": 125663,
+    "kind": "server",
+    "absent": true,
+    "originalLog": "source-run-2.txt",
+    "port": 34847,
+    "connectResult": 111
+  },
+  {
+    "pid": 125807,
+    "kind": "server",
+    "absent": true,
+    "originalLog": "source-run-2.txt",
+    "port": 40575,
+    "connectResult": 111
+  },
+  {
+    "pid": 125873,
+    "kind": "mcp-stdio",
+    "absent": true,
+    "originalLog": "source-run-2.txt"
+  },
+  {
+    "pid": 125824,
+    "kind": "server",
+    "absent": true,
+    "originalLog": "source-run-2.txt",
+    "port": 42561,
+    "connectResult": 111
+  },
+  {
+    "pid": 125895,
+    "kind": "server",
+    "absent": true,
+    "originalLog": "source-run-2.txt",
+    "port": 42131,
+    "connectResult": 111
+  },
+  {
+    "pid": 127254,
+    "kind": "server",
+    "absent": true,
+    "originalLog": "source-run-3.txt",
+    "port": 36219,
+    "connectResult": 111
+  },
+  {
+    "pid": 127294,
+    "kind": "server",
+    "absent": true,
+    "originalLog": "source-run-3.txt",
+    "port": 36069,
+    "connectResult": 111
+  },
+  {
+    "pid": 127349,
+    "kind": "server",
+    "absent": true,
+    "originalLog": "source-run-3.txt",
+    "port": 34941,
+    "connectResult": 111
+  },
+  {
+    "pid": 127428,
+    "kind": "mcp-stdio",
+    "absent": true,
+    "originalLog": "source-run-3.txt"
+  },
+  {
+    "pid": 127364,
+    "kind": "server",
+    "absent": true,
+    "originalLog": "source-run-3.txt",
+    "port": 35169,
+    "connectResult": 111
+  },
+  {
+    "pid": 127443,
+    "kind": "server",
+    "absent": true,
+    "originalLog": "source-run-3.txt",
+    "port": 44865,
+    "connectResult": 111
+  }
+]

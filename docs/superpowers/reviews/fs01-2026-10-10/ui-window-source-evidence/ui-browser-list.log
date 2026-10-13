@@ -1,0 +1,8 @@
+Listing tests:
+  ownership.spec.ts:289:1 › native function-to-file drop changes only the draft, uses actual source, requires new confirmation and survives restart
+  ownership.spec.ts:467:1 › native folder drop requires full filename; cancel and stale snapshot save retain truthful boundaries
+  ownership.spec.ts:566:1 › a real late context cannot dispatch old source after another function selection
+  ownership.spec.ts:627:1 › layout pointer drag changes positions only; native folder drop saves complete filename and reloads the same intent
+  ownership.spec.ts:713:1 › a folded group endpoint native drag saves the real function ID and retains membership across reload
+  ownership.spec.ts:805:1 › dirty advanced title blocks ownership and confirmation across an actual external revision
+Total: 6 tests in 1 file

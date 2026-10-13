@@ -1,0 +1,116 @@
+{
+  "commands": [
+    {
+      "name": "final-owned-tests",
+      "command": [
+        "npx",
+        "vitest",
+        "run",
+        "--config",
+        "docs/superpowers/reviews/ag03-2026-10-10/native-window/vitest.config.mjs"
+      ],
+      "exitCode": 0,
+      "frozenExitCode": 0
+    },
+    {
+      "name": "final-scoped-lint",
+      "command": [
+        "npx",
+        "eslint",
+        "apps/server/src/agent/windows-job-protocol.ts",
+        "apps/server/src/agent/windows-job-protocol.test.ts",
+        "scripts/build-agent-job.mjs",
+        "scripts/build-agent-job.test.ts"
+      ],
+      "exitCode": 0,
+      "frozenExitCode": 0
+    },
+    {
+      "name": "final-codec-noEmit",
+      "command": [
+        "npx",
+        "tsc",
+        "--noEmit",
+        "--target",
+        "ES2024",
+        "--module",
+        "NodeNext",
+        "--moduleResolution",
+        "NodeNext",
+        "--strict",
+        "--skipLibCheck",
+        "--types",
+        "node",
+        "apps/server/src/agent/windows-job-protocol.ts",
+        "apps/server/src/agent/windows-job-protocol.test.ts"
+      ],
+      "exitCode": 0,
+      "frozenExitCode": 0
+    },
+    {
+      "name": "final-portable-compile",
+      "command": [
+        "g++",
+        "-std=c++20",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "apps/server/native/agent-job/protocol.cpp",
+        "apps/server/native/agent-job/tests/protocol-tests.cpp",
+        "-o",
+        "/tmp/atlas-ag03-protocol-final"
+      ],
+      "exitCode": 0,
+      "frozenExitCode": 0
+    },
+    {
+      "name": "final-portable-protocol",
+      "command": [
+        "/tmp/atlas-ag03-protocol-final"
+      ],
+      "exitCode": 0,
+      "frozenExitCode": 0
+    },
+    {
+      "name": "final-linux-native-refusal",
+      "command": [
+        "node",
+        "scripts/build-agent-job.mjs",
+        "--tests"
+      ],
+      "exitCode": 1,
+      "frozenExitCode": 1
+    }
+  ],
+  "sourceBefore": {
+    "apps/server/native/agent-job/job.cpp": "f554166967be9dd401f8861d771f920d1ebccfd1b8e9a963a3d037b0e64e524d",
+    "apps/server/native/agent-job/job.h": "5edd4354919dddba7671c96a56c8c3411313478ba25b80fb4f22a25022b9e289",
+    "apps/server/native/agent-job/main.cpp": "fb9a794385346db22fee23ef99eef8a656665dc589ed960249ba49b2f5278b17",
+    "apps/server/native/agent-job/protocol.cpp": "05f62592550b0b050bc97d1f2188cbc923b2d12d4a8dea8efa2a56b44166205b",
+    "apps/server/native/agent-job/protocol.h": "c84b0233c834e60b804a33cef1499e6b4dccccd60a72b506f8a3dba16e0543e5",
+    "apps/server/native/agent-job/tests/job-fixture.cpp": "44eac715255bc2873e53f48456ea5e9ceabaf24fb41c1f2b36f79677f6ecbe39",
+    "apps/server/native/agent-job/tests/job-harness.cpp": "98445d606d5e2fa57a0a32ff4565065e683482e98b82de3d8944ef1fac3a1f17",
+    "apps/server/native/agent-job/tests/protocol-tests.cpp": "6b0137f04b77931550f7e248e10530d9741377005bd675015c49de96cc6e5957",
+    "apps/server/src/agent/windows-job-protocol.test.ts": "a63e43da4461381160e8e5fb0b6cc67ac63cac64c1b5a14ba7af3d7283a611b3",
+    "apps/server/src/agent/windows-job-protocol.ts": "4685c09ae3fd0231f33447d91a0e1bd6ae2c8a5bb4adcde50c85c7ab6c205d80",
+    "scripts/build-agent-job.mjs": "3484dabcb9d0b43315a591072e338d21d21d18ae1e8a7466e24d9bfaf60092e9",
+    "scripts/build-agent-job.test.ts": "1c3154d2d4654b3e7eb38b0c1780e8b1244cd2904a232480515960fedce2906b"
+  },
+  "sourceAfter": {
+    "apps/server/native/agent-job/main.cpp": "fb9a794385346db22fee23ef99eef8a656665dc589ed960249ba49b2f5278b17",
+    "apps/server/native/agent-job/job.cpp": "f554166967be9dd401f8861d771f920d1ebccfd1b8e9a963a3d037b0e64e524d",
+    "apps/server/native/agent-job/job.h": "5edd4354919dddba7671c96a56c8c3411313478ba25b80fb4f22a25022b9e289",
+    "apps/server/native/agent-job/protocol.cpp": "05f62592550b0b050bc97d1f2188cbc923b2d12d4a8dea8efa2a56b44166205b",
+    "apps/server/native/agent-job/protocol.h": "c84b0233c834e60b804a33cef1499e6b4dccccd60a72b506f8a3dba16e0543e5",
+    "apps/server/native/agent-job/tests/protocol-tests.cpp": "6b0137f04b77931550f7e248e10530d9741377005bd675015c49de96cc6e5957",
+    "apps/server/native/agent-job/tests/job-fixture.cpp": "44eac715255bc2873e53f48456ea5e9ceabaf24fb41c1f2b36f79677f6ecbe39",
+    "apps/server/native/agent-job/tests/job-harness.cpp": "98445d606d5e2fa57a0a32ff4565065e683482e98b82de3d8944ef1fac3a1f17",
+    "scripts/build-agent-job.mjs": "3484dabcb9d0b43315a591072e338d21d21d18ae1e8a7466e24d9bfaf60092e9",
+    "scripts/build-agent-job.test.ts": "1c3154d2d4654b3e7eb38b0c1780e8b1244cd2904a232480515960fedce2906b",
+    "apps/server/src/agent/windows-job-protocol.ts": "4685c09ae3fd0231f33447d91a0e1bd6ae2c8a5bb4adcde50c85c7ab6c205d80",
+    "apps/server/src/agent/windows-job-protocol.test.ts": "a63e43da4461381160e8e5fb0b6cc67ac63cac64c1b5a14ba7af3d7283a611b3"
+  },
+  "sourceUnchanged": true,
+  "sharedBeforeAfterUnchanged": true,
+  "nativeWindows": "UNRUN"
+}

@@ -1,0 +1,13 @@
+6e8a2d0be72e4ed8e888147bae3fbf67fdf2beb0d31b1878aba6d0354388e27c  docs/superpowers/specs/2026-10-10-pol01-design.md
+89bccd3f4a3fb9336a9dbfc4942c717e174c7a30e727ade838b789c0f5c63197  docs/reviews/pol01/2026-10-10-http-window-handoff.md
+942126f742cb8e86159d006376cbbc6575557e1dd904a3378d434e8330c198eb  docs/reviews/pol01/http-window-owned-paths.json
+07d3e2ab7428ef1c75e99520c725394706734e0eb8d827bbb02a02bfb9835c22  docs/reviews/pol01/spec-before-no-op-key-original.md
+9ded0c85c44551a9dd401191c374a7a0c858c844d801426c376ddd4de582f42c  docs/reviews/pol01/spec-no-op-key-only.diff
+46dec3762df8f9e52ea983f318d6737c449476a264fea011a7f7b3b5db214440  docs/reviews/pol01/http-test-before-kn-current-guard.ts
+0387cac10936969a4334459781cf4fc75c05ad32a0e187701802a4850e7fadbc  docs/reviews/pol01/http-window-shared.patch
+0fb201cce00b58edadcd134f7ebf4b19802970d8e8247d706a2d093719563b4a  docs/reviews/pol01/http-window-public-exports.diff
+c415a0e401e592ef49fcea8a32df600b854fd8847edab299d94a21ec708e72d8  docs/reviews/pol01/http-window-fs-method-check.txt
+64b32b0446e39eef5d89cc77ed9425ad644670b2f6f838d41b44ae6c30ec3107  docs/reviews/pol01/atlasmode-pol01-v2-vitest.config.mjs
+83b18c1c594be3cd227e845434488cb3e46bd77ecbef99eae77095243645211d  docs/reviews/pol01/atlasmode-pol01-runtime-tsconfig.json
+1b102ece4618cb13029168ad3a91e7827bdeae19df6630259ebb9d08436e4604  docs/reviews/pol01/atlasmode-pol01-http-production-tsconfig.json
+988f16b587f6d09c72b2c435607d75bb48df08e9b00af61702515edd161c6445  docs/reviews/pol01/atlasmode-pol01-http-tsconfig.json

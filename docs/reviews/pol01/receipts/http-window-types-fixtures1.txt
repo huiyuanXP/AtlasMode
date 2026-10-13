@@ -1,0 +1,119 @@
+apps/server/src/agent/direct-loop.test.ts(111,9): error TS7034: Variable 'projects' implicitly has type 'any[]' in some locations where its type cannot be determined.
+apps/server/src/agent/direct-loop.test.ts(131,36): error TS7005: Variable 'projects' implicitly has an 'any[]' type.
+apps/server/src/agent/direct-loop.test.ts(137,49): error TS7005: Variable 'projects' implicitly has an 'any[]' type.
+apps/server/src/agent/direct-loop.test.ts(520,27): error TS2345: Argument of type '(options: any) => Promise<Response>' is not assignable to parameter of type '() => Chain'.
+  Target signature provides too few arguments. Expected 1 or more, but got 0.
+apps/server/src/agent/direct-loop.test.ts(520,34): error TS7006: Parameter 'options' implicitly has an 'any' type.
+apps/server/src/server.test.ts(58,16): error TS2345: Argument of type '{ payload?: {} | null | undefined; method: "GET" | "POST" | "PUT"; url: string; }' is not assignable to parameter of type 'string | InjectOptions'.
+  Type '{ payload?: {} | null | undefined; method: "GET" | "POST" | "PUT"; url: string; }' is not assignable to type 'InjectOptions'.
+    Types of property 'payload' are incompatible.
+      Type '{} | null | undefined' is not assignable to type 'InjectPayload | undefined'.
+        Type 'null' is not assignable to type 'InjectPayload | undefined'.
+apps/server/src/server.test.ts(61,21): error TS2339: Property 'statusCode' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(62,21): error TS2339: Property 'json' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(69,48): error TS2339: Property 'json' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(72,50): error TS2339: Property 'json' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(77,50): error TS2339: Property 'json' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(80,8): error TS2339: Property 'json' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(85,8): error TS2339: Property 'json' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(95,5): error TS2339: Property 'json' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(109,5): error TS2339: Property 'json' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(118,61): error TS2339: Property 'json' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(132,5): error TS2339: Property 'json' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(142,5): error TS2339: Property 'json' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(143,73): error TS2339: Property 'json' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(147,8): error TS2339: Property 'statusCode' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(155,7): error TS2339: Property 'statusCode' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(158,62): error TS2339: Property 'statusCode' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(171,5): error TS2339: Property 'json' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(177,19): error TS2339: Property 'statusCode' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(178,27): error TS2339: Property 'json' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(202,67): error TS2339: Property 'json' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(213,55): error TS2339: Property 'statusCode' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(219,40): error TS2339: Property 'statusCode' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(226,63): error TS2339: Property 'json' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(237,17): error TS2339: Property 'statusCode' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(240,8): error TS2339: Property 'json' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(245,17): error TS2339: Property 'json' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(252,18): error TS2339: Property 'statusCode' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(253,18): error TS2339: Property 'json' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(254,18): error TS2339: Property 'json' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(266,9): error TS2339: Property 'statusCode' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(275,7): error TS2339: Property 'statusCode' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(284,7): error TS2339: Property 'statusCode' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(294,7): error TS2339: Property 'json' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(299,7): error TS2339: Property 'json' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(308,9): error TS2339: Property 'statusCode' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(313,8): error TS2339: Property 'statusCode' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(317,8): error TS2339: Property 'statusCode' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(345,60): error TS2339: Property 'statusCode' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(349,8): error TS2339: Property 'statusCode' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(352,60): error TS2339: Property 'statusCode' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(361,62): error TS2339: Property 'statusCode' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(374,5): error TS2339: Property 'json' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(377,61): error TS2339: Property 'statusCode' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(392,5): error TS2339: Property 'json' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(400,7): error TS2339: Property 'statusCode' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(404,8): error TS2339: Property 'statusCode' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(406,63): error TS2339: Property 'json' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(411,5): error TS2339: Property 'json' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(421,71): error TS2339: Property 'json' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(424,53): error TS2339: Property 'json' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(429,59): error TS2339: Property 'json' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(432,10): error TS7053: Element implicitly has an 'any' type because expression of type '"content-type"' can't be used to index type '(headers: OutgoingHttpHeaders | IncomingHttpHeaders) => Chain'.
+  Property 'content-type' does not exist on type '(headers: OutgoingHttpHeaders | IncomingHttpHeaders) => Chain'.
+apps/server/src/server.test.ts(433,15): error TS2339: Property 'json' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(438,10): error TS7053: Element implicitly has an 'any' type because expression of type '"content-type"' can't be used to index type '(headers: OutgoingHttpHeaders | IncomingHttpHeaders) => Chain'.
+  Property 'content-type' does not exist on type '(headers: OutgoingHttpHeaders | IncomingHttpHeaders) => Chain'.
+apps/server/src/server.test.ts(441,66): error TS2339: Property 'statusCode' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(449,5): error TS2339: Property 'json' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(459,7): error TS2339: Property 'statusCode' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(468,7): error TS2339: Property 'statusCode' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(471,62): error TS2339: Property 'json' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(480,5): error TS2339: Property 'json' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(483,5): error TS2339: Property 'json' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(490,7): error TS2339: Property 'json' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(497,7): error TS2339: Property 'statusCode' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(505,7): error TS2339: Property 'statusCode' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(515,5): error TS2339: Property 'json' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(532,63): error TS2339: Property 'statusCode' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(535,51): error TS2339: Property 'json' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(538,8): error TS2339: Property 'statusCode' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(542,8): error TS2339: Property 'statusCode' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(551,5): error TS2339: Property 'json' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(552,51): error TS2339: Property 'json' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(565,7): error TS2339: Property 'statusCode' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(568,64): error TS2339: Property 'json' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(582,5): error TS2339: Property 'json' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(583,53): error TS2339: Property 'json' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(594,7): error TS2339: Property 'statusCode' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(605,7): error TS2339: Property 'statusCode' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(612,55): error TS2339: Property 'json' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(613,49): error TS2339: Property 'json' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(615,58): error TS2339: Property 'json' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(618,70): error TS2339: Property 'statusCode' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(626,48): error TS2339: Property 'statusCode' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(627,49): error TS2339: Property 'statusCode' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(628,41): error TS2339: Property 'statusCode' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(629,50): error TS2339: Property 'statusCode' does not exist on type 'void & Promise<Response> & Chain'.
+apps/server/src/server.test.ts(655,21): error TS2339: Property 'statusCode' does not exist on type 'void & Promise<Response> & Chain'.
+tests/e2e/agent-chat.spec.ts(17,8): error TS7016: Could not find a declaration file for module '../support/production.mjs'. '/home/agent/projects/AtlasMode/tests/support/production.mjs' implicitly has an 'any' type.
+tests/e2e/agent-chat.spec.ts(307,38): error TS2532: Object is possibly 'undefined'.
+tests/e2e/agent-chat.spec.ts(312,38): error TS2532: Object is possibly 'undefined'.
+tests/e2e/agent-chat.spec.ts(318,24): error TS2532: Object is possibly 'undefined'.
+tests/e2e/agent-chat.spec.ts(366,52): error TS2532: Object is possibly 'undefined'.
+tests/e2e/agent-chat.spec.ts(369,12): error TS2532: Object is possibly 'undefined'.
+tests/e2e/agent-chat.spec.ts(369,36): error TS2532: Object is possibly 'undefined'.
+tests/e2e/agent-chat.spec.ts(370,12): error TS2532: Object is possibly 'undefined'.
+tests/e2e/agent-chat.spec.ts(371,12): error TS2532: Object is possibly 'undefined'.
+tests/e2e/agent-chat.spec.ts(386,24): error TS2532: Object is possibly 'undefined'.
+tests/e2e/agent-chat.spec.ts(392,24): error TS2532: Object is possibly 'undefined'.
+tests/integration/server-shutdown.test.ts(13,39): error TS7016: Could not find a declaration file for module '../support/production.mjs'. '/home/agent/projects/AtlasMode/tests/support/production.mjs' implicitly has an 'any' type.
+tests/integration/server-shutdown.test.ts(76,27): error TS2550: Property 'withResolvers' does not exist on type 'PromiseConstructor'. Do you need to change your target library? Try changing the 'lib' compiler option to 'es2024' or later.
+tests/integration/server-shutdown.test.ts(77,27): error TS2550: Property 'withResolvers' does not exist on type 'PromiseConstructor'. Do you need to change your target library? Try changing the 'lib' compiler option to 'es2024' or later.
+tests/integration/server-shutdown.test.ts(78,35): error TS2550: Property 'withResolvers' does not exist on type 'PromiseConstructor'. Do you need to change your target library? Try changing the 'lib' compiler option to 'es2024' or later.
+tests/integration/server-shutdown.test.ts(142,27): error TS18048: 'headers' is possibly 'undefined'.
+tests/integration/server-shutdown.test.ts(143,30): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string | ArrayBufferLike | ArrayBufferView<ArrayBufferLike>'.
+  Type 'undefined' is not assignable to type 'string | ArrayBufferLike | ArrayBufferView<ArrayBufferLike>'.
+tests/integration/server-shutdown.test.ts(144,32): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.

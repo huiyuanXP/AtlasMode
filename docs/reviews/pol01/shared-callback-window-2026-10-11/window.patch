@@ -1,0 +1,938 @@
+--- a/apps/web/src/app/workspace.ts
++++ b/apps/web/src/app/workspace.ts
+@@ -1,3 +1,7 @@
++import type {
++  AcceptedPolicyResponse,
++  AcceptedPolicyReadResponse,
++} from "../features/structure/policy-controller.js";
+ import { createAnnotationsController } from "../features/annotations/controller.js";
+ import {
+   createOwnershipSession,
+@@ -1954,7 +1958,234 @@
+     }
+     return action();
+   };
++  let policySyncGeneration = 0;
++  let activePolicySync: { token: number; epoch: number } | undefined;
++  const policyIdentity = (policies: DirectoryPolicy[]) =>
++    JSON.stringify(
++      policies
++        .map((p) => [
++          p.id,
++          p.projectId,
++          p.pathPrefix,
++          p.purpose,
++          p.forbiddenDependencies,
++        ])
++        .sort((a, b) => String(a[0]).localeCompare(String(b[0]))),
++    );
++  const acceptPolicyResponse = async (
++    response: AcceptedPolicyResponse | AcceptedPolicyReadResponse,
++    read: boolean,
++  ): Promise<void> => {
++    const projectId = response.projectId;
++    if (
++      get().project?.id !== projectId ||
++      ("result" in response && response.result.projectId !== projectId) ||
++      ("snapshot" in response && response.snapshot.projectId !== projectId)
++    )
++      throw new ApiError(
++        "PROJECT_MISMATCH",
++        "Policy response has the wrong owner.",
++        409,
++      );
++    const epoch = ownershipEpoch,
++      token = policySyncGeneration + 1,
++      sequence = focusGeneration,
++      selectedId = get().plan?.plan.id,
++      selectedRevision = get().plan?.plan.revision,
++      snapshotId = get().summary?.snapshotId,
++      snapshotHash = get().summary?.contentHash;
++    const ownerCurrent = () =>
++      get().project?.id === projectId &&
++      ownershipEpoch === epoch &&
++      token === policySyncGeneration;
++    const requireContext = () => {
++      if (
++        !ownerCurrent() ||
++        sequence !== focusGeneration ||
++        get().plan?.plan.id !== selectedId ||
++        get().plan?.plan.revision !== selectedRevision ||
++        get().summary?.snapshotId !== snapshotId ||
++        get().summary?.contentHash !== snapshotHash
++      )
++        throw new ApiError(
++          "SNAPSHOT_CHANGED",
++          "Policy synchronization context changed; read again.",
++          409,
++        );
++    };
++    // A confirmed write or a fresh structure read makes cached current validity untrusted.
++    // Preserve the original dirty editor object, revision, approval and source capture.
++    if (get().plan)
++      set({ plan: { ...get().plan!, valid: false }, report: undefined });
++    if (
++      "snapshot" in response &&
++      !["ready", "missing"].includes(response.snapshot.status)
++    )
++      throw new ApiError(
++        "INVALID_STRUCTURE",
++        "Current structure is quarantined; read again.",
++        422,
++      );
++    if (
++      annotations.store.getState().mutating ||
++      (get().busy.knowledge && activePolicySync?.epoch !== epoch) ||
++      get().busy.project ||
++      get().busy.plan ||
++      get().busy.refresh ||
++      get().busy.agentSync
++    )
++      throw new ApiError(
++        "KNOWLEDGE_READ_REQUIRED",
++        "Another workspace operation owns this context; read again.",
++        409,
++      );
++    policySyncGeneration = token;
++    activePolicySync = { token, epoch };
++    set((current) => ({
++      busy: { ...current.busy, knowledge: true },
++      error: "",
++    }));
++    try {
++      const [policies, received, summary] = await Promise.all([
++        api.policies(projectId),
++        api.plans(projectId),
++        api.summary(projectId),
++      ]);
++      requireContext();
++      if (
++        !Array.isArray(policies) ||
++        new Set(policies.map((p) => p.id)).size !== policies.length ||
++        policies.some(
++          (p) =>
++            p.projectId !== projectId ||
++            typeof p.id !== "string" ||
++            typeof p.pathPrefix !== "string" ||
++            typeof p.purpose !== "string" ||
++            !Array.isArray(p.forbiddenDependencies) ||
++            p.forbiddenDependencies.some((path) => typeof path !== "string"),
++        ) ||
++        !Array.isArray(received) ||
++        received.some(
++          (detail) => planSchema.parse(detail.plan).projectId !== projectId,
++        ) ||
++        summary.project.id !== projectId
++      )
++        throw new ApiError(
++          "PROJECT_MISMATCH",
++          "Policy reread has the wrong owner or invalid policy records.",
++          409,
++        );
++      if (
++        summary.snapshotId !== snapshotId ||
++        summary.contentHash !== snapshotHash ||
++        (read &&
++          "policies" in response &&
++          policyIdentity(policies) !== policyIdentity(response.policies))
++      )
++        throw new ApiError(
++          "SNAPSHOT_CHANGED",
++          "Captured policy/source state changed; explicitly read again.",
++          409,
++        );
++      let currentApproved: PlanDetail | undefined;
++      if (selectedId) {
++        try {
++          currentApproved = await api.currentApproval(selectedId);
++          const plan = planSchema.parse(currentApproved.plan),
++            approved = v1ApprovalSchema.parse(currentApproved.approval),
++            detail = received.find((p) => p.plan.id === selectedId);
++          if (
++            !currentApproved.valid ||
++            !detail?.valid ||
++            plan.projectId !== projectId ||
++            plan.id !== selectedId ||
++            plan.revision !== detail.plan.revision ||
++            approved.planId !== selectedId ||
++            approved.revision !== plan.revision ||
++            approved.baselineSnapshotId !== plan.baselineSnapshotId ||
++            approved.baselineContentHash !== plan.baselineContentHash ||
++            plan.baselineSnapshotId !== summary.snapshotId ||
++            plan.baselineContentHash !== summary.contentHash ||
++            JSON.stringify(approved) !== JSON.stringify(detail.approval)
++          )
++            throw new ApiError(
++              "APPROVAL_CONTEXT_INVALID",
++              "Current policy approval receipt is inconsistent.",
++              409,
++            );
++        } catch (error) {
++          if (!(
++            error instanceof ApiError &&
++            error.status === 409 &&
++            error.code === "NOT_APPROVED"
++          ))
++            throw error;
++        }
++      }
++      requireContext();
++      const state = get();
++      if (
++        received.some((detail) =>
++          state.plans.some(
++            (local) =>
++              local.plan.id === detail.plan.id &&
++              local.plan.revision > detail.plan.revision,
++          ),
++        )
++      )
++        throw new ApiError(
++          "SNAPSHOT_CHANGED",
++          "A newer planning receipt already exists; read again.",
++          409,
++        );
++      const plans = received.map((detail) =>
++        detail.plan.id === selectedId && !currentApproved
++          ? { ...detail, valid: false }
++          : detail,
++      );
++      set({ policies, plans, summary });
++      const selected = plans.find((detail) => detail.plan.id === selectedId);
++      if (
++        selected &&
++        !dirtyPlanEditor &&
++        !state.dirtyPlanEditor &&
++        !state.busy.plan
++      )
++        acceptPlan(selected);
++    } catch (error) {
++      // Do not use run(): it consumes rejection and would falsely acknowledge parent sync.
++      if (
++        ownerCurrent() &&
++        sequence === focusGeneration &&
++        get().plan?.plan.id === selectedId
++      )
++        set({
++          error: `${error instanceof ApiError ? `${error.code}: ` : ""}${error instanceof Error ? error.message : String(error)}`,
++          errorHelp: "retryHelp",
++        });
++      throw error;
++    } finally {
++      if (activePolicySync?.token === token) {
++        activePolicySync = undefined;
++        if (ownerCurrent())
++          set((current) => ({
++            busy: {
++              ...current.busy,
++              knowledge:
++                annotationBusyOwned || annotations.store.getState().mutating,
++            },
++          }));
++      }
++    }
++  };
++  const acceptPolicyWrite = (response: AcceptedPolicyResponse): Promise<void> =>
++    acceptPolicyResponse(response, false);
++  const acceptPolicyRead = (
++    response: AcceptedPolicyReadResponse,
++  ): Promise<void> => acceptPolicyResponse(response, true);
+   return {
++    acceptPolicyWrite,
++    acceptPolicyRead,
+     annotations,
+     disposeAnnotations: () => {
+       stopAnnotationBusy();
+--- a/apps/web/src/app/Navigation.tsx
++++ b/apps/web/src/app/Navigation.tsx
+@@ -173,7 +173,11 @@
+       </button>
+       {advanced && (
+         <div className="advanced-navigation-content">
+-          <PoliciesPanel app={app} />
++          <PoliciesPanel
++            app={app}
++            onAccepted={app.acceptPolicyWrite}
++            onReadAccepted={app.acceptPolicyRead}
++          />
+           {summary && (
+             <details>
+               <summary>
+--- /dev/null
++++ b/apps/web/src/app/pol01-policy-sync.test.ts
+@@ -0,0 +1,415 @@
++import { afterEach, expect, test } from "vitest";
++import type {
++  Approval,
++  DirectoryPolicy,
++  PlanDetail,
++  ProjectSummary,
++  StructureState,
++} from "@codemap/core";
++import { HttpApi } from "../api/client.js";
++import { createWorkspace } from "./workspace.js";
++import {
++  createPolicyController,
++  type AcceptedPolicyResponse,
++} from "../features/structure/policy-controller.js";
++const timestamp = "2026-10-11T00:00:00.000Z";
++const approval = (revision = 2): Approval => ({
++  id: "approval",
++  planId: "plan",
++  revision,
++  semanticHash: "a".repeat(64),
++  baselineSnapshotId: "s1",
++  baselineContentHash: "h",
++  approvedAt: timestamp,
++  actor: "user",
++  reviewContext: { version: 1, knowledgeHash: "b".repeat(64) },
++});
++const plan = (revision = 2): PlanDetail => ({
++  plan: {
++    id: "plan",
++    projectId: "p",
++    title: "original body",
++    description: "original description",
++    revision,
++    status: revision === 2 ? "approved" : "draft",
++    baselineSnapshotId: "s1",
++    baselineContentHash: "h",
++    operations: [
++      {
++        kind: "add_function",
++        tempId: "new",
++        name: "unchanged",
++        filePath: "src/new.ts",
++      },
++    ],
++    createdAt: timestamp,
++    updatedAt: timestamp,
++  },
++  approval: approval(),
++  valid: revision === 2,
++  issues: [],
++});
++const policy = (id = "policy"): DirectoryPolicy => ({
++  id,
++  projectId: "p",
++  pathPrefix: "src",
++  purpose: "fresh policy",
++  forbiddenDependencies: ["internal"],
++});
++const state = (): StructureState => ({
++  projectId: "p",
++  schemaVersion: 1,
++  structureRevision: 3,
++  fileDigest: "c".repeat(64),
++  semanticDigest: "d".repeat(64),
++  verifiedAt: timestamp,
++  status: "ready",
++  diagnostics: [],
++  legacyPendingCount: 0,
++  document: { schemaVersion: 1, folders: [], dependencyRules: [] },
++});
++const summary = (): ProjectSummary => ({
++  project: { id: "p", name: "p", path: "/p" },
++  snapshotId: "s1",
++  contentHash: "h",
++  entrypoints: [],
++  entrypointTotal: 0,
++  entrypointsTruncated: false,
++  counts: {
++    files: 1,
++    folders: 1,
++    functions: 0,
++    relations: 0,
++    calls: { resolved: 0, unresolved: 0, external: 0 },
++  },
++  diagnostics: [],
++  coverage: {
++    files: ["src/main.ts"],
++    excludedPatterns: [],
++    unresolvedCount: 0,
++  },
++  dataSource: "code",
++});
++function deferred<T>() {
++  let resolve!: (value: T) => void, reject!: (error: Error) => void;
++  const promise = new Promise<T>((yes, no) => {
++    resolve = yes;
++    reject = no;
++  });
++  return { promise, resolve, reject };
++}
++const json = (value: unknown, status = 200) =>
++  new Response(JSON.stringify(value), { status });
++const notApproved = () =>
++  json({ code: "NOT_APPROVED", message: "fresh current draft" }, 409);
++const cleanups: (() => void)[] = [];
++afterEach(() => {
++  for (const cleanup of cleanups.splice(0)) cleanup();
++});
++function fixture() {
++  const calls: string[] = [];
++  let rows = [policy()],
++    details = [plan(3)],
++    strong = notApproved(),
++    failPath = "";
++  let hold:
++    | {
++        suffix: string;
++        gate: ReturnType<typeof deferred<Response>>;
++        entered: boolean;
++      }
++    | undefined;
++  const api = new HttpApi((async (input, init) => {
++    const path = String(input);
++    calls.push(`${init?.method ?? "GET"} ${path}`);
++    if (hold && path.endsWith(hold.suffix) && !hold.entered) {
++      hold.entered = true;
++      return hold.gate.promise;
++    }
++    if (failPath && path.endsWith(failPath))
++      return json({ code: "READ_UNAVAILABLE", message: "read failed" }, 503);
++    if (path.endsWith("/approved")) return strong.clone();
++    if (path.endsWith("/summary")) return json(summary());
++    if (path.endsWith("/plans")) return json(details);
++    if (path.endsWith("/policies")) return json(rows);
++    if (path.endsWith("/view"))
++      return json({ positions: {}, theme: "light", locale: "en" });
++    if (path === "/api/plans/other") {
++      const other = plan(8);
++      other.plan.id = "other";
++      other.approval = undefined;
++      return json(other);
++    }
++    return json([]);
++  }) as typeof fetch);
++  const app = createWorkspace(api);
++  app.store.setState({
++    project: summary().project,
++    summary: summary(),
++    plan: plan(),
++    plans: [plan()],
++    policies: [],
++    source: { filePath: "src/main.ts", content: "do not change" },
++    groupDraft: {
++      title: "unsaved group",
++      description: "keep",
++      source: "user",
++      memberIds: [],
++    },
++  });
++  cleanups.push(app.disposeAnnotations);
++  const ack = (): AcceptedPolicyResponse => ({
++    projectId: "p",
++    epoch: 71,
++    operation: {
++      kind: "upsertLegacyPolicy",
++      id: "policy",
++      pathPrefix: "src",
++      purpose: "fresh policy",
++      forbiddenDependencies: ["internal"],
++    },
++    result: policy(),
++  });
++  return {
++    app,
++    calls,
++    ack,
++    rows: (value: DirectoryPolicy[]) => {
++      rows = value;
++    },
++    plans: (value: PlanDetail[]) => {
++      details = value;
++    },
++    strong: (value: Response) => {
++      strong = value;
++    },
++    fail: (suffix: string) => {
++      failPath = suffix;
++    },
++    hold: (suffix: string) => {
++      const gate = deferred<Response>();
++      const own = { suffix, gate, entered: false };
++      hold = own;
++      return { ...gate, entered: () => own.entered };
++    },
++  };
++}
++test("ACK synchronizes full policy/summary/actual plan revision read-only and preserves historical approval/source/group", async () => {
++  const f = fixture(),
++    before = f.app.store.getState();
++  await f.app.acceptPolicyWrite(f.ack());
++  const after = f.app.store.getState();
++  expect(after.policies).toEqual([policy()]);
++  expect(after.plan).toMatchObject({
++    valid: false,
++    plan: { revision: 3 },
++    approval: before.plan?.approval,
++  });
++  expect(after.summary).toEqual(summary());
++  expect(after.source).toBe(before.source);
++  expect(after.groupDraft).toBe(before.groupDraft);
++  expect(after.busy.knowledge).toBe(false);
++  expect(f.calls.every((c) => c.startsWith("GET "))).toBe(true);
++  expect(f.calls.filter((c) => c.endsWith("/approved"))).toHaveLength(1);
++});
++test("dirty plan retains exact body/revision/CAS while refreshed list and validity change", async () => {
++  const f = fixture(),
++    before = f.app.store.getState().plan!.plan,
++    capture = f.app.capturePlan();
++  f.app.setPlanEditorDirty(true);
++  await f.app.acceptPolicyWrite(f.ack());
++  expect(f.app.store.getState().plan?.plan).toBe(before);
++  expect(f.app.capturePlan()).toEqual(capture);
++  expect(f.app.store.getState()).toMatchObject({
++    dirtyPlanEditor: true,
++    plan: { valid: false },
++    plans: [{ plan: { revision: 3 } }],
++  });
++});
++for (const suffix of ["/policies", "/plans", "/summary"])
++  test(`read failure ${suffix} rejects and keeps old collection/current receipt unusable`, async () => {
++    const f = fixture(),
++      before = f.app.store.getState();
++    f.fail(suffix);
++    await expect(f.app.acceptPolicyWrite(f.ack())).rejects.toMatchObject({
++      code: "READ_UNAVAILABLE",
++    });
++    expect(f.app.store.getState().policies).toBe(before.policies);
++    expect(f.app.store.getState().plan?.valid).toBe(false);
++    expect(f.app.store.getState().busy.knowledge).toBe(false);
++  });
++test("only authoritative 409 NOT_APPROVED may recover; context-invalid and 503 never fall back", async () => {
++  const f = fixture();
++  for (const [status, code] of [
++    [409, "APPROVAL_CONTEXT_INVALID"],
++    [503, "NOT_APPROVED"],
++  ] as const) {
++    f.strong(json({ code, message: "must reject" }, status));
++    await expect(f.app.acceptPolicyWrite(f.ack())).rejects.toMatchObject({
++      code,
++    });
++  }
++  f.strong(notApproved());
++  await expect(f.app.acceptPolicyWrite(f.ack())).resolves.toBeUndefined();
++});
++test("matched strong v1 approval is accepted, mismatched plan revision/owner is rejected", async () => {
++  const f = fixture(),
++    current = plan(3);
++  current.valid = true;
++  current.plan.status = "approved";
++  current.approval = approval(3);
++  f.plans([current]);
++  f.strong(json(current));
++  await f.app.acceptPolicyWrite(f.ack());
++  expect(f.app.store.getState().plan?.valid).toBe(true);
++  const invalid = structuredClone(current);
++  invalid.plan.projectId = "foreign";
++  f.strong(json(invalid));
++  await expect(f.app.acceptPolicyWrite(f.ack())).rejects.toMatchObject({
++    code: "APPROVAL_CONTEXT_INVALID",
++  });
++});
++test("full captured policy read >50 is accepted, stale or foreign policies are rejected", async () => {
++  const f = fixture(),
++    rows = Array.from({ length: 73 }, (_, i) => policy(`policy:${i}`));
++  f.rows(rows);
++  await f.app.acceptPolicyRead({
++    projectId: "p",
++    epoch: 99,
++    snapshot: state(),
++    policies: rows,
++  });
++  expect(f.app.store.getState().policies).toHaveLength(73);
++  await expect(
++    f.app.acceptPolicyRead({
++      projectId: "p",
++      epoch: 99,
++      snapshot: state(),
++      policies: [policy("old")],
++    }),
++  ).rejects.toMatchObject({ code: "SNAPSHOT_CHANGED" });
++  f.rows([{ ...policy(), projectId: "foreign" }]);
++  await expect(f.app.acceptPolicyWrite(f.ack())).rejects.toMatchObject({
++    code: "PROJECT_MISMATCH",
++  });
++});
++test("late strong approval during public project A→B→A cannot commit even with same project id", async () => {
++  const f = fixture(),
++    hold = f.hold("/approved"),
++    pending = f.app.acceptPolicyWrite(f.ack());
++  const result = pending.catch((e) => e);
++  await expect.poll(hold.entered).toBe(true);
++  await f.app.selectProject({
++    id: "other-project",
++    name: "other",
++    path: "/other",
++  });
++  await f.app.selectProject(summary().project);
++  const after = f.app.store.getState();
++  hold.resolve(notApproved());
++  expect(await result).toMatchObject({ code: "SNAPSHOT_CHANGED" });
++  expect(f.app.store.getState().policies).toBe(after.policies);
++  expect(f.app.store.getState().plans).toBe(after.plans);
++});
++test("same-epoch old callback failure neither clears newer busy nor overwrites newer result", async () => {
++  const f = fixture(),
++    old = f.hold("/plans"),
++    first = f.app.acceptPolicyWrite(f.ack()).catch((e) => e);
++  await expect.poll(old.entered).toBe(true);
++  const newest = f.hold("/approved"),
++    second = f.app.acceptPolicyWrite(f.ack());
++  await expect.poll(newest.entered).toBe(true);
++  old.reject(Error("late old failure"));
++  expect(await first).toBeInstanceOf(Error);
++  expect(f.app.store.getState().busy.knowledge).toBe(true);
++  newest.resolve(notApproved());
++  await second;
++  expect(f.app.store.getState().plan?.plan.revision).toBe(3);
++  expect(f.app.store.getState().busy.knowledge).toBe(false);
++});
++test("rejected quarantined read does not steal active same-epoch synchronization lease", async () => {
++  const f = fixture(),
++    hold = f.hold("/approved"),
++    pending = f.app.acceptPolicyWrite(f.ack());
++  const result = pending.catch((e) => e);
++  await expect.poll(hold.entered).toBe(true);
++  await expect(
++    f.app.acceptPolicyRead({
++      projectId: "p",
++      epoch: 2,
++      snapshot: { ...state(), status: "invalid" },
++      policies: [],
++    }),
++  ).rejects.toMatchObject({ code: "INVALID_STRUCTURE" });
++  expect(f.app.store.getState().busy.knowledge).toBe(true);
++  hold.resolve(notApproved());
++  expect(await result).toBeUndefined();
++  expect(f.app.store.getState().plan?.plan.revision).toBe(3);
++  expect(f.app.store.getState().busy.knowledge).toBe(false);
++});
++test("public planning context change during strong read cannot overwrite newly selected plan", async () => {
++  const f = fixture(),
++    hold = f.hold("/approved"),
++    result = f.app.acceptPolicyWrite(f.ack()).catch((e) => e);
++  await expect.poll(hold.entered).toBe(true);
++  await f.app.choosePlan("other");
++  const other = f.app.store.getState().plan;
++  hold.resolve(notApproved());
++  expect(await result).toMatchObject({ code: "SNAPSHOT_CHANGED" });
++  expect(f.app.store.getState().plan).toBe(other);
++});
++test("other knowledge owner remains busy; foreign ACK/quarantine cannot become an accepted read", async () => {
++  const f = fixture();
++  f.app.store.setState({ busy: { knowledge: true } });
++  await expect(f.app.acceptPolicyWrite(f.ack())).rejects.toMatchObject({
++    code: "KNOWLEDGE_READ_REQUIRED",
++  });
++  expect(f.app.store.getState().busy.knowledge).toBe(true);
++  f.app.store.setState({ busy: {} });
++  await expect(
++    f.app.acceptPolicyWrite({ ...f.ack(), projectId: "foreign" }),
++  ).rejects.toMatchObject({ code: "PROJECT_MISMATCH" });
++  await expect(
++    f.app.acceptPolicyRead({
++      projectId: "p",
++      epoch: 1,
++      snapshot: { ...state(), status: "invalid" },
++      policies: [],
++    }),
++  ).rejects.toMatchObject({ code: "INVALID_STRUCTURE" });
++});
++test("real controller known ACK + parent sync failure keeps saved notice and never replays PUT", async () => {
++  const f = fixture();
++  f.fail("/plans");
++  let writes = 0;
++  const controller = createPolicyController(
++    {
++      readState: async () => state(),
++      readPolicies: async () => ({ ...state(), policies: [policy()] }),
++      preview: async () => ({ ...state(), policies: [] }),
++      savePolicy: async () => {
++        writes++;
++        return policy();
++      },
++      writeStructure: async () => {
++        writes++;
++        return state();
++      },
++    },
++    f.app.acceptPolicyWrite,
++  );
++  controller.selectProject("p");
++  await controller.reload();
++  controller.choose("legacy:policy");
++  controller.edit({ purpose: "fresh policy" });
++  await controller.save();
++  expect(controller.store.getState()).toMatchObject({
++    notice: "saved",
++    needsReload: true,
++    retryAvailable: false,
++    error: { code: "WORKSPACE_SYNC_REQUIRED" },
++  });
++  await controller.retry();
++  expect(writes).toBe(1);
++  controller.dispose();
++});
+--- a/tests/e2e/planning.spec.mjs
++++ b/tests/e2e/planning.spec.mjs
+@@ -22,10 +22,37 @@
+   const root = await mkdtemp(join(tmpdir(), "atlas-e2e-"));
+   let server, mcp;
+   const errors = [],
+-    external = [];
++    external = [],
++    rawConsoleErrors = [],
++    currentApprovalResponses = [];
++  let expectedCurrentApprovalUrl;
+   page.on("pageerror", (error) => errors.push(`pageerror: ${error.message}`));
+   page.on("console", (message) => {
+-    if (message.type() === "error") errors.push(`console: ${message.text()}`);
++    if (message.type() === "error") {
++      rawConsoleErrors.push({
++        errorIndex: errors.length,
++        url: message.location().url,
++        text: message.text(),
++      });
++      errors.push(`console: ${message.text()}`);
++    }
++  });
++  page.on("response", (response) => {
++    if (
++      !expectedCurrentApprovalUrl ||
++      response.url() !== expectedCurrentApprovalUrl ||
++      response.request().method() !== "GET" ||
++      response.status() !== 409
++    ) return;
++    const receipt = {
++      url: response.url(),
++      method: response.request().method(),
++      status: response.status(),
++    };
++    currentApprovalResponses.push(response.json().then(
++      body => ({ ...receipt, body }),
++      error => ({ ...receipt, parseError: String(error) }),
++    ));
+   });
+   // Keep the local service reachable; deny every external browser request.
+   await context.route("**/*", (route) => {
+@@ -36,7 +63,7 @@
+     }
+     return route.continue();
+   });
+-  const evidence = { errors, external };
++  const evidence = { errors, external, rawConsoleErrors };
+   const screenshots = resolve("artifacts/e2e");
+   await mkdir(screenshots, { recursive: true });
+   try {
+@@ -255,6 +282,7 @@
+     });
+     const planId = proposed.plan.id,
+       detail = () => api(`/api/plans/${planId}`);
++    expectedCurrentApprovalUrl = `${server.url}/api/plans/${encodeURIComponent(planId)}/approved`;
+     await page.reload();
+     await expect(
+       page.getByRole("heading", { name: "typescript", exact: true }),
+@@ -293,17 +321,17 @@
+     await expect(
+       page.getByRole("heading", { name: "Shared membership", exact: true }),
+     ).toBeVisible();
+-    await page.getByLabel("Directory scope", { exact: true }).fill("services");
+-    await page
+-      .getByLabel("Responsibility", { exact: true })
++    await page.getByLabel("Path prefix", { exact: true }).fill("services");
++    await page
++      .getByLabel("Purpose", { exact: true })
+       .fill("Reuse existing request behavior");
+     await page
+-      .getByLabel("Forbidden dependencies (one directory per line)", {
++      .getByLabel("Forbidden dependencies", {
+         exact: true,
+       })
+       .fill("internal");
+     await page
+-      .getByRole("button", { name: "Save directory policy", exact: true })
++      .getByRole("button", { name: "Save policy", exact: true })
+       .click();
+     await expect
+       .poll(async () => (await detail()).plan.revision)
+@@ -488,18 +516,25 @@
+     expect(beforeKnowledge.valid).toBe(true);
+     const [policy] = await api(`/api/projects/${project.id}/policies`);
+     await page
++      .getByRole("button", { name: "Read structure again", exact: true })
++      .click();
++    await expect(
++      page.getByRole("button", { name: "Save policy", exact: true }),
++    ).toBeEnabled();
++    expect((await detail()).plan.revision).toBe(beforeKnowledge.plan.revision);
++    await page
+       .getByRole("combobox", {
+-        name: "Directory responsibilities",
++        name: "Edit policy",
+         exact: true,
+       })
+-      .selectOption(policy.id);
+-    await page
+-      .getByLabel("Forbidden dependencies (one directory per line)", {
++      .selectOption(`legacy:${policy.id}`);
++    await page
++      .getByLabel("Forbidden dependencies", {
+         exact: true,
+       })
+       .fill("requests.ts");
+     await page
+-      .getByRole("button", { name: "Save directory policy", exact: true })
++      .getByRole("button", { name: "Save policy", exact: true })
+       .click();
+     await expect
+       .poll(async () => (await detail()).plan.revision)
+@@ -511,22 +546,35 @@
+       prohibited.issues.some((issue) => issue.code === "FORBIDDEN_DEPENDENCY"),
+     ).toBe(true);
+     await page
+-      .getByLabel("Forbidden dependencies (one directory per line)", {
++      .getByRole("button", { name: "Read structure again", exact: true })
++      .click();
++    await expect(
++      page.getByRole("button", { name: "Save policy", exact: true }),
++    ).toBeEnabled();
++    expect((await detail()).plan.revision).toBe(prohibited.plan.revision);
++    await page
++      .getByLabel("Forbidden dependencies", {
+         exact: true,
+       })
+       .fill("internal");
+     await page
+-      .getByLabel("Responsibility", { exact: true })
++      .getByLabel("Purpose", { exact: true })
+       .fill("Reuse requests; reviewed policy version");
+     await page
+-      .getByRole("button", { name: "Save directory policy", exact: true })
++      .getByRole("button", { name: "Save policy", exact: true })
+       .click();
+     await expect
+       .poll(async () => (await detail()).plan.revision)
+       .toBe(beforeKnowledge.plan.revision + 2);
+-    expect(
+-      (await mcp.call("get_approved_plan", { ...args, planId })).valid,
+-    ).toBe(false);
++    const deniedApproval = await mcp.client.callTool({
++      name: "get_approved_plan",
++      arguments: { ...args, planId },
++    });
++    expect(deniedApproval.isError).toBe(true);
++    expect(JSON.parse(deniedApproval.content[0].text)).toMatchObject({
++      code: "NOT_APPROVED",
++      status: 409,
++    });
+     await page
+       .getByRole("button", { name: "Confirm current revision", exact: true })
+       .click();
+@@ -761,6 +809,33 @@
+     await expect(page.locator(".app")).toHaveAttribute("data-theme", "dark");
+     await f.assertNotExecuted();
+     expect(external).toEqual([]);
++    // Only this selected plan's typed strong-read negatives are expected.
++    // Retain every raw message, and keep the original assertion for every other error.
++    const typedNegatives = await Promise.all(currentApprovalResponses);
++    evidence.typedCurrentApprovalResponses = typedNegatives;
++    const matchedConsole = rawConsoleErrors.filter(message =>
++      message.url === expectedCurrentApprovalUrl &&
++      message.text === "Failed to load resource: the server responded with a status of 409 (Conflict)",
++    );
++    evidence.matchedCurrentApprovalConsole = matchedConsole;
++    expect(typedNegatives).toHaveLength(3);
++    expect(matchedConsole).toHaveLength(typedNegatives.length);
++    expect(new Set(matchedConsole.map(message => message.errorIndex)).size)
++      .toBe(typedNegatives.length);
++    evidence.expectedStrongReadNegatives = typedNegatives.map((receipt, index) => {
++      expect(receipt).toMatchObject({
++        url: expectedCurrentApprovalUrl,
++        method: "GET",
++        status: 409,
++        body: { code: "NOT_APPROVED" },
++      });
++      expect(matchedConsole[index].url).toBe(receipt.url);
++      return { response: receipt, console: matchedConsole[index] };
++    });
++    for (const message of matchedConsole.toSorted((a, b) => b.errorIndex - a.errorIndex)) {
++      expect(errors[message.errorIndex]).toBe(`console: ${message.text}`);
++      errors.splice(message.errorIndex, 1);
++    }
+     expect(errors).toEqual([]);
+     expect(mcp.stderr()).toBe("");
+   } finally {
+--- a/tests/e2e/pol01-structure.spec.ts
++++ b/tests/e2e/pol01-structure.spec.ts
+@@ -12,7 +12,11 @@
+   page: Page,
+   f: Awaited<ReturnType<typeof pol01Fixture>>,
+ ) {
+-  await f.json(`/api/projects/${f.project.id}/view`, "PUT", { locale: "en" });
++  await f.json(`/api/projects/${f.project.id}/view`, "PUT", {
++    positions: {},
++    theme: "light",
++    locale: "en",
++  });
+   await page.goto(f.url());
+   await page
+     .getByRole("combobox", { name: /^(Switch project|切换项目)$/ })
+@@ -57,8 +61,11 @@
+       .fill("DB edit A");
+     const dbSave = page.waitForResponse(
+       (r) =>
+-        r.url().endsWith(`/api/projects/${f.project.id}/policies`) &&
+-        r.request().method() === "POST",
++        r
++          .url()
++          .endsWith(
++            `/api/projects/${encodeURIComponent(f.project.id)}/policies`,
++          ) && r.request().method() === "POST",
+     );
+     await panel.locator('[data-action="save"]').click();
+     expect((await dbSave).status()).toBe(200);
+@@ -76,8 +83,11 @@
+     await expect(panel.locator('[data-action="import"]')).toBeVisible();
+     const imported = page.waitForResponse(
+       (r) =>
+-        r.url().endsWith(`/api/projects/${f.project.id}/structure`) &&
+-        r.request().method() === "PUT",
++        r
++          .url()
++          .endsWith(
++            `/api/projects/${encodeURIComponent(f.project.id)}/structure`,
++          ) && r.request().method() === "PUT",
+     );
+     await panel.locator('[data-action="import"]').click();
+     expect((await imported).status()).toBe(200);
+@@ -106,8 +116,11 @@
+     await writeFile(f.path, JSON.stringify(external));
+     const conflict = page.waitForResponse(
+       (r) =>
+-        r.url().endsWith(`/api/projects/${f.project.id}/structure`) &&
+-        r.request().method() === "PUT",
++        r
++          .url()
++          .endsWith(
++            `/api/projects/${encodeURIComponent(f.project.id)}/structure`,
++          ) && r.request().method() === "PUT",
+     );
+     await panel.locator('[data-action="save"]').click();
+     expect((await conflict).status()).toBe(409);
+@@ -122,8 +135,11 @@
+     await expect(panel.locator('[data-action="save"]')).toBeEnabled();
+     const saved = page.waitForResponse(
+       (r) =>
+-        r.url().endsWith(`/api/projects/${f.project.id}/structure`) &&
+-        r.request().method() === "PUT",
++        r
++          .url()
++          .endsWith(
++            `/api/projects/${encodeURIComponent(f.project.id)}/structure`,
++          ) && r.request().method() === "PUT",
+     );
+     await panel.locator('[data-action="save"]').click();
+     expect((await saved).status()).toBe(200);

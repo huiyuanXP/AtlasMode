@@ -1,0 +1,9 @@
+apps/web/src/features/structure/PoliciesPanel.tsx 166ms
+apps/web/src/features/structure/policy-controller.ts 127ms
+apps/web/src/features/structure/policy-controller.test.ts 87ms
+apps/web/src/features/structure/StructurePolicyPanel.tsx 57ms
+apps/web/src/features/structure/StructurePolicyPanel.test.tsx 24ms
+apps/web/src/api/structure-client.ts 26ms
+apps/web/src/api/structure-client.test.ts 22ms
+apps/mcp/src/server.ts 73ms (unchanged)
+apps/mcp/src/structure.test.ts 21ms

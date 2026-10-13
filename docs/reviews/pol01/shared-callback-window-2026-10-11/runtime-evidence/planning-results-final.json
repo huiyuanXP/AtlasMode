@@ -1,0 +1,172 @@
+{
+  "config": {
+    "argv": [
+      "/home/agent/.node/node-v24.19.0-linux-x64/bin/node",
+      "/tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/node_modules/.bin/playwright",
+      "test",
+      "tests/e2e/planning.spec.mjs",
+      "--output",
+      "../planning-results-final",
+      "--reporter",
+      "list,json"
+    ],
+    "configFile": "/tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/playwright.config.ts",
+    "rootDir": "/tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/tests/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/tmp/atlas-pol01-callback-20261011-40dxsb3i/planning-results-final",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "",
+        "name": "",
+        "testDir": "/tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 120000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list"
+      ],
+      [
+        "json"
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.63.0",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "planning.spec.mjs",
+      "file": "planning.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "production UI and SDK share the complete planning, approval, persistence and verification flow offline",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 21439,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 5\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   \"console: Failed to load resource: the server responded with a status of 409 (Conflict)\",\u001b[39m\n\u001b[31m+   \"console: Failed to load resource: the server responded with a status of 409 (Conflict)\",\u001b[39m\n\u001b[31m+   \"console: Failed to load resource: the server responded with a status of 409 (Conflict)\",\u001b[39m\n\u001b[31m+ ]\u001b[39m",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 5\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   \"console: Failed to load resource: the server responded with a status of 409 (Conflict)\",\u001b[39m\n\u001b[31m+   \"console: Failed to load resource: the server responded with a status of 409 (Conflict)\",\u001b[39m\n\u001b[31m+   \"console: Failed to load resource: the server responded with a status of 409 (Conflict)\",\u001b[39m\n\u001b[31m+ ]\u001b[39m\n    at /tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/tests/e2e/planning.spec.mjs:784:20",
+                    "location": {
+                      "file": "/tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/tests/e2e/planning.spec.mjs",
+                      "column": 20,
+                      "line": 784
+                    },
+                    "snippet": "  782 |     await f.assertNotExecuted();\n  783 |     expect(external).toEqual([]);\n> 784 |     expect(errors).toEqual([]);\n      |                    ^\n  785 |     expect(mcp.stderr()).toBe(\"\");\n  786 |   } finally {\n  787 |     await writeFile("
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/tests/e2e/planning.spec.mjs",
+                        "column": 20,
+                        "line": 784
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 5\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   \"console: Failed to load resource: the server responded with a status of 409 (Conflict)\",\u001b[39m\n\u001b[31m+   \"console: Failed to load resource: the server responded with a status of 409 (Conflict)\",\u001b[39m\n\u001b[31m+   \"console: Failed to load resource: the server responded with a status of 409 (Conflict)\",\u001b[39m\n\u001b[31m+ ]\u001b[39m\n\n  782 |     await f.assertNotExecuted();\n  783 |     expect(external).toEqual([]);\n> 784 |     expect(errors).toEqual([]);\n      |                    ^\n  785 |     expect(mcp.stderr()).toBe(\"\");\n  786 |   } finally {\n  787 |     await writeFile(\n    at /tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/tests/e2e/planning.spec.mjs:784:20"
+                    }
+                  ],
+                  "stdout": [
+                    {
+                      "text": "{\"requestedRelation\":\"plan:new-call\",\"clickedRoute\":{\"x\":674.6982168263639,\"y\":359.78514420986176,\"visualRoute\":\"rf__edge-plan:new-call\"}}\n"
+                    },
+                    {
+                      "text": "{\"requestedRelation\":\"fact:relation:99a01b1372bfcafbd9a889cc54c3714b\",\"clickedRoute\":{\"x\":967.0816083700174,\"y\":276.9426691979395,\"visualRoute\":\"rf__edge-group-edge:fact:relation:99a01b1372bfcafbd9a889cc54c3714b:0\"}}\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-11T01:56:27.028Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "joint-flow-evidence",
+                      "contentType": "application/json",
+                      "body": "ewogICJlcnJvcnMiOiBbCiAgICAiY29uc29sZTogRmFpbGVkIHRvIGxvYWQgcmVzb3VyY2U6IHRoZSBzZXJ2ZXIgcmVzcG9uZGVkIHdpdGggYSBzdGF0dXMgb2YgNDA5IChDb25mbGljdCkiLAogICAgImNvbnNvbGU6IEZhaWxlZCB0byBsb2FkIHJlc291cmNlOiB0aGUgc2VydmVyIHJlc3BvbmRlZCB3aXRoIGEgc3RhdHVzIG9mIDQwOSAoQ29uZmxpY3QpIiwKICAgICJjb25zb2xlOiBGYWlsZWQgdG8gbG9hZCByZXNvdXJjZTogdGhlIHNlcnZlciByZXNwb25kZWQgd2l0aCBhIHN0YXR1cyBvZiA0MDkgKENvbmZsaWN0KSIKICBdLAogICJleHRlcm5hbCI6IFtdLAogICJjbGlwYm9hcmQiOiAiYWN0dWFsIG5hdmlnYXRvci5jbGlwYm9hcmQucmVhZFRleHQgaW4gQ2hyb21pdW0iLAogICJhcHByb3ZhbCI6IHsKICAgICJpZCI6ICI0OGJiYzc2OC1mNWJhLTQyNGUtYWEwOC0yNmFlMDU0N2U1OTAiLAogICAgInBsYW5JZCI6ICI1MzIwYTdiOS1lZDMwLTQ4ZTItYjg2Ni0xZmYxYzZmOTk1ZDkiLAogICAgInJldmlzaW9uIjogMTYsCiAgICAic2VtYW50aWNIYXNoIjogIjgzZDNjNTI4ZjBhNmUyNDQ4MjkzZmI5YjkyMTEzYjQ4ODg5OTU3YjBlYTliZmI5NzZiZDY1ZDNkNDE1MzUzNDIiLAogICAgImJhc2VsaW5lU25hcHNob3RJZCI6ICJzbmFwc2hvdDozZjk0YjQ0OGNmOTlhMDZkYjFkNWU5YmVkMjhlODVkNSIsCiAgICAiYmFzZWxpbmVDb250ZW50SGFzaCI6ICI4ZjhhYjA2NjVkOThhMjU0YmE0ZTQyMTg0ZWQ3MjA0MWVhOTI5MWIyMDU3MzY4NDJiOWNjMWRhNjNkMDk1NDQzIiwKICAgICJhcHByb3ZlZEF0IjogIjIwMjYtMTAtMTFUMDE6NTY6NDEuMzQ0WiIsCiAgICAiYWN0b3IiOiAidXNlciIsCiAgICAicmV2aWV3Q29udGV4dCI6IHsKICAgICAgInZlcnNpb24iOiAxLAogICAgICAia25vd2xlZGdlSGFzaCI6ICJiOTk1NDVjZmMxNWU1ODNhMzljMzExYTAzNzdhMjhkODllMzk2YjIyODgwMWI2MTI2Yjg1NTdmYTJiMWYxZjBkIgogICAgfQogIH0sCiAgImV4cG9ydEpTT04iOiB7CiAgICAiYnl0ZXMiOiA0MTg3LAogICAgIm5hbWUiOiAicGxhbi01MzIwYTdiOS1lZDMwLTQ4ZTItYjg2Ni0xZmYxYzZmOTk1ZDktcjE2Lmpzb24iCiAgfSwKICAiZXhwb3J0TWFya2Rvd24iOiB7CiAgICAiYnl0ZXMiOiA0NDgzLAogICAgIm5hbWUiOiAicGxhbi01MzIwYTdiOS1lZDMwLTQ4ZTItYjg2Ni0xZmYxYzZmOTk1ZDktcjE2Lm1kIgogIH0sCiAgInNhdGlzZmllZCI6IHsKICAgICJwbGFuSWQiOiAiNTMyMGE3YjktZWQzMC00OGUyLWI4NjYtMWZmMWM2Zjk5NWQ5IiwKICAgICJyZXZpc2lvbiI6IDE2LAogICAgInNuYXBzaG90SWQiOiAic25hcHNob3Q6ODQ3ODI2Njk4ZDlhZTY4YWU4YmJmODE3YzU2ZmZmOTYiLAogICAgIml0ZW1zIjogWwogICAgICB7CiAgICAgICAgIm9wZXJhdGlvbkluZGV4IjogMCwKICAgICAgICAic3RhdHVzIjogInNhdGlzZmllZCIsCiAgICAgICAgIm1lc3NhZ2UiOiAiUGxhbm5lZCBmdW5jdGlvbiBleGlzdHMgYXQgdGhlIHRhcmdldCBwYXRoLiIsCiAgICAgICAgImV2aWRlbmNlIjogWwogICAgICAgICAgInNlcnZpY2VzL25vdGVzLnRzOjIiCiAgICAgICAgXQogICAgICB9LAogICAgICB7CiAgICAgICAgIm9wZXJhdGlvbkluZGV4IjogMSwKICAgICAgICAic3RhdHVzIjogInNhdGlzZmllZCIsCiAgICAgICAgIm1lc3NhZ2UiOiAiVGhlIHJlcXVpcmVkIHJlbGF0aW9uIGV4aXN0cy4iLAogICAgICAgICJldmlkZW5jZSI6IFsKICAgICAgICAgICJzZXJ2aWNlcy9ub3Rlcy50czoyIHJlcXVlc3RXaXRoUmV0cnkoKSIKICAgICAgICBdCiAgICAgIH0sCiAgICAgIHsKICAgICAgICAib3BlcmF0aW9uSW5kZXgiOiAyLAogICAgICAgICJzdGF0dXMiOiAidW5rbm93biIsCiAgICAgICAgIm1lc3NhZ2UiOiAiQW5ub3RhdGlvbiBzZW1hbnRpY3MgcmVxdWlyZSBodW1hbiByZXZpZXcuIiwKICAgICAgICAiZXZpZGVuY2UiOiBbXQogICAgICB9LAogICAgICB7CiAgICAgICAgIm9wZXJhdGlvbkluZGV4IjogMywKICAgICAgICAic3RhdHVzIjogInNhdGlzZmllZCIsCiAgICAgICAgIm1lc3NhZ2UiOiAiVGhlIG9yaWdpbmFsIHJlbGF0aW9uIGlzIGFic2VudC4iLAogICAgICAgICJldmlkZW5jZSI6IFsKICAgICAgICAgICJtYWluLnRzOjIiLAogICAgICAgICAgInJlcXVlc3RzLnRzOjEiCiAgICAgICAgXQogICAgICB9LAogICAgICB7CiAgICAgICAgIm9wZXJhdGlvbkluZGV4IjogNCwKICAgICAgICAic3RhdHVzIjogInNhdGlzZmllZCIsCiAgICAgICAgIm1lc3NhZ2UiOiAiVGhlIHJlcXVpcmVkIHJlbGF0aW9uIGV4aXN0cy4iLAogICAgICAgICJldmlkZW5jZSI6IFsKICAgICAgICAgICJtYWluLnRzOjIgcmVxdWVzdFdpdGhSZXRyeSgpIgogICAgICAgIF0KICAgICAgfQogICAgXQogIH0sCiAgImJ5cGFzcyI6IHsKICAgICJwbGFuSWQiOiAiNTMyMGE3YjktZWQzMC00OGUyLWI4NjYtMWZmMWM2Zjk5NWQ5IiwKICAgICJyZXZpc2lvbiI6IDE2LAogICAgInNuYXBzaG90SWQiOiAic25hcHNob3Q6ZDhhM2VjNTM4Mjc1ZGJhYTllYjBiYzc4ODNkNjgzOGYiLAogICAgIml0ZW1zIjogWwogICAgICB7CiAgICAgICAgIm9wZXJhdGlvbkluZGV4IjogMCwKICAgICAgICAic3RhdHVzIjogInNhdGlzZmllZCIsCiAgICAgICAgIm1lc3NhZ2UiOiAiUGxhbm5lZCBmdW5jdGlvbiBleGlzdHMgYXQgdGhlIHRhcmdldCBwYXRoLiIsCiAgICAgICAgImV2aWRlbmNlIjogWwogICAgICAgICAgInNlcnZpY2VzL25vdGVzLnRzOjIiCiAgICAgICAgXQogICAgICB9LAogICAgICB7CiAgICAgICAgIm9wZXJhdGlvbkluZGV4IjogMSwKICAgICAgICAic3RhdHVzIjogInVubWV0IiwKICAgICAgICAibWVzc2FnZSI6ICJObyBkaXJlY3QgY2FsbCB0byB0aGUgcmVxdWlyZWQgdGFyZ2V0IHdhcyBmb3VuZC4iLAogICAgICAgICJldmlkZW5jZSI6IFsKICAgICAgICAgICJzZXJ2aWNlcy9ub3Rlcy50czoyIiwKICAgICAgICAgICJyZXF1ZXN0cy50czoyIgogICAgICAgIF0KICAgICAgfSwKICAgICAgewogICAgICAgICJvcGVyYXRpb25JbmRleCI6IDIsCiAgICAgICAgInN0YXR1cyI6ICJ1bmtub3duIiwKICAgICAgICAibWVzc2FnZSI6ICJBbm5vdGF0aW9uIHNlbWFudGljcyByZXF1aXJlIGh1bWFuIHJldmlldy4iLAogICAgICAgICJldmlkZW5jZSI6IFtdCiAgICAgIH0sCiAgICAgIHsKICAgICAgICAib3BlcmF0aW9uSW5kZXgiOiAzLAogICAgICAgICJzdGF0dXMiOiAic2F0aXNmaWVkIiwKICAgICAgICAibWVzc2FnZSI6ICJUaGUgb3JpZ2luYWwgcmVsYXRpb24gaXMgYWJzZW50LiIsCiAgICAgICAgImV2aWRlbmNlIjogWwogICAgICAgICAgIm1haW4udHM6MiIsCiAgICAgICAgICAicmVxdWVzdHMudHM6MSIKICAgICAgICBdCiAgICAgIH0sCiAgICAgIHsKICAgICAgICAib3BlcmF0aW9uSW5kZXgiOiA0LAogICAgICAgICJzdGF0dXMiOiAic2F0aXNmaWVkIiwKICAgICAgICAibWVzc2FnZSI6ICJUaGUgcmVxdWlyZWQgcmVsYXRpb24gZXhpc3RzLiIsCiAgICAgICAgImV2aWRlbmNlIjogWwogICAgICAgICAgIm1haW4udHM6MiByZXF1ZXN0V2l0aFJldHJ5KCkiCiAgICAgICAgXQogICAgICB9CiAgICBdCiAgfSwKICAidW5rbm93biI6IHsKICAgICJwbGFuSWQiOiAiNTMyMGE3YjktZWQzMC00OGUyLWI4NjYtMWZmMWM2Zjk5NWQ5IiwKICAgICJyZXZpc2lvbiI6IDE2LAogICAgInNuYXBzaG90SWQiOiAic25hcHNob3Q6Nzg1MjhjNDQ0M2JlMzBhMmIwYWU4NWFmNjRiZWM5ZDQiLAogICAgIml0ZW1zIjogWwogICAgICB7CiAgICAgICAgIm9wZXJhdGlvbkluZGV4IjogMCwKICAgICAgICAic3RhdHVzIjogInNhdGlzZmllZCIsCiAgICAgICAgIm1lc3NhZ2UiOiAiUGxhbm5lZCBmdW5jdGlvbiBleGlzdHMgYXQgdGhlIHRhcmdldCBwYXRoLiIsCiAgICAgICAgImV2aWRlbmNlIjogWwogICAgICAgICAgInNlcnZpY2VzL25vdGVzLnRzOjEiCiAgICAgICAgXQogICAgICB9LAogICAgICB7CiAgICAgICAgIm9wZXJhdGlvbkluZGV4IjogMSwKICAgICAgICAic3RhdHVzIjogInVua25vd24iLAogICAgICAgICJtZXNzYWdlIjogIkR5bmFtaWMgb3IgdW5yZXNvbHZlZCByZWxhdGlvbnMgcHJldmVudCBhIGRlZmluaXRpdmUgYWJzZW5jZSBjaGVjay4iLAogICAgICAgICJldmlkZW5jZSI6IFsKICAgICAgICAgICJzZXJ2aWNlcy9ub3Rlcy50czoxIGZuKCkiCiAgICAgICAgXQogICAgICB9LAogICAgICB7CiAgICAgICAgIm9wZXJhdGlvbkluZGV4IjogMiwKICAgICAgICAic3RhdHVzIjogInVua25vd24iLAogICAgICAgICJtZXNzYWdlIjogIkFubm90YXRpb24gc2VtYW50aWNzIHJlcXVpcmUgaHVtYW4gcmV2aWV3LiIsCiAgICAgICAgImV2aWRlbmNlIjogW10KICAgICAgfSwKICAgICAgewogICAgICAgICJvcGVyYXRpb25JbmRleCI6IDMsCiAgICAgICAgInN0YXR1cyI6ICJzYXRpc2ZpZWQiLAogICAgICAgICJtZXNzYWdlIjogIlRoZSBvcmlnaW5hbCByZWxhdGlvbiBpcyBhYnNlbnQuIiwKICAgICAgICAiZXZpZGVuY2UiOiBbCiAgICAgICAgICAibWFpbi50czoyIiwKICAgICAgICAgICJyZXF1ZXN0cy50czoxIgogICAgICAgIF0KICAgICAgfSwKICAgICAgewogICAgICAgICJvcGVyYXRpb25JbmRleCI6IDQsCiAgICAgICAgInN0YXR1cyI6ICJzYXRpc2ZpZWQiLAogICAgICAgICJtZXNzYWdlIjogIlRoZSByZXF1aXJlZCByZWxhdGlvbiBleGlzdHMuIiwKICAgICAgICAiZXZpZGVuY2UiOiBbCiAgICAgICAgICAibWFpbi50czoyIHJlcXVlc3RXaXRoUmV0cnkoKSIKICAgICAgICBdCiAgICAgIH0KICAgIF0KICB9Cn0="
+                    },
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/tmp/atlas-pol01-callback-20261011-40dxsb3i/planning-results-final/planning-production-UI-and-0ffc9-d-verification-flow-offline/test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/tmp/atlas-pol01-callback-20261011-40dxsb3i/planning-results-final/planning-production-UI-and-0ffc9-d-verification-flow-offline/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/tmp/atlas-pol01-callback-20261011-40dxsb3i/planning-results-final/planning-production-UI-and-0ffc9-d-verification-flow-offline/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/tests/e2e/planning.spec.mjs",
+                    "column": 20,
+                    "line": 784
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "29288311451816bbf8b3-6832f790e4a8238f5b69",
+          "file": "planning.spec.mjs",
+          "line": 18,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-10-11T01:56:24.952Z",
+    "duration": 24664.857,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 1,
+    "flaky": 0
+  }
+}

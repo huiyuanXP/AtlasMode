@@ -1,0 +1,5 @@
+77bb9744d2b1e7b70f16679a887c6118a14128701e887a65f098b3e7b8a973c5  apps/web/src/app/workspace.ts
+e7e4623080c934f08a187188fb5cdbf631bdf47ea036a49c10bc2ed481b98d45  apps/web/src/app/Navigation.tsx
+f5e450a193a0ef197bacd635a46db609a3421d884cecaead4bf379e0c2eb89b3  apps/web/src/app/pol01-policy-sync.test.ts
+153a7087714a89983bb1af9ba23b285b7edc00a27695ffcf849fd1e883c1f0b8  tests/e2e/planning.spec.mjs
+7317521476fd698091977f728ac6ac13116f7caec973ff81c8581aa67822554b  tests/e2e/pol01-structure.spec.ts

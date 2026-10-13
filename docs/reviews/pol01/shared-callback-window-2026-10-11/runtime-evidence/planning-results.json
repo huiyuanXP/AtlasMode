@@ -1,0 +1,172 @@
+{
+  "config": {
+    "argv": [
+      "/home/agent/.node/node-v24.19.0-linux-x64/bin/node",
+      "/tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/node_modules/.bin/playwright",
+      "test",
+      "tests/e2e/planning.spec.mjs",
+      "--output",
+      "../planning-results",
+      "--reporter",
+      "list,json"
+    ],
+    "configFile": "/tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/playwright.config.ts",
+    "rootDir": "/tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/tests/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/tmp/atlas-pol01-callback-20261011-40dxsb3i/planning-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "",
+        "name": "",
+        "testDir": "/tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 120000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list"
+      ],
+      [
+        "json"
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.63.0",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "planning.spec.mjs",
+      "file": "planning.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "production UI and SDK share the complete planning, approval, persistence and verification flow offline",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 29841,
+                  "error": {
+                    "message": "TimeoutError: locator.selectOption: Timeout 15000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('combobox', { name: 'Directory responsibilities', exact: true })\u001b[22m\n",
+                    "stack": "TimeoutError: locator.selectOption: Timeout 15000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('combobox', { name: 'Directory responsibilities', exact: true })\u001b[22m\n\n    at /tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/tests/e2e/planning.spec.mjs:495:8",
+                    "location": {
+                      "file": "/tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/tests/e2e/planning.spec.mjs",
+                      "column": 8,
+                      "line": 495
+                    },
+                    "snippet": "  493 |         exact: true,\n  494 |       })\n> 495 |       .selectOption(policy.id);\n      |        ^\n  496 |     await page\n  497 |       .getByLabel(\"Forbidden dependencies\", {\n  498 |         exact: true,"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/tests/e2e/planning.spec.mjs",
+                        "column": 8,
+                        "line": 495
+                      },
+                      "message": "TimeoutError: locator.selectOption: Timeout 15000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('combobox', { name: 'Directory responsibilities', exact: true })\u001b[22m\n\n\n  493 |         exact: true,\n  494 |       })\n> 495 |       .selectOption(policy.id);\n      |        ^\n  496 |     await page\n  497 |       .getByLabel(\"Forbidden dependencies\", {\n  498 |         exact: true,\n    at /tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/tests/e2e/planning.spec.mjs:495:8"
+                    }
+                  ],
+                  "stdout": [
+                    {
+                      "text": "{\"requestedRelation\":\"plan:new-call\",\"clickedRoute\":{\"x\":674.6982168263639,\"y\":359.78514420986176,\"visualRoute\":\"rf__edge-plan:new-call\"}}\n"
+                    },
+                    {
+                      "text": "{\"requestedRelation\":\"fact:relation:b7e3273cba7761869b456b64c4d2356a\",\"clickedRoute\":{\"x\":968.265344627107,\"y\":278.94421423479275,\"visualRoute\":\"rf__edge-group-edge:fact:relation:b7e3273cba7761869b456b64c4d2356a:0\"}}\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-11T01:46:32.851Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "joint-flow-evidence",
+                      "contentType": "application/json",
+                      "body": "ewogICJlcnJvcnMiOiBbXSwKICAiZXh0ZXJuYWwiOiBbXSwKICAiY2xpcGJvYXJkIjogImFjdHVhbCBuYXZpZ2F0b3IuY2xpcGJvYXJkLnJlYWRUZXh0IGluIENocm9taXVtIgp9"
+                    },
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/tmp/atlas-pol01-callback-20261011-40dxsb3i/planning-results/planning-production-UI-and-0ffc9-d-verification-flow-offline/test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/tmp/atlas-pol01-callback-20261011-40dxsb3i/planning-results/planning-production-UI-and-0ffc9-d-verification-flow-offline/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/tmp/atlas-pol01-callback-20261011-40dxsb3i/planning-results/planning-production-UI-and-0ffc9-d-verification-flow-offline/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/tests/e2e/planning.spec.mjs",
+                    "column": 8,
+                    "line": 495
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "29288311451816bbf8b3-6832f790e4a8238f5b69",
+          "file": "planning.spec.mjs",
+          "line": 18,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-10-11T01:46:30.641Z",
+    "duration": 33885.963,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 1,
+    "flaky": 0
+  }
+}

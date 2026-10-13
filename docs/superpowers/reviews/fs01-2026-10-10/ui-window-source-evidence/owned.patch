@@ -1,0 +1,3164 @@
+--- a/apps/web/src/app/workspace.ts
++++ b/apps/web/src/app/workspace.ts
+@@ -1,3 +1,9 @@
++import {
++  createOwnershipSession,
++  sameOwnershipCapture,
++  type OwnershipCapture,
++} from "../features/structure/ownership-session.js";
++import { effectiveFunctionPath } from "../features/planning/function-target.js";
+ import {
+   readMembers,
+   SnapshotChangedError,
+@@ -54,6 +60,7 @@
+   groupSelection: CodeNode[];
+   groupSelectionMode: boolean;
+   groupEditorOpen: boolean;
++  dirtyPlanEditor: boolean;
+   history?: PlanHistory;
+   groups: FunctionGroup[];
+   policies: DirectoryPolicy[];
+@@ -107,6 +114,7 @@
+   groupSelection: [],
+   groupSelectionMode: false,
+   groupEditorOpen: false,
++  dirtyPlanEditor: false,
+   groups: [],
+   policies: [],
+   memberPage: undefined,
+@@ -152,6 +160,32 @@
+   const histories = new Map<string, PlanHistory>();
+   const set = store.setState,
+     get = store.getState;
++  const currentFacts = () => {
++    const state = get(),
++      snapshotId = state.summary?.snapshotId;
++    return [
++      ...(state.summary?.entrypoints ?? []),
++      ...(state.graph?.snapshotId === snapshotId
++        ? (state.graph?.nodes ?? [])
++        : []),
++      ...(state.search?.snapshotId === snapshotId
++        ? (state.search?.items ?? [])
++        : []),
++    ];
++  };
++  const capturePlan = (): OwnershipCapture | undefined => {
++    const state = get(),
++      plan = state.plan?.plan,
++      summary = state.summary;
++    if (!plan || !summary || state.project?.id !== plan.projectId) return;
++    return Object.freeze({
++      projectId: plan.projectId,
++      planId: plan.id,
++      revision: plan.revision,
++      snapshotId: summary.snapshotId,
++      snapshotHash: summary.contentHash,
++    });
++  };
+   const fail = (key: string, error: unknown) =>
+     set((s) => ({
+       busy: { ...s.busy, [key]: false },
+@@ -289,12 +323,13 @@
+   const selectNode = async (
+     node: CodeNode,
+     offset = 0,
+-    options: { focus?: boolean; source?: boolean } = {},
++    options: { focus?: boolean; source?: boolean; sequence?: number } = {},
+   ) => {
+     const project = get().project,
+       snapshotId = get().summary?.snapshotId;
+     if (!project) return;
+-    const sequence = ++focusGeneration;
++    const snapshotHash = get().summary?.contentHash;
++    const sequence = options.sequence ?? ++focusGeneration;
+     scope.invalidate("source");
+     scope.invalidate("graph");
+     scope.invalidate("route");
+@@ -321,46 +356,53 @@
+         source: false,
+       },
+     }));
+-    const isFact =
+-      get().graph?.nodes.some((n) => n.id === node.id) ||
+-      get().summary?.entrypoints.some((n) => n.id === node.id) ||
+-      get().search?.items.some((n) => n.id === node.id);
++    const isFact = currentFacts().some(
++      (n) => n.id === node.id && n.kind === node.kind,
++    );
++    const current = () =>
++      get().project?.id === project.id &&
++      get().summary?.snapshotId === snapshotId &&
++      get().summary?.contentHash === snapshotHash &&
++      get().selectedNode?.id === node.id &&
++      focusGeneration === sequence &&
++      get().detailsOpen;
+     await run(
+       "inspect",
+       async () => {
+-        const [context, fileContext, source] = await Promise.all([
++        const [context, fileContext] = await Promise.all([
+           isFact && node.kind === "function"
+             ? api.context(project.id, node.id, offset)
+             : undefined,
+           isFact && node.kind === "file"
+             ? api.fileContext(project.id, node.id, offset)
+             : undefined,
+-          options.source !== false &&
+-          isFact &&
+-          node.filePath &&
+-          node.kind !== "folder" &&
+-          node.kind !== "external"
+-            ? api.source(project.id, node.filePath)
+-            : undefined,
+         ]);
+-        return { context, fileContext, source };
+-      },
+-      (data) => {
++        if (!current()) return undefined;
+         if (
+-          get().summary?.snapshotId !== snapshotId ||
+-          get().selectedNode?.id !== node.id ||
+-          !get().detailsOpen
+-        )
+-          return;
+-        if (
+-          (data.context && data.context.snapshotId !== snapshotId) ||
+-          (data.fileContext && data.fileContext.snapshotId !== snapshotId)
++          (context && context.snapshotId !== snapshotId) ||
++          (fileContext && fileContext.snapshotId !== snapshotId)
+         )
+           throw new SnapshotChangedError();
+-        set({
+-          ...data,
+-          selectedNode: data.context?.node ?? data.fileContext?.node ?? node,
+-        });
++        const physical = context?.node ?? fileContext?.node;
++        if (
++          physical &&
++          (physical.id !== node.id || physical.kind !== node.kind)
++        )
++          throw new Error(
++            "Function context identity changed; select it again.",
++          );
++        let source: { filePath: string; content: string } | undefined;
++        if (options.source !== false && physical?.filePath && current()) {
++          source = await api.source(project.id, physical.filePath);
++          if (source.filePath !== physical.filePath)
++            throw new Error(
++              "Source path changed; select the current function again.",
++            );
++        }
++        return { context, fileContext, source, selectedNode: physical ?? node };
++      },
++      (data) => {
++        if (data && current()) set(data);
+       },
+     );
+   };
+@@ -390,23 +432,65 @@
+     const { project, selectedNode: node, summary } = get();
+     if (
+       !project ||
+-      !node?.filePath ||
+-      node.kind === "folder" ||
+-      node.kind === "external" ||
++      !node ||
++      !summary ||
++      (node.kind !== "function" && node.kind !== "file") ||
+       get().plan?.plan.operations.some(
+         (o) => o.kind === "add_function" && o.tempId === node.id,
+       )
+     )
+       return;
++    if (!currentFacts().some((n) => n.id === node.id && n.kind === node.kind)) {
++      set({
++        source: undefined,
++        error:
++          "Current source identity is unavailable; refresh and select the function again.",
++      });
++      return;
++    }
++    const sequence = focusGeneration,
++      snapshotId = summary.snapshotId,
++      snapshotHash = summary.contentHash;
++    const current = () =>
++      get().project?.id === project.id &&
++      get().selectedNode?.id === node.id &&
++      get().summary?.snapshotId === snapshotId &&
++      get().summary?.contentHash === snapshotHash &&
++      sequence === focusGeneration;
++    set({ source: undefined });
+     await run(
+       "source",
+-      () => api.source(project.id, node.filePath!),
+-      (source) => {
++      async () => {
++        const context =
++          node.kind === "function"
++            ? await api.context(project.id, node.id)
++            : undefined;
++        const fileContext =
++          node.kind === "file"
++            ? await api.fileContext(project.id, node.id)
++            : undefined;
++        if (!current()) return undefined;
++        const proof = context ?? fileContext;
++        if (!proof || proof.snapshotId !== snapshotId)
++          throw new SnapshotChangedError();
++        const physical = proof.node;
+         if (
+-          get().selectedNode?.id === node.id &&
+-          get().summary?.snapshotId === summary?.snapshotId
++          physical.id !== node.id ||
++          physical.kind !== node.kind ||
++          !physical.filePath
+         )
+-          set({ source });
++          throw new Error(
++            "Current source path is unavailable; refresh and select it again.",
++          );
++        const source = await api.source(project.id, physical.filePath);
++        if (source.filePath !== physical.filePath)
++          throw new Error(
++            "Source response path changed; refresh and select it again.",
++          );
++        return { source, context, fileContext, selectedNode: physical };
++      },
++      (data) => {
++        if (data && current()) set(data);
+       },
+     );
+   };
+@@ -435,8 +519,8 @@
+     const previousFilter = state.funnel?.previousFilter ?? state.filter;
+     // Selection starts source/context requests immediately; their scope guard
+     // prevents an older double click from replacing this root's inspector.
+-    void selectNode(node);
+     const sequence = ++focusGeneration;
++    void selectNode(node, 0, { sequence });
+     set({ focusRequest: undefined });
+     const commit = (
+       graph: SubgraphResult | undefined,
+@@ -554,17 +638,14 @@
+           );
+           if (!graph.missing) {
+             const focusIds = [
+-              ...new Set([
+-                ...graph.nodes.map((n) => n.id),
+-                ...(kind === "folder" ? ids : []),
+-              ]),
++              ...new Set([...graph.nodes.map((n) => n.id), ...ids]),
+             ];
+             return {
+               graph: {
+                 ...graph,
+                 truncated: graph.truncated || focusIds.length > 80,
+               },
+-              planned: false,
++              planned: ids.length > 0,
+               ids: focusIds.slice(0, 80),
+             };
+           }
+@@ -625,13 +706,19 @@
+     );
+     await funneling;
+   };
+-  const expand = async (nodeId: string, depth = 1, budget = 80) => {
+-    exitFunnel();
++  const expand = async (
++    nodeId: string,
++    depth = 1,
++    budget = 80,
++    capturedSequence?: number,
++  ) => {
++    if (capturedSequence === undefined) exitFunnel();
++    else restoreFunnel();
+     const project = get().project;
+     if (!project) return;
+     // A manual expansion supersedes route navigation, including a response still
+     // in flight under the separate route request key.
+-    const sequence = ++focusGeneration;
++    const sequence = capturedSequence ?? ++focusGeneration;
+     scope.invalidate("route");
+     scope.invalidate("navigation");
+     set((s) => ({
+@@ -647,7 +734,11 @@
+     );
+   };
+   const focus = async (node: CodeNode) => {
+-    await Promise.all([selectNode(node), expand(node.id, 1)]);
++    const sequence = ++focusGeneration;
++    await Promise.all([
++      selectNode(node, 0, { sequence }),
++      expand(node.id, 1, 80, sequence),
++    ]);
+   };
+   const jumpToNode = async (id: string) => {
+     const state = get(),
+@@ -905,7 +996,7 @@
+                 : []),
+             ].find((n) => n.id === ids[0])
+           : undefined;
+-      let selectedNode: CodeNode | undefined =
++      const selectedNode: CodeNode | undefined =
+         op?.kind === "add_function"
+           ? {
+               id: op.tempId,
+@@ -917,11 +1008,12 @@
+               language: op.language,
+             }
+           : fact;
+-      const move = detail.plan.operations.find(
++      const move = detail.plan.operations.findLast(
+         (o) => o.kind === "move_function" && o.nodeId === selectedNode?.id,
+       );
+-      if (selectedNode && move?.kind === "move_function")
+-        selectedNode = { ...selectedNode, filePath: move.filePath };
++      const effectivePath = selectedNode
++        ? effectiveFunctionPath(detail.plan.operations, selectedNode)
++        : undefined;
+       const sameSelection =
+         selectedNode &&
+         selectedNode.id === s.selectedNode?.id &&
+@@ -931,8 +1023,8 @@
+       set({
+         selectedNode,
+         navigationLocation:
+-          selectedNode?.filePath && (op || move)
+-            ? { path: selectedNode.filePath, kind: "file", planned: true }
++          effectivePath && (op || move)
++            ? { path: effectivePath, kind: "file", planned: true }
+             : undefined,
+         ...(!sameSelection ? emptyInspection : {}),
+         relationPreviewId: undefined,
+@@ -974,6 +1066,7 @@
+   };
+   const setPlanEditorDirty = (dirty: boolean) => {
+     dirtyPlanEditor = dirty;
++    set({ dirtyPlanEditor: dirty });
+     if (!dirty && !get().busy.plan && !get().busy.knowledge) {
+       const current = get().plan,
+         latest = get().plans.find((p) => p.plan.id === current?.plan.id);
+@@ -1168,8 +1261,23 @@
+     title?: string,
+     description?: string,
+     action: HistoryAction = "edit",
++    expectedCapture: OwnershipCapture | undefined = capturePlan(),
+   ) => {
+     const detail = get().plan;
++    const currentCapture = capturePlan();
++    if (
++      expectedCapture &&
++      (!currentCapture ||
++        !sameOwnershipCapture(expectedCapture, currentCapture))
++    ) {
++      set({
++        error:
++          "SNAPSHOT_CHANGED: The captured planning context changed; start the edit again.",
++        errorHelp: "conflictHelp",
++      });
++      return undefined;
++    }
++    const capturedSelection = get().selectedNode?.id;
+     if (
+       !detail ||
+       get().busy.plan ||
+@@ -1183,6 +1291,7 @@
+     scope.invalidate("route");
+     set((s) => ({ busy: { ...s.busy, graph: false, route: false } }));
+     let focusing: Promise<void> | undefined;
++    let acceptedResult: PlanDetail | undefined;
+     await run(
+       "plan",
+       () =>
+@@ -1192,9 +1301,31 @@
+           operations,
+           title ?? detail.plan.title,
+           description ?? detail.plan.description,
++          expectedCapture?.snapshotId,
+         ),
+       (accepted) => {
+-        restoreFunnel();
++        const now = capturePlan();
++        if (
++          expectedCapture &&
++          (!now || !sameOwnershipCapture(expectedCapture, now))
++        )
++          return;
++        if (
++          accepted.plan.projectId !== detail.plan.projectId ||
++          accepted.plan.id !== detail.plan.id ||
++          accepted.plan.revision !== detail.plan.revision + 1 ||
++          (expectedCapture &&
++            (accepted.plan.baselineSnapshotId !== expectedCapture.snapshotId ||
++              accepted.plan.baselineContentHash !==
++                expectedCapture.snapshotHash))
++        ) {
++          throw new SnapshotChangedError();
++        }
++        acceptedResult = accepted;
++        const canFocus =
++          sequence === focusGeneration &&
++          get().selectedNode?.id === capturedSelection;
++        if (canFocus) restoreFunnel();
+         histories.set(
+           historyKey(accepted.plan),
+           commitHistory(
+@@ -1205,11 +1336,19 @@
+           ),
+         );
+         acceptPlan(accepted);
+-        focusing = focusPlan(accepted, sequence, detail.plan.operations);
++        if (canFocus)
++          focusing = focusPlan(accepted, sequence, detail.plan.operations);
+       },
+     );
+     await focusing;
+-  };
++    return acceptedResult;
++  };
++  const savePlanCaptured = (
++    capture: OwnershipCapture,
++    operations: Operation[],
++    title?: string,
++    description?: string,
++  ) => savePlan(operations, title, description, "edit", capture);
+   const travel = async (direction: "undo" | "redo") => {
+     const { plan, history } = get();
+     if (!plan) return;
+@@ -1285,7 +1424,7 @@
+   };
+   const approve = async () => {
+     const detail = get().plan;
+-    if (!detail) return;
++    if (!detail || dirtyPlanEditor || ownership.store.getState().intent) return;
+     await run(
+       "plan",
+       () => api.approve(detail.plan.id, detail.plan.revision),
+@@ -1571,8 +1710,84 @@
+       },
+     );
+   };
++  const ownership = createOwnershipSession({
++    current: () => {
++      const state = get(),
++        capture = capturePlan(),
++        plan = state.plan?.plan;
++      if (!capture || !plan) return;
++      return {
++        ...capture,
++        stale:
++          plan.status === "stale" ||
++          plan.baselineSnapshotId !== capture.snapshotId ||
++          plan.baselineContentHash !== capture.snapshotHash,
++        operations: plan.operations,
++        title: plan.title,
++        description: plan.description,
++        selectedId: state.selectedNode?.id,
++        busy:
++          !!state.busy.plan || !!state.busy.project || !!state.busy.knowledge,
++        dirty: dirtyPlanEditor,
++        groupSelection: state.groupSelectionMode || !!state.groupDraft,
++      };
++    },
++    resolveSource: (id) => {
++      const state = get(),
++        addition = state.plan?.plan.operations.find(
++          (o) => o.kind === "add_function" && o.tempId === id,
++        );
++      if (addition?.kind === "add_function")
++        return {
++          node: {
++            id: addition.tempId,
++            kind: "function",
++            name: addition.name,
++            filePath: addition.filePath,
++            signature: addition.signature,
++          },
++          snapshotId: state.summary!.snapshotId,
++        };
++      const node = currentFacts().find(
++        (n) => n.id === id && n.kind === "function",
++      );
++      return node && state.summary
++        ? { node, snapshotId: state.summary.snapshotId }
++        : undefined;
++    },
++    fetchScope: (request) =>
++      api.scope(
++        request.projectId,
++        request.path,
++        "folder",
++        request.budget,
++        request.snapshotId,
++        true,
++      ),
++    save: async (capture, operations) => {
++      const selectedId = get().selectedNode?.id;
++      const accepted = await savePlanCaptured(capture, operations);
++      return get().selectedNode?.id === selectedId ? accepted : undefined;
++    },
++    conflict: () => get().errorHelp === "conflictHelp",
++  });
++  store.subscribe(() => ownership.reconcile());
++  const beginOwnership = (node: CodeNode) => {
++    if (
++      ownership.store.getState().mode !== "ownership" ||
++      dirtyPlanEditor ||
++      get().groupSelectionMode
++    )
++      return;
++    void inspectNode(node);
++    return ownership.begin(node.id);
++  };
+   return {
+     store,
++    ownership,
++    beginOwnership,
++    capturePlan,
++    savePlanCaptured,
+     setPlanEditorDirty,
+     captureAgentSync,
+     syncAgentChanges,
+--- a/apps/web/src/app/workspace.test.ts
++++ b/apps/web/src/app/workspace.test.ts
+@@ -72,6 +72,7 @@
+     name: "fn",
+     filePath: "a.ts",
+   });
++  await expect.poll(() => typeof resolve).toBe("function");
+   await app.selectProject({ id: "b", name: "b", path: "/b" });
+   expect(app.store.getState()).toMatchObject({
+     selectedNode: undefined,
+@@ -181,6 +182,7 @@
+     name: "fn",
+     filePath: "a.ts",
+   });
++  await expect.poll(() => typeof oldSource).toBe("function");
+   await app.focus({ id: "g", kind: "function", name: "g", filePath: "b.ts" });
+   oldGraph(new Response(JSON.stringify(fixture("/api/projects/a/subgraph"))));
+   oldSource(
+--- a/apps/web/src/app/workspace-ownership.test.ts
++++ b/apps/web/src/app/workspace-ownership.test.ts
+@@ -0,0 +1,236 @@
++import { expect, it } from "vitest";
++import { HttpApi } from "../api/client.js";
++import { createWorkspace } from "./workspace.js";
++import type {
++  Operation,
++  PlanDetail,
++  ProjectSummary,
++  SubgraphResult,
++} from "@codemap/core";
++const fact = {
++  id: "f",
++  kind: "function" as const,
++  name: "f",
++  filePath: "src/original.ts",
++};
++const summary = {
++  project: { id: "p", name: "p", path: "/fixture" },
++  snapshotId: "S0",
++  contentHash: "h",
++  entrypoints: [fact],
++} as ProjectSummary;
++function fixture() {
++  const calls: string[] = [];
++  const bodies: Record<string, unknown>[] = [];
++  let contextSnapshot = "S0",
++    responsePath = "src/original.ts";
++  let sourceHold: ((value: Response) => void) | undefined;
++  let contextHold: ((value: Response) => void) | undefined;
++  let deferSource = false,
++    deferContext = false;
++  const operations: Operation[] = [
++    { kind: "move_function", nodeId: "f", filePath: "dest/other.ts" },
++  ];
++  const detail = {
++    valid: false,
++    issues: [],
++    plan: {
++      id: "plan",
++      projectId: "p",
++      revision: 1,
++      title: "Plan",
++      description: "",
++      status: "draft",
++      baselineSnapshotId: "S0",
++      baselineContentHash: "h",
++      createdAt: "now",
++      updatedAt: "now",
++      operations,
++    },
++  } as PlanDetail;
++  const context = () => ({
++    node: fact,
++    incoming: [],
++    outgoing: [],
++    totalIncoming: 0,
++    totalOutgoing: 0,
++    truncated: false,
++    offset: 0,
++    limit: 50,
++    snapshotId: contextSnapshot,
++    dataSource: "code",
++  });
++  const reply = (data: unknown) =>
++    new Response(JSON.stringify(data), { status: 200 });
++  const api = new HttpApi((async (input, init) => {
++    const path = String(input);
++    calls.push(path);
++    if (path.includes("/functions/f?")) {
++      if (deferContext)
++        return new Promise<Response>((r) => {
++          contextHold = r;
++        });
++      return reply(context());
++    }
++    if (path.includes("/source?")) {
++      if (deferSource)
++        return new Promise<Response>((r) => {
++          sourceHold = r;
++        });
++      return reply({ filePath: responsePath, content: "ORIGINAL bytes" });
++    }
++    if (path === "/api/plans/plan" && init?.method === "PUT") {
++      const body = JSON.parse(String(init.body));
++      bodies.push(body);
++      return reply({
++        ...detail,
++        plan: {
++          ...detail.plan,
++          revision: 2,
++          operations: body.operations,
++          title: body.title,
++          description: body.description,
++        },
++      });
++    }
++    return reply([]);
++  }) as typeof fetch);
++  const app = createWorkspace(api);
++  app.store.setState({
++    project: summary.project,
++    summary,
++    graph: {
++      snapshotId: "S0",
++      nodes: [fact],
++      relations: [],
++      dataSource: "code",
++      truncated: false,
++    } as SubgraphResult,
++    plan: detail,
++    plans: [detail],
++    selectedNode: { ...fact, filePath: "dest/other.ts" },
++  });
++  return {
++    app,
++    calls,
++    bodies,
++    detail,
++    context,
++    reply,
++    setContextSnapshot: (id: string) => {
++      contextSnapshot = id;
++    },
++    setResponsePath: (path: string) => {
++      responsePath = path;
++    },
++    holdSource: () => {
++      deferSource = true;
++    },
++    holdContext: () => {
++      deferContext = true;
++    },
++    releaseSource: () =>
++      sourceHold!(reply({ filePath: responsePath, content: "late original" })),
++    releaseContext: () => contextHold!(reply(context())),
++  };
++}
++it("source read resolves current domain context and never requests a planned destination", async () => {
++  const f = fixture();
++  await f.app.loadSource();
++  expect(f.calls[0]).toContain("/functions/f?");
++  expect(f.calls.some((path) => path.includes("filePath=dest"))).toBe(false);
++  expect(f.calls).toContain(
++    "/api/projects/p/source?filePath=src%2Foriginal.ts",
++  );
++  expect(f.app.store.getState().source).toMatchObject({
++    filePath: "src/original.ts",
++    content: "ORIGINAL bytes",
++  });
++  expect(f.app.store.getState().selectedNode?.filePath).toBe("src/original.ts");
++});
++it("a mismatched context snapshot prevents source dispatch", async () => {
++  const f = fixture();
++  f.setContextSnapshot("S1");
++  await f.app.loadSource();
++  expect(f.calls.some((path) => path.includes("/source?"))).toBe(false);
++  expect(f.app.store.getState().source).toBeUndefined();
++  expect(f.app.store.getState().error).toContain("SNAPSHOT_CHANGED");
++});
++it("unexpected returned source path is refused instead of showing destination bytes", async () => {
++  const f = fixture();
++  f.setResponsePath("dest/other.ts");
++  await f.app.loadSource();
++  expect(f.app.store.getState().source).toBeUndefined();
++  expect(f.app.store.getState().error).not.toBe("");
++});
++it("selection generation change before context resolves prevents source dispatch", async () => {
++  const f = fixture();
++  f.holdContext();
++  const pending = f.app.loadSource();
++  await Promise.resolve();
++  f.app.closeInspection();
++  f.releaseContext();
++  await pending;
++  expect(f.calls.some((path) => path.includes("/source?"))).toBe(false);
++  expect(f.app.store.getState().source).toBeUndefined();
++});
++it("snapshot change after source dispatch refuses the late reply", async () => {
++  const f = fixture();
++  f.holdSource();
++  const pending = f.app.loadSource();
++  await expect
++    .poll(() => f.calls.some((path) => path.includes("/source?")))
++    .toBe(true);
++  f.app.store.setState({
++    summary: { ...summary, snapshotId: "S1", contentHash: "new" },
++  });
++  f.releaseSource();
++  await pending;
++  expect(f.app.store.getState().source).toBeUndefined();
++});
++it("source reads never use a temporary planned function path", async () => {
++  const f = fixture();
++  f.app.store.setState({
++    selectedNode: { ...fact, id: "temp:f", filePath: "new/file.ts" },
++    plan: {
++      ...f.detail,
++      plan: {
++        ...f.detail.plan,
++        operations: [
++          {
++            kind: "add_function",
++            tempId: "temp:f",
++            name: "new",
++            filePath: "new/file.ts",
++          },
++        ],
++      },
++    },
++  });
++  await f.app.loadSource();
++  expect(f.calls).toEqual([]);
++});
++it("captured advanced/ownership save includes snapshot and rejects a changed tuple before HTTP", async () => {
++  const f = fixture();
++  const capture = {
++    projectId: "p",
++    snapshotId: "S0",
++    snapshotHash: "h",
++    planId: "plan",
++    revision: 1,
++  };
++  f.app.store.setState({ summary: { ...summary, snapshotId: "S1" } });
++  expect(await f.app.savePlanCaptured(capture, [])).toBeUndefined();
++  expect(f.bodies).toEqual([]);
++  f.app.store.setState({ summary });
++  await f.app.savePlanCaptured(capture, []);
++  expect(f.bodies).toContainEqual(
++    expect.objectContaining({ expectedRevision: 1, expectedSnapshotId: "S0" }),
++  );
++});
++it("dirty advanced input blocks direct confirmation, including the overview path", async () => {
++  const f = fixture();
++  f.app.setPlanEditorDirty(true);
++  await f.app.approve();
++  expect(f.calls.some((path) => path.endsWith("/approve"))).toBe(false);
++});
+--- a/apps/web/src/app/WorkspacePanels.tsx
++++ b/apps/web/src/app/WorkspacePanels.tsx
+@@ -54,6 +54,7 @@
+   onOpenProject: () => void;
+ }) {
+   const zh = useStrings();
++  const ownership = useStore(app.ownership.store);
+   const state = useStore(app.store),
+     [tab, setTab] = useState<"chat" | "source" | "plan" | "verify">("chat"),
+     [planningChatOpen, setPlanningChatOpen] = useState(false),
+@@ -68,6 +69,18 @@
+   const busy = Object.values(state.busy).some(Boolean),
+     planBusy =
+       !!state.busy.plan || !!state.busy.project || !!state.busy.knowledge;
++  const capture = app.capturePlan();
++  const ownershipReady =
++    !!capture &&
++    !!plan &&
++    plan.plan.status !== "stale" &&
++    plan.plan.baselineSnapshotId === capture.snapshotId &&
++    plan.plan.baselineContentHash === capture.snapshotHash &&
++    !planBusy &&
++    !state.dirtyPlanEditor &&
++    !state.groupSelectionMode &&
++    !state.groupDraft;
++  const draftBlocked = state.dirtyPlanEditor || !!ownership.intent;
+   const connect = (
+     source: string,
+     target: string,
+@@ -208,10 +221,28 @@
+           }}
+         />
+         <div className="graph-toolbar">
++          <div className="button-row" aria-label={zh.ownershipMode}>
++            <button
++              type="button"
++              aria-pressed={ownership.mode === "layout"}
++              disabled={ownership.status === "saving"}
++              onClick={() => void app.ownership.setMode("layout")}
++            >
++              {zh.ownershipLayout}
++            </button>
++            <button
++              type="button"
++              aria-pressed={ownership.mode === "ownership"}
++              disabled={!ownershipReady || ownership.status === "saving"}
++              onClick={() => void app.ownership.setMode("ownership")}
++            >
++              {zh.ownershipMode}
++            </button>
++          </div>
+           <button
+             type="button"
+             aria-pressed={state.groupSelectionMode}
+-            disabled={!!state.busy.project}
++            disabled={!!state.busy.project || ownership.mode === "ownership"}
+             onClick={() => app.setGroupSelectionMode(!state.groupSelectionMode)}
+           >
+             {state.groupSelectionMode
+@@ -268,6 +299,20 @@
+           projectId={project.id}
+           selectedNodeId={state.selectedNode?.id}
+           groups={state.groups}
++          ownershipMode={ownership.mode === "ownership"}
++          ownershipEnabled={ownershipReady}
++          onOwnershipStart={app.beginOwnership}
++          onOwnershipEnd={app.ownership.endDrag}
++          onOwnershipDrop={(node, nonce) => {
++            if (
++              (node.kind === "file" || node.kind === "folder") &&
++              node.filePath
++            )
++              app.ownership.choose(
++                { kind: node.kind, path: node.filePath, id: node.id },
++                nonce,
++              );
++          }}
+           onToggleGroup={app.toggleGroupCollapse}
+           groupSelectionMode={state.groupSelectionMode}
+           groupSelectionIds={state.groupSelection.map((n) => n.id)}
+@@ -331,7 +376,7 @@
+             setEdge(undefined);
+           }}
+           onExitFunnel={app.exitFunnel}
+-          canEdit={!!plan && !planBusy}
++          canEdit={!!plan && !planBusy && ownership.mode !== "ownership"}
+           relationType={relationType}
+           onSelect={(n) => {
+             if (n.kind === "folder")
+@@ -404,7 +449,7 @@
+               plans={state.plans}
+               detail={plan}
+               nodes={candidates}
+-              busy={planBusy}
++              busy={planBusy || draftBlocked}
+               canUndo={!!state.history?.past.length}
+               canRedo={!!state.history?.future.length}
+               onChoose={(id) => {
+@@ -453,20 +498,23 @@
+             />
+           </details>
+           {tab === "source" && (
+-            <Inspector
+-              key={state.selectedNode?.id ?? "none"}
+-              node={state.selectedNode}
+-              source={state.source}
+-              context={state.context}
+-              busy={!!state.busy.inspect}
+-              onPage={(offset) => {
+-                if (state.selectedNode) void app.pageInspection(offset);
+-              }}
+-              onExpand={(budget) => {
+-                if (state.selectedNode)
+-                  void app.expand(state.selectedNode.id, 1, budget);
+-              }}
+-            />
++            <>
++              <p className="muted">{zh.ownershipLiveSource}</p>
++              <Inspector
++                key={state.selectedNode?.id ?? "none"}
++                node={state.selectedNode}
++                source={state.source}
++                context={state.context}
++                busy={!!state.busy.inspect}
++                onPage={(offset) => {
++                  if (state.selectedNode) void app.pageInspection(offset);
++                }}
++                onExpand={(budget) => {
++                  if (state.selectedNode)
++                    void app.expand(state.selectedNode.id, 1, budget);
++                }}
++              />
++            </>
+           )}
+           {tab === "plan" && (
+             <>
+@@ -491,15 +539,16 @@
+                 node={state.selectedNode}
+                 nodes={candidates}
+                 edge={edge}
+-                busy={planBusy || !summary}
++                busy={planBusy || !summary || !!ownership.intent}
+                 onChoose={(id) => {
+                   setEdge(undefined);
+                   void app.choosePlan(id);
+                 }}
+                 onCreate={(title) => void app.createPlan(title)}
+-                onSave={(ops, title, description) =>
+-                  void app.savePlan(ops, title, description)
+-                }
++                onSave={(ops, title, description) => {
++                  if (capture)
++                    void app.savePlanCaptured(capture, ops, title, description);
++                }}
+                 onValidate={() => void app.validate()}
+                 onApprove={() => void app.approve()}
+                 onExport={(format) => void app.exportPlan(format, download)}
+--- a/apps/web/src/app/Navigation.tsx
++++ b/apps/web/src/app/Navigation.tsx
+@@ -1,3 +1,4 @@
++import { OwnershipControls } from "../features/structure/OwnershipControls.js";
+ import { ConfigurationProjectGraphPanel } from "./ConfigurationProjectGraphPanel.js";
+ import { useState } from "react";
+ import { ChatPanel } from "../features/chat/ChatPanel.js";
+@@ -36,6 +37,7 @@
+         <code className="path">{project.path}</code>
+       </div>
+       <p className="offline-guidance">{zh.offlineBrowseHint}</p>
++      <OwnershipControls app={app} />
+       <section className="compact-search" aria-label={zh.search}>
+         <form
+           onSubmit={(e) => {
+--- a/apps/web/src/features/graph/Canvas.tsx
++++ b/apps/web/src/features/graph/Canvas.tsx
+@@ -54,7 +54,47 @@
+     lane = data.funnelLane as FunnelLane | undefined;
+   return (
+     <div
+-      className={`code-card ${data.layer} kind-${n.kind} ${lane ? `funnel-${lane}` : ""} inspection-${data.highlight ?? "idle"}`}
++      className={`code-card ${data.ownershipMode ? "nodrag nopan" : ""} ${data.layer} kind-${n.kind} ${lane ? `funnel-${lane}` : ""} inspection-${data.highlight ?? "idle"}`}
++      draggable={
++        !!data.ownershipMode && !!data.ownershipEnabled && n.kind === "function"
++      }
++      onDragStart={(event) => {
++        if (!data.ownershipMode || n.kind !== "function") return;
++        const nonce = (
++          data.onOwnershipStart as
++            ((node: CodeNode) => string | undefined) | undefined
++        )?.(n);
++        if (!nonce) {
++          event.preventDefault();
++          return;
++        }
++        event.stopPropagation();
++        event.dataTransfer.effectAllowed = "move";
++        event.dataTransfer.setData("application/x-atlas-ownership", nonce);
++      }}
++      onDragEnd={() => (data.onOwnershipEnd as (() => void) | undefined)?.()}
++      onDragOver={(event) => {
++        if (
++          data.ownershipMode &&
++          (n.kind === "file" || n.kind === "folder") &&
++          event.dataTransfer.types.includes("application/x-atlas-ownership")
++        )
++          event.preventDefault();
++      }}
++      onDrop={(event) => {
++        if (!data.ownershipMode || (n.kind !== "file" && n.kind !== "folder"))
++          return;
++        event.preventDefault();
++        event.stopPropagation();
++        const nonce = event.dataTransfer.getData(
++          "application/x-atlas-ownership",
++        );
++        if (nonce)
++          (
++            data.onOwnershipDrop as
++              ((node: CodeNode, nonce?: string) => void) | undefined
++          )?.(n, nonce);
++      }}
+       data-domain-id={n.id}
+       data-group-id={data.groupId}
+       data-funnel-lane={lane}
+@@ -212,6 +252,11 @@
+   projectId?: string;
+   selectedNodeId?: string;
+   groups?: FunctionGroup[];
++  ownershipMode?: boolean;
++  ownershipEnabled?: boolean;
++  onOwnershipStart?: (node: CodeNode) => string | undefined;
++  onOwnershipEnd?: () => void;
++  onOwnershipDrop?: (node: CodeNode, nonce?: string) => void;
+   onToggleGroup?: (id: string) => void;
+   groupSelectionMode?: boolean;
+   groupSelectionIds?: string[];
+@@ -680,7 +725,7 @@
+         selectionMode={SelectionMode.Partial}
+         selectionKeyCode={props.groupSelectionMode ? null : "Shift"}
+         multiSelectionKeyCode={props.groupSelectionMode ? null : "Meta"}
+-        panOnDrag={!props.groupSelectionMode}
++        panOnDrag={!props.groupSelectionMode && !props.ownershipMode}
+         nodes={(props.groupSelectionMode
+           ? circleSelectedNodes(
+               highlighted.nodes,
+@@ -695,6 +740,11 @@
+           data: {
+             ...n.data,
+             locale: props.view.locale,
++            ownershipMode: props.ownershipMode,
++            ownershipEnabled: props.ownershipEnabled,
++            onOwnershipStart: props.onOwnershipStart,
++            onOwnershipEnd: props.onOwnershipEnd,
++            onOwnershipDrop: props.onOwnershipDrop,
+             onToggleGroup: props.onToggleGroup,
+             onSelectMember: props.onSelect,
+           },
+@@ -764,6 +814,13 @@
+         }}
+         onNodeClick={(event, node) => {
+           if (props.groupSelectionMode || node.data.group) return;
++          if (props.ownershipMode) {
++            clearTimeout(clickTimer.current);
++            if (node.data.node.kind === "function")
++              props.onSelect(node.data.node);
++            else props.onOwnershipDrop?.(node.data.node);
++            return;
++          }
+           if (!props.funnel && event.detail < 2)
+             clickViewport.current = instance.current?.getViewport();
+           clearTimeout(clickTimer.current);
+@@ -775,7 +832,12 @@
+           );
+         }}
+         onNodeDoubleClick={(_, node) => {
+-          if (props.groupSelectionMode || node.data.group) return;
++          if (
++            props.groupSelectionMode ||
++            props.ownershipMode ||
++            node.data.group
++          )
++            return;
+           clearTimeout(clickTimer.current);
+           if (
+             node.data.node.kind === "file" ||
+@@ -788,10 +850,12 @@
+           }
+         }}
+         onNodeDragStart={() => {
++          if (props.ownershipMode) return;
+           dragging.current = true;
+           stopMotion();
+         }}
+         onNodeDragStop={(_, node) => {
++          if (props.ownershipMode) return;
+           dragging.current = false;
+           if (props.funnel) {
+             const base = funnelBase?.nodes.find(
+@@ -812,7 +876,7 @@
+               [node.id]: node.position,
+             });
+         }}
+-        nodesDraggable={!props.groupSelectionMode}
++        nodesDraggable={!props.groupSelectionMode && !props.ownershipMode}
+         zoomOnDoubleClick={false}
+         onEdgeClick={(_, edge) => {
+           if (props.groupSelectionMode) return;
+--- a/apps/web/src/features/graph/projection.ts
++++ b/apps/web/src/features/graph/projection.ts
+@@ -1,3 +1,4 @@
++import { effectiveFunctionPath } from "../planning/function-target.js";
+ import { dictionaries, type Locale } from "../../i18n/index.js";
+ import type {
+   CodeNode,
+@@ -79,7 +80,15 @@
+   }
+   const changes = (id: string) =>
+     visibleOps.flatMap((op) => {
+-      if (op.kind === "move_function" && op.nodeId === id)
++      if (
++        op.kind === "move_function" &&
++        op.nodeId === id &&
++        op ===
++          visibleOps.findLast(
++            (candidate) =>
++              candidate.kind === "move_function" && candidate.nodeId === id,
++          )
++      )
+         return [`→ ${op.filePath}`];
+       if (op.kind === "remove_function" && op.nodeId === id)
+         return [`− ${text.plannedRemoval}`];
+@@ -112,7 +121,12 @@
+           kind: "function",
+           declarationKind: "function",
+           name: op.name,
+-          filePath: op.filePath,
++          filePath: effectiveFunctionPath(visibleOps, {
++            id: op.tempId,
++            kind: "function",
++            name: op.name,
++            filePath: op.filePath,
++          }),
+           signature: op.signature,
+           language: op.language,
+         },
+--- a/apps/web/src/features/groups/GroupCard.tsx
++++ b/apps/web/src/features/groups/GroupCard.tsx
+@@ -9,12 +9,18 @@
+   onToggle,
+   onSelect,
+   ports = false,
++  ownershipEnabled = false,
++  onOwnershipStart,
++  onOwnershipEnd,
+ }: {
+   group: GroupCardData;
+   locale: Locale;
+   onToggle: (id: string) => void;
+   onSelect: (node: CodeNode) => void;
+   ports?: boolean;
++  ownershipEnabled?: boolean;
++  onOwnershipStart?: (node: CodeNode) => string | undefined;
++  onOwnershipEnd?: () => void;
+ }) {
+   const text = dictionaries[locale];
+   return (
+@@ -72,6 +78,25 @@
+                     className="group-endpoint nodrag nopan"
+                     key={id}
+                     data-domain-id={id}
++                    draggable={ownershipEnabled && node.kind === "function"}
++                    onDragStart={(event) => {
++                      if (!ownershipEnabled || node.kind !== "function") {
++                        event.preventDefault();
++                        return;
++                      }
++                      const nonce = onOwnershipStart?.(node);
++                      if (!nonce) {
++                        event.preventDefault();
++                        return;
++                      }
++                      event.stopPropagation();
++                      event.dataTransfer.effectAllowed = "move";
++                      event.dataTransfer.setData(
++                        "application/x-atlas-ownership",
++                        nonce,
++                      );
++                    }}
++                    onDragEnd={onOwnershipEnd}
+                     title={`${node.name} · ${node.filePath ?? node.id}`}
+                     onClick={(event) => {
+                       event.stopPropagation();
+@@ -104,6 +129,12 @@
+         onToggle={data.onToggleGroup as (id: string) => void}
+         onSelect={data.onSelectMember as (node: CodeNode) => void}
+         ports
++        ownershipEnabled={!!data.ownershipMode && !!data.ownershipEnabled}
++        onOwnershipStart={
++          data.onOwnershipStart as
++            ((node: CodeNode) => string | undefined) | undefined
++        }
++        onOwnershipEnd={data.onOwnershipEnd as (() => void) | undefined}
+       />
+     </div>
+   );
+--- a/apps/web/src/features/groups/GroupCard.test.tsx
++++ b/apps/web/src/features/groups/GroupCard.test.tsx
+@@ -33,3 +33,41 @@
+   expect(html).toContain("src/a.ts");
+   expect(html).toContain("Same function mirrored");
+ });
++
++it("ownership makes only real loaded function endpoints draggable, preserving default inspection and excluding unknown members", () => {
++  const member = {
++    id: "real:a",
++    kind: "function" as const,
++    name: "alpha",
++    filePath: "src/a.ts",
++  };
++  const group = {
++    id: "group-alias",
++    title: "G",
++    total: 2,
++    loadedMembers: [member],
++    unknownMembers: 1,
++    collapsed: true,
++    portIds: [member.id, "unknown"],
++    internalRelationIds: [],
++    plannedInternalIds: [],
++  };
++  const render = (enabled: boolean) =>
++    renderToStaticMarkup(
++      <GroupCardContent
++        group={group}
++        locale="en"
++        onToggle={() => {}}
++        onSelect={() => {}}
++        ownershipEnabled={enabled}
++        onOwnershipStart={() => "captured-nonce"}
++      />,
++    );
++  expect(render(false)).toContain('draggable="false"');
++  const html = render(true);
++  expect(html).toContain('draggable="true"');
++  expect(html).toContain('data-domain-id="real:a"');
++  expect(html).not.toContain('data-domain-id="group-alias"');
++  expect(html).not.toContain('data-domain-id="unknown"');
++  expect((html.match(/class="group-endpoint /g) ?? []).length).toBe(1);
++});
+--- a/apps/web/src/features/navigation/path.ts
++++ b/apps/web/src/features/navigation/path.ts
+@@ -19,7 +19,9 @@
+   const result: Breadcrumb[] = [
+     { label: project.name, kind: "folder", path: "." },
+   ];
+-  const path = node?.filePath ?? location?.path ?? ".";
++  const path = location?.planned
++    ? location.path
++    : (node?.filePath ?? location?.path ?? ".");
+   const kind = node?.kind ?? location?.kind;
+   if (path !== "." && kind !== "external") {
+     const parts = path.split("/");
+@@ -45,19 +47,18 @@
+   path: string,
+   kind: "folder" | "file",
+ ): string[] {
+-  return [
+-    ...new Set(
+-      operations.flatMap((op) => {
+-        if (op.kind !== "add_function" && op.kind !== "move_function")
+-          return [];
+-        const matches =
+-          kind === "file"
+-            ? op.filePath === path
+-            : path === "." || op.filePath.startsWith(`${path}/`);
+-        return matches
+-          ? [op.kind === "add_function" ? op.tempId : op.nodeId]
+-          : [];
+-      }),
+-    ),
+-  ];
++  const destinations = new Map<string, string>();
++  for (const op of operations) {
++    if (op.kind === "add_function") destinations.set(op.tempId, op.filePath);
++    if (op.kind === "move_function") destinations.set(op.nodeId, op.filePath);
++  }
++  for (const op of operations)
++    if (op.kind === "remove_function") destinations.delete(op.nodeId);
++  return [...destinations]
++    .filter(([, target]) =>
++      kind === "file"
++        ? target === path
++        : path === "." || target.startsWith(`${path}/`),
++    )
++    .map(([id]) => id);
+ }
+--- a/apps/web/src/features/planning/PlanOverview.tsx
++++ b/apps/web/src/features/planning/PlanOverview.tsx
+@@ -1,3 +1,4 @@
++import { effectiveFunctionPath } from "./function-target.js";
+ import { useState } from "react";
+ import { canApprovePlan } from "./pending.js";
+ import type { CodeNode, PlanDetail, Operation } from "@codemap/core";
+@@ -34,11 +35,18 @@
+   const describe = (op: Operation) => {
+     switch (op.kind) {
+       case "add_function":
+-        return `${s.add_function} · ${op.name} → ${op.filePath}`;
++        return `${s.add_function} · ${op.name} → ${effectiveFunctionPath(plan?.operations ?? [], { id: op.tempId, kind: "function", name: op.name, filePath: op.filePath })}`;
+       case "remove_function":
+         return `${s.remove_function} · ${name(op.nodeId)}`;
+-      case "move_function":
+-        return `${s.move_function} · ${name(op.nodeId)} → ${op.filePath}`;
++      case "move_function": {
++        const effective = effectiveFunctionPath(plan?.operations ?? [], {
++          id: op.nodeId,
++          kind: "function",
++          name: name(op.nodeId),
++          filePath: op.filePath,
++        });
++        return `${s.move_function} · ${name(op.nodeId)} → ${effective}${effective !== op.filePath ? ` · ${s.ownershipSuperseded}: ${op.filePath}` : ""}`;
++      }
+       case "add_relation":
+         return `${s[op.type]} · ${name(op.sourceId)} → ${name(op.targetId)}`;
+       case "remove_relation":
+--- a/apps/web/src/features/structure/OwnershipTargets.tsx
++++ b/apps/web/src/features/structure/OwnershipTargets.tsx
+@@ -10,6 +10,7 @@
+   planned: string;
+   choose: string;
+   browse: string;
++  parent?: string;
+ };
+ export function OwnershipTargets({
+   state,
+@@ -83,7 +84,29 @@
+   return (
+     <section aria-label={labels.title}>
+       <h3>{labels.title}</h3>
+-      <code>{state.request?.path ?? "."}</code>
++      <nav aria-label={labels.title}>
++        {(state.request?.path === "."
++          ? ["."]
++          : [
++              ".",
++              ...(state.request?.path ?? "").split("/").map((_, i) =>
++                state
++                  .request!.path.split("/")
++                  .slice(0, i + 1)
++                  .join("/"),
++              ),
++            ]
++        ).map((path) => (
++          <button
++            type="button"
++            key={path}
++            disabled={!ready || path === state.request?.path}
++            onClick={() => onBrowse(path)}
++          >
++            {path}
++          </button>
++        ))}
++      </nav>
+       {state.status === "loading" && <p role="status">{labels.loading}</p>}
+       {state.status === "error" && <p role="alert">{labels.unavailable}</p>}
+       {state.scope?.missing && <p>{labels.missing}</p>}
+--- a/apps/web/src/features/structure/ownership-session.ts
++++ b/apps/web/src/features/structure/ownership-session.ts
+@@ -0,0 +1,381 @@
++import { createStore } from "zustand/vanilla";
++import type { CodeNode, Operation, PlanDetail } from "@codemap/core";
++import { retargetFunction } from "../planning/function-target.js";
++import {
++  captureOwnershipIntent,
++  completeTargetPath,
++  matchesOwnershipIntent,
++  type OwnershipIntent,
++  type OwnershipTarget,
++  type OwnershipTuple,
++} from "./ownership.js";
++import {
++  createTargetTrayController,
++  type TargetRequest,
++  type TargetScope,
++  type TargetTrayState,
++} from "./ownership-controller.js";
++export type OwnershipCapture = OwnershipTuple &
++  Readonly<{ snapshotHash: string }>;
++export type OwnershipContext = OwnershipCapture & {
++  selectedId?: string;
++  operations: Operation[];
++  title: string;
++  description: string;
++  busy: boolean;
++  dirty: boolean;
++  groupSelection: boolean;
++  stale?: boolean;
++};
++export type OwnershipSessionState = {
++  mode: "layout" | "ownership";
++  status: "idle" | "dragging" | "preview" | "saving" | "expired" | "error";
++  tray: TargetTrayState;
++  intent?: OwnershipIntent;
++  capture?: OwnershipCapture;
++  source?: CodeNode;
++  operations?: Operation[];
++  target?: OwnershipTarget;
++  filename: string;
++  path?: string;
++};
++/** Last semantic destination, without inventing an indexed file/folder identity. */
++export function plannedOwnershipTargets(
++  operations: Operation[],
++): OwnershipTarget[] {
++  const paths = new Map<string, string>();
++  for (const op of operations) {
++    if (op.kind === "add_function") paths.set(op.tempId, op.filePath);
++    if (op.kind === "move_function") paths.set(op.nodeId, op.filePath);
++  }
++  for (const op of operations)
++    if (op.kind === "remove_function") paths.delete(op.nodeId);
++  const result = new Map<string, OwnershipTarget>();
++  for (const path of paths.values()) {
++    result.set(`file:${path}`, { kind: "file", path, planned: true });
++    const parts = path.split("/");
++    parts.pop();
++    for (let i = 1; i <= parts.length; i++) {
++      const folder = parts.slice(0, i).join("/");
++      result.set(`folder:${folder}`, {
++        kind: "folder",
++        path: folder,
++        planned: true,
++      });
++    }
++  }
++  return [...result.values()];
++}
++export function ownershipTargets(
++  tray: TargetTrayState,
++  operations: Operation[],
++): OwnershipTarget[] {
++  if (tray.status !== "ready" || !tray.scope || !tray.request) return [];
++  const facts: OwnershipTarget[] = tray.scope.nodes.flatMap((node) =>
++    node.filePath && (node.kind === "file" || node.kind === "folder")
++      ? [{ kind: node.kind, path: node.filePath, id: node.id }]
++      : [],
++  );
++  const root: OwnershipTarget = {
++    kind: "folder",
++    path: tray.request.path,
++    ...(tray.scope.missing ? { planned: true } : {}),
++  };
++  const planned = plannedOwnershipTargets(operations).filter(
++    (t) => !facts.some((f) => f.kind === t.kind && f.path === t.path),
++  );
++  return [root, ...facts, ...planned];
++}
++export function sameOwnershipCapture(a: OwnershipCapture, b: OwnershipCapture) {
++  return (
++    a.projectId === b.projectId &&
++    a.planId === b.planId &&
++    a.revision === b.revision &&
++    a.snapshotId === b.snapshotId &&
++    a.snapshotHash === b.snapshotHash
++  );
++}
++const idle = (): OwnershipSessionState => ({
++  mode: "layout",
++  status: "idle",
++  tray: { status: "idle" },
++  filename: "",
++});
++export function createOwnershipSession(ports: {
++  current: () => OwnershipContext | undefined;
++  resolveSource: (
++    id: string,
++  ) => { node: CodeNode; snapshotId: string } | undefined;
++  fetchScope: (request: TargetRequest) => Promise<TargetScope>;
++  save: (
++    capture: OwnershipCapture,
++    operations: Operation[],
++  ) => Promise<PlanDetail | undefined>;
++  conflict?: () => boolean;
++  nonce?: () => string;
++}) {
++  const store = createStore<OwnershipSessionState>(idle);
++  const set = store.setState,
++    get = store.getState;
++  let generation = 0;
++  const tray = createTargetTrayController(ports.fetchScope, (value) =>
++    set({ tray: value }),
++  );
++  const eligible = (context?: OwnershipContext) =>
++    !!context &&
++    !context.busy &&
++    !context.dirty &&
++    !context.groupSelection &&
++    !context.stale;
++  const currentIntent = () => {
++    const state = get(),
++      context = ports.current();
++    return (
++      !!state.intent &&
++      !!state.capture &&
++      !!context &&
++      eligible(context) &&
++      sameOwnershipCapture(state.capture, context) &&
++      matchesOwnershipIntent(
++        state.intent,
++        context,
++        context.selectedId,
++        state.intent.nonce,
++      )
++    );
++  };
++  const cancel = () => {
++    generation++;
++    set({
++      status: "idle",
++      intent: undefined,
++      capture: undefined,
++      source: undefined,
++      operations: undefined,
++      target: undefined,
++      filename: "",
++      path: undefined,
++    });
++  };
++  const reconcile = () => {
++    const state = get(),
++      context = ports.current();
++    if (state.mode !== "ownership") return;
++    if (
++      !context ||
++      (state.capture &&
++        (state.capture.projectId !== context.projectId ||
++          state.capture.planId !== context.planId))
++    ) {
++      generation++;
++      tray.cancel();
++      set(idle());
++      return;
++    }
++    if (state.status === "saving") {
++      // Own busy/revision ACK is expected; a newer selection or snapshot retires
++      // this preview permanently even if selection later returns to the same ID.
++      if (
++        state.intent &&
++        state.capture &&
++        (context.selectedId !== state.intent.sourceId ||
++          context.snapshotId !== state.capture.snapshotId ||
++          context.snapshotHash !== state.capture.snapshotHash)
++      ) {
++        generation++;
++        set({ status: "expired" });
++      }
++      return;
++    }
++    if (state.intent && !currentIntent()) set({ status: "expired" });
++  };
++  const choose = (target: OwnershipTarget, nonce?: string) => {
++    const state = get();
++    if (
++      !currentIntent() ||
++      state.status === "saving" ||
++      (nonce !== undefined && nonce !== state.intent?.nonce)
++    )
++      return false;
++    if (
++      !ownershipTargets(state.tray, state.operations ?? []).some(
++        (t) =>
++          t.kind === target.kind &&
++          t.path === target.path &&
++          t.id === target.id &&
++          !!t.planned === !!target.planned,
++      )
++    )
++      return false;
++    let path: string | undefined;
++    try {
++      path = completeTargetPath(target);
++    } catch {
++      /* A folder requires a new explicit filename. */
++    }
++    set({
++      status: "preview",
++      target: Object.freeze({ ...target }),
++      filename: "",
++      path,
++    });
++    return true;
++  };
++  return {
++    store,
++    reconcile,
++    cancel,
++    async setMode(mode: OwnershipSessionState["mode"]) {
++      if (mode === "layout") {
++        generation++;
++        tray.cancel();
++        set(idle());
++        return;
++      }
++      const context = ports.current();
++      if (!eligible(context)) return;
++      cancel();
++      set({ mode: "ownership" });
++      await tray.load({
++        projectId: context!.projectId,
++        snapshotId: context!.snapshotId,
++        path: ".",
++      });
++    },
++    async browse(path: string) {
++      const context = ports.current();
++      if (
++        get().mode !== "ownership" ||
++        !eligible(context) ||
++        get().status === "saving"
++      )
++        return;
++      await tray.load({
++        projectId: context!.projectId,
++        snapshotId: context!.snapshotId,
++        path,
++      });
++    },
++    begin(id: string) {
++      const context = ports.current(),
++        proof = ports.resolveSource(id);
++      if (
++        get().mode !== "ownership" ||
++        !eligible(context) ||
++        !proof ||
++        context!.selectedId !== id ||
++        get().status === "saving"
++      )
++        return;
++      try {
++        const capture = Object.freeze({
++          projectId: context!.projectId,
++          snapshotId: context!.snapshotId,
++          snapshotHash: context!.snapshotHash,
++          planId: context!.planId,
++          revision: context!.revision,
++        });
++        const operations = structuredClone(context!.operations);
++        const source = structuredClone(proof.node);
++        const intent = captureOwnershipIntent(
++          capture,
++          source,
++          operations,
++          ports.nonce?.() ?? crypto.randomUUID(),
++          proof.snapshotId,
++        );
++        generation++;
++        set({
++          status: "dragging",
++          capture,
++          intent,
++          source,
++          operations,
++          target: undefined,
++          filename: "",
++          path: undefined,
++        });
++        return intent.nonce;
++      } catch {
++        return;
++      }
++    },
++    choose,
++    endDrag() {
++      if (get().status === "dragging") cancel();
++    },
++    filename(filename: string) {
++      const state = get();
++      if (
++        !state.target ||
++        state.target.kind !== "folder" ||
++        state.status === "saving"
++      )
++        return;
++      let path: string | undefined;
++      try {
++        path = completeTargetPath(state.target, filename);
++      } catch {
++        /* Display invalid input, never turn it into authority. */
++      }
++      set({ filename, path });
++    },
++    async confirm() {
++      const state = get(),
++        context = ports.current();
++      if (
++        !currentIntent() ||
++        !state.source ||
++        !state.operations ||
++        !state.capture ||
++        !state.path ||
++        state.status !== "preview" ||
++        !context
++      )
++        return false;
++      const operations = retargetFunction(
++        state.operations,
++        state.source,
++        state.path,
++      );
++      if (operations === state.operations) {
++        cancel();
++        return true;
++      }
++      const attempt = ++generation;
++      set({ status: "saving" });
++      try {
++        const accepted = await ports.save(state.capture, operations);
++        if (attempt !== generation) return false;
++        if (!accepted) {
++          set({
++            status:
++              currentIntent() && !ports.conflict?.() ? "error" : "expired",
++          });
++          return false;
++        }
++        // The save port verifies captured authority before committing UI/history.
++        // Verify its returned identity/revision too; a foreign ACK never clears this preview.
++        if (
++          accepted.plan.projectId !== state.capture.projectId ||
++          accepted.plan.id !== state.capture.planId ||
++          accepted.plan.revision !== state.capture.revision + 1 ||
++          JSON.stringify(accepted.plan.operations) !==
++            JSON.stringify(operations)
++        ) {
++          set({ status: "expired" });
++          return false;
++        }
++        cancel();
++        return true;
++      } catch {
++        if (attempt === generation)
++          set({
++            status:
++              currentIntent() && !ports.conflict?.() ? "error" : "expired",
++          });
++        return false;
++      }
++    },
++  };
++}
+--- a/apps/web/src/features/structure/ownership-session.test.ts
++++ b/apps/web/src/features/structure/ownership-session.test.ts
+@@ -0,0 +1,232 @@
++import { expect, it } from "vitest";
++import {
++  createOwnershipSession,
++  type OwnershipContext,
++} from "./ownership-session.js";
++import type { Operation, PlanDetail } from "@codemap/core";
++const node = {
++  id: "f",
++  kind: "function" as const,
++  name: "f",
++  filePath: "src/a.ts",
++};
++function fixture(saveGate?: Promise<void>) {
++  let context: OwnershipContext = {
++    projectId: "p",
++    snapshotId: "S0",
++    snapshotHash: "h",
++    planId: "plan",
++    revision: 1,
++    selectedId: "f",
++    operations: [],
++    title: "Plan",
++    description: "",
++    busy: false,
++    dirty: false,
++    groupSelection: false,
++  };
++  const requests: unknown[] = [];
++  let saved: Operation[] | undefined;
++  let saveResult = true;
++  const app = createOwnershipSession({
++    current: () => context,
++    resolveSource: (id) =>
++      id === "f" ? { node, snapshotId: "S0" } : undefined,
++    nonce: () => "local-nonce",
++    fetchScope: async (request) => {
++      requests.push(request);
++      return {
++        snapshotId: request.snapshotId,
++        path: request.path,
++        kind: "folder",
++        dataSource: "code",
++        truncated: false,
++        nodes: [
++          {
++            id: "file:dest/b.ts",
++            kind: "file",
++            name: "b.ts",
++            filePath: "dest/b.ts",
++          },
++          { id: "folder:dest", kind: "folder", name: "dest", filePath: "dest" },
++        ],
++        relations: [],
++      };
++    },
++    save: async (capture, operations) => {
++      await saveGate;
++      requests.push(capture);
++      saved = operations;
++      if (!saveResult) return undefined;
++      return {
++        plan: { id: "plan", projectId: "p", revision: 2, operations },
++        valid: false,
++        issues: [],
++      } as PlanDetail;
++    },
++  });
++  return {
++    app,
++    requests,
++    get saved() {
++      return saved;
++    },
++    setContext: (next: Partial<OwnershipContext>) => {
++      context = { ...context, ...next };
++      app.reconcile();
++    },
++    fail: () => {
++      saveResult = false;
++    },
++  };
++}
++const target = {
++  kind: "file" as const,
++  path: "dest/b.ts",
++  id: "file:dest/b.ts",
++};
++it("defaults to layout; only a captured current function can start and only tray targets can preview", async () => {
++  const { app } = fixture();
++  expect(app.begin("f")).toBeUndefined();
++  await app.setMode("ownership");
++  expect(app.begin("file:dest/b.ts")).toBeUndefined();
++  expect(app.begin("f")).toBe("local-nonce");
++  expect(app.choose(target, "external-nonce")).toBe(false);
++  expect(app.choose({ ...target, path: "foreign/b.ts" }, "local-nonce")).toBe(
++    false,
++  );
++  expect(app.choose(target, "local-nonce")).toBe(true);
++  expect(app.store.getState()).toMatchObject({
++    status: "preview",
++    target,
++    path: "dest/b.ts",
++  });
++});
++it("folder preview starts without filename; full path must be explicitly completed before saving", async () => {
++  const f = fixture();
++  await f.app.setMode("ownership");
++  f.app.begin("f");
++  f.app.choose(
++    { kind: "folder", path: "dest", id: "folder:dest" },
++    "local-nonce",
++  );
++  expect(f.app.store.getState().filename).toBe("");
++  expect(await f.app.confirm()).toBe(false);
++  expect(f.saved).toBeUndefined();
++  f.app.filename("../bad.ts");
++  expect(f.app.store.getState().path).toBeUndefined();
++  f.app.filename("index.ts");
++  expect(f.app.store.getState().path).toBe("dest/index.ts");
++  expect(await f.app.confirm()).toBe(true);
++  expect(f.saved).toEqual([
++    { kind: "move_function", nodeId: "f", filePath: "dest/index.ts" },
++  ]);
++  expect(f.requests).toContainEqual(
++    expect.objectContaining({
++      snapshotId: "S0",
++      snapshotHash: "h",
++      revision: 1,
++      planId: "plan",
++      projectId: "p",
++    }),
++  );
++});
++it.each([
++  { revision: 2 },
++  { snapshotId: "S1" },
++  { snapshotHash: "new" },
++  { selectedId: "other" },
++  { dirty: true },
++  { groupSelection: true },
++])(
++  "changed capture expires preview, retains filename and refuses save: %j",
++  async (delta) => {
++    const f = fixture();
++    await f.app.setMode("ownership");
++    f.app.begin("f");
++    f.app.choose(
++      { kind: "folder", path: "dest", id: "folder:dest" },
++      "local-nonce",
++    );
++    f.app.filename("mine.ts");
++    f.setContext(delta);
++    expect(f.app.store.getState()).toMatchObject({
++      status: "expired",
++      filename: "mine.ts",
++      path: "dest/mine.ts",
++    });
++    expect(await f.app.confirm()).toBe(false);
++    expect(f.saved).toBeUndefined();
++  },
++);
++it.each([{ projectId: "other" }, { planId: "other" }])(
++  "project/plan switch cancels rather than retaining foreign preview: %j",
++  async (delta) => {
++    const f = fixture();
++    await f.app.setMode("ownership");
++    f.app.begin("f");
++    f.app.choose(target, "local-nonce");
++    f.setContext(delta);
++    expect(f.app.store.getState()).toMatchObject({
++      mode: "layout",
++      status: "idle",
++    });
++    expect(await f.app.confirm()).toBe(false);
++  },
++);
++it("cancel/layout never saves; no-op preserves revision/history and own annotations", async () => {
++  const f = fixture();
++  f.setContext({
++    operations: [
++      { kind: "annotate", targetId: "f", text: "keep" },
++      { kind: "move_function", nodeId: "f", filePath: "dest/b.ts" },
++    ],
++  });
++  await f.app.setMode("ownership");
++  f.app.begin("f");
++  f.app.choose(target, "local-nonce");
++  expect(await f.app.confirm()).toBe(true);
++  expect(f.saved).toBeUndefined();
++  f.app.begin("f");
++  f.app.choose(
++    { kind: "folder", path: "dest", id: "folder:dest" },
++    "local-nonce",
++  );
++  f.app.filename("c.ts");
++  await f.app.setMode("layout");
++  expect(f.saved).toBeUndefined();
++});
++it("failed save retains preview and never treats failure as accepted", async () => {
++  const f = fixture();
++  await f.app.setMode("ownership");
++  f.app.begin("f");
++  f.app.choose(target, "local-nonce");
++  f.fail();
++  expect(await f.app.confirm()).toBe(false);
++  expect(f.app.store.getState()).toMatchObject({
++    status: "error",
++    path: "dest/b.ts",
++  });
++});
++
++it("a late save ACK cannot clear a preview after another selection, even when selection returns to the original function", async () => {
++  let release!: () => void;
++  const gate = new Promise<void>((resolve) => {
++    release = resolve;
++  });
++  const f = fixture(gate);
++  await f.app.setMode("ownership");
++  f.app.begin("f");
++  f.app.choose(target, "local-nonce");
++  const pending = f.app.confirm();
++  expect(f.app.store.getState().status).toBe("saving");
++  f.setContext({ selectedId: "later" });
++  f.setContext({ selectedId: "f" });
++  release();
++  expect(await pending).toBe(false);
++  expect(f.app.store.getState()).toMatchObject({
++    status: "expired",
++    path: "dest/b.ts",
++  });
++  expect(f.app.store.getState().intent?.nonce).toBe("local-nonce");
++});
+--- a/apps/web/src/features/structure/ownership-display.test.ts
++++ b/apps/web/src/features/structure/ownership-display.test.ts
+@@ -0,0 +1,76 @@
++import { expect, it } from "vitest";
++import type { Operation, SubgraphResult } from "@codemap/core";
++import { breadcrumbs, plannedScopeIds } from "../navigation/path.js";
++import { projectGraph } from "../graph/projection.js";
++import { plannedOwnershipTargets } from "./ownership-session.js";
++const node = {
++  id: "real-symbol",
++  kind: "function" as const,
++  name: "run",
++  filePath: "src/index.ts",
++};
++const operations: Operation[] = [
++  { kind: "annotate", targetId: node.id, text: "preserve" },
++  { kind: "move_function", nodeId: node.id, filePath: "obsolete/index.ts" },
++  { kind: "move_function", nodeId: node.id, filePath: "dest/index.ts" },
++];
++it("effective planned breadcrumbs retain physical source identity and distinguish identical basenames", () => {
++  const before = structuredClone(node);
++  const result = breadcrumbs({ id: "p", name: "P", path: "/p" }, node, {
++    kind: "file",
++    path: "dest/index.ts",
++    planned: true,
++  });
++  expect(result.at(-1)).toMatchObject({ node, path: "dest/index.ts" });
++  expect(
++    result.filter((s) => s.kind !== "function").map((s) => s.path),
++  ).toEqual([".", "dest", "dest/index.ts"]);
++  expect(node).toEqual(before);
++  expect(
++    breadcrumbs({ id: "p", name: "P", path: "/p" }, node).at(-1)?.path,
++  ).toBe("src/index.ts");
++});
++it("legacy repeated moves expose only final effective destination in navigation and planned target tray", () => {
++  expect(plannedScopeIds(operations, "obsolete/index.ts", "file")).toEqual([]);
++  expect(plannedScopeIds(operations, "dest/index.ts", "file")).toEqual([
++    node.id,
++  ]);
++  expect(plannedOwnershipTargets(operations)).toEqual([
++    { kind: "file", path: "dest/index.ts", planned: true },
++    { kind: "folder", path: "dest", planned: true },
++  ]);
++});
++it("projection preserves fact bytes and annotation while representing the final target of existing and temporary functions", () => {
++  const graph: SubgraphResult = {
++    snapshotId: "S0",
++    dataSource: "code",
++    nodes: [node],
++    relations: [],
++    truncated: false,
++  };
++  const ops: Operation[] = [
++    ...operations,
++    {
++      kind: "add_function",
++      tempId: "temp:new",
++      name: "newFn",
++      filePath: "planned/old.ts",
++    },
++    { kind: "move_function", nodeId: "temp:new", filePath: "planned/new.ts" },
++  ];
++  const before = structuredClone({ graph, ops });
++  const result = projectGraph(graph, ops, "both", {});
++  expect(
++    result.nodes.find((n) => n.id === `fact:${node.id}`)?.data.node,
++  ).toEqual(node);
++  expect(
++    result.nodes.find((n) => n.id === `fact:${node.id}`)?.data.changes,
++  ).toContain("→ dest/index.ts");
++  expect(
++    result.nodes.find((n) => n.id === `fact:${node.id}`)?.data.changes,
++  ).not.toContain("→ obsolete/index.ts");
++  expect(
++    result.nodes.find((n) => n.id === "plan:temp:new")?.data.node.filePath,
++  ).toBe("planned/new.ts");
++  expect({ graph, ops }).toEqual(before);
++});
+--- a/apps/web/src/features/structure/OwnershipPreview.tsx
++++ b/apps/web/src/features/structure/OwnershipPreview.tsx
+@@ -0,0 +1,84 @@
++import { useEffect } from "react";
++import { useStore } from "zustand";
++import { useStrings } from "../../i18n/index.js";
++import type { createOwnershipSession } from "./ownership-session.js";
++export function OwnershipPreview({
++  session,
++}: {
++  session: ReturnType<typeof createOwnershipSession>;
++}) {
++  const state = useStore(session.store),
++    text = useStrings();
++  useEffect(() => {
++    const close = (event: KeyboardEvent) => {
++      if (
++        event.key !== "Escape" ||
++        event.defaultPrevented ||
++        !session.store.getState().intent ||
++        session.store.getState().status === "saving"
++      )
++        return;
++      event.preventDefault();
++      event.stopPropagation();
++      session.cancel();
++    };
++    window.addEventListener("keydown", close, true);
++    return () => window.removeEventListener("keydown", close, true);
++  }, [session]);
++  if (!state.intent || !state.target) return null;
++  const saving = state.status === "saving",
++    outdated = state.status === "expired",
++    failed = state.status === "error";
++  return (
++    <section className="ownership-preview" aria-label={text.ownershipPreview}>
++      <h3>{text.ownershipPreview}</h3>
++      <p>
++        {text.ownershipActual}:{" "}
++        <code>{state.intent.physicalPath ?? text.ownershipNoSource}</code>
++      </p>
++      <p>
++        {text.ownershipCurrent}:{" "}
++        <code>{state.intent.effectivePath ?? "∅"}</code>
++      </p>
++      <p>
++        {text.ownershipTarget}:{" "}
++        <code data-testid="ownership-full-path">
++          {state.path ?? `${state.target.path}/…`}
++        </code>
++      </p>
++      <small>
++        r{state.intent.revision} · <code>{state.intent.snapshotId}</code>
++      </small>
++      {state.target.kind === "folder" && (
++        <label>
++          {text.ownershipFilename}
++          <input
++            required
++            aria-label={text.ownershipFilename}
++            value={state.filename}
++            disabled={saving}
++            placeholder="feature.ts"
++            onChange={(event) => session.filename(event.target.value)}
++          />
++          <small>{text.ownershipFilenameHelp}</small>
++        </label>
++      )}
++      {outdated && <p role="alert">{text.ownershipExpired}</p>}
++      {failed && <p role="alert">{text.ownershipFailed}</p>}
++      <p className="muted">{text.ownershipPlanOnly}</p>
++      <div className="button-row">
++        <button type="button" disabled={saving} onClick={session.cancel}>
++          {text.ownershipCancel}
++        </button>
++        <button
++          type="button"
++          className="primary"
++          disabled={saving || outdated || failed || !state.path}
++          onClick={() => void session.confirm()}
++        >
++          {text.ownershipSave}
++        </button>
++      </div>
++    </section>
++  );
++}
+--- a/apps/web/src/features/structure/OwnershipControls.tsx
++++ b/apps/web/src/features/structure/OwnershipControls.tsx
+@@ -0,0 +1,57 @@
++import { useStore } from "zustand";
++import type { Workspace } from "../../app/workspace.js";
++import { useStrings } from "../../i18n/index.js";
++import { OwnershipTargets } from "./OwnershipTargets.js";
++import { OwnershipPreview } from "./OwnershipPreview.js";
++import { plannedOwnershipTargets } from "./ownership-session.js";
++export function OwnershipControls({ app }: { app: Workspace }) {
++  const state = useStore(app.store),
++    session = useStore(app.ownership.store),
++    text = useStrings();
++  if (session.mode !== "ownership") return null;
++  const disabled =
++    !!state.busy.plan ||
++    !!state.busy.project ||
++    !!state.busy.knowledge ||
++    state.dirtyPlanEditor ||
++    state.groupSelectionMode ||
++    !!state.groupDraft ||
++    session.status === "saving" || !state.plan || !state.summary || state.plan.plan.status==="stale" || state.plan.plan.baselineSnapshotId!==state.summary.snapshotId || state.plan.plan.baselineContentHash!==state.summary.contentHash;
++  return (
++    <section className="ownership-controls" aria-label={text.ownershipMode}>
++      <p>{text.ownershipHelp}</p>
++      <button
++        type="button"
++        disabled={disabled || state.selectedNode?.kind !== "function"}
++        onClick={() => {
++          if (state.selectedNode) app.beginOwnership(state.selectedNode);
++        }}
++      >
++        {text.ownershipStart}
++      </button>
++      <OwnershipTargets
++        state={session.tray}
++        plannedTargets={plannedOwnershipTargets(
++          state.plan?.plan.operations ?? [],
++        )}
++        labels={{
++          title: text.ownershipTargets,
++          loading: text.loading,
++          unavailable: text.ownershipUnavailable,
++          missing: text.ownershipMissing,
++          truncated: text.truncated,
++          fact: text.fact,
++          planned: text.planned,
++          choose: text.ownershipChoose,
++          browse: text.ownershipBrowse,
++          parent: text.ownershipParent,
++        }}
++        disabled={disabled}
++        onChoose={(target) => app.ownership.choose(target)}
++        onBrowse={(path) => void app.ownership.browse(path)}
++        onDrop={(target, nonce) => app.ownership.choose(target, nonce)}
++      />
++      <OwnershipPreview session={app.ownership} />
++    </section>
++  );
++}
+--- a/apps/web/src/i18n/en.ts
++++ b/apps/web/src/i18n/en.ts
+@@ -1,5 +1,39 @@
+ import type { zh } from "./zh.js";
+ export const en: Record<keyof typeof zh, string> = {
++  ownershipLayout: "Layout",
++  ownershipMode: "Plan ownership",
++  ownershipTargets: "Structure targets",
++  ownershipHelp:
++    "Drag a function to a structure target, or select a function and choose a target.",
++  ownershipStart: "Choose target for selected function",
++  ownershipPreview: "Target change preview",
++  ownershipActual: "Actual source path",
++  ownershipCurrent: "Current planned target",
++  ownershipTarget: "New complete target",
++  ownershipFilename: "Complete source filename",
++  ownershipFilenameHelp:
++    "Enter one filename with its source extension, without directories.",
++  ownershipNoSource: "Planned function; source unavailable",
++  ownershipExpired:
++    "The captured context changed. Cancel and choose the target again; your input has been retained.",
++  ownershipFailed:
++    "The target change was not accepted. Cancel, reload the plan and choose the target again.",
++  ownershipPlanOnly:
++    "This changes the draft plan only. Source files stay in their actual locations; confirmation is a separate action.",
++  ownershipSave: "Add target change to plan",
++  ownershipCancel: "Cancel target preview",
++  ownershipChoose: "Choose",
++  ownershipBrowse: "Browse",
++  ownershipParent: "Parent folder",
++  ownershipMissing:
++    "Planned or missing folder; no indexed file fact is implied.",
++  ownershipUnavailable:
++    "Targets unavailable; refresh the current context and retry.",
++  ownershipLiveSource:
++    "Current live disk bytes from the actual path. No historical snapshot content or hash match is asserted.",
++  ownershipEffective: "Effective target",
++  ownershipSuperseded: "superseded by later target",
++
+   collapseGroup: "Collapse",
+   expandGroup: "Expand",
+   groupVisibleCards: "Loaded scope: group cards",
+--- a/apps/web/src/i18n/zh.ts
++++ b/apps/web/src/i18n/zh.ts
+@@ -1,5 +1,33 @@
+ /** Authored names, paths, notes and service evidence remain verbatim. */
+ export const zh = {
++  ownershipLayout: "布局",
++  ownershipMode: "规划归属",
++  ownershipTargets: "结构目标",
++  ownershipHelp: "将函数拖到结构目标，或选中函数后选择目标。",
++  ownershipStart: "为选中函数选择目标",
++  ownershipPreview: "目标归属变更预览",
++  ownershipActual: "实际源码路径",
++  ownershipCurrent: "当前规划目标",
++  ownershipTarget: "新的完整目标",
++  ownershipFilename: "完整源码文件名",
++  ownershipFilenameHelp: "请输入带源码扩展名的单个文件名，不含目录。",
++  ownershipNoSource: "规划函数；暂无源码",
++  ownershipExpired: "捕获的上下文已变化。请取消后重新选择目标；输入已保留。",
++  ownershipFailed: "目标变更未被接受。请取消、重新加载规划并再次选择目标。",
++  ownershipPlanOnly:
++    "此操作仅修改规划草稿。源码文件保留在实际位置；确认规划是独立操作。",
++  ownershipSave: "将目标变更加入规划",
++  ownershipCancel: "取消目标预览",
++  ownershipChoose: "选择",
++  ownershipBrowse: "浏览",
++  ownershipParent: "上级目录",
++  ownershipMissing: "规划或缺失目录；不代表已存在索引文件事实。",
++  ownershipUnavailable: "目标暂不可用；请刷新当前上下文后重试。",
++  ownershipLiveSource:
++    "从实际路径读取的当前磁盘内容，不表示历史快照内容或哈希一致。",
++  ownershipEffective: "有效目标",
++  ownershipSuperseded: "已被后续目标替代",
++
+   collapseGroup: "折叠",
+   expandGroup: "展开",
+   groupVisibleCards: "当前加载范围：分组卡片",
+--- a/tests/e2e/ownership.spec.ts
++++ b/tests/e2e/ownership.spec.ts
+@@ -0,0 +1,873 @@
++import {
++  test,
++  expect,
++  type Locator,
++  type Page,
++  type TestInfo,
++} from "@playwright/test";
++import {
++  mkdtemp,
++  mkdir,
++  writeFile,
++  readFile,
++  readdir,
++  rm,
++  access,
++} from "node:fs/promises";
++import { createHash, randomUUID } from "node:crypto";
++import { tmpdir } from "node:os";
++import { join } from "node:path";
++import {
++  startProduction,
++  http,
++  denyExternalRequests,
++} from "../support/production.mjs";
++import { openCodeNavigation } from "../support/chat-shell.mjs";
++
++async function ownedServer(root: string, info: TestInfo) {
++  const nonce = randomUUID(),
++    data = join(root, "data"),
++    server = await startProduction(data);
++  const receipt = {
++    nonce,
++    root,
++    data,
++    port: server.port,
++    pid: server.child.pid,
++    started: new Date().toISOString(),
++    exitCode: null as number | null,
++    signal: null as string | null,
++    stopped: undefined as string | undefined,
++  };
++  await writeFile(
++    info.outputPath(`server-${nonce}.json`),
++    JSON.stringify(receipt, null, 2),
++  );
++  return {
++    ...server,
++    stop: async () => {
++      try {
++        await server.stop();
++      } finally {
++        receipt.exitCode = server.child.exitCode;
++        receipt.signal = server.child.signalCode;
++        receipt.stopped = new Date().toISOString();
++        await writeFile(
++          info.outputPath(`server-${nonce}.json`),
++          JSON.stringify(receipt, null, 2),
++        );
++      }
++    },
++  };
++}
++
++async function sourceReceipt(root: string): Promise<Record<string, string>> {
++  const result: Record<string, string> = {};
++  const walk = async (path: string) => {
++    for (const entry of await readdir(join(root, path), {
++      withFileTypes: true,
++    })) {
++      const name = path ? `${path}/${entry.name}` : entry.name;
++      if (entry.isDirectory()) await walk(name);
++      else if (entry.isFile())
++        result[name] = createHash("sha256")
++          .update(await readFile(join(root, name)))
++          .digest("hex");
++    }
++  };
++  await walk("");
++  return result;
++}
++/** Native mouse only. Passive event observation never creates drag events or DataTransfer. */
++async function pointerDrop(page: Page, source: Locator, target: Locator) {
++  await source.scrollIntoViewIfNeeded();
++  await target.scrollIntoViewIfNeeded();
++  const from = await source.boundingBox(),
++    to = await target.boundingBox();
++  if (!from || !to)
++    throw new Error("Native ownership drag has no visible hit bounds");
++  const x = from.x + from.width * 0.4,
++    y = from.y + 35;
++  await page.mouse.move(x, y);
++  await page.mouse.down();
++  await page.mouse.move(x + 14, y + 8, { steps: 4 });
++  await page.mouse.move(to.x + to.width * 0.5, to.y + to.height * 0.5, {
++    steps: 18,
++  });
++  await page.mouse.move(to.x + to.width * 0.5 + 2, to.y + to.height * 0.5 + 2, {
++    steps: 2,
++  });
++  await page.mouse.up();
++}
++async function setup(
++  page: Page,
++  context: Parameters<typeof denyExternalRequests>[0],
++  info: TestInfo,
++) {
++  const root = await mkdtemp(join(tmpdir(), "atlas-fs01-production-")),
++    projectPath = join(root, "project");
++  await mkdir(join(projectPath, "src"), { recursive: true });
++  await mkdir(join(projectPath, "dest"));
++  await mkdir(join(projectPath, "other"));
++  await writeFile(
++    join(projectPath, "src/original.ts"),
++    'import {destinationMarker} from "../dest/index.js";export function selected(){return "ORIGINAL bytes"+destinationMarker();}\n',
++  );
++  await writeFile(
++    join(projectPath, "dest/index.ts"),
++    'export function destinationMarker(){return "DESTINATION bytes";}\n',
++  );
++  await writeFile(
++    join(projectPath, "other/index.ts"),
++    'export function otherMarker(){return "OTHER bytes";}\n',
++  );
++  const marker = join(root, "SOURCE_EXECUTED");
++  await writeFile(
++    join(projectPath, "never-execute.ts"),
++    `import {writeFileSync} from "node:fs";writeFileSync(${JSON.stringify(marker)},"executed");throw new Error("Do not execute target source");`,
++  );
++  const external: string[] = [],
++    errors: string[] = [];
++  await denyExternalRequests(context, external);
++  page.on("pageerror", (error) => errors.push(error.message));
++  await page.addInitScript(() => {
++    (window as unknown as { ownershipEvents: unknown[] }).ownershipEvents = [];
++    for (const kind of ["dragstart", "drop", "dragend"]) {
++      document.addEventListener(
++        kind,
++        (event) => {
++          const e = event as DragEvent;
++          const element = e.target as HTMLElement;
++          (
++            window as unknown as { ownershipEvents: unknown[] }
++          ).ownershipEvents.push({
++            kind,
++            domainId: element
++              .closest("[data-domain-id]")
++              ?.getAttribute("data-domain-id"),
++            types: Array.from(e.dataTransfer?.types ?? []),
++            target: element.closest("button")?.textContent,
++          });
++        },
++        true,
++      );
++    }
++  });
++  const server = await ownedServer(root, info);
++  try {
++    const api = (path: string, method = "GET", body?: unknown) =>
++      http(server.url, path, method, body);
++    const project = await api("/api/projects", "POST", { path: projectPath });
++    await api(`/api/projects/${project.id}/view`, "PUT", {
++      positions: {},
++      theme: "light",
++      locale: "en",
++    });
++    const summary = await api(`/api/projects/${project.id}/summary`);
++    const selected = summary.entrypoints.find(
++      (node: { name: string }) => node.name === "selected",
++    );
++    expect(selected).toBeTruthy();
++    const detail = await api("/api/plans", "POST", {
++      projectId: project.id,
++      title: "Ownership fixture",
++      baselineSnapshotId: summary.snapshotId,
++    });
++    await page.setViewportSize({ width: 1900, height: 1100 });
++    await page.goto(server.url);
++    await page
++      .getByRole("combobox", { name: /^(切换项目|Switch project)$/ })
++      .selectOption(project.id);
++    await openCodeNavigation(page);
++    await page
++      .getByRole("combobox", { name: "Choose plan", exact: true })
++      .first()
++      .selectOption(detail.plan.id);
++    await page
++      .getByRole("textbox", { name: "Search functions", exact: true })
++      .fill("selected");
++    await page.getByRole("button", { name: "Search", exact: true }).click();
++    await page.getByRole("button", { name: /ƒ selected/ }).click();
++    const card = page.locator(
++      `.react-flow__node[data-id="fact:${selected.id}"] .code-card`,
++    );
++    await expect(card).toBeVisible();
++    const before = await sourceReceipt(projectPath);
++    return {
++      root,
++      projectPath,
++      marker,
++      server,
++      api,
++      project,
++      summary,
++      selected,
++      detail,
++      card,
++      before,
++      external,
++      errors,
++      dispose: async () => {
++        try {
++          await server.stop();
++        } finally {
++          await rm(root, { recursive: true, force: true });
++          await writeFile(
++            info.outputPath("cleanup.json"),
++            JSON.stringify({
++              root,
++              removed: true,
++              at: new Date().toISOString(),
++            }),
++          );
++        }
++      },
++      assertSource: async () => {
++        expect(await sourceReceipt(projectPath)).toEqual(before);
++        await expect(access(marker)).rejects.toThrow();
++        expect(external).toEqual([]);
++        expect(errors).toEqual([]);
++      },
++    };
++  } catch (error) {
++    await server.stop();
++    await rm(root, { recursive: true, force: true });
++    await writeFile(
++      info.outputPath("cleanup.json"),
++      JSON.stringify({ root, removed: true, setupFailed: true }),
++    );
++    throw error;
++  }
++}
++function targets(page: Page) {
++  return page.getByRole("region", { name: "Structure targets", exact: true });
++}
++function preview(page: Page) {
++  return page.getByRole("region", {
++    name: "Target change preview",
++    exact: true,
++  });
++}
++async function ownership(page: Page) {
++  await page
++    .getByRole("button", { name: "Plan ownership", exact: true })
++    .click();
++  await expect(targets(page)).toBeVisible();
++}
++async function chooseFolder(page: Page, card: Locator) {
++  await ownership(page);
++  await pointerDrop(
++    page,
++    card,
++    targets(page).getByRole("button", {
++      name: "Choose dest · Fact",
++      exact: true,
++    }),
++  );
++  await expect(preview(page)).toBeVisible();
++}
++async function save(
++  page: Page,
++  planId: string,
++  revision: number,
++  snapshotId: string,
++) {
++  const request = page.waitForRequest(
++    (request) =>
++      new URL(request.url()).pathname === `/api/plans/${planId}` &&
++      request.method() === "PUT",
++  );
++  await preview(page)
++    .getByRole("button", { name: "Add target change to plan", exact: true })
++    .click();
++  const sent = await request;
++  expect(sent.postDataJSON()).toMatchObject({
++    expectedRevision: revision,
++    expectedSnapshotId: snapshotId,
++  });
++}
++test("native function-to-file drop changes only the draft, uses actual source, requires new confirmation and survives restart", async ({
++  page,
++  context,
++}, info) => {
++  const f = await setup(page, context, info);
++  let restarted: Awaited<ReturnType<typeof startProduction>> | undefined;
++  const sourceRequests: string[] = [];
++  page.on("request", (request) => {
++    const url = new URL(request.url());
++    if (url.pathname.endsWith("/source"))
++      sourceRequests.push(url.searchParams.get("filePath") ?? "");
++  });
++  try {
++    await page
++      .getByRole("button", { name: "Confirm this plan", exact: true })
++      .click();
++    await expect
++      .poll(
++        async () => !!(await f.api(`/api/plans/${f.detail.plan.id}`)).approval,
++      )
++      .toBe(true);
++    const approved = await f.api(`/api/plans/${f.detail.plan.id}`),
++      view = await f.api(`/api/projects/${f.project.id}/view`);
++    await ownership(page);
++    await targets(page)
++      .getByRole("button", { name: "Browse dest", exact: true })
++      .click();
++    const file = targets(page).getByRole("button", {
++      name: "Choose dest/index.ts · Fact",
++      exact: true,
++    });
++    await expect(file).toBeVisible();
++    await expect(f.card).toHaveAttribute("draggable", "true");
++    await pointerDrop(page, f.card, file);
++    await expect(preview(page)).toContainText("src/original.ts");
++    await expect(preview(page).getByTestId("ownership-full-path")).toHaveText(
++      "dest/index.ts",
++    );
++    expect((await f.api(`/api/plans/${f.detail.plan.id}`)).plan.revision).toBe(
++      approved.plan.revision,
++    );
++    await save(
++      page,
++      f.detail.plan.id,
++      approved.plan.revision,
++      f.summary.snapshotId,
++    );
++    await expect
++      .poll(
++        async () =>
++          (await f.api(`/api/plans/${f.detail.plan.id}`)).plan.revision,
++      )
++      .toBe(approved.plan.revision + 1);
++    const accepted = await f.api(`/api/plans/${f.detail.plan.id}`);
++    expect(accepted.plan.operations).toEqual([
++      {
++        kind: "move_function",
++        nodeId: f.selected.id,
++        filePath: "dest/index.ts",
++      },
++    ]);
++    expect(accepted.valid).toBe(false);
++    expect(accepted.approval.revision).toBe(approved.plan.revision);
++    expect(
++      (await f.api(`/api/projects/${f.project.id}/view`)).positions,
++    ).toEqual(view.positions);
++    await expect(page.locator(".breadcrumbs")).toContainText("index.ts");
++    await page
++      .locator(".inspector")
++      .getByRole("button", { name: "View source", exact: true })
++      .click();
++    await expect(page.locator(".inspector")).toContainText("ORIGINAL bytes");
++    expect(sourceRequests).not.toContain("dest/index.ts");
++    // Return to the overview using real controls; undo/redo remain semantic saves.
++    await page
++      .locator(".inspector")
++      .getByRole("button", { name: "Back to chat", exact: true })
++      .click();
++    await page
++      .getByRole("button", { name: "Undo", exact: true })
++      .first()
++      .click();
++    await expect
++      .poll(
++        async () =>
++          (await f.api(`/api/plans/${f.detail.plan.id}`)).plan.revision,
++      )
++      .toBe(approved.plan.revision + 2);
++    await page
++      .getByRole("button", { name: "Redo", exact: true })
++      .first()
++      .click();
++    await expect
++      .poll(
++        async () =>
++          (await f.api(`/api/plans/${f.detail.plan.id}`)).plan.revision,
++      )
++      .toBe(approved.plan.revision + 3);
++    await page
++      .getByRole("button", { name: "Confirm this plan", exact: true })
++      .click();
++    await expect
++      .poll(
++        async () =>
++          (await f.api(`/api/plans/${f.detail.plan.id}`)).approval.revision,
++      )
++      .toBe(approved.plan.revision + 3);
++    const reportResponse = page.waitForResponse(
++      (response) =>
++        new URL(response.url()).pathname ===
++          `/api/plans/${f.detail.plan.id}/verify` &&
++        response.request().method() === "POST",
++    );
++    await page
++      .getByRole("button", {
++        name: "Check approved implementation",
++        exact: true,
++      })
++      .first()
++      .click();
++    const report = await (await reportResponse).json();
++    expect(report.revision).toBe(approved.plan.revision + 3);
++    expect(
++      report.items.some(
++        (item: { status: string }) =>
++          item.status === "unmet" || item.status === "unknown",
++      ),
++    ).toBe(true);
++    await f.assertSource();
++    const native = await page.evaluate(
++      () =>
++        (window as unknown as { ownershipEvents: unknown[] }).ownershipEvents,
++    );
++    expect(native).toEqual(
++      expect.arrayContaining([
++        expect.objectContaining({
++          kind: "dragstart",
++          domainId: f.selected.id,
++          types: expect.arrayContaining(["application/x-atlas-ownership"]),
++        }),
++        expect.objectContaining({ kind: "drop" }),
++      ]),
++    );
++    await f.server.stop();
++    restarted = await ownedServer(f.root, info);
++    const persisted = await http(
++      restarted.url,
++      `/api/plans/${f.detail.plan.id}`,
++    );
++    expect(persisted.plan.operations).toEqual(accepted.plan.operations);
++    expect(persisted.plan.revision).toBe(approved.plan.revision + 3);
++    await page.goto(restarted.url);
++    await f.assertSource();
++    await writeFile(
++      info.outputPath("native-file-receipt.json"),
++      JSON.stringify(
++        {
++          native,
++          approved,
++          accepted,
++          report,
++          sourceRequests,
++          before: f.before,
++          after: await sourceReceipt(f.projectPath),
++        },
++        null,
++        2,
++      ),
++    );
++    await page.screenshot({
++      path: info.outputPath("ownership-file.png"),
++      fullPage: true,
++    });
++  } finally {
++    await restarted?.stop();
++    await f.dispose();
++  }
++});
++test("native folder drop requires full filename; cancel and stale snapshot save retain truthful boundaries", async ({
++  page,
++  context,
++}, info) => {
++  const f = await setup(page, context, info);
++  try {
++    await chooseFolder(page, f.card);
++    const panel = preview(page);
++    await expect(
++      panel.getByRole("button", {
++        name: "Add target change to plan",
++        exact: true,
++      }),
++    ).toBeDisabled();
++    await panel
++      .getByRole("textbox", { name: "Complete source filename", exact: true })
++      .fill("mine.ts");
++    await expect(panel.getByTestId("ownership-full-path")).toHaveText(
++      "dest/mine.ts",
++    );
++    await page.keyboard.press("Escape");
++    await expect(panel).toBeHidden();
++    expect((await f.api(`/api/plans/${f.detail.plan.id}`)).plan.revision).toBe(
++      1,
++    );
++    await pointerDrop(
++      page,
++      f.card,
++      targets(page).getByRole("button", {
++        name: "Choose dest · Fact",
++        exact: true,
++      }),
++    );
++    await panel
++      .getByRole("textbox", { name: "Complete source filename", exact: true })
++      .fill("index.ts");
++    await expect(panel.getByTestId("ownership-full-path")).toHaveText(
++      "dest/index.ts",
++    );
++    const snapshot = await f.api(
++      `/api/projects/${f.project.id}/refresh`,
++      "POST",
++      {},
++    );
++    expect(snapshot.id).not.toBe(f.summary.snapshotId);
++    expect((await f.api(`/api/plans/${f.detail.plan.id}`)).plan.revision).toBe(
++      1,
++    );
++    const conflict = page.waitForResponse(
++      (response) =>
++        new URL(response.url()).pathname === `/api/plans/${f.detail.plan.id}` &&
++        response.request().method() === "PUT",
++    );
++    await save(page, f.detail.plan.id, 1, f.summary.snapshotId);
++    const response = await conflict;
++    expect(response.status()).toBe(409);
++    expect((await response.json()).code).toBe("SNAPSHOT_CHANGED");
++    await expect(
++      panel.getByRole("textbox", {
++        name: "Complete source filename",
++        exact: true,
++      }),
++    ).toHaveValue("index.ts");
++    await expect(panel).toContainText("The captured context changed");
++    await expect(
++      panel.getByRole("button", {
++        name: "Add target change to plan",
++        exact: true,
++      }),
++    ).toBeDisabled();
++    expect(
++      (await f.api(`/api/plans/${f.detail.plan.id}`)).plan.operations,
++    ).toEqual([]);
++    await f.assertSource();
++    await writeFile(
++      info.outputPath("native-folder-snapshot-receipt.json"),
++      JSON.stringify(
++        {
++          snapshot,
++          before: f.before,
++          after: await sourceReceipt(f.projectPath),
++          events: await page.evaluate(
++            () =>
++              (window as unknown as { ownershipEvents: unknown[] })
++                .ownershipEvents,
++          ),
++        },
++        null,
++        2,
++      ),
++    );
++    await page.screenshot({
++      path: info.outputPath("ownership-expired.png"),
++      fullPage: true,
++    });
++  } finally {
++    await f.dispose();
++  }
++});
++test("a real late context cannot dispatch old source after another function selection", async ({
++  page,
++  context,
++}, info) => {
++  const f = await setup(page, context, info);
++  let release: (() => void) | undefined;
++  let held = false;
++  const sourcePaths: string[] = [];
++  try {
++    await context.route(
++      `**/api/projects/${f.project.id}/functions/${encodeURIComponent(f.selected.id)}?*`,
++      async (route) => {
++        if (held) return route.continue();
++        held = true;
++        const response = await route.fetch();
++        await new Promise<void>((resolve) => {
++          release = resolve;
++        });
++        await route.fulfill({ response });
++      },
++    );
++    page.on("request", (request) => {
++      const url = new URL(request.url());
++      if (url.pathname.endsWith("/source"))
++        sourcePaths.push(url.searchParams.get("filePath") ?? "");
++    });
++    await page
++      .locator(".inspector")
++      .getByRole("button", { name: "View source", exact: true })
++      .click();
++    await expect.poll(() => !!release).toBe(true);
++    await page
++      .getByRole("textbox", { name: "Search functions", exact: true })
++      .fill("destinationMarker");
++    await page.getByRole("button", { name: "Search", exact: true }).click();
++    await page.getByRole("button", { name: /ƒ destinationMarker/ }).click();
++    await expect(page.locator(".inspector")).toContainText("DESTINATION bytes");
++    release!();
++    await expect(page.locator(".inspector")).not.toContainText(
++      "ORIGINAL bytes",
++    );
++    expect(sourcePaths).toEqual(["dest/index.ts"]);
++    await f.assertSource();
++    await writeFile(
++      info.outputPath("source-context-generation.json"),
++      JSON.stringify(
++        {
++          sourcePaths,
++          before: f.before,
++          after: await sourceReceipt(f.projectPath),
++        },
++        null,
++        2,
++      ),
++    );
++  } finally {
++    release?.();
++    await f.dispose();
++  }
++});
++
++test("layout pointer drag changes positions only; native folder drop saves complete filename and reloads the same intent", async ({
++  page,
++  context,
++}, info) => {
++  const f = await setup(page, context, info);
++  try {
++    await expect(
++      page.getByRole("button", { name: "Layout", exact: true }),
++    ).toHaveAttribute("aria-pressed", "true");
++    const before = await f.api(`/api/plans/${f.detail.plan.id}`),
++      box = await f.card.boundingBox();
++    if (!box) throw new Error("Missing layout card");
++    await page.mouse.move(box.x + 70, box.y + 35);
++    await page.mouse.down();
++    await page.mouse.move(box.x + 125, box.y + 65, { steps: 12 });
++    await page.mouse.up();
++    await expect
++      .poll(
++        async () =>
++          Object.keys(
++            (await f.api(`/api/projects/${f.project.id}/view`)).positions,
++          ).length,
++      )
++      .toBeGreaterThan(0);
++    expect((await f.api(`/api/plans/${f.detail.plan.id}`)).plan).toEqual(
++      before.plan,
++    );
++    expect(
++      await page.evaluate(
++        () =>
++          (window as unknown as { ownershipEvents: unknown[] }).ownershipEvents,
++      ),
++    ).toEqual([]);
++    await chooseFolder(page, f.card);
++    const panel = preview(page);
++    await panel
++      .getByRole("textbox", { name: "Complete source filename", exact: true })
++      .fill("owned.ts");
++    await expect(panel.getByTestId("ownership-full-path")).toHaveText(
++      "dest/owned.ts",
++    );
++    await save(page, f.detail.plan.id, 1, f.summary.snapshotId);
++    await expect
++      .poll(
++        async () =>
++          (await f.api(`/api/plans/${f.detail.plan.id}`)).plan.revision,
++      )
++      .toBe(2);
++    const saved = await f.api(`/api/plans/${f.detail.plan.id}`);
++    expect(saved.plan.operations).toEqual([
++      {
++        kind: "move_function",
++        nodeId: f.selected.id,
++        filePath: "dest/owned.ts",
++      },
++    ]);
++    await page.reload();
++    await openCodeNavigation(page);
++    await page
++      .getByRole("combobox", { name: "Choose plan", exact: true })
++      .first()
++      .selectOption(f.detail.plan.id);
++    await expect(page.locator(".plan-overview")).toContainText("dest/owned.ts");
++    expect((await f.api(`/api/plans/${f.detail.plan.id}`)).plan).toEqual(
++      saved.plan,
++    );
++    await f.assertSource();
++    await writeFile(
++      info.outputPath("layout-folder-receipt.json"),
++      JSON.stringify(
++        {
++          before,
++          saved,
++          view: await f.api(`/api/projects/${f.project.id}/view`),
++          beforeFiles: f.before,
++          afterFiles: await sourceReceipt(f.projectPath),
++        },
++        null,
++        2,
++      ),
++    );
++  } finally {
++    await f.dispose();
++  }
++});
++
++test("a folded group endpoint native drag saves the real function ID and retains membership across reload", async ({
++  page,
++  context,
++}, info) => {
++  const f = await setup(page, context, info);
++  try {
++    const group = await f.api(`/api/projects/${f.project.id}/groups`, "POST", {
++      title: "Owned members",
++      description: "unchanged grouping",
++      source: "user",
++      memberIds: [f.selected.id],
++    });
++    await page.reload();
++    await openCodeNavigation(page);
++    await page
++      .getByRole("combobox", { name: "Choose plan", exact: true })
++      .first()
++      .selectOption(f.detail.plan.id);
++    await page
++      .getByRole("textbox", { name: "Search functions", exact: true })
++      .fill("selected");
++    await page.getByRole("button", { name: "Search", exact: true }).click();
++    await page.getByRole("button", { name: /ƒ selected/ }).click();
++    await page
++      .getByRole("button", { name: "Collapse Owned members", exact: true })
++      .click();
++    const endpoint = page.locator(
++      `.group-endpoint[data-domain-id="${f.selected.id}"]`,
++    );
++    await expect(endpoint).toBeVisible();
++    const groups = await f.api(`/api/projects/${f.project.id}/groups`);
++    await ownership(page);
++    await expect(endpoint).toHaveAttribute("draggable", "true");
++    await targets(page)
++      .getByRole("button", { name: "Browse dest", exact: true })
++      .click();
++    await pointerDrop(
++      page,
++      endpoint,
++      targets(page).getByRole("button", {
++        name: "Choose dest/index.ts · Fact",
++        exact: true,
++      }),
++    );
++    await expect(preview(page).getByTestId("ownership-full-path")).toHaveText(
++      "dest/index.ts",
++    );
++    await save(page, f.detail.plan.id, 1, f.summary.snapshotId);
++    await expect
++      .poll(
++        async () =>
++          (await f.api(`/api/plans/${f.detail.plan.id}`)).plan.revision,
++      )
++      .toBe(2);
++    const saved = await f.api(`/api/plans/${f.detail.plan.id}`);
++    expect(saved.plan.operations).toEqual([
++      {
++        kind: "move_function",
++        nodeId: f.selected.id,
++        filePath: "dest/index.ts",
++      },
++    ]);
++    expect(saved.plan.operations[0].nodeId).not.toBe(`group:${group.id}`);
++    expect(await f.api(`/api/projects/${f.project.id}/groups`)).toEqual(groups);
++    await page.reload();
++    await openCodeNavigation(page);
++    await page
++      .getByRole("combobox", { name: "Choose plan", exact: true })
++      .first()
++      .selectOption(f.detail.plan.id);
++    await expect(page.locator(".plan-overview")).toContainText("dest/index.ts");
++    expect(await f.api(`/api/projects/${f.project.id}/groups`)).toEqual(groups);
++    await f.assertSource();
++    await writeFile(
++      info.outputPath("folded-group-receipt.json"),
++      JSON.stringify(
++        {
++          group,
++          groups,
++          saved,
++          beforeFiles: f.before,
++          afterFiles: await sourceReceipt(f.projectPath),
++        },
++        null,
++        2,
++      ),
++    );
++  } finally {
++    await f.dispose();
++  }
++});
++
++test("dirty advanced title blocks ownership and confirmation across an actual external revision", async ({
++  page,
++  context,
++}, info) => {
++  const f = await setup(page, context, info);
++  try {
++    await page
++      .locator(".inspector")
++      .getByRole("button", { name: "Advanced editing", exact: true })
++      .click();
++    const metadata = page.locator(".plan-editor > form").first();
++    await metadata.locator("input").fill("Unsent local title");
++    await expect(
++      page.getByRole("button", { name: "Plan ownership", exact: true }),
++    ).toBeDisabled();
++    await expect(
++      page.getByRole("button", {
++        name: "Confirm current revision",
++        exact: true,
++      }),
++    ).toBeDisabled();
++    const external = await f.api(`/api/plans/${f.detail.plan.id}`, "PUT", {
++      expectedRevision: 1,
++      expectedSnapshotId: f.summary.snapshotId,
++      operations: [],
++      title: "External revision",
++      description: "remote",
++    });
++    expect(external.plan.revision).toBe(2);
++    const reread = page.waitForResponse(
++      (response) =>
++        new URL(response.url()).pathname === `/api/plans/${f.detail.plan.id}` &&
++        response.request().method() === "GET",
++    );
++    await page
++      .getByRole("button", { name: "Validate plan", exact: true })
++      .first()
++      .click();
++    await reread;
++    await expect(metadata.locator("input")).toHaveValue("Unsent local title");
++    await expect(
++      metadata.getByRole("button", {
++        name: "Save title and description",
++        exact: true,
++      }),
++    ).toBeDisabled();
++    await expect(
++      page.getByRole("button", { name: "Plan ownership", exact: true }),
++    ).toBeDisabled();
++    expect(
++      (await f.api(`/api/plans/${f.detail.plan.id}`)).plan.operations,
++    ).toEqual([]);
++    await f.assertSource();
++    await writeFile(
++      info.outputPath("dirty-external-revision.json"),
++      JSON.stringify(
++        {
++          external,
++          beforeFiles: f.before,
++          afterFiles: await sourceReceipt(f.projectPath),
++        },
++        null,
++        2,
++      ),
++    );
++  } finally {
++    await f.dispose();
++  }
++});
+--- a/tests/integration/fs01-precondition.test.ts
++++ b/tests/integration/fs01-precondition.test.ts
+@@ -1,3 +1,4 @@
++import { MemoryStructureFiles } from "../support/structure-file-port.js";
+ import { afterEach, describe, expect, it } from "vitest";
+ import { SqliteStorage } from "@codemap/storage";
+ import type { CodeSnapshot, IndexerPort, Plan } from "@codemap/core";
+@@ -32,7 +33,11 @@
+       return snapshot(id, version);
+     },
+   };
+-  const service = new WorkspaceService({ storage, indexer });
++  const service = new WorkspaceService({
++    storage,
++    indexer,
++    structureFiles: new MemoryStructureFiles(),
++  });
+   const project = await service.openProject("/fs01-fixture-A");
+   const plan = service.createPlan({
+     projectId: project.id,

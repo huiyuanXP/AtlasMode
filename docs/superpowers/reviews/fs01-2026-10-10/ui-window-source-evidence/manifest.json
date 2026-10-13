@@ -1,0 +1,128 @@
+[
+  {
+    "path": "apps/web/src/app/workspace.ts",
+    "bytes": 56923,
+    "sha256": "3fec9a1970c2db2511afcdb5de81b729ab7bc423317f2689e72f318164888d66",
+    "beforeSha256": "dada9a1648315602ee6310468bbb47fd1f79bf312475e836f280a402cffbb1f9"
+  },
+  {
+    "path": "apps/web/src/app/workspace.test.ts",
+    "bytes": 30534,
+    "sha256": "6255123467e714c8e0897e4f7225de7d1c7c3a5592acbc972851ea83e808e9d1",
+    "beforeSha256": "91eb016aa6d775fb9d6b928097f4ef8e40f5362667ae78a00b27c594e0ce3bd6"
+  },
+  {
+    "path": "apps/web/src/app/workspace-ownership.test.ts",
+    "bytes": 6975,
+    "sha256": "a6d0b77b9a5c8e42067b6ebd011f964acf5d4120961bf4ef734d55563dc5194a",
+    "beforeSha256": null
+  },
+  {
+    "path": "apps/web/src/app/WorkspacePanels.tsx",
+    "bytes": 20102,
+    "sha256": "5aa35e02cba84d67afb7d3e455226c35887a218c2722981ed047108966fbc871",
+    "beforeSha256": "3eeda8d79025d04bd5d137f44387cc8ea4cf38149543c78926a2ee3e90fe9c7a"
+  },
+  {
+    "path": "apps/web/src/app/Navigation.tsx",
+    "bytes": 8282,
+    "sha256": "af89d4f826340b12cf383c6593832be1102e6bec85cb61fb58df1b6be374d75e",
+    "beforeSha256": "8888f626db07a4daf3ac9bd47a6850acb524e771716380eaafa5e206be9277b2"
+  },
+  {
+    "path": "apps/web/src/features/graph/Canvas.tsx",
+    "bytes": 37461,
+    "sha256": "b455d3614c69a04d03b4e64c76fa674afd10cab3f111947ef4e42df819c407e2",
+    "beforeSha256": "3124ae71ccedf554072383654869b62f5e0e7d99e1fcb8422f5639270e3c406f"
+  },
+  {
+    "path": "apps/web/src/features/graph/projection.ts",
+    "bytes": 6948,
+    "sha256": "464155e6b8831a8057e013b31997e98a48d5b56e45d0ab37811386c545e5b303",
+    "beforeSha256": "c13b32de342ddbb4b79660c09fdd42fabed0886a567a1b4db8f0062be792c0cf"
+  },
+  {
+    "path": "apps/web/src/features/groups/GroupCard.tsx",
+    "bytes": 4835,
+    "sha256": "89f9ca3a388ae663aad5e3bd293df9e0b57bc3cf3bf9df6a3fe683bd37a47dc8",
+    "beforeSha256": "3a2f82c9a76717a2e9e971378b9f3bed4449b2453bd40cb382ac952061981f5c"
+  },
+  {
+    "path": "apps/web/src/features/groups/GroupCard.test.tsx",
+    "bytes": 2230,
+    "sha256": "44b77ee58e3460316ca31a4a67acc2dd632a8caaeb6f6f5afa1a93c110f46d9e",
+    "beforeSha256": "482421cdf3bac56d4958361617d653f7c27e617f281f970e314d65fc40fba4a4"
+  },
+  {
+    "path": "apps/web/src/features/navigation/path.ts",
+    "bytes": 1948,
+    "sha256": "8d5626f8be9dbe962d71ee4c83a77aa88a980b5b1b5b0185c2754a94afade347",
+    "beforeSha256": "441e944a78e51b401765d7e7e11d127fc12d47afeb113a24c46d56f2bacf8987"
+  },
+  {
+    "path": "apps/web/src/features/planning/PlanOverview.tsx",
+    "bytes": 7287,
+    "sha256": "593ab6d056e3fced07969a63d3a1d442a993b6df252bd6d8ce8825ebedb4acc3",
+    "beforeSha256": "341f8091869f7fd1ddae7e46f3705105a0f98b2c4d4bef565134bba26a16e2e2"
+  },
+  {
+    "path": "apps/web/src/features/structure/OwnershipTargets.tsx",
+    "bytes": 3725,
+    "sha256": "c4e3ef2f250767ac60665868c53e6af9eb08da75d94e6bf1eb0dd60bf065fe34",
+    "beforeSha256": "4c9880d75005cc22d14f4a27809c8d8be8f195470a2ebbc0e47b29fd35629e2f"
+  },
+  {
+    "path": "apps/web/src/features/structure/ownership-session.ts",
+    "bytes": 10811,
+    "sha256": "ba891a03e2d04325c24a6448b587393fd4a1bb53c25be5e56d0595fa0724a56d",
+    "beforeSha256": null
+  },
+  {
+    "path": "apps/web/src/features/structure/ownership-session.test.ts",
+    "bytes": 6690,
+    "sha256": "d0d12270d1a12807805cc3c5402a04e0b07bc0c720bd8c9c70735c0335d51a9e",
+    "beforeSha256": null
+  },
+  {
+    "path": "apps/web/src/features/structure/ownership-display.test.ts",
+    "bytes": 2889,
+    "sha256": "13dfa94675c38788c81b5f15f87e367a82e0f2a36eb192885b29303d3caac4a3",
+    "beforeSha256": null
+  },
+  {
+    "path": "apps/web/src/features/structure/OwnershipPreview.tsx",
+    "bytes": 2766,
+    "sha256": "c20a9ffbf470d9701aab479262fdc8a4adef134f222d567e9488a8d5c917c82e",
+    "beforeSha256": null
+  },
+  {
+    "path": "apps/web/src/features/structure/OwnershipControls.tsx",
+    "bytes": 2234,
+    "sha256": "2717ab5e1f8439d2c21b90dd32003806c520ddf7163223bf3d5748dbe28b3aad",
+    "beforeSha256": null
+  },
+  {
+    "path": "apps/web/src/i18n/en.ts",
+    "bytes": 14589,
+    "sha256": "c346f523e189adb856b32e4e5d433ad2d473604673e4ada090556e82b9712da2",
+    "beforeSha256": "fad0445936f7aaabc63aabf48188b91341efa936a66adf76afe2050612c66797"
+  },
+  {
+    "path": "apps/web/src/i18n/zh.ts",
+    "bytes": 13736,
+    "sha256": "2b8994d9ef47d34b50e83c45d04c954beba913be359813216817295bc367e9ea",
+    "beforeSha256": "c09133ca38ce81855025ce7ad16b1d66f2e07a35d7da99e3907a84f50c61f185"
+  },
+  {
+    "path": "tests/e2e/ownership.spec.ts",
+    "bytes": 27267,
+    "sha256": "3f1434cf198a198e081a6c8c40078dd0f98e62af7969877f38741d1c9cf8bad0",
+    "beforeSha256": null
+  },
+  {
+    "path": "tests/integration/fs01-precondition.test.ts",
+    "bytes": 7186,
+    "sha256": "42ad9baaf4bf36904e34856c656d9d801e87256f991d62c62437947a48423c46",
+    "beforeSha256": "66d5f629f9402c7e8fc5cf4975a49df16d141e023111cd6b82e499da6e2a7e30"
+  }
+]

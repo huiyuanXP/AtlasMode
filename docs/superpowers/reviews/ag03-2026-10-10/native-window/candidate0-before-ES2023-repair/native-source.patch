@@ -1,0 +1,790 @@
+--- /dev/null
++++ b/apps/server/native/agent-job/job.cpp
+@@ -0,0 +1,57 @@
++#include "job.h"
++#include <algorithm>
++#include <array>
++#include <vector>
++namespace atlas::job {
++std::wstring wide(const std::u16string& s){static_assert(sizeof(wchar_t)==2);return {reinterpret_cast<const wchar_t*>(s.data()),s.size()};}
++void noninherit(HANDLE h){if(!h||h==INVALID_HANDLE_VALUE||!SetHandleInformation(h,HANDLE_FLAG_INHERIT,0))throw WinError("private handle inheritance");}
++namespace {
++Handle std_duplicate(HANDLE h){
++  // Std handles can alias each other; duplicate each into one exact HANDLE_LIST entry.
++  if(!h||h==INVALID_HANDLE_VALUE||h==GetCurrentProcess()||h==GetCurrentThread())throw WinError("invalid std handle",ERROR_INVALID_HANDLE);
++  HANDLE copy=nullptr;if(!DuplicateHandle(GetCurrentProcess(),h,GetCurrentProcess(),&copy,0,TRUE,DUPLICATE_SAME_ACCESS))throw WinError("duplicate std handle");return Handle(copy);
++}
++struct Attributes {
++  std::vector<std::uint8_t> bytes;LPPROC_THREAD_ATTRIBUTE_LIST list=nullptr;
++  Attributes(){SIZE_T size=0;InitializeProcThreadAttributeList(nullptr,2,0,&size);if(!size)throw WinError("attribute size");bytes.resize(size);list=reinterpret_cast<LPPROC_THREAD_ATTRIBUTE_LIST>(bytes.data());if(!InitializeProcThreadAttributeList(list,2,0,&size)){list=nullptr;throw WinError("attributes init");}}
++  ~Attributes(){if(list)DeleteProcThreadAttributeList(list);}
++};
++void executable(const std::wstring& path){auto attributes=GetFileAttributesW(path.c_str());if(attributes==INVALID_FILE_ATTRIBUTES||(attributes&(FILE_ATTRIBUTE_DIRECTORY|FILE_ATTRIBUTE_REPARSE_POINT)))throw WinError("actual exe required",ERROR_BAD_EXE_FORMAT);}
++}
++OwnedJob::OwnedJob(){
++#if !defined(_M_X64) && !defined(__x86_64__)
++  throw WinError("Windows x64 only",ERROR_NOT_SUPPORTED);
++#endif
++  SYSTEM_INFO info{};GetNativeSystemInfo(&info);if(info.wProcessorArchitecture!=PROCESSOR_ARCHITECTURE_AMD64)throw WinError("Windows x64 only",ERROR_NOT_SUPPORTED);
++  job_.reset(CreateJobObjectW(nullptr,nullptr));if(!job_.valid())throw WinError("create private job");noninherit(job_.get());
++  JOBOBJECT_EXTENDED_LIMIT_INFORMATION limits{};limits.BasicLimitInformation.LimitFlags=JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE;
++  if(!SetInformationJobObject(job_.get(),JobObjectExtendedLimitInformation,&limits,sizeof(limits)))throw WinError("job limits");
++}
++void OwnedJob::create(const Launch& launch,Stdio streams){
++  if(root_.valid()||stopping_)throw WinError("single launch",ERROR_INVALID_STATE);
++  // The parser and the direct harness share all launch validation, including exe-only.
++  (void)encode_launch(launch);auto command=wide(launch.command);executable(command);
++  auto cwd=wide(launch.cwd);auto cwd_attributes=GetFileAttributesW(cwd.c_str());if(cwd_attributes==INVALID_FILE_ATTRIBUTES||!(cwd_attributes&FILE_ATTRIBUTE_DIRECTORY))throw WinError("actual cwd required",ERROR_DIRECTORY);
++  auto args=wide(command_line(launch));std::vector<wchar_t> line(args.begin(),args.end());line.push_back(0);
++  auto env=launch.env;std::sort(env.begin(),env.end(),[](const auto& a,const auto& b){return CompareStringOrdinal(reinterpret_cast<LPCWCH>(a.first.data()),static_cast<int>(a.first.size()),reinterpret_cast<LPCWCH>(b.first.data()),static_cast<int>(b.first.size()),TRUE)==CSTR_LESS_THAN;});
++  std::vector<wchar_t> environment;for(const auto& [key,value]:env){auto pair=wide(key)+L"="+wide(value);environment.insert(environment.end(),pair.begin(),pair.end());environment.push_back(0);}if(environment.empty())environment.push_back(0);environment.push_back(0);
++  auto input=std_duplicate(streams.input);auto output=std_duplicate(streams.output);auto error=std_duplicate(streams.error);
++  std::array<HANDLE,3> handles{input.get(),output.get(),error.get()};Attributes attributes;HANDLE private_job=job_.get();
++  if(!UpdateProcThreadAttribute(attributes.list,0,PROC_THREAD_ATTRIBUTE_HANDLE_LIST,handles.data(),sizeof(handles),nullptr,nullptr))throw WinError("handle list");
++  // Creation itself assigns the private Job. There is no AssignProcessToJobObject fallback.
++  if(!UpdateProcThreadAttribute(attributes.list,0,PROC_THREAD_ATTRIBUTE_JOB_LIST,&private_job,sizeof(private_job),nullptr,nullptr))throw WinError("atomic job list");
++  STARTUPINFOEXW startup{};startup.StartupInfo.cb=sizeof(startup);startup.StartupInfo.dwFlags=STARTF_USESTDHANDLES;
++  startup.StartupInfo.hStdInput=input.get();startup.StartupInfo.hStdOutput=output.get();startup.StartupInfo.hStdError=error.get();startup.lpAttributeList=attributes.list;
++  PROCESS_INFORMATION process{};
++  if(!CreateProcessW(command.c_str(),line.data(),nullptr,nullptr,TRUE,CREATE_SUSPENDED|EXTENDED_STARTUPINFO_PRESENT|CREATE_UNICODE_ENVIRONMENT|CREATE_NO_WINDOW,environment.data(),cwd.c_str(),&startup.StartupInfo,&process))throw WinError("owned CreateProcess");
++  root_.reset(process.hProcess);thread_.reset(process.hThread);noninherit(root_.get());noninherit(thread_.get());BOOL assigned=FALSE;
++  if(!IsProcessInJob(root_.get(),job_.get(),&assigned)||!assigned){TerminateJobObject(job_.get(),1);throw WinError("atomic job membership",ERROR_INVALID_STATE);}
++  // RAII duplicates close now; caller owns original stdio and releases its own copies.
++}
++void OwnedJob::resume(){if(!root_.valid()||resumed_||stopping_)throw WinError("resume state",ERROR_INVALID_STATE);auto previous=ResumeThread(thread_.get());if(previous==static_cast<DWORD>(-1))throw WinError("resume");if(previous!=1)throw WinError("unexpected suspend count",ERROR_INVALID_STATE);resumed_=true;thread_.reset();}
++bool OwnedJob::empty()const{JOBOBJECT_BASIC_ACCOUNTING_INFORMATION accounting{};if(!QueryInformationJobObject(job_.get(),JobObjectBasicAccountingInformation,&accounting,sizeof(accounting),nullptr))throw WinError("job accounting");return accounting.ActiveProcesses==0;}
++bool OwnedJob::stop(ULONGLONG deadline){
++  if(!stopping_){stopping_=true;if(!TerminateJobObject(job_.get(),1))throw WinError("terminate owned job");}
++  for(;;){if(empty())return true;auto now=GetTickCount64();if(now>=deadline)return false;Sleep(static_cast<DWORD>(std::min<ULONGLONG>(20,deadline-now)));}
++}
++}
+--- /dev/null
++++ b/apps/server/native/agent-job/job.h
+@@ -0,0 +1,35 @@
++#pragma once
++#ifndef _WIN32
++#error The owned Job implementation requires real Windows; no portable fallback exists.
++#endif
++#include <Windows.h>
++#include "protocol.h"
++namespace atlas::job {
++class Handle {
++  HANDLE value_=nullptr;
++public:
++  Handle()=default; explicit Handle(HANDLE value):value_(value){}
++  ~Handle(){reset();} Handle(const Handle&)=delete;Handle& operator=(const Handle&)=delete;
++  Handle(Handle&& other) noexcept:value_(other.release()){}
++  Handle& operator=(Handle&& other) noexcept {if(this!=&other)reset(other.release());return *this;}
++  bool valid()const{return value_!=nullptr&&value_!=INVALID_HANDLE_VALUE;}
++  HANDLE get()const{return value_;} HANDLE release(){auto old=value_;value_=nullptr;return old;}
++  void reset(HANDLE value=nullptr){if(valid())CloseHandle(value_);value_=value;}
++};
++struct WinError:std::runtime_error { DWORD code;explicit WinError(const char* operation,DWORD error=GetLastError()):std::runtime_error(operation),code(error){} };
++struct Stdio { HANDLE input, output, error; };
++class OwnedJob {
++  Handle job_,root_,thread_; bool resumed_=false; bool stopping_=false;
++public:
++  OwnedJob(); ~OwnedJob()=default;OwnedJob(const OwnedJob&)=delete;OwnedJob& operator=(const OwnedJob&)=delete;
++  void create(const Launch& launch,Stdio streams);
++  void resume();
++  bool stop(ULONGLONG deadline);
++  bool empty()const;
++  HANDLE root()const{return root_.get();}
++  HANDLE job()const{return job_.get();}
++  DWORD root_id()const{return GetProcessId(root_.get());}
++};
++std::wstring wide(const std::u16string& s);
++void noninherit(HANDLE handle);
++}
+--- /dev/null
++++ b/apps/server/native/agent-job/main.cpp
+@@ -0,0 +1,115 @@
++#include "job.h"
++#include <algorithm>
++#include <array>
++#include <deque>
++#include <memory>
++namespace atlas::job {
++namespace {
++constexpr ULONGLONG kSetupMs=5000, kRunMs=120000, kStopMs=5000, kEmptyMs=2000;
++bool hex(wchar_t c){return(c>=L'0'&&c<=L'9')||(c>=L'a'&&c<=L'f');}
++std::vector<std::uint8_t> nonce(const std::wstring& s){
++  if(s.size()!=64||!std::all_of(s.begin(),s.end(),hex))throw ProtocolError("nonce format");
++  auto digit=[](wchar_t c){return c<=L'9'?c-L'0':c-L'a'+10;};std::vector<std::uint8_t> bytes;
++  for(std::size_t i=0;i<s.size();i+=2)bytes.push_back(static_cast<std::uint8_t>((digit(s[i])<<4)|digit(s[i+1])));return bytes;
++}
++void pipe_name(const std::wstring& s){const std::wstring prefix=L"\\\\.\\pipe\\atlas-agent-job-";if(s.size()!=prefix.size()+32||s.substr(0,prefix.size())!=prefix||!std::all_of(s.begin()+static_cast<std::ptrdiff_t>(prefix.size()),s.end(),hex))throw ProtocolError("pipe format");}
++struct HelperStdio {
++  std::array<HANDLE,3> handles{GetStdHandle(STD_INPUT_HANDLE),GetStdHandle(STD_OUTPUT_HANDLE),GetStdHandle(STD_ERROR_HANDLE)};bool closed=false;
++  HelperStdio(){for(auto handle:handles)noninherit(handle);}
++  ~HelperStdio(){close();}
++  Stdio streams()const{return{handles[0],handles[1],handles[2]};}
++  void close(){if(closed)return;closed=true;for(std::size_t i=0;i<handles.size();++i)if(std::find(handles.begin(),handles.begin()+static_cast<std::ptrdiff_t>(i),handles[i])==handles.begin()+static_cast<std::ptrdiff_t>(i))CloseHandle(handles[i]);SetStdHandle(STD_INPUT_HANDLE,INVALID_HANDLE_VALUE);SetStdHandle(STD_OUTPUT_HANDLE,INVALID_HANDLE_VALUE);SetStdHandle(STD_ERROR_HANDLE,INVALID_HANDLE_VALUE);}
++};
++// Read and write both use overlapped operations. A blocked peer cannot block root monitoring.
++class Channel {
++  Handle pipe_,read_event_,write_event_;OVERLAPPED read_{},write_{};
++  std::array<std::uint8_t,65536> buffer_{};bool reading_=false,writing_=false;
++  Decoder decoder_;std::deque<std::vector<std::uint8_t>> queue_;std::size_t written_=0;
++  std::vector<Frame> immediate_;
++  void accept(DWORD size){if(!size)throw WinError("owner EOF",ERROR_BROKEN_PIPE);auto frames=decoder_.feed(std::vector<std::uint8_t>(buffer_.begin(),buffer_.begin()+size));immediate_.insert(immediate_.end(),frames.begin(),frames.end());}
++  void begin_read(){
++    ResetEvent(read_event_.get());read_={};read_.hEvent=read_event_.get();DWORD size=0;
++    if(ReadFile(pipe_.get(),buffer_.data(),static_cast<DWORD>(buffer_.size()),&size,&read_)){reading_=false;accept(size);}
++    else if(GetLastError()==ERROR_IO_PENDING)reading_=true;else throw WinError("control read");
++  }
++  void begin_write(){
++    while(!writing_&&!queue_.empty()){
++      ResetEvent(write_event_.get());write_={};write_.hEvent=write_event_.get();DWORD size=0;auto& frame=queue_.front();
++      if(WriteFile(pipe_.get(),frame.data()+written_,static_cast<DWORD>(frame.size()-written_),&size,&write_)){advance(size);}
++      else if(GetLastError()==ERROR_IO_PENDING)writing_=true;else throw WinError("control write");
++    }
++  }
++  void advance(DWORD size){if(!size)throw WinError("control short write",ERROR_BROKEN_PIPE);written_+=size;if(written_==queue_.front().size()){queue_.pop_front();written_=0;}}
++public:
++  explicit Channel(const std::wstring& name,ULONGLONG deadline){
++    for(;;){pipe_.reset(CreateFileW(name.c_str(),GENERIC_READ|GENERIC_WRITE,0,nullptr,OPEN_EXISTING,FILE_FLAG_OVERLAPPED,nullptr));if(pipe_.valid())break;auto error=GetLastError();if((error!=ERROR_PIPE_BUSY&&error!=ERROR_FILE_NOT_FOUND)||GetTickCount64()>=deadline)throw WinError("control connect",error);Sleep(20);}
++    noninherit(pipe_.get());read_event_.reset(CreateEventW(nullptr,TRUE,FALSE,nullptr));write_event_.reset(CreateEventW(nullptr,TRUE,FALSE,nullptr));if(!read_event_.valid()||!write_event_.valid())throw WinError("control events");noninherit(read_event_.get());noninherit(write_event_.get());
++  }
++  ~Channel(){finish(GetTickCount64()+kStopMs);}
++  void send(Type type,const std::vector<std::uint8_t>& payload={}){if(queue_.size()>=8)throw ProtocolError("status queue budget");queue_.push_back(encode_frame(type,payload));begin_write();}
++  std::vector<Frame> poll(){
++    if(writing_){DWORD size=0;if(GetOverlappedResult(pipe_.get(),&write_,&size,FALSE)){writing_=false;advance(size);}else if(GetLastError()!=ERROR_IO_INCOMPLETE)throw WinError("control write completion");}begin_write();
++    if(reading_){DWORD size=0;if(GetOverlappedResult(pipe_.get(),&read_,&size,FALSE)){reading_=false;accept(size);}else if(GetLastError()!=ERROR_IO_INCOMPLETE)throw WinError("control read completion");}
++    // One 64KiB read per poll; parser itself bounds pending bytes to one 1MiB frame.
++    if(!reading_)begin_read();auto out=std::move(immediate_);immediate_.clear();return out;
++  }
++  bool write_idle()const{return queue_.empty()&&!writing_;}
++  void wait(HANDLE root,DWORD timeout){std::array<HANDLE,3> handles{};DWORD n=0;if(reading_)handles[n++]=read_event_.get();if(writing_)handles[n++]=write_event_.get();if(root)handles[n++]=root;if(n){auto result=WaitForMultipleObjects(n,handles.data(),FALSE,timeout);if(result==WAIT_FAILED)throw WinError("control wait");}else Sleep(timeout);}
++  bool peer_present()const{DWORD available=0;return PeekNamedPipe(pipe_.get(),nullptr,0,nullptr,&available,nullptr)!=FALSE;}
++  // Cancelled OVERLAPPED storage remains live through a bounded completion wait.
++  void finish(ULONGLONG deadline){
++    if(pipe_.valid())CancelIoEx(pipe_.get(),nullptr);
++    for(auto* operation:{&read_,&write_}){
++      const bool pending=operation==&read_?reading_:writing_;if(!pending)continue;
++      auto now=GetTickCount64();if(now>=deadline||WaitForSingleObject(operation->hEvent,static_cast<DWORD>(deadline-now))!=WAIT_OBJECT_0)ExitProcess(73);
++      DWORD ignored=0;(void)GetOverlappedResult(pipe_.get(),operation,&ignored,FALSE);
++    }reading_=false;writing_=false;
++  }
++};
++int run(const std::wstring& name,const std::wstring& secret){
++  const auto setup_deadline=GetTickCount64()+kSetupMs;pipe_name(name);auto hello=std::vector<std::uint8_t>{};append_u32(hello,kProtocol);auto bytes=nonce(secret);hello.insert(hello.end(),bytes.begin(),bytes.end());
++  HelperStdio streams;OwnedJob job;Channel channel(name,setup_deadline);channel.send(Type::Hello,hello);
++  bool launched=false,resumed=false,stopping=false,root_reported=false,failed=false;ULONGLONG run_deadline=0,stop_deadline=0;
++  auto stop=[&](){if(!stopping){stopping=true;stop_deadline=GetTickCount64()+kStopMs;}streams.close();};
++  auto error=[&](std::uint32_t reason,DWORD code){failed=true;stop();std::vector<std::uint8_t> payload;append_u32(payload,reason);append_u32(payload,code);try{channel.send(Type::Error,payload);}catch(const std::exception&){}};
++  auto receive=[&](const std::vector<Frame>& frames){
++    // STOP in the same available batch wins before creation, even when it follows LAUNCH.
++    if(std::any_of(frames.begin(),frames.end(),[](const auto& frame){return frame.type==Type::Stop;}))stop();
++    for(const auto& frame:frames){if(frame.type==Type::Stop)continue;if(stopping&&frame.type==Type::Launch&&!launched){(void)parse_launch(frame.payload);launched=true;continue;}if(frame.type!=Type::Launch||launched||stopping)throw ProtocolError("control state");auto launch=parse_launch(frame.payload);launched=true;job.create(launch,streams.streams());streams.close();}
++  };
++  for(;;){
++    try{
++      auto frames=channel.poll();receive(frames);
++      if(launched&&!resumed&&!stopping){
++        // Observe ready control/owner EOF once more while the root is suspended.
++        if(!channel.peer_present())stop();else receive(channel.poll());
++        if(GetTickCount64()>=setup_deadline)error(3,WAIT_TIMEOUT);
++        if(!stopping){job.resume();resumed=true;run_deadline=GetTickCount64()+kRunMs;std::vector<std::uint8_t> ready;append_u32(ready,job.root_id());channel.send(Type::Ready,ready);}
++      }
++      if(job.root()&&!root_reported&&WaitForSingleObject(job.root(),0)==WAIT_OBJECT_0){DWORD code=0;if(!GetExitCodeProcess(job.root(),&code))throw WinError("root exit");root_reported=true;std::vector<std::uint8_t> exit;append_u32(exit,code);channel.send(Type::RootExit,exit);stop();}
++      const auto now=GetTickCount64();if(!stopping&&((!resumed&&now>=setup_deadline)||(resumed&&now>=run_deadline)))error(3,WAIT_TIMEOUT);
++      if(stopping){
++        const auto empty_deadline=std::min(stop_deadline,GetTickCount64()+kEmptyMs);
++        if(!job.stop(empty_deadline)){error(4,WAIT_TIMEOUT);channel.finish(stop_deadline);return 1;}
++        if(job.root()&&!root_reported&&WaitForSingleObject(job.root(),0)==WAIT_OBJECT_0){DWORD code=0;if(GetExitCodeProcess(job.root(),&code)){std::vector<std::uint8_t> exit;append_u32(exit,code);channel.send(Type::RootExit,exit);}root_reported=true;}
++        channel.send(Type::JobEmpty);
++        while(!channel.write_idle()&&GetTickCount64()<stop_deadline){(void)channel.poll();channel.wait(nullptr,20);}
++        const auto delivered=channel.write_idle();channel.finish(stop_deadline);return delivered&&!failed?0:1;
++      }
++      channel.wait(resumed?job.root():nullptr,20);
++    }catch(const ProtocolError&){error(1,ERROR_INVALID_DATA);}catch(const WinError& fault){error(2,fault.code);}
++    if(stopping){
++      // Owner disconnect or invalid protocol: terminate only our private Job; absence of
++      // an acknowledgement remains an unverified outcome for the future Node adapter.
++      try{(void)job.stop(std::min(stop_deadline,GetTickCount64()+kEmptyMs));}catch(const std::exception&){}
++      channel.finish(stop_deadline);return 1;
++    }
++  }
++}
++}
++}
++int wmain(int argc,wchar_t** argv){
++  // Release helper has no fault injection switches, target argv, or shell command option.
++  if(argc!=5||std::wstring(argv[1])!=L"--pipe"||std::wstring(argv[3])!=L"--nonce")return 2;
++  try{return atlas::job::run(argv[2],argv[4]);}catch(const std::exception&){return 1;}
++}
+--- /dev/null
++++ b/apps/server/native/agent-job/protocol.cpp
+@@ -0,0 +1,111 @@
++#include "protocol.h"
++#include <algorithm>
++#ifdef _WIN32
++#include <Windows.h>
++#endif
++namespace atlas::job {
++namespace {
++void utf16(const std::u16string& value) {
++  for (std::size_t i=0; i<value.size(); ++i) {
++    auto c=value[i]; if (!c) throw ProtocolError("NUL text");
++    if (c>=0xd800 && c<=0xdbff) { if (++i==value.size() || value[i]<0xdc00 || value[i]>0xdfff) throw ProtocolError("UTF16"); }
++    else if (c>=0xdc00 && c<=0xdfff) throw ProtocolError("UTF16");
++  }
++}
++std::string utf8(const std::u16string& value) {
++  utf16(value); std::string out;
++  for (std::size_t i=0;i<value.size();++i) {
++    std::uint32_t c=value[i]; if (c>=0xd800 && c<=0xdbff) c=0x10000+((c-0xd800)<<10)+(value[++i]-0xdc00);
++    if (c<0x80) out.push_back(static_cast<char>(c));
++    else if (c<0x800) { out.push_back(static_cast<char>(0xc0|(c>>6))); out.push_back(static_cast<char>(0x80|(c&63))); }
++    else if (c<0x10000) { out.push_back(static_cast<char>(0xe0|(c>>12))); out.push_back(static_cast<char>(0x80|((c>>6)&63))); out.push_back(static_cast<char>(0x80|(c&63))); }
++    else { out.push_back(static_cast<char>(0xf0|(c>>18))); out.push_back(static_cast<char>(0x80|((c>>12)&63))); out.push_back(static_cast<char>(0x80|((c>>6)&63))); out.push_back(static_cast<char>(0x80|(c&63))); }
++  } return out;
++}
++bool absolute(const std::u16string& s) {
++  auto slash=[](char16_t c){return c==u'\\'||c==u'/';};
++  if(s.size()>=3 && ((s[0]>=u'a'&&s[0]<=u'z')||(s[0]>=u'A'&&s[0]<=u'Z')) && s[1]==u':' && slash(s[2]))return true;
++  if(s.size()<5 || s[0]!=u'\\' || s[1]!=u'\\')return false;
++  auto server=s.find(u'\\',2); auto share=s.find(u'\\',server==std::u16string::npos?s.size():server+1);
++  return server>2 && server!=std::u16string::npos && share>server+1 && share!=std::u16string::npos;
++}
++std::u16string upper_ascii(std::u16string s) { for(auto& c:s) if(c>=u'a'&&c<=u'z') c=static_cast<char16_t>(c-u'a'+u'A'); return s; }
++bool equal_key(const std::u16string& a,const std::u16string& b) {
++#ifdef _WIN32
++  return CompareStringOrdinal(reinterpret_cast<LPCWCH>(a.data()),static_cast<int>(a.size()),reinterpret_cast<LPCWCH>(b.data()),static_cast<int>(b.size()),TRUE)==CSTR_EQUAL;
++#else
++  return upper_ascii(a)==upper_ascii(b); // Portable tests cover ASCII only; Windows is authoritative.
++#endif
++}
++void validate(const Launch& launch) {
++  utf16(launch.command); utf16(launch.cwd); auto exe=upper_ascii(launch.command);
++  if(!absolute(exe)||exe.size()<4||exe.substr(exe.size()-4)!=u".EXE"||!absolute(launch.cwd))throw ProtocolError("absolute exe/cwd required");
++  if(launch.args.size()>256||launch.env.size()>512)throw ProtocolError("launch count budget");
++  for(const auto& arg:launch.args)utf16(arg);
++  for(std::size_t i=0;i<launch.env.size();++i) {
++    const auto& [key,value]=launch.env[i]; utf16(key);utf16(value);
++    if(key.empty()||key.find(u'=')!=std::u16string::npos)throw ProtocolError("environment key");
++    for(std::size_t j=0;j<i;++j)if(equal_key(key,launch.env[j].first))throw ProtocolError("duplicate environment key");
++  }
++  if(command_line(launch).size()+1>32767)throw ProtocolError("command line budget");
++}
++void append_text(std::vector<std::uint8_t>& bytes,const std::u16string& value) {
++  auto encoded=utf8(value); if(encoded.size()>kMaxFrame)throw ProtocolError("text budget");
++  append_u32(bytes,static_cast<std::uint32_t>(encoded.size()));bytes.insert(bytes.end(),encoded.begin(),encoded.end());
++  if(bytes.size()+5>kMaxFrame)throw ProtocolError("frame budget");
++}
++void valid_frame(Type type,std::size_t size) {
++  std::size_t expected=0;
++  switch(type) { case Type::Hello:expected=36;break;case Type::Ready:case Type::RootExit:expected=4;break;case Type::Stop:case Type::JobEmpty:expected=0;break;case Type::Error:expected=8;break;case Type::Launch:if(size+5>kMaxFrame)throw ProtocolError("frame budget");return;default:throw ProtocolError("unknown type"); }
++  if(size!=expected || size+5>kMaxStatusFrame)throw ProtocolError("status payload");
++}
++}
++std::u16string strict_utf8(const std::string& value) {
++  std::u16string out;
++  for(std::size_t i=0;i<value.size();) {
++    auto first=static_cast<std::uint8_t>(value[i++]);std::uint32_t c=0;std::size_t n=0;std::uint32_t minimum=0;
++    if(first<128)c=first;
++    else if(first>=0xc2&&first<=0xdf){c=first&31;n=1;minimum=0x80;}
++    else if(first>=0xe0&&first<=0xef){c=first&15;n=2;minimum=0x800;}
++    else if(first>=0xf0&&first<=0xf4){c=first&7;n=3;minimum=0x10000;}
++    else throw ProtocolError("UTF8 prefix");
++    if(n>value.size()-i)throw ProtocolError("UTF8 incomplete");
++    for(std::size_t j=0;j<n;++j){auto b=static_cast<std::uint8_t>(value[i++]);if((b&0xc0)!=0x80)throw ProtocolError("UTF8 continuation");c=(c<<6)|(b&63);}
++    if(!c||c<minimum||c>0x10ffff||(c>=0xd800&&c<=0xdfff))throw ProtocolError("UTF8 scalar");
++    if(c<0x10000)out.push_back(static_cast<char16_t>(c));else {c-=0x10000;out.push_back(static_cast<char16_t>(0xd800+(c>>10)));out.push_back(static_cast<char16_t>(0xdc00+(c&1023)));}
++  }return out;
++}
++std::u16string quote_argument(const std::u16string& value) {
++  utf16(value);std::u16string out=u"\"";std::size_t slashes=0;
++  for(auto c:value){if(c==u'\\'){++slashes;continue;}out.append(c==u'"'?slashes*2+1:slashes,u'\\');out.push_back(c);slashes=0;}
++  out.append(slashes*2,u'\\');out.push_back(u'"');return out;
++}
++std::u16string command_line(const Launch& launch) { auto line=quote_argument(launch.command);for(const auto& arg:launch.args){line+=u' ';line+=quote_argument(arg);}return line; }
++void append_u32(std::vector<std::uint8_t>& bytes,std::uint32_t n){for(unsigned int i=0;i<4;++i)bytes.push_back(static_cast<std::uint8_t>(n>>(i*8)));}
++std::uint32_t read_u32(const std::vector<std::uint8_t>& bytes,std::size_t pos){if(pos>bytes.size()||bytes.size()-pos<4)throw ProtocolError("missing u32");std::uint32_t n=0;for(unsigned int i=0;i<4;++i)n|=static_cast<std::uint32_t>(bytes[pos+i])<<(i*8);return n;}
++std::vector<std::uint8_t> encode_launch(const Launch& launch) {
++  validate(launch);std::vector<std::uint8_t> out;append_text(out,launch.command);append_text(out,launch.cwd);append_u32(out,static_cast<std::uint32_t>(launch.args.size()));for(const auto& arg:launch.args)append_text(out,arg);append_u32(out,static_cast<std::uint32_t>(launch.env.size()));for(const auto& [key,value]:launch.env){append_text(out,key);append_text(out,value);}return out;
++}
++Launch parse_launch(const std::vector<std::uint8_t>& payload) {
++  if(payload.size()+5>kMaxFrame)throw ProtocolError("frame budget");
++  std::size_t pos=0;
++  auto number=[&](){auto n=read_u32(payload,pos);pos+=4;return n;};
++  auto string=[&](){auto n=number();if(n>payload.size()-pos)throw ProtocolError("text length");auto s=strict_utf8(std::string(payload.begin()+static_cast<std::ptrdiff_t>(pos),payload.begin()+static_cast<std::ptrdiff_t>(pos+n)));pos+=n;return s;};
++  Launch out;out.command=string();out.cwd=string();auto args=number();if(args>256)throw ProtocolError("args budget");for(std::uint32_t i=0;i<args;++i)out.args.push_back(string());auto env=number();if(env>512)throw ProtocolError("env budget");for(std::uint32_t i=0;i<env;++i){auto key=string();auto value=string();out.env.emplace_back(key,value);}if(pos!=payload.size())throw ProtocolError("trailing bytes");validate(out);return out;
++}
++std::vector<std::uint8_t> encode_frame(Type type,const std::vector<std::uint8_t>& payload){valid_frame(type,payload.size());std::vector<std::uint8_t> out;append_u32(out,static_cast<std::uint32_t>(payload.size()+1));out.push_back(static_cast<std::uint8_t>(type));out.insert(out.end(),payload.begin(),payload.end());return out;}
++std::vector<Frame> Decoder::feed(const std::vector<std::uint8_t>& bytes) {
++  // Consume incrementally so a valid batch never creates an unbounded pending buffer.
++  std::vector<Frame> out;std::size_t pos=0;
++  while(pos<bytes.size()){
++    auto want=pending_.size()<4?4:static_cast<std::size_t>(read_u32(pending_,0))+4;
++    if(want<5 && pending_.size()>=4)throw ProtocolError("frame length");
++    if(want>kMaxFrame)throw ProtocolError("frame budget");
++    auto count=std::min(want-pending_.size(),bytes.size()-pos);pending_.insert(pending_.end(),bytes.begin()+static_cast<std::ptrdiff_t>(pos),bytes.begin()+static_cast<std::ptrdiff_t>(pos+count));pos+=count;
++    if(pending_.size()<4)continue;
++    auto length=read_u32(pending_,0);if(length<1||length+static_cast<std::uint64_t>(4)>kMaxFrame)throw ProtocolError("frame length");
++    if(pending_.size()!=length+4)continue;
++    auto type=static_cast<Type>(pending_[4]);valid_frame(type,length-1);out.push_back({type,{pending_.begin()+5,pending_.end()}});pending_.clear();
++  }return out;
++}
++}
+--- /dev/null
++++ b/apps/server/native/agent-job/protocol.h
+@@ -0,0 +1,24 @@
++#pragma once
++#include <cstdint>
++#include <stdexcept>
++#include <string>
++#include <utility>
++#include <vector>
++namespace atlas::job {
++inline constexpr std::uint32_t kProtocol = 1;
++inline constexpr std::size_t kMaxFrame = 1024 * 1024;
++inline constexpr std::size_t kMaxStatusFrame = 256;
++enum class Type : std::uint8_t { Hello=1, Launch=2, Ready=3, RootExit=4, Stop=5, JobEmpty=6, Error=7 };
++struct ProtocolError : std::runtime_error { using std::runtime_error::runtime_error; };
++struct Frame { Type type; std::vector<std::uint8_t> payload; };
++struct Launch { std::u16string command, cwd; std::vector<std::u16string> args; std::vector<std::pair<std::u16string,std::u16string>> env; };
++std::u16string strict_utf8(const std::string& value);
++std::u16string quote_argument(const std::u16string& value);
++std::u16string command_line(const Launch& launch);
++std::vector<std::uint8_t> encode_launch(const Launch& launch);
++Launch parse_launch(const std::vector<std::uint8_t>& payload);
++std::vector<std::uint8_t> encode_frame(Type type, const std::vector<std::uint8_t>& payload);
++void append_u32(std::vector<std::uint8_t>& bytes, std::uint32_t value);
++std::uint32_t read_u32(const std::vector<std::uint8_t>& bytes, std::size_t position);
++class Decoder { std::vector<std::uint8_t> pending_; public: std::vector<Frame> feed(const std::vector<std::uint8_t>& bytes); };
++}
+--- /dev/null
++++ b/apps/server/native/agent-job/tests/job-fixture.cpp
+@@ -0,0 +1,36 @@
++// Pure owned fixture. The only PID input is the harness that created this fixture.
++#include "../job.h"
++#include <array>
++#include <cwchar>
++#include <iostream>
++using namespace atlas::job;
++static std::wstring executable(){std::array<wchar_t,32768> path{};auto n=GetModuleFileNameW(nullptr,path.data(),static_cast<DWORD>(path.size()));if(!n||n>=path.size())throw WinError("fixture path");return {path.data(),n};}
++static std::u16string u16(const std::wstring& s){return{reinterpret_cast<const char16_t*>(s.data()),s.size()};}
++int wmain(int argc,wchar_t** argv){
++  try{
++    if(argc==2&&std::wcscmp(argv[1],L"hold")==0){Sleep(INFINITE);return 90;}
++    if(argc==3&&std::wcscmp(argv[1],L"exit")==0)return std::wcscmp(argv[2],L"0")==0?0:1;
++    if(argc==4&&(std::wcscmp(argv[1],L"tree-exit")==0||std::wcscmp(argv[1],L"tree-hold")==0)){
++      const auto harness_id=static_cast<DWORD>(std::wcstoul(argv[2],nullptr,10));
++      Handle harness(OpenProcess(PROCESS_DUP_HANDLE,FALSE,harness_id));if(!harness.valid())throw WinError("owned harness observer");noninherit(harness.get());
++      // This inner Job is nested in the helper's private Job. It keeps stdout/stderr
++      // alive until the harness releases its root-first barrier and the outer Job stops.
++      std::array<wchar_t,32768> directory{};auto count=GetCurrentDirectoryW(static_cast<DWORD>(directory.size()),directory.data());if(!count||count>=directory.size())throw WinError("fixture cwd");
++      OwnedJob nested;nested.create({u16(executable()),u16(directory.data()),{u"hold"},{}},{GetStdHandle(STD_INPUT_HANDLE),GetStdHandle(STD_OUTPUT_HANDLE),GetStdHandle(STD_ERROR_HANDLE)});
++      HANDLE observer=nullptr;if(!DuplicateHandle(GetCurrentProcess(),nested.root(),harness.get(),&observer,SYNCHRONIZE|PROCESS_QUERY_LIMITED_INFORMATION,FALSE,0))throw WinError("owned descendant observation");
++      std::cout<<"DESC "<<reinterpret_cast<std::uintptr_t>(observer)<<'\n'<<std::flush;
++      nested.resume();
++      // Root exits without closing its Job in user code. Kernel closes this inner
++      // Job, which would itself kill the descendant: clear only the inner kill-close
++      // flag so the test genuinely depends on the OUTER helper Job to kill it.
++      JOBOBJECT_EXTENDED_LIMIT_INFORMATION no_kill{};if(!SetInformationJobObject(nested.job(),JobObjectExtendedLimitInformation,&no_kill,sizeof(no_kill)))throw WinError("fixture inner job limits");
++      if(std::wcscmp(argv[1],L"tree-hold")==0)Sleep(INFINITE);
++      ExitProcess(std::wcscmp(argv[3],L"0")==0?0:1);
++    }
++    if(argc==2&&std::wcscmp(argv[1],L"argv")==0)return 2;
++    if(argc>=2&&std::wcscmp(argv[1],L"echo")==0){
++      for(int i=2;i<argc;++i){std::wstring argument=argv[i];std::cout<<argument.size()<<":";for(auto c:argument)std::cout<<static_cast<unsigned int>(c)<<",";std::cout<<"\n";}return 0;
++    }
++    return 2;
++  }catch(const std::exception&){return 3;}
++}
+--- /dev/null
++++ b/apps/server/native/agent-job/tests/job-harness.cpp
+@@ -0,0 +1,109 @@
++// Owned Win32 mechanism gates. No public native capability or existing guard is used.
++#include "../job.h"
++#include <iostream>
++#include <filesystem>
++#include <stdexcept>
++#include <array>
++#include <string>
++#include <random>
++#include <deque>
++using namespace atlas::job;
++static void check(bool result, const char* message) { if(!result)throw std::runtime_error(message); }
++static std::u16string u16(const std::wstring& s){return {reinterpret_cast<const char16_t*>(s.data()),s.size()};}
++static std::string read_line(HANDLE pipe,ULONGLONG deadline){
++  std::string line;
++  while(GetTickCount64()<deadline){DWORD available=0;if(!PeekNamedPipe(pipe,nullptr,0,nullptr,&available,nullptr))throw WinError("fixture output EOF");if(available){char c=0;DWORD count=0;if(!ReadFile(pipe,&c,1,&count,nullptr)||count!=1)throw WinError("fixture read");if(c=='\n')return line;line.push_back(c);if(line.size()>128)throw std::runtime_error("fixture output budget");}else Sleep(10);}
++  throw std::runtime_error("fixture observer deadline");
++}
++static Handle duplicate_observer(HANDLE source){HANDLE out=nullptr;check(DuplicateHandle(GetCurrentProcess(),source,GetCurrentProcess(),&out,SYNCHRONIZE|PROCESS_QUERY_LIMITED_INFORMATION,FALSE,0)!=FALSE,"observer duplication");return Handle(out);}
++static std::wstring random_hex(std::size_t count){std::random_device generator;const wchar_t digits[]=L"0123456789abcdef";std::wstring value;for(std::size_t i=0;i<count;++i)value.push_back(digits[generator()%16]);return value;}
++static void pipe_io(HANDLE pipe,void* bytes,DWORD size,bool writing,ULONGLONG deadline){
++  Handle event(CreateEventW(nullptr,TRUE,FALSE,nullptr));check(event.valid(),"test I/O event");OVERLAPPED operation{};operation.hEvent=event.get();DWORD done=0;
++  const auto immediate=writing?WriteFile(pipe,bytes,size,&done,&operation):ReadFile(pipe,bytes,size,&done,&operation);
++  if(!immediate){check(GetLastError()==ERROR_IO_PENDING,"test I/O pending");const auto now=GetTickCount64();if(now>=deadline||WaitForSingleObject(event.get(),static_cast<DWORD>(deadline-now))!=WAIT_OBJECT_0){CancelIoEx(pipe,&operation);if(WaitForSingleObject(event.get(),2000)!=WAIT_OBJECT_0)ExitProcess(74);throw std::runtime_error("test I/O deadline");}check(GetOverlappedResult(pipe,&operation,&done,FALSE)!=FALSE,"test I/O result");}
++  check(done==size,"test I/O length");
++}
++static Frame read_frame(HANDLE pipe,ULONGLONG deadline){
++  std::vector<std::uint8_t> prefix(4);pipe_io(pipe,prefix.data(),4,false,deadline);auto length=read_u32(prefix,0);check(length>=1&&length+4<=kMaxFrame,"test frame budget");std::vector<std::uint8_t> body(length);pipe_io(pipe,body.data(),length,false,deadline);prefix.insert(prefix.end(),body.begin(),body.end());Decoder decoder;auto frames=decoder.feed(prefix);check(frames.size()==1,"one control frame");return frames.front();
++}
++static void control_gates(const std::u16string& helper,const std::u16string& fixture,const std::u16string& cwd,Stdio streams,HANDLE sentinel){
++  for(const auto& scenario:{u"0",u"1",u"kill-helper",u"owner-EOF",u"STOP"}){
++    const auto name=L"\\\\.\\pipe\\atlas-agent-job-"+random_hex(32);const auto secret=random_hex(64);
++    Handle pipe(CreateNamedPipeW(name.c_str(),PIPE_ACCESS_DUPLEX|FILE_FLAG_OVERLAPPED|FILE_FLAG_FIRST_PIPE_INSTANCE,PIPE_TYPE_BYTE|PIPE_READMODE_BYTE|PIPE_WAIT,1,65536,65536,0,nullptr));check(pipe.valid(),"owned control pipe");noninherit(pipe.get());
++    Handle connect_event(CreateEventW(nullptr,TRUE,FALSE,nullptr));OVERLAPPED connect{};connect.hEvent=connect_event.get();const auto connected=ConnectNamedPipe(pipe.get(),&connect);const auto connect_error=GetLastError();check(connected||connect_error==ERROR_IO_PENDING||connect_error==ERROR_PIPE_CONNECTED,"owned control connect");
++    HANDLE read=nullptr,write=nullptr;check(CreatePipe(&read,&write,nullptr,0)!=FALSE,"helper owned output");Handle output_read(read),output_write(write);noninherit(output_read.get());noninherit(output_write.get());
++    OwnedJob helper_owner;helper_owner.create({helper,cwd,{u"--pipe",u16(name),u"--nonce",u16(secret)},{}},{streams.input,output_write.get(),output_write.get()});auto helper_observer=duplicate_observer(helper_owner.root());helper_owner.resume();output_write.reset();
++    if(!connected&&connect_error==ERROR_IO_PENDING){check(WaitForSingleObject(connect_event.get(),5000)==WAIT_OBJECT_0,"helper control connected");DWORD ignored=0;check(GetOverlappedResult(pipe.get(),&connect,&ignored,FALSE)!=FALSE,"owned connection result");}
++    auto hello=read_frame(pipe.get(),GetTickCount64()+5000);check(hello.type==Type::Hello&&read_u32(hello.payload,0)==1,"helper protocol HELLO");
++    const auto digit=[](wchar_t c){return c<=L'9'?c-L'0':c-L'a'+10;};for(std::size_t i=0;i<32;++i)check(hello.payload[i+4]==static_cast<std::uint8_t>((digit(secret[i*2])<<4)|digit(secret[i*2+1])),"helper nonce authentication");
++    const bool exiting=std::u16string(scenario)==u"0"||std::u16string(scenario)==u"1";
++    auto launch=encode_frame(Type::Launch,encode_launch({fixture,cwd,{exiting?u"tree-exit":u"tree-hold",u16(std::to_wstring(GetCurrentProcessId())),exiting?std::u16string(scenario):u"0"},{}}));pipe_io(pipe.get(),launch.data(),static_cast<DWORD>(launch.size()),true,GetTickCount64()+2000);
++    auto ready=read_frame(pipe.get(),GetTickCount64()+5000);check(ready.type==Type::Ready,"real helper READY");
++    const auto line=read_line(output_read.get(),GetTickCount64()+3000);check(line.rfind("DESC ",0)==0,"helper descendant receipt");Handle descendant(reinterpret_cast<HANDLE>(static_cast<std::uintptr_t>(std::stoull(line.substr(5)))));noninherit(descendant.get());
++    if(std::u16string(scenario)==u"kill-helper"){
++      check(TerminateProcess(helper_owner.root(),99)!=FALSE,"real owned helper termination");
++      check(WaitForSingleObject(helper_observer.get(),3000)==WAIT_OBJECT_0,"helper fault exit");
++    }else if(std::u16string(scenario)==u"owner-EOF"){
++      pipe.reset();check(WaitForSingleObject(helper_observer.get(),5000)==WAIT_OBJECT_0,"owner EOF bounded helper exit");
++    }else{
++      if(std::u16string(scenario)==u"STOP"){auto stop=encode_frame(Type::Stop,{});auto repeated=stop;repeated.insert(repeated.end(),stop.begin(),stop.end());pipe_io(pipe.get(),repeated.data(),static_cast<DWORD>(repeated.size()),true,GetTickCount64()+2000);}
++      bool root_exit=false,empty=false;const auto deadline=GetTickCount64()+5000;
++      while(!empty){auto status=read_frame(pipe.get(),deadline);if(status.type==Type::RootExit){root_exit=true;if(exiting)check(read_u32(status.payload,0)==static_cast<std::uint32_t>(scenario[0]-u'0'),"actual root-first code");}else if(status.type==Type::JobEmpty)empty=true;else throw std::runtime_error("unexpected control status");}
++      check(root_exit,"root HANDLE separate from stdio");check(WaitForSingleObject(helper_observer.get(),3000)==WAIT_OBJECT_0,"helper acknowledged exit");
++    }
++    check(WaitForSingleObject(descendant.get(),3000)==WAIT_OBJECT_0,"real helper owned descendant signaled");
++    check(WaitForSingleObject(sentinel,0)==WAIT_TIMEOUT,"real helper excludes unrelated owned sentinel");
++    check(helper_owner.stop(GetTickCount64()+2000),"outer helper owner Job empty");
++  }
++}
++int wmain(int argc,wchar_t** argv) {
++  if(argc!=3){std::cerr<<"usage: job-harness.exe absolute-job-fixture.exe absolute-atlas-agent-job.exe\n";return 2;}
++  try {
++    const auto exe=u16(argv[1]); auto cwd=u16(std::filesystem::current_path().wstring());
++    Handle nullin(CreateFileW(L"NUL",GENERIC_READ,FILE_SHARE_READ|FILE_SHARE_WRITE,nullptr,OPEN_EXISTING,0,nullptr));
++    Handle nullout(CreateFileW(L"NUL",GENERIC_WRITE,FILE_SHARE_READ|FILE_SHARE_WRITE,nullptr,OPEN_EXISTING,0,nullptr));
++    check(nullin.valid()&&nullout.valid(),"owned stdio handles");
++    // Suspended root observer is obtained before any payload instruction can run.
++    OwnedJob job; job.create({exe,cwd,{u"hold"},{}},{nullin.get(),nullout.get(),nullout.get()});
++    BOOL assigned=FALSE;check(IsProcessInJob(job.root(),job.job(),&assigned)&&assigned,"atomic assignment before resume");
++    auto observer=duplicate_observer(job.root());
++    check(WaitForSingleObject(observer.get(),0)==WAIT_TIMEOUT,"suspended root not signaled");
++    job.resume();check(job.stop(GetTickCount64()+2000),"job empty accounting");
++    check(WaitForSingleObject(observer.get(),2000)==WAIT_OBJECT_0,"owned root signaled");
++    // Kill-on-last-close covers a root that never resumed, without any Assign fallback.
++    Handle suspended_observer;
++    { OwnedJob suspended;suspended.create({exe,cwd,{u"hold"},{}},{nullin.get(),nullout.get(),nullout.get()});suspended_observer=duplicate_observer(suspended.root()); }
++    check(WaitForSingleObject(suspended_observer.get(),2000)==WAIT_OBJECT_0,"kill-on-close suspended root");
++    // A sentinel belongs to a separate owned Job and must remain alive after victim cleanup.
++    OwnedJob sentinel;sentinel.create({exe,cwd,{u"hold"},{}},{nullin.get(),nullout.get(),nullout.get()});sentinel.resume();
++    auto sentinel_observer=duplicate_observer(sentinel.root());
++    for(const auto& code:{u"0",u"1"}) {
++      OwnedJob early;early.create({exe,cwd,{u"exit",code},{}},{nullin.get(),nullout.get(),nullout.get()});auto early_observer=duplicate_observer(early.root());early.resume();
++      check(WaitForSingleObject(early_observer.get(),2000)==WAIT_OBJECT_0,"root first exit");
++      DWORD actual=99;check(GetExitCodeProcess(early.root(),&actual)&&actual==static_cast<DWORD>(code[0]-u'0'),"root exit code");
++      check(early.stop(GetTickCount64()+2000),"root-first independent job lifetime");
++      check(WaitForSingleObject(sentinel_observer.get(),0)==WAIT_TIMEOUT,"outside sentinel remains alive");
++    }
++    // A descendant is observed before its ResumeThread and retains both streams
++    // after root exit. Inner Job kill-close is off, so only the outer Job can settle it.
++    for(const auto& code:{u"0",u"1"}) {
++      HANDLE read=nullptr,write=nullptr;check(CreatePipe(&read,&write,nullptr,0)!=FALSE,"owned stream pipe");Handle output_read(read),output_write(write);noninherit(output_read.get());noninherit(output_write.get());
++      const auto harness_id=std::to_wstring(GetCurrentProcessId());
++      OwnedJob tree;tree.create({exe,cwd,{u"tree-exit",u16(harness_id),code},{}},{nullin.get(),output_write.get(),output_write.get()});auto root_observer=duplicate_observer(tree.root());tree.resume();output_write.reset();
++      const auto line=read_line(output_read.get(),GetTickCount64()+3000);check(line.rfind("DESC ",0)==0,"descendant handle receipt");
++      Handle descendant(reinterpret_cast<HANDLE>(static_cast<std::uintptr_t>(std::stoull(line.substr(5)))));noninherit(descendant.get());
++      check(WaitForSingleObject(root_observer.get(),3000)==WAIT_OBJECT_0,"root exited before descendant");
++      check(WaitForSingleObject(descendant.get(),0)==WAIT_TIMEOUT,"descendant outlives root");
++      check(tree.stop(GetTickCount64()+2000),"root-first tree empty");check(WaitForSingleObject(descendant.get(),2000)==WAIT_OBJECT_0,"owned descendant signaled");
++      DWORD available=0;check(!PeekNamedPipe(output_read.get(),nullptr,0,nullptr,&available,nullptr)&&GetLastError()==ERROR_BROKEN_PIPE,"held stdio EOF after tree cleanup");
++      check(WaitForSingleObject(sentinel_observer.get(),0)==WAIT_TIMEOUT,"tree cleanup excludes sentinel");
++    }
++    // exe-only refusal leaves no resumed process.
++    bool refused=false;try{OwnedJob invalid;invalid.create({u"C:\\unknown.cmd",cwd,{},{}},{nullin.get(),nullout.get(),nullout.get()});}catch(const std::exception&){refused=true;}
++    check(refused,"cmd shim refusal");
++    control_gates(u16(argv[2]),exe,cwd,{nullin.get(),nullout.get(),nullout.get()},sentinel_observer.get());
++    check(sentinel.stop(GetTickCount64()+2000),"owned sentinel final cleanup");
++    std::cout<<"PASS Windows atomic assignment/root-first/last-close/sentinel owned HANDLE gates\n";
++    return 0;
++  }catch(const std::exception& error){std::cerr<<error.what()<<'\n';return 1;}
++}
+--- /dev/null
++++ b/apps/server/native/agent-job/tests/protocol-tests.cpp
+@@ -0,0 +1,42 @@
++#include "../protocol.h"
++#include <cstdlib>
++#include <iostream>
++#include <stdexcept>
++#include <iomanip>
++
++using namespace atlas::job;
++static void check(bool pass, const char* message) { if (!pass) throw std::runtime_error(message); }
++template<class F> static void rejects(F operation) { bool rejected = false; try { operation(); } catch (const ProtocolError&) { rejected = true; } check(rejected, "expected rejection"); }
++int main() {
++  try {
++    check(quote_argument(u"") == u"\"\"", "empty literal argument");
++    check(quote_argument(u"a\"b") == u"\"a\\\"b\"", "quote literal argument");
++    check(quote_argument(u"end\\") == u"\"end\\\\\"", "trailing slash");
++    check(strict_utf8("\xe4\xb8\xad\xe6\x96\x87") == u"中文", "UTF8 round trip");
++    rejects([] { strict_utf8(std::string("a\0b", 3)); });
++    rejects([] { strict_utf8("\xc0\x80"); });
++    rejects([] { strict_utf8("\xed\xa0\x80"); });
++    rejects([] { strict_utf8("\xf4\x90\x80\x80"); });
++    Decoder decoder;
++    check(decoder.feed({1,0,0}).empty(), "split prefix");
++    auto frames = decoder.feed({0,5,1,0,0,0,6});
++    check(frames.size() == 2 && frames[0].type == Type::Stop && frames[1].type == Type::JobEmpty, "contiguous frames");
++    rejects([] { Decoder d; d.feed({0,0,0,0}); });
++    rejects([] { Decoder d; d.feed({255,255,255,127}); });
++    rejects([] { Decoder d; d.feed({1,0,0,0,8}); });
++    rejects([] { Decoder d; d.feed({2,0,0,0,5,1}); });
++    rejects([] { Decoder d; d.feed({1,0,0,0,3}); });
++    Launch launch{u"C:\\node.exe", u"C:\\work", {u"", u"中文", u"a\"b", u"end\\"}, {{u"Path",u"x"}}};
++    auto payload = encode_launch(launch);
++    auto parsed = parse_launch(payload);
++    check(parsed.args == launch.args && parsed.env == launch.env, "literal launch values");
++    payload.push_back(0); rejects([&] { parse_launch(payload); });
++    launch.command = u"C:\\node.cmd"; rejects([&] { encode_launch(launch); });
++    launch.command = u"node.exe"; rejects([&] { encode_launch(launch); });
++    launch.command = u"C:\\node.exe"; launch.env.push_back({u"PATH",u"y"}); rejects([&] { encode_launch(launch); });
++    launch.env.clear(); launch.args = {std::u16string(32767, u'x')}; rejects([&] { encode_launch(launch); });
++    std::cout << "WIRE "; for(auto byte:encode_frame(Type::Launch,encode_launch(Launch{u"C:\\node.exe",u"C:\\work",{u"",u"中文",u"a\"b",u"end\\"},{{u"Path",u"x"}}})))std::cout << std::hex << std::setw(2) << std::setfill('0') << static_cast<unsigned int>(byte);std::cout << std::dec << '\n';
++    std::cout << "PASS portable protocol: UTF8, literal argv, framing, launch budgets (not a Windows Job gate)\n";
++    return 0;
++  } catch (const std::exception& error) { std::cerr << error.what() << '\n'; return 1; }
++}
+--- /dev/null
++++ b/apps/server/src/agent/windows-job-protocol.test.ts
+@@ -0,0 +1,57 @@
++import { describe, expect, it } from "vitest";
++import { decodeFrames, encodeLaunch, encodeFrame, quoteWindowsArgument, validateManifest } from "./windows-job-protocol.js";
++
++const input = { command: "C:\\node.exe", cwd: "C:\\work", args: ["", "中文", 'a"b', "end\\"], env: { Path: "C:\\bin", EMPTY: "", OMIT: undefined } };
++
++describe("Windows owned Job private wire codec", () => {
++  it("preserves literal argv and omits undefined environment entries", () => {
++    const frame = encodeLaunch(input);
++    expect(frame.readUInt32LE(0)).toBe(frame.length - 4);
++    expect(frame[4]).toBe(2);
++    expect(frame.includes(Buffer.from("OMIT"))).toBe(false);
++    expect(frame.includes(Buffer.from("中文"))).toBe(true);
++    expect(frame.subarray(5, 20).toString("hex")).toBe("0b000000433a5c6e6f64652e657865");
++  });
++  it.each([
++    { ...input, command: "node.exe" },
++    { ...input, command: "C:\\node.cmd" },
++    { ...input, cwd: "relative" },
++    { ...input, args: ["bad\0value"] },
++    { ...input, args: ["\ud800"] },
++    { ...input, args: Array<string>(257).fill("") },
++    { ...input, env: { Path: "a", PATH: "b" } },
++    { ...input, env: { "": "a" } },
++    { ...input, env: { "A=B": "a" } },
++    { ...input, args: ["x".repeat(32767)] },
++  ])("refuses a launch outside the executable/text/count/command-line contract", (value) => {
++    expect(() => encodeLaunch(value)).toThrow();
++  });
++  it.each([["", '""'], ["plain", '"plain"'], ['a"b', '"a\\"b"'], ["end\\", '"end\\\\"']])("quotes %j without a shell", (arg, expected) => {
++    expect(quoteWindowsArgument(arg!)).toBe(expected);
++  });
++  it("decodes arbitrarily split and contiguous frames with an explicit remainder", () => {
++    const bytes = Buffer.from([1, 0, 0, 0, 5, 1, 0, 0, 0, 6]);
++    const first = decodeFrames(bytes.subarray(0, 3));
++    expect(first.frames).toEqual([]);
++    const rest = decodeFrames(Buffer.concat([first.remainder, bytes.subarray(3)]));
++    expect(rest.frames.map((frame) => frame.type)).toEqual([5, 6]);
++    expect(rest.remainder.length).toBe(0);
++  });
++  it.each([
++    Buffer.from([0, 0, 0, 0]), Buffer.from([0xff, 0xff, 0xff, 0x7f]),
++    Buffer.from([1, 0, 0, 0, 8]), Buffer.from([2, 0, 0, 0, 5, 1]),
++    Buffer.from([1, 0, 0, 0, 3]),
++  ])("refuses malformed bounded status frames", (bytes) => {
++    expect(() => decodeFrames(bytes)).toThrow();
++  });
++  it("bounds a status frame before producing bytes", () => {
++    expect(() => encodeFrame(7, Buffer.alloc(257))).toThrow();
++  });
++  it("validates strict binary provenance without accepting extra or future fields", () => {
++    const value = { protocol: 1, platform: "win32", arch: "x64", sourceDigest: "a".repeat(64), binarySha256: "b".repeat(64), compiler: "MSVC 19.44", sdk: "10.0.26100.0" };
++    expect(validateManifest(value)).toEqual(value);
++    for (const invalid of [{ ...value, arch: "arm64" }, { ...value, protocol: 2 }, { ...value, extra: true }, { ...value, binarySha256: "B".repeat(64) }, { ...value, compiler: "" }]) {
++      expect(() => validateManifest(invalid)).toThrow();
++    }
++  });
++});
+--- /dev/null
++++ b/apps/server/src/agent/windows-job-protocol.ts
+@@ -0,0 +1,75 @@
++// Private codec; no native capability or existing runner is enabled by this file.
++export const JOB_TYPES = { hello: 1, launch: 2, ready: 3, rootExit: 4, stop: 5, jobEmpty: 6, error: 7 } as const;
++export const MAX_JOB_FRAME = 1024 * 1024; // Includes the four-byte prefix.
++export interface JobLaunch { command: string; cwd: string; args: string[]; env: Record<string, string | undefined> }
++export interface JobManifest { protocol: 1; platform: "win32"; arch: "x64"; sourceDigest: string; binarySha256: string; compiler: string; sdk: string }
++export interface JobFrame { type: number; payload: Buffer }
++function text(value: string): void {
++  if (typeof value !== "string" || value.includes("\0") || !value.isWellFormed()) throw new Error("Invalid Job text");
++}
++function absolute(value: string): boolean { return /^[A-Za-z]:[\\/]/u.test(value) || /^\\\\[^\\]+\\[^\\]+\\/u.test(value); }
++function u32(value: number): Buffer { const bytes = Buffer.alloc(4); bytes.writeUInt32LE(value); return bytes; }
++function stringBytes(value: string): Buffer { text(value); const bytes = Buffer.from(value, "utf8"); return Buffer.concat([u32(bytes.length), bytes]); }
++export function quoteWindowsArgument(value: string): string {
++  text(value); let result = '"'; let slashes = 0;
++  for (const character of value) {
++    if (character === "\\") { slashes++; continue; }
++    result += "\\".repeat(character === '"' ? slashes * 2 + 1 : slashes) + character;
++    slashes = 0;
++  }
++  return result + "\\".repeat(slashes * 2) + '"';
++}
++export function encodeLaunch(value: JobLaunch): Buffer {
++  text(value.command); text(value.cwd);
++  if (!absolute(value.command) || !/\.exe$/iu.test(value.command) || !absolute(value.cwd)) throw new Error("Job requires absolute exe and cwd");
++  if (value.args.length > 256) throw new Error("Job argument budget");
++  let lineLength = 0;
++  for (const argument of [value.command, ...value.args]) {
++    text(argument);
++    if (argument.length > 32766) throw new Error("Job command line budget");
++    lineLength += quoteWindowsArgument(argument).length + (lineLength ? 1 : 0);
++    if (lineLength + 1 > 32767) throw new Error("Job command line budget");
++  }
++  const entries = Object.entries(value.env).filter((entry): entry is [string, string] => entry[1] !== undefined);
++  if (entries.length > 512) throw new Error("Job environment budget");
++  const keys = new Set<string>(); const environment: Buffer[] = [];
++  let byteBudget = 5 + 8 + Buffer.byteLength(value.command) + Buffer.byteLength(value.cwd) + 8 + value.args.reduce((sum, item) => sum + 4 + Buffer.byteLength(item), 0);
++  if (byteBudget > MAX_JOB_FRAME) throw new Error("Job frame budget");
++  for (const [key, item] of entries) {
++    text(key); text(item);
++    if (!key || key.includes("=") || keys.has(key.toUpperCase())) throw new Error("Invalid Job environment key");
++    byteBudget += 8 + Buffer.byteLength(key) + Buffer.byteLength(item);
++    if (byteBudget > MAX_JOB_FRAME) throw new Error("Job frame budget");
++    keys.add(key.toUpperCase()); environment.push(stringBytes(key), stringBytes(item));
++  }
++  return encodeFrame(2, Buffer.concat([stringBytes(value.command), stringBytes(value.cwd), u32(value.args.length), ...value.args.map(stringBytes), u32(entries.length), ...environment]));
++}
++function validFrame(type: number, payload: Buffer): void {
++  const expected = new Map([[1, 36], [3, 4], [4, 4], [5, 0], [6, 0], [7, 8]]);
++  if (type === 2) {
++    if (payload.length + 5 > MAX_JOB_FRAME) throw new Error("Job frame budget");
++  } else if (!expected.has(type) || expected.get(type) !== payload.length || payload.length + 5 > 256) throw new Error("Invalid Job status frame");
++}
++export function encodeFrame(type: number, payload: Buffer): Buffer {
++  validFrame(type, payload); return Buffer.concat([u32(payload.length + 1), Buffer.from([type]), payload]);
++}
++export function decodeFrames(bytes: Buffer): { frames: JobFrame[]; remainder: Buffer } {
++  const frames: JobFrame[] = []; let offset = 0;
++  while (bytes.length - offset >= 4) {
++    const length = bytes.readUInt32LE(offset);
++    if (length < 1 || length + 4 > MAX_JOB_FRAME) throw new Error("Invalid Job frame length");
++    if (bytes.length - offset < length + 4) break;
++    const type = bytes[offset + 4]!; const payload = bytes.subarray(offset + 5, offset + 4 + length);
++    validFrame(type, payload); frames.push({ type, payload }); offset += length + 4;
++  }
++  return { frames, remainder: Buffer.from(bytes.subarray(offset)) };
++}
++export function validateManifest(value: unknown): JobManifest {
++  if (!value || typeof value !== "object" || Array.isArray(value)) throw new Error("Invalid Job manifest");
++  const manifest = value as Record<string, unknown>;
++  const allowed = ["protocol", "platform", "arch", "sourceDigest", "binarySha256", "compiler", "sdk"];
++  if (Object.keys(manifest).length !== allowed.length || Object.keys(manifest).some((key) => !allowed.includes(key)) || manifest.protocol !== 1 || manifest.platform !== "win32" || manifest.arch !== "x64") throw new Error("Unsupported Job manifest");
++  for (const key of ["sourceDigest", "binarySha256"]) if (typeof manifest[key] !== "string" || !/^[a-f0-9]{64}$/u.test(manifest[key])) throw new Error("Invalid Job digest");
++  for (const key of ["compiler", "sdk"]) if (typeof manifest[key] !== "string" || !manifest[key].trim() || manifest[key].length > 128) throw new Error("Invalid Job toolchain identity");
++  return manifest as unknown as JobManifest;
++}
+--- /dev/null
++++ b/scripts/build-agent-job.mjs
+@@ -0,0 +1,69 @@
++// Standalone explicit build. Never imported by npm lifecycle/server build/dev.
++import { createHash } from "node:crypto";
++import { lstat, readFile, mkdir, mkdtemp, writeFile, rename, rm } from "node:fs/promises";
++import { spawnSync } from "node:child_process";
++import path from "node:path";
++import os from "node:os";
++import { fileURLToPath } from "node:url";
++const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
++export const HELPER_SOURCES = [
++  "apps/server/native/agent-job/main.cpp", "apps/server/native/agent-job/job.cpp", "apps/server/native/agent-job/job.h",
++  "apps/server/native/agent-job/protocol.cpp", "apps/server/native/agent-job/protocol.h",
++  "apps/server/src/agent/windows-job-protocol.ts", "scripts/build-agent-job.mjs",
++].sort();
++const sha = (bytes) => createHash("sha256").update(bytes).digest("hex");
++export async function sourceDigest(directory, files = HELPER_SOURCES) {
++  const items = [];
++  for (const relative of [...files].sort()) {
++    if (!/^[A-Za-z0-9_./-]+$/u.test(relative) || relative.split("/").some((item) => item === ".." || item === "." || !item) || path.isAbsolute(relative)) throw new Error("Invalid source relative path");
++    const source = path.join(directory, relative); if (!(await lstat(source)).isFile() || (await lstat(source)).isSymbolicLink()) throw new Error("Source must be an actual file");
++    items.push([relative, sha(await readFile(source))]);
++  }
++  return sha(JSON.stringify(items));
++}
++function command(exe, args, cwd) {
++  const result = spawnSync(exe, args, { cwd, encoding: "utf8", shell: false, windowsHide: true, timeout: 60000, env: { ...process.env, VSLANG: "1033" }, maxBuffer: 4 * 1024 * 1024 });
++  if (result.error || result.status !== 0) throw new Error(`Native command failed: ${path.basename(exe)} (${result.status ?? "spawn"})\n${result.stdout ?? ""}\n${result.stderr ?? ""}`);
++  return `${result.stdout ?? ""}${result.stderr ?? ""}`;
++}
++export async function buildAgentJob(options = {}) {
++  const platform = options.platform ?? process.platform; const arch = options.arch ?? process.arch;
++  if (platform !== "win32" || arch !== "x64" || process.platform !== "win32" || process.arch !== "x64") throw new Error("Native build requires real Windows x64; no skip or portable fallback");
++  const sdk = (process.env.WindowsSDKVersion ?? "").replace(/[\\/]+$/u, ""); const compilerVersion = process.env.VCToolsVersion ?? "";
++  if (process.env.VSCMD_ARG_TGT_ARCH !== "x64" || !/^\d+(?:\.\d+){2,3}$/u.test(sdk) || !/^\d+(?:\.\d+){2,3}$/u.test(compilerVersion)) throw new Error("Activate installed VsDevCmd.bat -arch=x64 -host_arch=x64 first (use installed vswhere.exe); no toolchain is installed by this script");
++  const compilerPackage = `MSVC tools ${compilerVersion}`;
++  const located = command("where.exe", ["cl.exe"], root).trim().split(/\r?\n/u)[0];
++  if (!located || !path.isAbsolute(located) || path.extname(located).toLowerCase() !== ".exe" || !(await lstat(located)).isFile()) throw new Error("Actual MSVC cl.exe required");
++  const before = await sourceDigest(root); const output = path.join(root, "apps/server/native/bin/win32-x64");
++  await mkdir(output, { recursive: true }); const work = await mkdtemp(path.join(os.tmpdir(), "atlas-agent-job-build-"));
++  const flags = ["/nologo", "/Bv", "/std:c++20", "/EHsc", "/MT", "/W4", "/WX", "/Brepro", "/utf-8", "/DUNICODE", "/D_UNICODE", "/DWIN32_LEAN_AND_MEAN", "/DNOMINMAX", "/D_WIN32_WINNT=0x0A00", "/DWINVER=0x0A00"];
++  const source = (name) => path.join(root, "apps/server/native/agent-job", name);
++  try {
++    const exe = path.join(work, "atlas-agent-job.exe");
++    const log = command(located, [...flags, source("main.cpp"), source("job.cpp"), source("protocol.cpp"), `/Fe:${exe}`], work);
++    if (await sourceDigest(root) !== before) throw new Error("Native sources changed while compiling");
++    const actualCompiler = log.match(/cl\.exe[^\r\n]*Version\s+([0-9.]+)/iu)?.[1];
++    if (!actualCompiler) throw new Error("MSVC /Bv did not report actual compiler version");
++    const compiler = `${compilerPackage}; cl ${actualCompiler}`;
++    const bytes = await readFile(exe); const manifest = { protocol: 1, platform: "win32", arch: "x64", sourceDigest: before, binarySha256: sha(bytes), compiler, sdk };
++    // A stale pair is unavailable at runtime; no half-written bytes are published.
++    await writeFile(path.join(output, "atlas-agent-job.exe.next"), bytes);
++    await writeFile(path.join(output, "manifest.json.next"), JSON.stringify(manifest, null, 2) + "\n");
++    await rename(path.join(output, "atlas-agent-job.exe.next"), path.join(output, "atlas-agent-job.exe"));
++    await rename(path.join(output, "manifest.json.next"), path.join(output, "manifest.json"));
++    if (options.tests) {
++      command(located, [...flags, source("protocol.cpp"), source("tests/protocol-tests.cpp"), `/Fe:${path.join(work, "protocol-tests.exe")}`], work);
++      command(path.join(work, "protocol-tests.exe"), [], work);
++      command(located, [...flags, source("job.cpp"), source("protocol.cpp"), source("tests/job-fixture.cpp"), `/Fe:${path.join(work, "job-fixture.exe")}`], work);
++      command(located, [...flags, source("job.cpp"), source("protocol.cpp"), source("tests/job-harness.cpp"), `/Fe:${path.join(work, "job-harness.exe")}`], work);
++      const receipt = command(path.join(work, "job-harness.exe"), [path.join(work, "job-fixture.exe"), path.join(output, "atlas-agent-job.exe")], work);
++      await writeFile(path.join(output, "native-test.log"), receipt);
++    }
++    await writeFile(path.join(output, "build.log"), log);
++    return manifest;
++  } finally { await rm(work, { recursive: true, force: true }); }
++}
++if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
++  if (process.argv.slice(2).some((arg) => arg !== "--tests") || process.argv.filter((arg) => arg === "--tests").length > 1) { console.error("Usage: node scripts/build-agent-job.mjs [--tests]"); process.exitCode = 2; }
++  else buildAgentJob({ tests: process.argv.includes("--tests") }).then((manifest) => console.log(JSON.stringify(manifest))).catch((error) => { console.error(error.message); process.exitCode = 1; });
++}
+--- /dev/null
++++ b/scripts/build-agent-job.test.ts
+@@ -0,0 +1,24 @@
++import { describe, expect, it } from "vitest";
++import { buildAgentJob, sourceDigest } from "./build-agent-job.mjs";
++import { mkdtemp, mkdir, readFile, writeFile, rm } from "node:fs/promises";
++import os from "node:os";
++import path from "node:path";
++
++describe("standalone Windows owned Job build interface", () => {
++  it.each([["linux", "x64"], ["darwin", "arm64"], ["win32", "arm64"], ["win32", "ia32"]])("refuses unsupported %s/%s before producing artifacts", async (platform, arch) => {
++    await expect(buildAgentJob({ platform, arch })).rejects.toThrow(/Windows x64/u);
++  });
++  it("binds the digest to literal source path and exact bytes in deterministic order", async () => {
++    const root = await mkdtemp(path.join(os.tmpdir(), "atlas-job-build-"));
++    try {
++      await mkdir(path.join(root, "src"));
++      await writeFile(path.join(root, "src/a.cpp"), "a\n"); await writeFile(path.join(root, "src/b.h"), "b\n");
++      const first = await sourceDigest(root, ["src/a.cpp", "src/b.h"]);
++      expect(await sourceDigest(root, ["src/b.h", "src/a.cpp"])).toBe(first);
++      await writeFile(path.join(root, "src/a.cpp"), "changed\n");
++      expect(await sourceDigest(root, ["src/a.cpp", "src/b.h"])).not.toBe(first);
++      await expect(sourceDigest(root, ["../escape"])).rejects.toThrow();
++      expect(await readFile(path.join(root, "src/b.h"), "utf8")).toBe("b\n");
++    } finally { await rm(root, { recursive: true, force: true }); }
++  });
++});

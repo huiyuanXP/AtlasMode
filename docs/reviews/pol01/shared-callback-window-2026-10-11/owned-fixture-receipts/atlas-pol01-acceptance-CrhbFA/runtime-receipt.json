@@ -1,0 +1,32 @@
+{
+  "root": "/tmp/atlas-pol01-acceptance-CrhbFA",
+  "database": "/tmp/atlas-pol01-acceptance-CrhbFA/data/atlasmode.sqlite",
+  "rootCleanup": "retained-evidence",
+  "sourceDigest": "9669dc31c10e5531374dcd08bcdfdec93aa3d80961b81acbdbadb79aad2e3468",
+  "records": [
+    {
+      "kind": "server",
+      "mode": "compiled",
+      "pid": 158763,
+      "port": 45979,
+      "exit": [
+        0,
+        null
+      ],
+      "portClosed": true,
+      "output": "AtlasMode API listening on 127.0.0.1:45979 (built web assets available)\n"
+    },
+    {
+      "kind": "server",
+      "mode": "compiled",
+      "pid": 158779,
+      "port": 36495,
+      "exit": [
+        0,
+        null
+      ],
+      "portClosed": true,
+      "output": "AtlasMode API listening on 127.0.0.1:36495 (built web assets available)\n"
+    }
+  ]
+}

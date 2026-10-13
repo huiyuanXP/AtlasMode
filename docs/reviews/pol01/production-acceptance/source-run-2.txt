@@ -1,0 +1,44 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90m/home/agent/projects/AtlasMode[39m
+
+[90mstdout[2m | tests/integration/pol01-stdio-acceptance.test.ts[2m > [22m[2mactual SQLite/API: v1 unknown roundtrip, DB-only edit then explicit import retains unsent controller draft
+[22m[39m{"receipt":"POL01_SQLITE_STDIO_OWNED","root":"/tmp/atlas-pol01-acceptance-2AYacj","runtime":"/tmp/atlas-pol01-acceptance-2AYacj/runtime-receipt.json","records":[{"kind":"server","mode":"source","pid":125552,"port":34225,"exit":[0,null],"portClosed":true,"output":"AtlasMode API listening on 127.0.0.1:34225 (built web assets available)\n"},{"kind":"server","mode":"source","pid":125663,"port":34847,"exit":[0,null],"portClosed":true,"output":"AtlasMode API listening on 127.0.0.1:34847 (built web assets available)\n"}],"rootCleanup":"retained-evidence"}
+
+[90mstdout[2m | tests/integration/pol01-stdio-acceptance.test.ts[2m > [22m[2mactual HTTP 409 preserves draft and old capture until explicit reread, no implicit CAS rebase
+[22m[39m{"receipt":"POL01_SQLITE_STDIO_OWNED","root":"/tmp/atlas-pol01-acceptance-Uka0GW","runtime":"/tmp/atlas-pol01-acceptance-Uka0GW/runtime-receipt.json","records":[{"kind":"server","mode":"source","pid":125807,"port":40575,"exit":[0,null],"portClosed":true,"output":"AtlasMode API listening on 127.0.0.1:40575 (built web assets available)\n"}],"rootCleanup":"retained-evidence"}
+
+[90mstdout[2m | tests/integration/pol01-stdio-acceptance.test.ts[2m > [22m[2mactual SDK stdio current approval is fresh after external edit; quarantine persists across actual API restart
+[22m[39m{"receipt":"POL01_SQLITE_STDIO_OWNED","root":"/tmp/atlas-pol01-acceptance-hPi9xK","runtime":"/tmp/atlas-pol01-acceptance-hPi9xK/runtime-receipt.json","records":[{"kind":"mcp-stdio","mode":"source","pid":125873,"pidAbsent":true,"stderr":""},{"kind":"server","mode":"source","pid":125824,"port":42561,"exit":[0,null],"portClosed":true,"output":"AtlasMode API listening on 127.0.0.1:42561 (built web assets available)\n"},{"kind":"server","mode":"source","pid":125895,"port":42131,"exit":[0,null],"portClosed":true,"output":"AtlasMode API listening on 127.0.0.1:42131 (built web assets available)\n"}],"rootCleanup":"retained-evidence"}
+
+ [31m❯[39m tests/integration/pol01-stdio-acceptance.test.ts [2m([22m[2m3 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[33m 12668[2mms[22m[39m
+[31m   [31m×[31m actual SQLite/API: v1 unknown roundtrip, DB-only edit then explicit import retains unsent controller draft[39m[33m 6953[2mms[22m[39m
+   [33m[2m✓[22m[39m actual HTTP 409 preserves draft and old capture until explicit reread, no implicit CAS rebase [33m 1818[2mms[22m[39m
+   [33m[2m✓[22m[39m actual SDK stdio current approval is fresh after external edit; quarantine persists across actual API restart [33m 3895[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/integration/pol01-stdio-acceptance.test.ts[2m > [22mactual SQLite/API: v1 unknown roundtrip, DB-only edit then explicit import retains unsent controller draft
+[31m[1mAssertionError[22m: expected undefined to be 'DB edit A' // Object.is equality[39m
+
+[32m- Expected:[39m
+"DB edit A"
+
+[31m+ Received:[39m
+undefined
+
+[36m [2m❯[22m tests/integration/pol01-stdio-acceptance.test.ts:[2m44:94[22m[39m
+    [90m 42|[39m   [34mexpect[39m(reopened[33m.[39mdocument)[33m.[39m[34mtoEqual[39m(imported)[33m;[39m
+    [90m 43|[39m   [35mconst[39m db [33m=[39m [35mnew[39m [33mSqliteStorage[39m(f[33m.[39mdatabase)[33m;[39m
+    [90m 44|[39m   try { expect(db.list<DirectoryPolicy>("policies").find((p) => p.id =…
+    [90m   |[39m                                                                                              [31m^[39m
+    [90m 45|[39m   controller[33m.[39m[34mdispose[39m()[33m;[39m
+    [90m 46|[39m   [35mawait[39m f[33m.[39m[34minvariants[39m()[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m2 passed[39m[22m[90m (3)[39m
+[2m   Start at [22m 19:05:12
+[2m   Duration [22m 15.06s[2m (transform 827ms, setup 0ms, import 2.11s, tests 12.67s, environment 0ms)[22m
+

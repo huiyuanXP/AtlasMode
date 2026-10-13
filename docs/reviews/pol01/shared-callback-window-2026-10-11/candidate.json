@@ -1,0 +1,455 @@
+{
+  "candidate": "/tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace",
+  "base": "/tmp/atlas-integration-fs-kn-pol-20261010-c9d842hi/workspace",
+  "overlays": [
+    {
+      "path": "apps/web/src/api/client.ts",
+      "sha256": "857148cc421036173fab6d35508508048bb5916bd16e6af24a82b64d99ef8bc4",
+      "origin": "KN R2 approved exact23"
+    },
+    {
+      "path": "apps/web/src/app/WorkspacePanels.tsx",
+      "sha256": "1c8eb98b81080ffb4a272745f9481c2c8819e27a1f100cb79252f5d19841c4d9",
+      "origin": "KN R2 approved exact23"
+    },
+    {
+      "path": "apps/web/src/app/annotations-workspace-races.test.ts",
+      "sha256": "f67936359f6d2f31784ca5fdd144bd0f1c0530df3af15316749b48afa47b55af",
+      "origin": "KN R2 approved exact23"
+    },
+    {
+      "path": "apps/web/src/app/annotations-workspace.test.ts",
+      "sha256": "837305cea193fb0b3054bf03fb67505fea0e60227e09c074eb83ab1738c17fd9",
+      "origin": "KN R2 approved exact23"
+    },
+    {
+      "path": "apps/web/src/app/workspace.ts",
+      "sha256": "77bb9744d2b1e7b70f16679a887c6118a14128701e887a65f098b3e7b8a973c5",
+      "origin": "final authorized POL callback+fixture window"
+    },
+    {
+      "path": "apps/web/src/features/annotations/AnnotationHistoryView.tsx",
+      "sha256": "ccf9c1939f90d234e787fb35b3aa2e9bfef1901ab156d9f4c8492118f6bd894b",
+      "origin": "KN R2 approved exact23"
+    },
+    {
+      "path": "apps/web/src/features/annotations/AnnotationRecord.tsx",
+      "sha256": "fc8dfdac3cebcc537ce689239792d516eb0815bfe61394fb008f020012fe5e1f",
+      "origin": "KN R2 approved exact23"
+    },
+    {
+      "path": "apps/web/src/features/annotations/AnnotationsPanel.test.tsx",
+      "sha256": "2d64c884535cb2ef0377492832b460b7119b38bfb6702e25f221c92f9942906a",
+      "origin": "KN R2 approved exact23"
+    },
+    {
+      "path": "apps/web/src/features/annotations/AnnotationsPanel.tsx",
+      "sha256": "5e4f7ad93c750396e2bdcb6ef08c626327c29c691aa6c8c6c9ed51b142bc161d",
+      "origin": "KN R2 approved exact23"
+    },
+    {
+      "path": "apps/web/src/features/annotations/WorkspaceAnnotationsPanel.tsx",
+      "sha256": "beaad97c84e06425f4474568e1c2f7b56cf0e9c1a4a52995b01d52bed9bf8692",
+      "origin": "KN R2 approved exact23"
+    },
+    {
+      "path": "apps/web/src/features/annotations/annotations.css",
+      "sha256": "8d88d303533aeb4e782f1e3f6c793f5ca863aa21f18451d12b7321a4863fe134",
+      "origin": "KN R2 approved exact23"
+    },
+    {
+      "path": "apps/web/src/features/annotations/controller.test.ts",
+      "sha256": "faef2c3e6d7ef17059d0424fe660b847419a14a2d19740a5a7d3b4ea04a2dde4",
+      "origin": "KN R2 approved exact23"
+    },
+    {
+      "path": "apps/web/src/features/annotations/controller.ts",
+      "sha256": "98c138953b6b8e855f0484187eee7c7a4b768df024689820ea063e0d88afda38",
+      "origin": "KN R2 approved exact23"
+    },
+    {
+      "path": "apps/web/src/features/annotations/draft.test.ts",
+      "sha256": "49bdc1ead13208a1202a86f272806cec669255eba6b19738b73ccc878249d72e",
+      "origin": "KN R2 approved exact23"
+    },
+    {
+      "path": "apps/web/src/features/annotations/draft.ts",
+      "sha256": "0c3183f6e8a6cbb23c80065ff8e8cd1e6065e40e2d0ada8483b99a6154ba6427",
+      "origin": "KN R2 approved exact23"
+    },
+    {
+      "path": "apps/web/src/features/annotations/fixtures.test-support.ts",
+      "sha256": "02d69989fc41c2e9338c79c6cbaeafca012868a321b8551651f2e74982418afc",
+      "origin": "KN R2 approved exact23"
+    },
+    {
+      "path": "apps/web/src/features/annotations/history-empty.test.tsx",
+      "sha256": "5c567f9dd83391c9ee6c8af186078a9ef6751d641eced5918594fc2258651fad",
+      "origin": "KN R2 approved exact23"
+    },
+    {
+      "path": "apps/web/src/features/annotations/labels.ts",
+      "sha256": "6db3e79947e537d27dda6631814b07829afa1e091d54b7a20f082d81bb7ed493",
+      "origin": "KN R2 approved exact23"
+    },
+    {
+      "path": "apps/web/src/features/annotations/reads.ts",
+      "sha256": "4e5bd211d78d90529d992e9fc57977c321b3600d6086d604b6826f65abac26b6",
+      "origin": "KN R2 approved exact23"
+    },
+    {
+      "path": "apps/web/src/i18n/en.ts",
+      "sha256": "f90887bd912980d0bf887169b1b4cc2adb45a659b588c5cc0a35681d7316f8b1",
+      "origin": "KN R2 approved exact23"
+    },
+    {
+      "path": "apps/web/src/i18n/zh.ts",
+      "sha256": "066c685e8a80edb516a833a9701cfef932832cb5e5653887ab119690d147a159",
+      "origin": "KN R2 approved exact23"
+    },
+    {
+      "path": "tests/e2e/annotations.spec.ts",
+      "sha256": "ee9a085185401afa3ef616c3dc860c90cdec005faadf45ba23702fdf3ed91ff2",
+      "origin": "KN R2 approved exact23"
+    },
+    {
+      "path": "tests/integration/annotation-web.test.ts",
+      "sha256": "ca6ab0a1f69709c94def9b8a92e3ec2eaf4f92b101df6ef9f439e1754d822d65",
+      "origin": "KN R2 approved exact23"
+    },
+    {
+      "path": "apps/web/src/features/structure/PoliciesPanel.tsx",
+      "sha256": "7f25a6aefe4dc01b60e3995d003dc73e2e137b87fe3fe4aa142291541c31fca5",
+      "origin": "POL UI/MCP R1 approved exact9 sealed before"
+    },
+    {
+      "path": "apps/web/src/features/structure/policy-controller.ts",
+      "sha256": "57b28c5e479b18f6ae96f62a437737c7da55e35ef879d1f178ff34770b25396a",
+      "origin": "POL UI/MCP R1 approved exact9 sealed before"
+    },
+    {
+      "path": "apps/web/src/features/structure/policy-controller.test.ts",
+      "sha256": "9238a7b8cf860d03395032b672f130f4b33ac2b754f66f5895d66cc0dafe0427",
+      "origin": "POL UI/MCP R1 approved exact9 sealed before"
+    },
+    {
+      "path": "apps/web/src/features/structure/StructurePolicyPanel.tsx",
+      "sha256": "7a377dd1680bfd8f6dd90d091f554179aee2f9136fa8a1f8919abe45217de69a",
+      "origin": "POL UI/MCP R1 approved exact9 sealed before"
+    },
+    {
+      "path": "apps/web/src/features/structure/StructurePolicyPanel.test.tsx",
+      "sha256": "289df0ab4d6e357f461517208c3c9d8dc6c1deba4db17b4b84cc08835622de70",
+      "origin": "POL UI/MCP R1 approved exact9 sealed before"
+    },
+    {
+      "path": "apps/web/src/api/structure-client.ts",
+      "sha256": "81e003af17b21a0f7a3b573acb8b747dd5d9022729b6283f747ef232f66cb1b8",
+      "origin": "POL UI/MCP R1 approved exact9 sealed before"
+    },
+    {
+      "path": "apps/web/src/api/structure-client.test.ts",
+      "sha256": "daa1f25d04c8bfa105b45baf92b66200196214592460518c96227100b94276a8",
+      "origin": "POL UI/MCP R1 approved exact9 sealed before"
+    },
+    {
+      "path": "apps/mcp/src/server.ts",
+      "sha256": "2039168ec634179df6350c3f083adf4bd6640338ba09b8c78799004317f59b04",
+      "origin": "POL UI/MCP R1 approved exact9 sealed before"
+    },
+    {
+      "path": "apps/mcp/src/structure.test.ts",
+      "sha256": "1a51e975af1d749787cd2c22c8fd26bafd59566ead48d8684b85e038b9ed6b02",
+      "origin": "POL UI/MCP R1 approved exact9 sealed before"
+    },
+    {
+      "path": "tests/support/pol01-acceptance.ts",
+      "sha256": "f5506eaa40d2bf29725b7506417504b74777975ae865325f3ff7790fd5116b0f",
+      "origin": "POL production exact3"
+    },
+    {
+      "path": "tests/integration/pol01-stdio-acceptance.test.ts",
+      "sha256": "3ca4281f80bcbeddcf842c054b3c87748861886918a7ad79dc0050d0a97d42f6",
+      "origin": "POL production exact3"
+    },
+    {
+      "path": "tests/e2e/pol01-structure.spec.ts",
+      "sha256": "7317521476fd698091977f728ac6ac13116f7caec973ff81c8581aa67822554b",
+      "origin": "final authorized POL callback+fixture window"
+    },
+    {
+      "path": "apps/web/src/app/Navigation.tsx",
+      "sha256": "e7e4623080c934f08a187188fb5cdbf631bdf47ea036a49c10bc2ed481b98d45",
+      "origin": "final authorized POL callback+fixture window"
+    },
+    {
+      "path": "apps/web/src/app/pol01-policy-sync.test.ts",
+      "sha256": "f5e450a193a0ef197bacd635a46db609a3421d884cecaead4bf379e0c2eb89b3",
+      "origin": "final authorized POL callback+fixture window"
+    },
+    {
+      "path": "tests/e2e/planning.spec.mjs",
+      "sha256": "153a7087714a89983bb1af9ba23b285b7edc00a27695ffcf849fd1e883c1f0b8",
+      "origin": "final authorized POL callback+fixture window"
+    },
+    {
+      "path": "apps/web/src/styles/app.css",
+      "sha256": "ab1c5b2ddc2a220bf54476f1817f0830a086322db1e96795d1a7f653695320a1",
+      "origin": "CSS approved single frozen file"
+    }
+  ],
+  "fsR3": {
+    "frozenSource": "/tmp/atlas-fs01-real-fixture-freeze-20261010-r3",
+    "files": {
+      "tests/e2e/ownership.spec.ts": "5d71a88fd2ec419ccfd36b525ded929023117e820252f5725d1c830f1ec813ff",
+      "apps/web/src/features/structure/OwnershipTargets.tsx": "962b977aab4522600e06c48f6a36cf80fe77c4990b828723bf34d60158e1cf56",
+      "apps/web/src/features/structure/OwnershipTargets.test.tsx": "f4413adacb3828333b8d8a434719309ca14a5a8c1a1d2137e07ddade72ac1534"
+    }
+  },
+  "createdUTC": "2026-10-11",
+  "builds": {
+    "web": "PASS private only",
+    "mcp": "PASS private only",
+    "rootWhole": "UNRUN root-owned"
+  },
+  "gates": {
+    "sourceUnit": 14,
+    "compiledActualSQLiteSDKstdio": 3,
+    "nativePolicy": 2,
+    "legacyPlanning": 1,
+    "sourceTypes": "PASS",
+    "lint": "PASS"
+  },
+  "overlayHistory": [
+    {
+      "path": "apps/web/src/api/client.ts",
+      "sha256": "857148cc421036173fab6d35508508048bb5916bd16e6af24a82b64d99ef8bc4",
+      "origin": "KN R2 approved exact23"
+    },
+    {
+      "path": "apps/web/src/app/WorkspacePanels.tsx",
+      "sha256": "1c8eb98b81080ffb4a272745f9481c2c8819e27a1f100cb79252f5d19841c4d9",
+      "origin": "KN R2 approved exact23"
+    },
+    {
+      "path": "apps/web/src/app/annotations-workspace-races.test.ts",
+      "sha256": "f67936359f6d2f31784ca5fdd144bd0f1c0530df3af15316749b48afa47b55af",
+      "origin": "KN R2 approved exact23"
+    },
+    {
+      "path": "apps/web/src/app/annotations-workspace.test.ts",
+      "sha256": "837305cea193fb0b3054bf03fb67505fea0e60227e09c074eb83ab1738c17fd9",
+      "origin": "KN R2 approved exact23"
+    },
+    {
+      "path": "apps/web/src/app/workspace.ts",
+      "sha256": "4d5fc0a79a1ad8981f4e799ee6ccda138a28d08daae6ced8e2e21f8070fbc8f6",
+      "origin": "KN R2 approved exact23"
+    },
+    {
+      "path": "apps/web/src/features/annotations/AnnotationHistoryView.tsx",
+      "sha256": "ccf9c1939f90d234e787fb35b3aa2e9bfef1901ab156d9f4c8492118f6bd894b",
+      "origin": "KN R2 approved exact23"
+    },
+    {
+      "path": "apps/web/src/features/annotations/AnnotationRecord.tsx",
+      "sha256": "fc8dfdac3cebcc537ce689239792d516eb0815bfe61394fb008f020012fe5e1f",
+      "origin": "KN R2 approved exact23"
+    },
+    {
+      "path": "apps/web/src/features/annotations/AnnotationsPanel.test.tsx",
+      "sha256": "2d64c884535cb2ef0377492832b460b7119b38bfb6702e25f221c92f9942906a",
+      "origin": "KN R2 approved exact23"
+    },
+    {
+      "path": "apps/web/src/features/annotations/AnnotationsPanel.tsx",
+      "sha256": "5e4f7ad93c750396e2bdcb6ef08c626327c29c691aa6c8c6c9ed51b142bc161d",
+      "origin": "KN R2 approved exact23"
+    },
+    {
+      "path": "apps/web/src/features/annotations/WorkspaceAnnotationsPanel.tsx",
+      "sha256": "beaad97c84e06425f4474568e1c2f7b56cf0e9c1a4a52995b01d52bed9bf8692",
+      "origin": "KN R2 approved exact23"
+    },
+    {
+      "path": "apps/web/src/features/annotations/annotations.css",
+      "sha256": "8d88d303533aeb4e782f1e3f6c793f5ca863aa21f18451d12b7321a4863fe134",
+      "origin": "KN R2 approved exact23"
+    },
+    {
+      "path": "apps/web/src/features/annotations/controller.test.ts",
+      "sha256": "faef2c3e6d7ef17059d0424fe660b847419a14a2d19740a5a7d3b4ea04a2dde4",
+      "origin": "KN R2 approved exact23"
+    },
+    {
+      "path": "apps/web/src/features/annotations/controller.ts",
+      "sha256": "98c138953b6b8e855f0484187eee7c7a4b768df024689820ea063e0d88afda38",
+      "origin": "KN R2 approved exact23"
+    },
+    {
+      "path": "apps/web/src/features/annotations/draft.test.ts",
+      "sha256": "49bdc1ead13208a1202a86f272806cec669255eba6b19738b73ccc878249d72e",
+      "origin": "KN R2 approved exact23"
+    },
+    {
+      "path": "apps/web/src/features/annotations/draft.ts",
+      "sha256": "0c3183f6e8a6cbb23c80065ff8e8cd1e6065e40e2d0ada8483b99a6154ba6427",
+      "origin": "KN R2 approved exact23"
+    },
+    {
+      "path": "apps/web/src/features/annotations/fixtures.test-support.ts",
+      "sha256": "02d69989fc41c2e9338c79c6cbaeafca012868a321b8551651f2e74982418afc",
+      "origin": "KN R2 approved exact23"
+    },
+    {
+      "path": "apps/web/src/features/annotations/history-empty.test.tsx",
+      "sha256": "5c567f9dd83391c9ee6c8af186078a9ef6751d641eced5918594fc2258651fad",
+      "origin": "KN R2 approved exact23"
+    },
+    {
+      "path": "apps/web/src/features/annotations/labels.ts",
+      "sha256": "6db3e79947e537d27dda6631814b07829afa1e091d54b7a20f082d81bb7ed493",
+      "origin": "KN R2 approved exact23"
+    },
+    {
+      "path": "apps/web/src/features/annotations/reads.ts",
+      "sha256": "4e5bd211d78d90529d992e9fc57977c321b3600d6086d604b6826f65abac26b6",
+      "origin": "KN R2 approved exact23"
+    },
+    {
+      "path": "apps/web/src/i18n/en.ts",
+      "sha256": "f90887bd912980d0bf887169b1b4cc2adb45a659b588c5cc0a35681d7316f8b1",
+      "origin": "KN R2 approved exact23"
+    },
+    {
+      "path": "apps/web/src/i18n/zh.ts",
+      "sha256": "066c685e8a80edb516a833a9701cfef932832cb5e5653887ab119690d147a159",
+      "origin": "KN R2 approved exact23"
+    },
+    {
+      "path": "tests/e2e/annotations.spec.ts",
+      "sha256": "ee9a085185401afa3ef616c3dc860c90cdec005faadf45ba23702fdf3ed91ff2",
+      "origin": "KN R2 approved exact23"
+    },
+    {
+      "path": "tests/integration/annotation-web.test.ts",
+      "sha256": "ca6ab0a1f69709c94def9b8a92e3ec2eaf4f92b101df6ef9f439e1754d822d65",
+      "origin": "KN R2 approved exact23"
+    },
+    {
+      "path": "apps/web/src/features/structure/PoliciesPanel.tsx",
+      "sha256": "7f25a6aefe4dc01b60e3995d003dc73e2e137b87fe3fe4aa142291541c31fca5",
+      "origin": "POL UI/MCP R1 approved exact9 sealed before"
+    },
+    {
+      "path": "apps/web/src/features/structure/policy-controller.ts",
+      "sha256": "57b28c5e479b18f6ae96f62a437737c7da55e35ef879d1f178ff34770b25396a",
+      "origin": "POL UI/MCP R1 approved exact9 sealed before"
+    },
+    {
+      "path": "apps/web/src/features/structure/policy-controller.test.ts",
+      "sha256": "9238a7b8cf860d03395032b672f130f4b33ac2b754f66f5895d66cc0dafe0427",
+      "origin": "POL UI/MCP R1 approved exact9 sealed before"
+    },
+    {
+      "path": "apps/web/src/features/structure/StructurePolicyPanel.tsx",
+      "sha256": "7a377dd1680bfd8f6dd90d091f554179aee2f9136fa8a1f8919abe45217de69a",
+      "origin": "POL UI/MCP R1 approved exact9 sealed before"
+    },
+    {
+      "path": "apps/web/src/features/structure/StructurePolicyPanel.test.tsx",
+      "sha256": "289df0ab4d6e357f461517208c3c9d8dc6c1deba4db17b4b84cc08835622de70",
+      "origin": "POL UI/MCP R1 approved exact9 sealed before"
+    },
+    {
+      "path": "apps/web/src/api/structure-client.ts",
+      "sha256": "81e003af17b21a0f7a3b573acb8b747dd5d9022729b6283f747ef232f66cb1b8",
+      "origin": "POL UI/MCP R1 approved exact9 sealed before"
+    },
+    {
+      "path": "apps/web/src/api/structure-client.test.ts",
+      "sha256": "daa1f25d04c8bfa105b45baf92b66200196214592460518c96227100b94276a8",
+      "origin": "POL UI/MCP R1 approved exact9 sealed before"
+    },
+    {
+      "path": "apps/mcp/src/server.ts",
+      "sha256": "2039168ec634179df6350c3f083adf4bd6640338ba09b8c78799004317f59b04",
+      "origin": "POL UI/MCP R1 approved exact9 sealed before"
+    },
+    {
+      "path": "apps/mcp/src/structure.test.ts",
+      "sha256": "1a51e975af1d749787cd2c22c8fd26bafd59566ead48d8684b85e038b9ed6b02",
+      "origin": "POL UI/MCP R1 approved exact9 sealed before"
+    },
+    {
+      "path": "tests/support/pol01-acceptance.ts",
+      "sha256": "f5506eaa40d2bf29725b7506417504b74777975ae865325f3ff7790fd5116b0f",
+      "origin": "POL production exact3"
+    },
+    {
+      "path": "tests/integration/pol01-stdio-acceptance.test.ts",
+      "sha256": "3ca4281f80bcbeddcf842c054b3c87748861886918a7ad79dc0050d0a97d42f6",
+      "origin": "POL production exact3"
+    },
+    {
+      "path": "tests/e2e/pol01-structure.spec.ts",
+      "sha256": "943049941fb8b586bdf3e12fe31d659acbb613446748dbd3be3b1e731f36e6b0",
+      "origin": "POL production exact3"
+    },
+    {
+      "path": "apps/web/src/app/workspace.ts",
+      "sha256": "77bb9744d2b1e7b70f16679a887c6118a14128701e887a65f098b3e7b8a973c5",
+      "origin": "POL callback current window exact4"
+    },
+    {
+      "path": "apps/web/src/app/Navigation.tsx",
+      "sha256": "e7e4623080c934f08a187188fb5cdbf631bdf47ea036a49c10bc2ed481b98d45",
+      "origin": "POL callback current window exact4"
+    },
+    {
+      "path": "apps/web/src/app/pol01-policy-sync.test.ts",
+      "sha256": "f5e450a193a0ef197bacd635a46db609a3421d884cecaead4bf379e0c2eb89b3",
+      "origin": "POL callback current window exact4"
+    },
+    {
+      "path": "tests/e2e/planning.spec.mjs",
+      "sha256": "0e2683ad2e07474b69fc653aecc58a79b5f731a71e76794bce1c7fb9c06cdc01",
+      "origin": "POL callback current window exact4"
+    },
+    {
+      "path": "apps/web/src/styles/app.css",
+      "sha256": "ab1c5b2ddc2a220bf54476f1817f0830a086322db1e96795d1a7f653695320a1",
+      "origin": "CSS approved single frozen file"
+    },
+    {
+      "path": "tests/e2e/pol01-structure.spec.ts",
+      "sha256": "ffccce312f14e31403ed7b51815fd58620ed017c21b98713e5498e5986c0d535",
+      "origin": "authorized first actual browser setup400 fixture-only repair positions/theme"
+    },
+    {
+      "path": "tests/e2e/planning.spec.mjs",
+      "sha256": "ea27ffbe3ebbb8984f82ac2f5198621435d1c972eff971fd2bbdcb3f5913b6d6",
+      "origin": "authorized fifth actual native selector name/value adaptation"
+    },
+    {
+      "path": "tests/e2e/pol01-structure.spec.ts",
+      "sha256": "1227cb8907187a47c9576eff29863edb2ae9920530da4f96ad724a060fbee778",
+      "origin": "authorized completeview shape + encodedactual4 response predicate fixture-only repair"
+    },
+    {
+      "path": "tests/e2e/planning.spec.mjs",
+      "sha256": "a3375895b6c5442e08e7fb5b3814f5bbda32dd650573b86216cbae8097899b97",
+      "origin": "authorized four original locator names + fifth selector name/value + two explicit postACK read commands with no revision delta assertions; all old domain assertions unchanged"
+    },
+    {
+      "path": "tests/e2e/planning.spec.mjs",
+      "sha256": "4c048aa18ac636ccc66de6c7bf4486604cd7e5cb61d424c7089658086a7dd2d9",
+      "origin": "authorized all locator/read fixture adaptations plus exact stricter actualSDK NOT_APPROVED409 negative; original history and positive approvals preserved"
+    },
+    {
+      "path": "tests/e2e/planning.spec.mjs",
+      "sha256": "7965649dfce553a9b19f733a0f3dfd40ac3874357777ea415677da24445b9487",
+      "origin": "authorized fixture scope incl exact URL/method409/codeNOT_APPROVED \u2194 rawconsole.location one-to-one count3; unexpected error assertion preserved"
+    }
+  ]
+}

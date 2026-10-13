@@ -1,0 +1,3 @@
+Checking formatting...
+[warn] tests/e2e/pol01-structure.spec.ts
+[warn] Code style issues found in the above file. Run Prettier with --write to fix.

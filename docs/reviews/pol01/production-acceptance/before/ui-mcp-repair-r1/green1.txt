@@ -1,0 +1,280 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90m/home/agent/projects/AtlasMode[39m
+
+ [32m✓[39m apps/web/src/features/structure/StructurePolicyPanel.test.tsx [2m([22m[2m11 tests[22m[2m)[22m[32m 77[2mms[22m[39m
+ [31m❯[39m apps/web/src/features/structure/policy-controller.test.ts [2m([22m[2m26 tests[22m[2m | [22m[31m17 failed[39m[2m)[22m[33m 10060[2mms[22m[39m
+[31m   [31m×[31m same-id DB legacy form captures actual rev/digest/uuid without migrating[39m[32m 19[2mms[22m[39m
+[31m   [31m×[31m 409 keeps all input and old capture; save remains blocked until explicit reload[39m[32m 3[2mms[22m[39m
+[31m   [31m×[31m network failure only exact retry uses same immutable request and UUID[39m[32m 2[2mms[22m[39m
+[31m   [31m×[31m migration requires preview and explicit command, with preview capture[39m[32m 4[2mms[22m[39m
+   [32m✓[39m stale preview refuses migration without auto reread[32m 3[2mms[22m[39m
+[31m   [31m×[31m folder edit sends only path/purpose preserving raw unknown and allowed/forbidden server fields[39m[32m 2[2mms[22m[39m
+   [32m✓[39m A→B→A read responses never contaminate the new epoch[32m 1[2mms[22m[39m
+[31m   [31m×[31m late write ACK has no accepted callback or state after project switch[39m[32m 1[2mms[22m[39m
+   [32m✓[39m invalid state remains visible and cannot write[32m 1[2mms[22m[39m
+   [32m✓[39m recovery_pending state remains visible and cannot write[32m 0[2mms[22m[39m
+   [32m✓[39m unavailable state remains visible and cannot write[32m 0[2mms[22m[39m
+   [32m✓[39m two inconsistent read captures fail closed without hiding form or automatically fetching latest[32m 1[2mms[22m[39m
+[31m   [31m×[31m foreign ACK never reaches accepted-response workspace callback[39m[32m 1[2mms[22m[39m
+   [32m✓[39m missing digest/revision capture is never submitted as an undefined precondition[32m 0[2mms[22m[39m
+[31m   [31m×[31m successful new policy ACK retains actual id for the next explicit edit[39m[32m 1[2mms[22m[39m
+[31m   [31m×[31m successful folder rename ACK advances previousPath for the next explicit edit[39m[32m 1[2mms[22m[39m
+   [32m✓[39m accepted read response supplies exact full policies/snapshot for future Workspace synchronization[32m 4[2mms[22m[39m
+   [32m✓[39m an asynchronous accepted-read callback cannot unlock editing or publish failure into a new project[32m 1[2mms[22m[39m
+[31m   [31m×[31m I1 migration ACK preserves unsent dirty legacy:db-only draft B[39m[32m 1[2mms[22m[39m
+[31m   [31m×[31m I1 migration ACK preserves unsent dirty folder:src draft B[39m[32m 1[2mms[22m[39m
+[31m   [31m×[31m I2 unknown write retains immutable replay after failed state reread[39m[32m 1[2mms[22m[39m
+[31m   [31m×[31m I2 unknown write retains immutable replay after failed policies reread[39m[32m 1[2mms[22m[39m
+[31m   [31m×[31m I2 unknown write retains immutable replay after failed accepted reread[39m[32m 1[2mms[22m[39m
+[31m   [31m×[31m M1 write callback keeps busy through known ACK and blocks concurrent public reload/edit[39m[33m 5002[2mms[22m[39m
+[31m   [31m×[31m M1 known ACK then sync rejection stays saved, exposes reread and never retries publication[39m[32m 1[2mms[22m[39m
+[31m   [31m×[31m M1 superseded same-epoch callback rejection cannot overwrite a newer accepted read[39m[33m 5003[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 17 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/features/structure/policy-controller.test.ts[2m > [22msame-id DB legacy form captures actual rev/digest/uuid without migrating
+[31m[1mReferenceError[22m: Cannot access 'token' before initialization[39m
+[36m [2m❯[22m submit apps/web/src/features/structure/policy-controller.ts:[2m108:27[22m[39m
+    [90m106|[39m   }[33m;[39m
+    [90m107|[39m   [35masync[39m [35mfunction[39m [34msubmit[39m(r[33m:[39m [33mRequest[39m) {
+    [90m108|[39m     [35mif[39m ([33m![39m[34mcurrent[39m(r[33m.[39mepoch[33m,[39m token)) [35mreturn[39m[33m;[39m
+    [90m   |[39m                           [31m^[39m
+    [90m109|[39m     [35mconst[39m token [33m=[39m [33m++[39mgeneration[33m;[39m
+    [90m110|[39m     request [33m=[39m r[33m;[39m
+[90m [2m❯[22m Object.save apps/web/src/features/structure/policy-controller.ts:[2m410:13[22m[39m
+[90m [2m❯[22m apps/web/src/features/structure/policy-controller.test.ts:[2m85:11[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/17]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/features/structure/policy-controller.test.ts[2m > [22m409 keeps all input and old capture; save remains blocked until explicit reload
+[31m[1mReferenceError[22m: Cannot access 'token' before initialization[39m
+[36m [2m❯[22m submit apps/web/src/features/structure/policy-controller.ts:[2m108:27[22m[39m
+    [90m106|[39m   }[33m;[39m
+    [90m107|[39m   [35masync[39m [35mfunction[39m [34msubmit[39m(r[33m:[39m [33mRequest[39m) {
+    [90m108|[39m     [35mif[39m ([33m![39m[34mcurrent[39m(r[33m.[39mepoch[33m,[39m token)) [35mreturn[39m[33m;[39m
+    [90m   |[39m                           [31m^[39m
+    [90m109|[39m     [35mconst[39m token [33m=[39m [33m++[39mgeneration[33m;[39m
+    [90m110|[39m     request [33m=[39m r[33m;[39m
+[90m [2m❯[22m Object.save apps/web/src/features/structure/policy-controller.ts:[2m410:13[22m[39m
+[90m [2m❯[22m apps/web/src/features/structure/policy-controller.test.ts:[2m107:11[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/17]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/features/structure/policy-controller.test.ts[2m > [22mnetwork failure only exact retry uses same immutable request and UUID
+[31m[1mReferenceError[22m: Cannot access 'token' before initialization[39m
+[36m [2m❯[22m submit apps/web/src/features/structure/policy-controller.ts:[2m108:27[22m[39m
+    [90m106|[39m   }[33m;[39m
+    [90m107|[39m   [35masync[39m [35mfunction[39m [34msubmit[39m(r[33m:[39m [33mRequest[39m) {
+    [90m108|[39m     [35mif[39m ([33m![39m[34mcurrent[39m(r[33m.[39mepoch[33m,[39m token)) [35mreturn[39m[33m;[39m
+    [90m   |[39m                           [31m^[39m
+    [90m109|[39m     [35mconst[39m token [33m=[39m [33m++[39mgeneration[33m;[39m
+    [90m110|[39m     request [33m=[39m r[33m;[39m
+[90m [2m❯[22m Object.save apps/web/src/features/structure/policy-controller.ts:[2m410:13[22m[39m
+[90m [2m❯[22m apps/web/src/features/structure/policy-controller.test.ts:[2m135:11[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/17]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/features/structure/policy-controller.test.ts[2m > [22mmigration requires preview and explicit command, with preview capture
+[31m[1mReferenceError[22m: Cannot access 'token' before initialization[39m
+[36m [2m❯[22m submit apps/web/src/features/structure/policy-controller.ts:[2m108:27[22m[39m
+    [90m106|[39m   }[33m;[39m
+    [90m107|[39m   [35masync[39m [35mfunction[39m [34msubmit[39m(r[33m:[39m [33mRequest[39m) {
+    [90m108|[39m     [35mif[39m ([33m![39m[34mcurrent[39m(r[33m.[39mepoch[33m,[39m token)) [35mreturn[39m[33m;[39m
+    [90m   |[39m                           [31m^[39m
+    [90m109|[39m     [35mconst[39m token [33m=[39m [33m++[39mgeneration[33m;[39m
+    [90m110|[39m     request [33m=[39m r[33m;[39m
+[90m [2m❯[22m Object.importLegacy apps/web/src/features/structure/policy-controller.ts:[2m452:13[22m[39m
+[90m [2m❯[22m apps/web/src/features/structure/policy-controller.test.ts:[2m149:11[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/17]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/features/structure/policy-controller.test.ts[2m > [22mfolder edit sends only path/purpose preserving raw unknown and allowed/forbidden server fields
+[31m[1mReferenceError[22m: Cannot access 'token' before initialization[39m
+[36m [2m❯[22m submit apps/web/src/features/structure/policy-controller.ts:[2m108:27[22m[39m
+    [90m106|[39m   }[33m;[39m
+    [90m107|[39m   [35masync[39m [35mfunction[39m [34msubmit[39m(r[33m:[39m [33mRequest[39m) {
+    [90m108|[39m     [35mif[39m ([33m![39m[34mcurrent[39m(r[33m.[39mepoch[33m,[39m token)) [35mreturn[39m[33m;[39m
+    [90m   |[39m                           [31m^[39m
+    [90m109|[39m     [35mconst[39m token [33m=[39m [33m++[39mgeneration[33m;[39m
+    [90m110|[39m     request [33m=[39m r[33m;[39m
+[90m [2m❯[22m Object.save apps/web/src/features/structure/policy-controller.ts:[2m410:13[22m[39m
+[90m [2m❯[22m apps/web/src/features/structure/policy-controller.test.ts:[2m176:11[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/17]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/features/structure/policy-controller.test.ts[2m > [22mlate write ACK has no accepted callback or state after project switch
+[31m[1mReferenceError[22m: Cannot access 'token' before initialization[39m
+[36m [2m❯[22m submit apps/web/src/features/structure/policy-controller.ts:[2m108:27[22m[39m
+    [90m106|[39m   }[33m;[39m
+    [90m107|[39m   [35masync[39m [35mfunction[39m [34msubmit[39m(r[33m:[39m [33mRequest[39m) {
+    [90m108|[39m     [35mif[39m ([33m![39m[34mcurrent[39m(r[33m.[39mepoch[33m,[39m token)) [35mreturn[39m[33m;[39m
+    [90m   |[39m                           [31m^[39m
+    [90m109|[39m     [35mconst[39m token [33m=[39m [33m++[39mgeneration[33m;[39m
+    [90m110|[39m     request [33m=[39m r[33m;[39m
+[90m [2m❯[22m Object.save apps/web/src/features/structure/policy-controller.ts:[2m410:13[22m[39m
+[90m [2m❯[22m apps/web/src/features/structure/policy-controller.test.ts:[2m209:18[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/17]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/features/structure/policy-controller.test.ts[2m > [22mforeign ACK never reaches accepted-response workspace callback
+[31m[1mReferenceError[22m: Cannot access 'token' before initialization[39m
+[36m [2m❯[22m submit apps/web/src/features/structure/policy-controller.ts:[2m108:27[22m[39m
+    [90m106|[39m   }[33m;[39m
+    [90m107|[39m   [35masync[39m [35mfunction[39m [34msubmit[39m(r[33m:[39m [33mRequest[39m) {
+    [90m108|[39m     [35mif[39m ([33m![39m[34mcurrent[39m(r[33m.[39mepoch[33m,[39m token)) [35mreturn[39m[33m;[39m
+    [90m   |[39m                           [31m^[39m
+    [90m109|[39m     [35mconst[39m token [33m=[39m [33m++[39mgeneration[33m;[39m
+    [90m110|[39m     request [33m=[39m r[33m;[39m
+[90m [2m❯[22m Object.save apps/web/src/features/structure/policy-controller.ts:[2m410:13[22m[39m
+[90m [2m❯[22m apps/web/src/features/structure/policy-controller.test.ts:[2m260:11[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/17]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/features/structure/policy-controller.test.ts[2m > [22msuccessful new policy ACK retains actual id for the next explicit edit
+[31m[1mReferenceError[22m: Cannot access 'token' before initialization[39m
+[36m [2m❯[22m submit apps/web/src/features/structure/policy-controller.ts:[2m108:27[22m[39m
+    [90m106|[39m   }[33m;[39m
+    [90m107|[39m   [35masync[39m [35mfunction[39m [34msubmit[39m(r[33m:[39m [33mRequest[39m) {
+    [90m108|[39m     [35mif[39m ([33m![39m[34mcurrent[39m(r[33m.[39mepoch[33m,[39m token)) [35mreturn[39m[33m;[39m
+    [90m   |[39m                           [31m^[39m
+    [90m109|[39m     [35mconst[39m token [33m=[39m [33m++[39mgeneration[33m;[39m
+    [90m110|[39m     request [33m=[39m r[33m;[39m
+[90m [2m❯[22m Object.save apps/web/src/features/structure/policy-controller.ts:[2m410:13[22m[39m
+[90m [2m❯[22m apps/web/src/features/structure/policy-controller.test.ts:[2m277:11[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/17]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/features/structure/policy-controller.test.ts[2m > [22msuccessful folder rename ACK advances previousPath for the next explicit edit
+[31m[1mReferenceError[22m: Cannot access 'token' before initialization[39m
+[36m [2m❯[22m submit apps/web/src/features/structure/policy-controller.ts:[2m108:27[22m[39m
+    [90m106|[39m   }[33m;[39m
+    [90m107|[39m   [35masync[39m [35mfunction[39m [34msubmit[39m(r[33m:[39m [33mRequest[39m) {
+    [90m108|[39m     [35mif[39m ([33m![39m[34mcurrent[39m(r[33m.[39mepoch[33m,[39m token)) [35mreturn[39m[33m;[39m
+    [90m   |[39m                           [31m^[39m
+    [90m109|[39m     [35mconst[39m token [33m=[39m [33m++[39mgeneration[33m;[39m
+    [90m110|[39m     request [33m=[39m r[33m;[39m
+[90m [2m❯[22m Object.save apps/web/src/features/structure/policy-controller.ts:[2m410:13[22m[39m
+[90m [2m❯[22m apps/web/src/features/structure/policy-controller.test.ts:[2m299:11[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/17]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/features/structure/policy-controller.test.ts[2m > [22mI1 migration ACK preserves unsent dirty legacy:db-only draft B
+[41m[1m FAIL [22m[49m apps/web/src/features/structure/policy-controller.test.ts[2m > [22mI1 migration ACK preserves unsent dirty folder:src draft B
+[31m[1mReferenceError[22m: Cannot access 'token' before initialization[39m
+[36m [2m❯[22m submit apps/web/src/features/structure/policy-controller.ts:[2m108:27[22m[39m
+    [90m106|[39m   }[33m;[39m
+    [90m107|[39m   [35masync[39m [35mfunction[39m [34msubmit[39m(r[33m:[39m [33mRequest[39m) {
+    [90m108|[39m     [35mif[39m ([33m![39m[34mcurrent[39m(r[33m.[39mepoch[33m,[39m token)) [35mreturn[39m[33m;[39m
+    [90m   |[39m                           [31m^[39m
+    [90m109|[39m     [35mconst[39m token [33m=[39m [33m++[39mgeneration[33m;[39m
+    [90m110|[39m     request [33m=[39m r[33m;[39m
+[90m [2m❯[22m Object.importLegacy apps/web/src/features/structure/policy-controller.ts:[2m452:13[22m[39m
+[90m [2m❯[22m apps/web/src/features/structure/policy-controller.test.ts:[2m370:13[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/17]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/features/structure/policy-controller.test.ts[2m > [22mI2 unknown write retains immutable replay after failed state reread
+[41m[1m FAIL [22m[49m apps/web/src/features/structure/policy-controller.test.ts[2m > [22mI2 unknown write retains immutable replay after failed policies reread
+[41m[1m FAIL [22m[49m apps/web/src/features/structure/policy-controller.test.ts[2m > [22mI2 unknown write retains immutable replay after failed accepted reread
+[31m[1mReferenceError[22m: Cannot access 'token' before initialization[39m
+[36m [2m❯[22m submit apps/web/src/features/structure/policy-controller.ts:[2m108:27[22m[39m
+    [90m106|[39m   }[33m;[39m
+    [90m107|[39m   [35masync[39m [35mfunction[39m [34msubmit[39m(r[33m:[39m [33mRequest[39m) {
+    [90m108|[39m     [35mif[39m ([33m![39m[34mcurrent[39m(r[33m.[39mepoch[33m,[39m token)) [35mreturn[39m[33m;[39m
+    [90m   |[39m                           [31m^[39m
+    [90m109|[39m     [35mconst[39m token [33m=[39m [33m++[39mgeneration[33m;[39m
+    [90m110|[39m     request [33m=[39m r[33m;[39m
+[90m [2m❯[22m Object.save apps/web/src/features/structure/policy-controller.ts:[2m410:13[22m[39m
+[90m [2m❯[22m apps/web/src/features/structure/policy-controller.test.ts:[2m411:13[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/17]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/features/structure/policy-controller.test.ts[2m > [22mM1 write callback keeps busy through known ACK and blocks concurrent public reload/edit
+[31m[1mError[22m: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".[39m
+[36m [2m❯[22m apps/web/src/features/structure/policy-controller.test.ts:[2m433:1[22m[39m
+    [90m431|[39m   }[33m,[39m
+    [90m432|[39m )[33m;[39m
+    [90m433|[39m test("M1 write callback keeps busy through known ACK and blocks concur…
+    [90m   |[39m [31m^[39m
+    [90m434|[39m   [35mconst[39m { api } [33m=[39m [34mfixture[39m()[33m;[39m
+    [90m435|[39m   [35mconst[39m entered [33m=[39m hold[33m<[39m[35mvoid[39m[33m>[39m()[33m,[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/17]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/features/structure/policy-controller.test.ts[2m > [22mM1 known ACK then sync rejection stays saved, exposes reread and never retries publication
+[31m[1mReferenceError[22m: Cannot access 'token' before initialization[39m
+[36m [2m❯[22m submit apps/web/src/features/structure/policy-controller.ts:[2m108:27[22m[39m
+    [90m106|[39m   }[33m;[39m
+    [90m107|[39m   [35masync[39m [35mfunction[39m [34msubmit[39m(r[33m:[39m [33mRequest[39m) {
+    [90m108|[39m     [35mif[39m ([33m![39m[34mcurrent[39m(r[33m.[39mepoch[33m,[39m token)) [35mreturn[39m[33m;[39m
+    [90m   |[39m                           [31m^[39m
+    [90m109|[39m     [35mconst[39m token [33m=[39m [33m++[39mgeneration[33m;[39m
+    [90m110|[39m     request [33m=[39m r[33m;[39m
+[90m [2m❯[22m Object.save apps/web/src/features/structure/policy-controller.ts:[2m410:13[22m[39m
+[90m [2m❯[22m apps/web/src/features/structure/policy-controller.test.ts:[2m465:11[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/17]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/features/structure/policy-controller.test.ts[2m > [22mM1 superseded same-epoch callback rejection cannot overwrite a newer accepted read
+[31m[1mError[22m: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".[39m
+[36m [2m❯[22m apps/web/src/features/structure/policy-controller.test.ts:[2m479:1[22m[39m
+    [90m477|[39m   [34mexpect[39m(c[33m.[39mstore[33m.[39m[34mgetState[39m()[33m.[39mneedsReload)[33m.[39m[34mtoBe[39m([35mfalse[39m)[33m;[39m
+    [90m478|[39m })[33m;[39m
+    [90m479|[39m test("M1 superseded same-epoch callback rejection cannot overwrite a n…
+    [90m   |[39m [31m^[39m
+    [90m480|[39m   [35mconst[39m { api } [33m=[39m [34mfixture[39m()[33m;[39m
+    [90m481|[39m   [35mconst[39m entered [33m=[39m hold[33m<[39m[35mvoid[39m[33m>[39m()[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/17]⎯[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯[39m[1m[41m Unhandled Errors [49m[22m[31m⎯⎯⎯⎯⎯⎯[39m
+[31m[1m
+Vitest caught 2 unhandled errors during the test run.
+This might cause false positive tests. Resolve unhandled errors to make sure your tests are not affected.[22m[39m
+
+[31m⎯⎯⎯⎯[39m[1m[41m Unhandled Rejection [49m[22m[31m⎯⎯⎯⎯⎯[39m
+[31m[1mReferenceError[22m: Cannot access 'token' before initialization[39m
+[36m [2m❯[22m submit apps/web/src/features/structure/policy-controller.ts:[2m108:27[22m[39m
+    [90m106|[39m   }[33m;[39m
+    [90m107|[39m   [35masync[39m [35mfunction[39m [34msubmit[39m(r[33m:[39m [33mRequest[39m) {
+    [90m108|[39m     [35mif[39m ([33m![39m[34mcurrent[39m(r[33m.[39mepoch[33m,[39m token)) [35mreturn[39m[33m;[39m
+    [90m   |[39m                           [31m^[39m
+    [90m109|[39m     [35mconst[39m token [33m=[39m [33m++[39mgeneration[33m;[39m
+    [90m110|[39m     request [33m=[39m r[33m;[39m
+[90m [2m❯[22m Object.save apps/web/src/features/structure/policy-controller.ts:[2m410:13[22m[39m
+[90m [2m❯[22m apps/web/src/features/structure/policy-controller.test.ts:[2m444:18[22m[39m
+[90m [2m❯[22m node_modules/@vitest/runner/dist/chunk-artifact.js:[2m1903:20[22m[39m
+
+[31mThis error originated in "[1mapps/web/src/features/structure/policy-controller.test.ts[22m" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.[39m
+[31mThe latest test that might've caused the error is "[1mM1 write callback keeps busy through known ACK and blocks concurrent public reload/edit[22m". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.[39m
+
+[31m⎯⎯⎯⎯[39m[1m[41m Unhandled Rejection [49m[22m[31m⎯⎯⎯⎯⎯[39m
+[31m[1mReferenceError[22m: Cannot access 'token' before initialization[39m
+[36m [2m❯[22m submit apps/web/src/features/structure/policy-controller.ts:[2m108:27[22m[39m
+    [90m106|[39m   }[33m;[39m
+    [90m107|[39m   [35masync[39m [35mfunction[39m [34msubmit[39m(r[33m:[39m [33mRequest[39m) {
+    [90m108|[39m     [35mif[39m ([33m![39m[34mcurrent[39m(r[33m.[39mepoch[33m,[39m token)) [35mreturn[39m[33m;[39m
+    [90m   |[39m                           [31m^[39m
+    [90m109|[39m     [35mconst[39m token [33m=[39m [33m++[39mgeneration[33m;[39m
+    [90m110|[39m     request [33m=[39m r[33m;[39m
+[90m [2m❯[22m Object.save apps/web/src/features/structure/policy-controller.ts:[2m410:13[22m[39m
+[90m [2m❯[22m apps/web/src/features/structure/policy-controller.test.ts:[2m492:18[22m[39m
+[90m [2m❯[22m node_modules/@vitest/runner/dist/chunk-artifact.js:[2m1903:20[22m[39m
+
+[31mThis error originated in "[1mapps/web/src/features/structure/policy-controller.test.ts[22m" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.[39m
+[31mThe latest test that might've caused the error is "[1mM1 superseded same-epoch callback rejection cannot overwrite a newer accepted read[22m". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.[39m
+[31m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m1 passed[39m[22m[90m (2)[39m
+[2m      Tests [22m [1m[31m17 failed[39m[22m[2m | [22m[1m[32m20 passed[39m[22m[90m (37)[39m
+[2m     Errors [22m [1m[31m2 errors[39m[22m
+[2m   Start at [22m 18:45:22
+[2m   Duration [22m 10.72s[2m (transform 658ms, setup 0ms, import 1.10s, tests 10.14s, environment 0ms)[22m
+

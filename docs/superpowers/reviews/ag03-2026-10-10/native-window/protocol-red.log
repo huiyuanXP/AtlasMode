@@ -1,0 +1,88 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90m/home/agent/projects/AtlasMode[39m
+
+ [31m❯[39m apps/server/src/agent/windows-job-protocol.test.ts [2m([22m[2m23 tests[22m[2m | [22m[31m7 failed[39m[2m)[22m[32m 40[2mms[22m[39m
+[31m     [31m×[31m preserves literal argv and omits undefined environment entries[39m[32m 12[2mms[22m[39m
+     [32m✓[39m refuses a launch outside the executable/text/count/command-line contract[32m 3[2mms[22m[39m
+     [32m✓[39m refuses a launch outside the executable/text/count/command-line contract[32m 1[2mms[22m[39m
+     [32m✓[39m refuses a launch outside the executable/text/count/command-line contract[32m 1[2mms[22m[39m
+     [32m✓[39m refuses a launch outside the executable/text/count/command-line contract[32m 1[2mms[22m[39m
+     [32m✓[39m refuses a launch outside the executable/text/count/command-line contract[32m 1[2mms[22m[39m
+     [32m✓[39m refuses a launch outside the executable/text/count/command-line contract[32m 1[2mms[22m[39m
+     [32m✓[39m refuses a launch outside the executable/text/count/command-line contract[32m 1[2mms[22m[39m
+     [32m✓[39m refuses a launch outside the executable/text/count/command-line contract[32m 1[2mms[22m[39m
+     [32m✓[39m refuses a launch outside the executable/text/count/command-line contract[32m 1[2mms[22m[39m
+     [32m✓[39m refuses a launch outside the executable/text/count/command-line contract[32m 1[2mms[22m[39m
+[31m     [31m×[31m quotes "" without a shell[39m[32m 2[2mms[22m[39m
+[31m     [31m×[31m quotes "plain" without a shell[39m[32m 1[2mms[22m[39m
+[31m     [31m×[31m quotes "a\"b" without a shell[39m[32m 1[2mms[22m[39m
+[31m     [31m×[31m quotes "end\\" without a shell[39m[32m 1[2mms[22m[39m
+[31m     [31m×[31m decodes arbitrarily split and contiguous frames with an explicit remainder[39m[32m 1[2mms[22m[39m
+     [32m✓[39m refuses malformed bounded status frames[32m 1[2mms[22m[39m
+     [32m✓[39m refuses malformed bounded status frames[32m 0[2mms[22m[39m
+     [32m✓[39m refuses malformed bounded status frames[32m 0[2mms[22m[39m
+     [32m✓[39m refuses malformed bounded status frames[32m 1[2mms[22m[39m
+     [32m✓[39m refuses malformed bounded status frames[32m 0[2mms[22m[39m
+     [32m✓[39m bounds a status frame before producing bytes[32m 1[2mms[22m[39m
+[31m     [31m×[31m validates strict binary provenance without accepting extra or future fields[39m[32m 1[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 7 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m apps/server/src/agent/windows-job-protocol.test.ts[2m > [22mWindows owned Job private wire codec[2m > [22mpreserves literal argv and omits undefined environment entries
+[31m[1mError[22m: not implemented[39m
+[36m [2m❯[22m encodeLaunch apps/server/src/agent/windows-job-protocol.ts:[2m1:63[22m[39m
+    [90m  1|[39m export function encodeLaunch(_value: unknown): Buffer { throw new Erro…
+    [90m   |[39m                                                               [31m^[39m
+    [90m  2|[39m export function encodeFrame(_type: number, _payload: Buffer): Buffer {…
+    [90m  3|[39m export function quoteWindowsArgument(_value: string): string { throw n…
+[90m [2m❯[22m apps/server/src/agent/windows-job-protocol.test.ts:[2m8:19[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/7]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/server/src/agent/windows-job-protocol.test.ts[2m > [22mWindows owned Job private wire codec[2m > [22mquotes "" without a shell
+[41m[1m FAIL [22m[49m apps/server/src/agent/windows-job-protocol.test.ts[2m > [22mWindows owned Job private wire codec[2m > [22mquotes "plain" without a shell
+[41m[1m FAIL [22m[49m apps/server/src/agent/windows-job-protocol.test.ts[2m > [22mWindows owned Job private wire codec[2m > [22mquotes "a\"b" without a shell
+[41m[1m FAIL [22m[49m apps/server/src/agent/windows-job-protocol.test.ts[2m > [22mWindows owned Job private wire codec[2m > [22mquotes "end\\" without a shell
+[31m[1mError[22m: not implemented[39m
+[36m [2m❯[22m quoteWindowsArgument apps/server/src/agent/windows-job-protocol.ts:[2m3:70[22m[39m
+    [90m  1|[39m export function encodeLaunch(_value: unknown): Buffer { throw new Erro…
+    [90m  2|[39m export function encodeFrame(_type: number, _payload: Buffer): Buffer {…
+    [90m  3|[39m export function quoteWindowsArgument(_value: string): string { throw n…
+    [90m   |[39m                                                                      [31m^[39m
+    [90m  4|[39m export function validateManifest(_value: unknown): unknown { throw new…
+    [90m  5|[39m export function decodeFrames(_value: Buffer): { frames: { type: number…
+[90m [2m❯[22m apps/server/src/agent/windows-job-protocol.test.ts:[2m30:12[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/7]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/server/src/agent/windows-job-protocol.test.ts[2m > [22mWindows owned Job private wire codec[2m > [22mdecodes arbitrarily split and contiguous frames with an explicit remainder
+[31m[1mError[22m: not implemented[39m
+[36m [2m❯[22m decodeFrames apps/server/src/agent/windows-job-protocol.ts:[2m5:122[22m[39m
+    [90m  3|[39m export function quoteWindowsArgument(_value: string): string { throw n…
+    [90m  4|[39m export function validateManifest(_value: unknown): unknown { throw new…
+    [90m  5|[39m export function decodeFrames(_value: Buffer): { frames: { type: number…
+    [90m   |[39m                                                                                                                          [31m^[39m
+    [90m  6|[39m
+[90m [2m❯[22m apps/server/src/agent/windows-job-protocol.test.ts:[2m34:19[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/7]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/server/src/agent/windows-job-protocol.test.ts[2m > [22mWindows owned Job private wire codec[2m > [22mvalidates strict binary provenance without accepting extra or future fields
+[31m[1mError[22m: not implemented[39m
+[36m [2m❯[22m validateManifest apps/server/src/agent/windows-job-protocol.ts:[2m4:68[22m[39m
+    [90m  2|[39m export function encodeFrame(_type: number, _payload: Buffer): Buffer {…
+    [90m  3|[39m export function quoteWindowsArgument(_value: string): string { throw n…
+    [90m  4|[39m export function validateManifest(_value: unknown): unknown { throw new…
+    [90m   |[39m                                                                    [31m^[39m
+    [90m  5|[39m export function decodeFrames(_value: Buffer): { frames: { type: number…
+    [90m  6|[39m
+[90m [2m❯[22m apps/server/src/agent/windows-job-protocol.test.ts:[2m52:12[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/7]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m7 failed[39m[22m[2m | [22m[1m[32m16 passed[39m[22m[90m (23)[39m
+[2m   Start at [22m 19:14:14
+[2m   Duration [22m 491ms[2m (transform 61ms, setup 0ms, import 97ms, tests 40ms, environment 0ms)[22m
+

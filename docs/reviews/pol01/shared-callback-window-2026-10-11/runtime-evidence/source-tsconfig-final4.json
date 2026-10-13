@@ -1,0 +1,38 @@
+{
+  "extends": "/tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "rootDir": "/",
+    "jsx": "react-jsx",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "lib": [
+      "ES2023",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    "typeRoots": [
+      "/tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/node_modules/@types"
+    ],
+    "paths": {
+      "@codemap/core": [
+        "/tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/packages/core/src/index.ts"
+      ],
+      "@codemap/service": [
+        "/tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/packages/service/src/index.ts"
+      ],
+      "@codemap/storage": [
+        "/tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/packages/storage/src/index.ts"
+      ],
+      "@codemap/indexer": [
+        "/tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/packages/indexer/src/index.ts"
+      ]
+    }
+  },
+  "include": [
+    "/tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/apps/web/src/app/workspace.ts",
+    "/tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/apps/web/src/app/Navigation.tsx",
+    "/tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/apps/web/src/app/pol01-policy-sync.test.ts",
+    "/tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/tests/e2e/pol01-structure.spec.ts"
+  ]
+}

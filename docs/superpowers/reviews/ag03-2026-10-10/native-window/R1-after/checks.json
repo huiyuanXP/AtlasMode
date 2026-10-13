@@ -1,0 +1,87 @@
+{
+  "commands": [
+    {
+      "command": [
+        "npx",
+        "vitest",
+        "run",
+        "--config",
+        "docs/superpowers/reviews/ag03-2026-10-10/native-window/vitest.config.mjs"
+      ],
+      "exitCode": 0
+    },
+    {
+      "command": [
+        "npx",
+        "eslint",
+        "apps/server/src/agent/windows-job-protocol.ts",
+        "apps/server/src/agent/windows-job-protocol.test.ts",
+        "scripts/build-agent-job.mjs",
+        "scripts/build-agent-job.test.ts"
+      ],
+      "exitCode": 0
+    },
+    {
+      "command": [
+        "npx",
+        "tsc",
+        "--noEmit",
+        "--target",
+        "ES2023",
+        "--module",
+        "NodeNext",
+        "--moduleResolution",
+        "NodeNext",
+        "--strict",
+        "--noUncheckedIndexedAccess",
+        "--skipLibCheck",
+        "--types",
+        "node",
+        "apps/server/src/agent/windows-job-protocol.ts",
+        "apps/server/src/agent/windows-job-protocol.test.ts"
+      ],
+      "exitCode": 0
+    },
+    {
+      "command": [
+        "g++",
+        "-std=c++20",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "apps/server/native/agent-job/protocol.cpp",
+        "apps/server/native/agent-job/tests/protocol-tests.cpp",
+        "-o",
+        "/tmp/atlas-ag03-protocol-R1"
+      ],
+      "exitCode": 0
+    },
+    {
+      "command": [
+        "/tmp/atlas-ag03-protocol-R1"
+      ],
+      "exitCode": 0
+    },
+    {
+      "command": [
+        "node",
+        "scripts/build-agent-job.mjs",
+        "--tests"
+      ],
+      "exitCode": 1
+    }
+  ],
+  "sourceSameAfter": true,
+  "sharedOriginalSame": true,
+  "changedOnly": [
+    "apps/server/native/agent-job/tests/job-harness.cpp"
+  ],
+  "originalFreezeSha": "309270eb5d5c3571b0003d48bf220cb9707349b6beb733ee05cde980f6e55b26",
+  "originalReviewSha": "3ff1b1eeb03eeb6938f14cd8a725e06413beb46ef64964d84d95ff0c109dd92e",
+  "R1freezeSha": "04e3dfc293a3cb58ea05ba61f5d1c5e3fad009992dadc4336ebd6f86e1ba72be",
+  "R1patchSha": "442ab01cdf5a1c275ff077cf39f23ac656d72d09e725f871c3aca749a045836d",
+  "nativeWindows": "UNRUN",
+  "nativeI1Negatives": "AUTHORED_UNRUN",
+  "M1": "OPEN_NATIVE_EVIDENCE_GATE",
+  "guardA": "UNCHANGED"
+}

@@ -1,0 +1,252 @@
+{
+  "config": {
+    "argv": [
+      "/home/agent/.node/node-v24.19.0-linux-x64/bin/node",
+      "/tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/node_modules/.bin/playwright",
+      "test",
+      "tests/e2e/pol01-structure.spec.ts",
+      "--output",
+      "../policy-results",
+      "--reporter",
+      "list,json"
+    ],
+    "configFile": "/tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/playwright.config.ts",
+    "rootDir": "/tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/tests/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/tmp/atlas-pol01-callback-20261011-40dxsb3i/policy-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "",
+        "name": "",
+        "testDir": "/tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 120000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list"
+      ],
+      [
+        "json"
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.63.0",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "pol01-structure.spec.ts",
+      "file": "pol01-structure.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "production native policy edit/import retains unsent input and actual 409 requires explicit reload",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 2431,
+                  "error": {
+                    "message": "AssertionError: {\"status\":400,\"body\":{\"code\":\"INVALID_INPUT\",\"message\":\"Invalid request.\",\"issues\":[{\"path\":[\"positions\"],\"message\":\"Invalid input: expected record, received undefined\"},{\"path\":[\"theme\"],\"message\":\"Invalid option: expected one of \\\"light\\\"|\\\"dark\\\"\"}]}}",
+                    "stack": "AssertionError: {\"status\":400,\"body\":{\"code\":\"INVALID_INPUT\",\"message\":\"Invalid request.\",\"issues\":[{\"path\":[\"positions\"],\"message\":\"Invalid input: expected record, received undefined\"},{\"path\":[\"theme\"],\"message\":\"Invalid option: expected one of \\\"light\\\"|\\\"dark\\\"\"}]}}\n    at Object.json (/tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/tests/support/pol01-acceptance.ts:219:5)\n    at openPanel (/tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/tests/e2e/pol01-structure.spec.ts:15:3)\n    at /tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/tests/e2e/pol01-structure.spec.ts:42:19",
+                    "location": {
+                      "file": "/tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/tests/support/pol01-acceptance.ts",
+                      "column": 5,
+                      "line": 219
+                    },
+                    "snippet": "   at ../support/pol01-acceptance.ts:219\n\n  217 |   async function json<T>(suffix: string, method = \"GET\", body?: unknown) {\n  218 |     const response = await raw<T>(suffix, method, body);\n> 219 |     assert(\n      |     ^\n  220 |       response.status >= 200 && response.status < 300,\n  221 |       JSON.stringify(response),\n  222 |     );"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/tests/support/pol01-acceptance.ts",
+                        "column": 5,
+                        "line": 219
+                      },
+                      "message": "AssertionError: {\"status\":400,\"body\":{\"code\":\"INVALID_INPUT\",\"message\":\"Invalid request.\",\"issues\":[{\"path\":[\"positions\"],\"message\":\"Invalid input: expected record, received undefined\"},{\"path\":[\"theme\"],\"message\":\"Invalid option: expected one of \\\"light\\\"|\\\"dark\\\"\"}]}}\n\n   at ../support/pol01-acceptance.ts:219\n\n  217 |   async function json<T>(suffix: string, method = \"GET\", body?: unknown) {\n  218 |     const response = await raw<T>(suffix, method, body);\n> 219 |     assert(\n      |     ^\n  220 |       response.status >= 200 && response.status < 300,\n  221 |       JSON.stringify(response),\n  222 |     );\n    at Object.json (/tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/tests/support/pol01-acceptance.ts:219:5)\n    at openPanel (/tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/tests/e2e/pol01-structure.spec.ts:15:3)\n    at /tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/tests/e2e/pol01-structure.spec.ts:42:19"
+                    }
+                  ],
+                  "stdout": [
+                    {
+                      "text": "{\"receipt\":\"POL01_SQLITE_STDIO_OWNED\",\"root\":\"/tmp/atlas-pol01-acceptance-119hi6\",\"runtime\":\"/tmp/atlas-pol01-acceptance-119hi6/runtime-receipt.json\",\"records\":[{\"kind\":\"server\",\"mode\":\"compiled\",\"pid\":158961,\"port\":40259,\"exit\":[0,null],\"portClosed\":true,\"output\":\"AtlasMode API listening on 127.0.0.1:40259 (built web assets available)\\n\"}],\"rootCleanup\":\"retained-evidence\"}\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-11T01:45:50.481Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "owned-runtime-receipt",
+                      "contentType": "application/json",
+                      "path": "/tmp/atlas-pol01-callback-20261011-40dxsb3i/policy-results/pol01-structure-production-60b0b-09-requires-explicit-reload/attachments/owned-runtime-receipt-ff9598f933011bfd53f757baf078fe482efb1dcc.json"
+                    },
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/tmp/atlas-pol01-callback-20261011-40dxsb3i/policy-results/pol01-structure-production-60b0b-09-requires-explicit-reload/test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/tmp/atlas-pol01-callback-20261011-40dxsb3i/policy-results/pol01-structure-production-60b0b-09-requires-explicit-reload/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/tmp/atlas-pol01-callback-20261011-40dxsb3i/policy-results/pol01-structure-production-60b0b-09-requires-explicit-reload/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/tests/support/pol01-acceptance.ts",
+                    "column": 5,
+                    "line": 219
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "a63039cff2fc2a3d8c5b-a9c13151d20831ef272f",
+          "file": "pol01-structure.spec.ts",
+          "line": 37,
+          "column": 1
+        },
+        {
+          "title": "production native quarantine disables writing and owned restart preserves invalid file bytes",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 1060,
+                  "error": {
+                    "message": "AssertionError: {\"status\":400,\"body\":{\"code\":\"INVALID_INPUT\",\"message\":\"Invalid request.\",\"issues\":[{\"path\":[\"positions\"],\"message\":\"Invalid input: expected record, received undefined\"},{\"path\":[\"theme\"],\"message\":\"Invalid option: expected one of \\\"light\\\"|\\\"dark\\\"\"}]}}",
+                    "stack": "AssertionError: {\"status\":400,\"body\":{\"code\":\"INVALID_INPUT\",\"message\":\"Invalid request.\",\"issues\":[{\"path\":[\"positions\"],\"message\":\"Invalid input: expected record, received undefined\"},{\"path\":[\"theme\"],\"message\":\"Invalid option: expected one of \\\"light\\\"|\\\"dark\\\"\"}]}}\n    at Object.json (/tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/tests/support/pol01-acceptance.ts:219:5)\n    at openPanel (/tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/tests/e2e/pol01-structure.spec.ts:15:3)\n    at /tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/tests/e2e/pol01-structure.spec.ts:153:19",
+                    "location": {
+                      "file": "/tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/tests/support/pol01-acceptance.ts",
+                      "column": 5,
+                      "line": 219
+                    },
+                    "snippet": "   at ../support/pol01-acceptance.ts:219\n\n  217 |   async function json<T>(suffix: string, method = \"GET\", body?: unknown) {\n  218 |     const response = await raw<T>(suffix, method, body);\n> 219 |     assert(\n      |     ^\n  220 |       response.status >= 200 && response.status < 300,\n  221 |       JSON.stringify(response),\n  222 |     );"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/tests/support/pol01-acceptance.ts",
+                        "column": 5,
+                        "line": 219
+                      },
+                      "message": "AssertionError: {\"status\":400,\"body\":{\"code\":\"INVALID_INPUT\",\"message\":\"Invalid request.\",\"issues\":[{\"path\":[\"positions\"],\"message\":\"Invalid input: expected record, received undefined\"},{\"path\":[\"theme\"],\"message\":\"Invalid option: expected one of \\\"light\\\"|\\\"dark\\\"\"}]}}\n\n   at ../support/pol01-acceptance.ts:219\n\n  217 |   async function json<T>(suffix: string, method = \"GET\", body?: unknown) {\n  218 |     const response = await raw<T>(suffix, method, body);\n> 219 |     assert(\n      |     ^\n  220 |       response.status >= 200 && response.status < 300,\n  221 |       JSON.stringify(response),\n  222 |     );\n    at Object.json (/tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/tests/support/pol01-acceptance.ts:219:5)\n    at openPanel (/tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/tests/e2e/pol01-structure.spec.ts:15:3)\n    at /tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/tests/e2e/pol01-structure.spec.ts:153:19"
+                    }
+                  ],
+                  "stdout": [
+                    {
+                      "text": "{\"receipt\":\"POL01_SQLITE_STDIO_OWNED\",\"root\":\"/tmp/atlas-pol01-acceptance-KRjNIa\",\"runtime\":\"/tmp/atlas-pol01-acceptance-KRjNIa/runtime-receipt.json\",\"records\":[{\"kind\":\"server\",\"mode\":\"compiled\",\"pid\":159047,\"port\":39521,\"exit\":[0,null],\"portClosed\":true,\"output\":\"AtlasMode API listening on 127.0.0.1:39521 (built web assets available)\\n\"}],\"rootCleanup\":\"retained-evidence\"}\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-11T01:45:54.599Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "owned-runtime-receipt",
+                      "contentType": "application/json",
+                      "path": "/tmp/atlas-pol01-callback-20261011-40dxsb3i/policy-results/pol01-structure-production-41aaf-reserves-invalid-file-bytes/attachments/owned-runtime-receipt-6ee6ccff10ac09e691ba57327efd9c78c7121209.json"
+                    },
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/tmp/atlas-pol01-callback-20261011-40dxsb3i/policy-results/pol01-structure-production-41aaf-reserves-invalid-file-bytes/test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/tmp/atlas-pol01-callback-20261011-40dxsb3i/policy-results/pol01-structure-production-41aaf-reserves-invalid-file-bytes/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/tmp/atlas-pol01-callback-20261011-40dxsb3i/policy-results/pol01-structure-production-41aaf-reserves-invalid-file-bytes/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/tests/support/pol01-acceptance.ts",
+                    "column": 5,
+                    "line": 219
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "a63039cff2fc2a3d8c5b-02b617c794f3d54c118e",
+          "file": "pol01-structure.spec.ts",
+          "line": 148,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-10-11T01:45:44.800Z",
+    "duration": 11022.839,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 2,
+    "flaky": 0
+  }
+}

@@ -1,0 +1,121 @@
+diff --git a/apps/server/src/agent/direct-loop.test.ts b/apps/server/src/agent/direct-loop.test.ts
+index 871cf12..2127eeb 100644
+--- a/apps/server/src/agent/direct-loop.test.ts
++++ b/apps/server/src/agent/direct-loop.test.ts
+@@ -11,7 +11,7 @@ import {
+ import { join } from "node:path";
+ import { tmpdir } from "node:os";
+ import { SourceIndexer } from "@codemap/indexer";
+-import { SqliteStorage } from "@codemap/storage";
++import { SqliteStorage, StructureFileStore } from "@codemap/storage";
+ import { WorkspaceService } from "@codemap/service";
+ import { createServer } from "../server.js";
+ import { createResponsesRunner, type ResponsesOptions } from "./direct.js";
+@@ -104,6 +104,7 @@ async function setup(url: string, options?: ResponsesOptions) {
+   const storage = new SqliteStorage(join(root, "data.sqlite"));
+   cleanups.push(async () => storage.close());
+   const service = new WorkspaceService({
++    structureFiles: new StructureFileStore(),
+     storage,
+     indexer: new SourceIndexer(),
+   });
+diff --git a/apps/server/src/server.test.ts b/apps/server/src/server.test.ts
+index 3764349..01c3159 100644
+--- a/apps/server/src/server.test.ts
++++ b/apps/server/src/server.test.ts
+@@ -1,9 +1,10 @@
+ import { afterEach, expect, test } from "vitest";
+ import { mkdtemp, mkdir, writeFile, rm, symlink } from "node:fs/promises";
++import { randomUUID } from "node:crypto";
+ import { tmpdir } from "node:os";
+ import { join } from "node:path";
+ import { SourceIndexer } from "@codemap/indexer";
+-import { SqliteStorage } from "@codemap/storage";
++import { SqliteStorage, StructureFileStore } from "@codemap/storage";
+ import { WorkspaceService } from "@codemap/service";
+ import {
+   DomainError,
+@@ -36,6 +37,7 @@ async function setup(options: { web?: boolean; indexer?: IndexerPort } = {}) {
+   const storage = new SqliteStorage(join(root, "data.sqlite"));
+   cleanups.push(async () => storage.close());
+   const service = new WorkspaceService({
++    structureFiles: new StructureFileStore(),
+     storage,
+     indexer: options.indexer ?? new SourceIndexer(),
+   });
+@@ -562,8 +564,17 @@ test("routes carry evidence, groups policies and view persist with strict projec
+       })
+     ).statusCode,
+   ).toBe(400);
++  const policyPreconditions = async (scope: string) => {
++    const state = (await request("GET", `${scope}/structure`)).json();
++    return {
++      mutationId: randomUUID(),
++      expectedStructureRevision: state.structureRevision,
++      expectedFileDigest: state.fileDigest,
++    };
++  };
+   const policy = (
+     await request("POST", `${base}/policies`, {
++      ...(await policyPreconditions(base)),
+       pathPrefix: "src",
+       purpose: "rules",
+       forbiddenDependencies: ["private"],
+@@ -575,6 +586,7 @@ test("routes carry evidence, groups policies and view persist with strict projec
+   expect(
+     (
+       await request("POST", `${base}/policies`, {
++        ...(await policyPreconditions(base)),
+         pathPrefix: "../bad",
+         purpose: "rules",
+         forbiddenDependencies: [],
+@@ -584,6 +596,7 @@ test("routes carry evidence, groups policies and view persist with strict projec
+   expect(
+     (
+       await request("POST", `/api/projects/${b.id}/policies`, {
++        ...(await policyPreconditions(`/api/projects/${b.id}`)),
+         id: policy.id,
+         pathPrefix: policy.pathPrefix,
+         purpose: policy.purpose,
+diff --git a/tests/e2e/agent-chat.spec.ts b/tests/e2e/agent-chat.spec.ts
+index d70bcea..443c063 100644
+--- a/tests/e2e/agent-chat.spec.ts
++++ b/tests/e2e/agent-chat.spec.ts
+@@ -3,7 +3,7 @@ import { mkdtemp, mkdir, writeFile, rm } from "node:fs/promises";
+ import { tmpdir } from "node:os";
+ import { join, resolve } from "node:path";
+ import { SourceIndexer } from "@codemap/indexer";
+-import { SqliteStorage } from "@codemap/storage";
++import { SqliteStorage, StructureFileStore } from "@codemap/storage";
+ import { WorkspaceService } from "@codemap/service";
+ import {
+   createServer,
+@@ -196,6 +196,7 @@ test("labeled trusted test adapter streams through real bridge, journals drafts,
+   try {
+     storage = new SqliteStorage(join(root, "data.sqlite"));
+     const service = new WorkspaceService({
++      structureFiles: new StructureFileStore(),
+       storage,
+       indexer: new SourceIndexer(),
+     });
+diff --git a/tests/integration/server-shutdown.test.ts b/tests/integration/server-shutdown.test.ts
+index c747e6e..d45b2e1 100644
+--- a/tests/integration/server-shutdown.test.ts
++++ b/tests/integration/server-shutdown.test.ts
+@@ -9,7 +9,7 @@ import type { CodeSnapshot, Project } from "@codemap/core";
+ import { createServer } from "@codemap/server";
+ import { WorkspaceService } from "@codemap/service";
+ import { SourceIndexer } from "@codemap/indexer";
+-import { SqliteStorage } from "@codemap/storage";
++import { SqliteStorage, StructureFileStore } from "@codemap/storage";
+ import { startProduction, http } from "../support/production.mjs";
+ 
+ // These connections have not submitted a complete request or started any
+@@ -79,6 +79,7 @@ test("shutdown preserves slow complete requests before discarding incomplete pip
+   const storage = new SqliteStorage(database);
+   const indexer = new SourceIndexer();
+   const service = new WorkspaceService({
++    structureFiles: new StructureFileStore(),
+     storage,
+     indexer: {
+       async index(path, projectId) {

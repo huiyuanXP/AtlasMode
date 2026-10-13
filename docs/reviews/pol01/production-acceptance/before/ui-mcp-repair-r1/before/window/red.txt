@@ -1,0 +1,224 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90m/home/agent/projects/AtlasMode[39m
+
+ [31m❯[39m apps/web/src/api/structure-client.test.ts [2m([22m[2m3 tests[22m[2m | [22m[31m3 failed[39m[2m)[22m[32m 18[2mms[22m[39m
+[31m   [31m×[31m legacy POST sends only explicit captured CAS and keeps DB-only same id[39m[32m 12[2mms[22m[39m
+[31m   [31m×[31m structure transport has real preview/import and explicit conflict acceptance paths[39m[32m 2[2mms[22m[39m
+[31m   [31m×[31m HTTP conflict diagnostics propagate and never trigger hidden reads or retry[39m[32m 1[2mms[22m[39m
+ [31m❯[39m apps/web/src/features/structure/policy-controller.test.ts [2m([22m[2m12 tests[22m[2m | [22m[31m12 failed[39m[2m)[22m[32m 32[2mms[22m[39m
+[31m   [31m×[31m same-id DB legacy form captures actual rev/digest/uuid without migrating[39m[32m 9[2mms[22m[39m
+[31m   [31m×[31m 409 keeps all input and old capture; save remains blocked until explicit reload[39m[32m 2[2mms[22m[39m
+[31m   [31m×[31m network failure only exact retry uses same immutable request and UUID[39m[32m 2[2mms[22m[39m
+[31m   [31m×[31m migration requires preview and explicit command, with preview capture[39m[32m 1[2mms[22m[39m
+[31m   [31m×[31m stale preview refuses migration without auto reread[39m[32m 1[2mms[22m[39m
+[31m   [31m×[31m folder edit sends only path/purpose preserving raw unknown and allowed/forbidden server fields[39m[32m 1[2mms[22m[39m
+[31m   [31m×[31m A→B→A read responses never contaminate the new epoch[39m[32m 8[2mms[22m[39m
+[31m   [31m×[31m late write ACK has no accepted callback or state after project switch[39m[32m 1[2mms[22m[39m
+[31m   [31m×[31m invalid state remains visible and cannot write[39m[32m 2[2mms[22m[39m
+[31m   [31m×[31m recovery_pending state remains visible and cannot write[39m[32m 1[2mms[22m[39m
+[31m   [31m×[31m unavailable state remains visible and cannot write[39m[32m 1[2mms[22m[39m
+[31m   [31m×[31m two inconsistent read captures fail closed without hiding form or automatically fetching latest[39m[32m 1[2mms[22m[39m
+ [31m❯[39m apps/mcp/src/structure.test.ts [2m([22m[2m3 tests[22m[2m | [22m[31m3 failed[39m[2m)[22m[32m 245[2mms[22m[39m
+[31m   [31m×[31m existing approved tool uses strong fresh GET after owner check without refresh writes or new tools[39m[32m 175[2mms[22m[39m
+[31m   [31m×[31m existing folder tool reports same fresh structure capture and preserves pagination[39m[32m 39[2mms[22m[39m
+[31m   [31m×[31m strong current approval failure stays an error instead of falling back to cached history[39m[32m 28[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 18 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m apps/mcp/src/structure.test.ts[2m > [22mexisting approved tool uses strong fresh GET after owner check without refresh writes or new tools
+[31m[1mAssertionError[22m: expected undefined to be true // Object.is equality[39m
+
+[32m- Expected:[39m
+true
+
+[31m+ Received:[39m
+undefined
+
+[36m [2m❯[22m apps/mcp/src/structure.test.ts:[2m4:439[22m[39m
+
+[90m [2m❯[22m fixture apps/mcp/src/structure.test.ts:[2m2:1246[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/18]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/mcp/src/structure.test.ts[2m > [22mexisting folder tool reports same fresh structure capture and preserves pagination
+[31m[1mAssertionError[22m: expected { code: 'NOT_FOUND', …(2) } to match object { items: [ { id: 'legacy' } ], …(6) }
+(2 matching properties omitted from actual)[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[32m-   "fileDigest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",[39m
+[32m-   "items": [[39m
+[32m-     {[39m
+[32m-       "id": "legacy",[39m
+[32m-     },[39m
+[32m-   ],[39m
+[32m-   "snapshotId": "s",[39m
+[32m-   "status": "ready",[39m
+[32m-   "structureRevision": 3,[39m
+[32m-   "total": 1,[39m
+[32m-   "verifiedAt": "t",[39m
+[31m+   "status": 404,[39m
+[2m  }[22m
+
+[36m [2m❯[22m apps/mcp/src/structure.test.ts:[2m5:246[22m[39m
+
+[90m [2m❯[22m fixture apps/mcp/src/structure.test.ts:[2m2:1246[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/18]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/mcp/src/structure.test.ts[2m > [22mstrong current approval failure stays an error instead of falling back to cached history
+[31m[1mAssertionError[22m: expected 'NOT_FOUND' to be 'NOT_APPROVED' // Object.is equality[39m
+
+Expected: [32m"NOT_[7mAPPROVE[27mD"[39m
+Received: [31m"NOT_[7mFOUN[27mD"[39m
+
+[36m [2m❯[22m apps/mcp/src/structure.test.ts:[2m6:295[22m[39m
+
+[90m [2m❯[22m fixture apps/mcp/src/structure.test.ts:[2m2:1246[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/18]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/api/structure-client.test.ts[2m > [22mlegacy POST sends only explicit captured CAS and keeps DB-only same id
+[31m[1mError[22m: not implemented[39m
+[36m [2m❯[22m StructureClient.savePolicy apps/web/src/api/structure-client.ts:[2m2:285[22m[39m
+
+[90m [2m❯[22m apps/web/src/api/structure-client.test.ts:[2m6:12[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/18]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/api/structure-client.test.ts[2m > [22mstructure transport has real preview/import and explicit conflict acceptance paths
+[31m[1mError[22m: not implemented[39m
+[36m [2m❯[22m StructureClient.readState apps/web/src/api/structure-client.ts:[2m2:100[22m[39m
+
+[90m [2m❯[22m apps/web/src/api/structure-client.test.ts:[2m12:12[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/18]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/api/structure-client.test.ts[2m > [22mHTTP conflict diagnostics propagate and never trigger hidden reads or retry
+[31m[1mError[22m: not implemented[39m
+[36m [2m❯[22m StructureClient.writeStructure apps/web/src/api/structure-client.ts:[2m2:351[22m[39m
+
+[90m [2m❯[22m apps/web/src/api/structure-client.test.ts:[2m18:58[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/18]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/features/structure/policy-controller.test.ts[2m > [22msame-id DB legacy form captures actual rev/digest/uuid without migrating
+[31m[1mError[22m: not implemented[39m
+[36m [2m❯[22m createPolicyController apps/web/src/features/structure/policy-controller.ts:[2m1:73[22m[39m
+    [90m  1|[39m export function createPolicyController(...args:unknown[]):never { thro…
+    [90m   |[39m                                                                         [31m^[39m
+    [90m  2|[39m
+[90m [2m❯[22m fixture apps/web/src/features/structure/policy-controller.test.ts:[2m10:33[22m[39m
+[90m [2m❯[22m apps/web/src/features/structure/policy-controller.test.ts:[2m13:113[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/18]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/features/structure/policy-controller.test.ts[2m > [22m409 keeps all input and old capture; save remains blocked until explicit reload
+[31m[1mError[22m: not implemented[39m
+[36m [2m❯[22m createPolicyController apps/web/src/features/structure/policy-controller.ts:[2m1:73[22m[39m
+    [90m  1|[39m export function createPolicyController(...args:unknown[]):never { thro…
+    [90m   |[39m                                                                         [31m^[39m
+    [90m  2|[39m
+[90m [2m❯[22m fixture apps/web/src/features/structure/policy-controller.test.ts:[2m10:33[22m[39m
+[90m [2m❯[22m apps/web/src/features/structure/policy-controller.test.ts:[2m14:115[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/18]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/features/structure/policy-controller.test.ts[2m > [22mnetwork failure only exact retry uses same immutable request and UUID
+[31m[1mError[22m: not implemented[39m
+[36m [2m❯[22m createPolicyController apps/web/src/features/structure/policy-controller.ts:[2m1:73[22m[39m
+    [90m  1|[39m export function createPolicyController(...args:unknown[]):never { thro…
+    [90m   |[39m                                                                         [31m^[39m
+    [90m  2|[39m
+[90m [2m❯[22m fixture apps/web/src/features/structure/policy-controller.test.ts:[2m10:33[22m[39m
+[90m [2m❯[22m apps/web/src/features/structure/policy-controller.test.ts:[2m15:101[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/18]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/features/structure/policy-controller.test.ts[2m > [22mmigration requires preview and explicit command, with preview capture
+[31m[1mError[22m: not implemented[39m
+[36m [2m❯[22m createPolicyController apps/web/src/features/structure/policy-controller.ts:[2m1:73[22m[39m
+    [90m  1|[39m export function createPolicyController(...args:unknown[]):never { thro…
+    [90m   |[39m                                                                         [31m^[39m
+    [90m  2|[39m
+[90m [2m❯[22m fixture apps/web/src/features/structure/policy-controller.test.ts:[2m10:33[22m[39m
+[90m [2m❯[22m apps/web/src/features/structure/policy-controller.test.ts:[2m16:101[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/18]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/features/structure/policy-controller.test.ts[2m > [22mstale preview refuses migration without auto reread
+[31m[1mError[22m: not implemented[39m
+[36m [2m❯[22m createPolicyController apps/web/src/features/structure/policy-controller.ts:[2m1:73[22m[39m
+    [90m  1|[39m export function createPolicyController(...args:unknown[]):never { thro…
+    [90m   |[39m                                                                         [31m^[39m
+    [90m  2|[39m
+[90m [2m❯[22m fixture apps/web/src/features/structure/policy-controller.test.ts:[2m10:33[22m[39m
+[90m [2m❯[22m apps/web/src/features/structure/policy-controller.test.ts:[2m17:83[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/18]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/features/structure/policy-controller.test.ts[2m > [22mfolder edit sends only path/purpose preserving raw unknown and allowed/forbidden server fields
+[31m[1mError[22m: not implemented[39m
+[36m [2m❯[22m createPolicyController apps/web/src/features/structure/policy-controller.ts:[2m1:73[22m[39m
+    [90m  1|[39m export function createPolicyController(...args:unknown[]):never { thro…
+    [90m   |[39m                                                                         [31m^[39m
+    [90m  2|[39m
+[90m [2m❯[22m fixture apps/web/src/features/structure/policy-controller.test.ts:[2m10:33[22m[39m
+[90m [2m❯[22m apps/web/src/features/structure/policy-controller.test.ts:[2m18:126[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/18]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/features/structure/policy-controller.test.ts[2m > [22mA→B→A read responses never contaminate the new epoch
+[31m[1mError[22m: not implemented[39m
+[36m [2m❯[22m createPolicyController apps/web/src/features/structure/policy-controller.ts:[2m1:73[22m[39m
+    [90m  1|[39m export function createPolicyController(...args:unknown[]):never { thro…
+    [90m   |[39m                                                                         [31m^[39m
+    [90m  2|[39m
+[90m [2m❯[22m fixture apps/web/src/features/structure/policy-controller.test.ts:[2m10:33[22m[39m
+[90m [2m❯[22m apps/web/src/features/structure/policy-controller.test.ts:[2m19:84[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/18]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/features/structure/policy-controller.test.ts[2m > [22mlate write ACK has no accepted callback or state after project switch
+[31m[1mError[22m: not implemented[39m
+[36m [2m❯[22m createPolicyController apps/web/src/features/structure/policy-controller.ts:[2m1:73[22m[39m
+    [90m  1|[39m export function createPolicyController(...args:unknown[]):never { thro…
+    [90m   |[39m                                                                         [31m^[39m
+    [90m  2|[39m
+[90m [2m❯[22m fixture apps/web/src/features/structure/policy-controller.test.ts:[2m10:33[22m[39m
+[90m [2m❯[22m apps/web/src/features/structure/policy-controller.test.ts:[2m20:110[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/18]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/features/structure/policy-controller.test.ts[2m > [22minvalid state remains visible and cannot write
+[41m[1m FAIL [22m[49m apps/web/src/features/structure/policy-controller.test.ts[2m > [22mrecovery_pending state remains visible and cannot write
+[41m[1m FAIL [22m[49m apps/web/src/features/structure/policy-controller.test.ts[2m > [22munavailable state remains visible and cannot write
+[31m[1mError[22m: not implemented[39m
+[36m [2m❯[22m createPolicyController apps/web/src/features/structure/policy-controller.ts:[2m1:73[22m[39m
+    [90m  1|[39m export function createPolicyController(...args:unknown[]):never { thro…
+    [90m   |[39m                                                                         [31m^[39m
+    [90m  2|[39m
+[90m [2m❯[22m fixture apps/web/src/features/structure/policy-controller.test.ts:[2m10:33[22m[39m
+[90m [2m❯[22m apps/web/src/features/structure/policy-controller.test.ts:[2m21:143[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/18]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/features/structure/policy-controller.test.ts[2m > [22mtwo inconsistent read captures fail closed without hiding form or automatically fetching latest
+[31m[1mError[22m: not implemented[39m
+[36m [2m❯[22m createPolicyController apps/web/src/features/structure/policy-controller.ts:[2m1:73[22m[39m
+    [90m  1|[39m export function createPolicyController(...args:unknown[]):never { thro…
+    [90m   |[39m                                                                         [31m^[39m
+    [90m  2|[39m
+[90m [2m❯[22m fixture apps/web/src/features/structure/policy-controller.test.ts:[2m10:33[22m[39m
+[90m [2m❯[22m apps/web/src/features/structure/policy-controller.test.ts:[2m22:127[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/18]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m3 failed[39m[22m[90m (3)[39m
+[2m      Tests [22m [1m[31m18 failed[39m[22m[90m (18)[39m
+[2m   Start at [22m 18:19:23
+[2m   Duration [22m 1.24s[2m (transform 349ms, setup 0ms, import 926ms, tests 295ms, environment 0ms)[22m
+

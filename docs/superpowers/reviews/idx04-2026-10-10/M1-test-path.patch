@@ -1,0 +1,11 @@
+--- a/docs/superpowers/plans/2026-10-10-idx04.md
++++ b/docs/superpowers/plans/2026-10-10-idx04.md
+@@ -85,7 +85,7 @@
+ 
+ - [ ] Write RED: legacy/unknown versus none/retained, unique still requires confirm; ambiguous single selection; default notes unchecked; cancel no writes; selected notes exact identifiers; truthful bounded hash/preview/capture labels and original paths.
+ - [ ] Add stale generation/project/locale/snapshot/late response and409 with preserved draft/no auto retry; HTTP rejects caller-provided evidence/unknown keys; FS planned function/path never offered as captured source candidate.
+-- [ ] Run npx vitest run apps/web/src/features/identity-migration packages/server/src/identity-migrations.test.ts; retain RED.
++- [ ] Run npx vitest run apps/web/src/features/identity-migration apps/server/src/identity-migrations.test.ts; retain RED.
+ - [ ] Implement bounded baseline/source/candidate/history views and explicit accept, current-source label remains live, old preview labelled captured/truncated. No giant summary payload/new first-use flow.
+ - [ ] Run GREEN, scoped lint/typecheck/build only granted package slots; freeze same compiled source before real gates.
+ 

@@ -1,0 +1,6 @@
+470630d29a7b040e133cb6effa169caa90184239b51f53ccb9a3b7365de052c0  packages/service/src/workspace.ts
+a9a757bf6250b12aac6c7c02775023d62a43edf1599a932023d325da26fd5c3b  apps/server/src/routes.ts
+bcb974862bbc6f72ca8f9b0ed8accb7225a24bd41719ec695e19279e8ff44bce  apps/server/src/pol01-workspace-http.test.ts
+c3bddb3a439d7f057e73cdd4acbff991bf90df9e5ce3e30ad459f689648a1cd3  tests/support/pol01-crash.ts
+9dcbab7689aca7f4c58a6f389fb2a53d4ee8f4b1e7dba7f861cb49be81eeb41c  apps/server/src/pol01-http-repair.test.ts
+467dd4fa8ada8da7b9ed88db6bee510dc07a6f8d28d985f6785278a278e304cc  packages/service/src/structure-sync.ts

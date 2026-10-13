@@ -1,0 +1,20 @@
+[
+  "packages/service/src/workspace.ts",
+  "packages/service/src/knowledge.ts",
+  "apps/server/src/index.ts",
+  "apps/server/src/routes.ts",
+  "apps/server/src/server.ts",
+  "apps/server/src/pol01-workspace-http.test.ts",
+  "tests/support/structure-file-port.ts",
+  "tests/support/pol01-crash.ts",
+  "packages/service/src/workspace.test.ts",
+  "apps/server/src/server.test.ts",
+  "apps/server/src/agent/bridge.test.ts",
+  "apps/server/src/agent/direct-loop.test.ts",
+  "apps/server/src/agent/routes.test.ts",
+  "apps/server/src/group-view.test.ts",
+  "tests/integration/group-view.test.ts",
+  "tests/integration/workspace-lifecycle.test.ts",
+  "tests/integration/server-shutdown.test.ts",
+  "tests/e2e/agent-chat.spec.ts"
+]

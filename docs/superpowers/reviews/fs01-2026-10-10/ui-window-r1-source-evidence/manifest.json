@@ -1,0 +1,38 @@
+[
+  {
+    "path": "apps/web/src/features/structure/ownership-session.ts",
+    "bytes": 13393,
+    "sha256": "580ce066f4fdb14c499f1d5eb9ce1a2e77cd3199f0871a3d98da60ed188da0f7",
+    "beforeSha256": "ba891a03e2d04325c24a6448b587393fd4a1bb53c25be5e56d0595fa0724a56d"
+  },
+  {
+    "path": "apps/web/src/features/structure/ownership-session.test.ts",
+    "bytes": 11857,
+    "sha256": "2c45011de0ef9bfabab6d2be9e2db7007c98652d12462d52489ce922e3cd86a3",
+    "beforeSha256": "d0d12270d1a12807805cc3c5402a04e0b07bc0c720bd8c9c70735c0335d51a9e"
+  },
+  {
+    "path": "apps/web/src/features/structure/ownership-controller.ts",
+    "bytes": 1896,
+    "sha256": "1070a70e5461d1c6995b1bd49ec8a16dbaead2ad487c1c984bc692f49fc5e7ef",
+    "beforeSha256": "f19a6d3e696c13848a50c8d6250f93123cb4f0712df0d81dbfa73757e5839856"
+  },
+  {
+    "path": "apps/web/src/features/structure/OwnershipControls.tsx",
+    "bytes": 2438,
+    "sha256": "6991b82b35b7a9a88cb70897211df6da7e4997a097d724ee8bc899698c133014",
+    "beforeSha256": "2717ab5e1f8439d2c21b90dd32003806c520ddf7163223bf3d5748dbe28b3aad"
+  },
+  {
+    "path": "apps/web/src/app/workspace.ts",
+    "bytes": 57020,
+    "sha256": "63130c58c958c4e557feea65d0118018db49a8d04d3fd37e865b0e96e715fd39",
+    "beforeSha256": "3fec9a1970c2db2511afcdb5de81b729ab7bc423317f2689e72f318164888d66"
+  },
+  {
+    "path": "apps/web/src/app/workspace-ownership.test.ts",
+    "bytes": 11356,
+    "sha256": "2121f7f03d5af4fe3b23a92383c0df8d5d21d509c09fbf5c0efcfe17a7b46606",
+    "beforeSha256": "a6d0b77b9a5c8e42067b6ebd011f964acf5d4120961bf4ef734d55563dc5194a"
+  }
+]

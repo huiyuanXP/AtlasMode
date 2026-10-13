@@ -1,0 +1,1 @@
+apps/web/src/features/annotations/draft.ts(10,8): error TS2305: Module '"@codemap/core"' has no exported member 'AnnotationContent'.

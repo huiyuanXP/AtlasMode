@@ -1,0 +1,1939 @@
+--- a/apps/web/src/features/structure/PoliciesPanel.tsx
++++ b/apps/web/src/features/structure/PoliciesPanel.tsx
+@@ -1,117 +1,96 @@
+-import { useState } from "react";
++import { useEffect, useMemo, useRef } from "react";
+ import { useStore } from "zustand";
+-import type { DirectoryPolicy } from "@codemap/core";
+ import type { Workspace } from "../../app/workspace.js";
+-import { useStrings } from "../../i18n/index.js";
+-export function PoliciesPanel({ app }: { app: Workspace }) {
++import {
++  StructureClient,
++  type StructureTransport,
++} from "../../api/structure-client.js";
++import {
++  createPolicyController,
++  type AcceptedPolicyResponse,
++  type AcceptedPolicyReadResponse,
++} from "./policy-controller.js";
++import { StructurePolicyPanel } from "./StructurePolicyPanel.js";
++const defaultTransport = new StructureClient();
++export type PoliciesPanelProps = {
++  app: Workspace;
++  transport?: StructureTransport;
++  onAccepted?: (response: AcceptedPolicyResponse) => void | Promise<void>;
++  onReadAccepted?: (
++    response: AcceptedPolicyReadResponse,
++  ) => void | Promise<void>;
++};
++/** Dedicated editor: old policy POST now carries the editor's explicit CAS capture. */
++export function PoliciesPanel({
++  app,
++  transport = defaultTransport,
++  onAccepted,
++  onReadAccepted,
++}: PoliciesPanelProps) {
+   const state = useStore(app.store),
+-    text = useStrings();
+-  const [selected, setSelected] = useState("");
+-  const policy = state.policies.find((p) => p.id === selected);
++    id = state.project?.id;
++  if (!id) return null;
+   return (
+-    <section className="knowledge-panel">
+-      <h2>{text.policies}</h2>
+-      <p className="muted">{text.policyHelp}</p>
+-      <p className="muted">{text.knowledgeImpact}</p>
+-      <select
+-        aria-label={text.policies}
+-        value={selected}
+-        onChange={(e) => setSelected(e.target.value)}
+-      >
+-        <option value="">{text.newPolicy}</option>
+-        {state.policies.map((p) => (
+-          <option key={p.id} value={p.id}>
+-            {p.pathPrefix || "."} · {p.purpose}
+-          </option>
+-        ))}
+-      </select>
+-      <PolicyForm
+-        key={JSON.stringify(policy) ?? "new"}
+-        policy={policy}
+-        busy={
+-          !!state.busy.knowledge || !!state.busy.project || !!state.busy.plan
+-        }
+-        onSave={(input) => void app.savePolicy(input)}
+-      />
+-      {!state.policies.length && <p>{text.noPolicies}</p>}
+-      {state.policies.map((p) => (
+-        <article key={p.id}>
+-          <strong>{p.pathPrefix || "."}</strong>
+-          <p>{p.purpose}</p>
+-          <small>{text.forbiddenDependencies}</small>
+-          <ul>
+-            {p.forbiddenDependencies.map((path, i) => (
+-              <li key={i}>
+-                <code>{path}</code>
+-              </li>
+-            ))}
+-          </ul>
+-        </article>
+-      ))}
+-    </section>
++    <ProjectPolicyEditor
++      key={id}
++      projectId={id}
++      locale={state.view.locale ?? "zh"}
++      transport={transport}
++      onAccepted={onAccepted}
++      onReadAccepted={onReadAccepted}
++      workspaceBusy={
++        !!state.busy.knowledge || !!state.busy.project || !!state.busy.plan
++      }
++    />
+   );
+ }
+-function PolicyForm({
+-  policy,
+-  busy,
+-  onSave,
++function ProjectPolicyEditor({
++  projectId,
++  locale,
++  transport,
++  onAccepted,
++  onReadAccepted,
++  workspaceBusy,
+ }: {
+-  policy?: DirectoryPolicy;
+-  busy: boolean;
+-  onSave: (
+-    input: Omit<DirectoryPolicy, "id" | "projectId"> & { id?: string },
+-  ) => void;
++  projectId: string;
++  workspaceBusy: boolean;
++  locale: "en" | "zh";
++  transport: StructureTransport;
++  onAccepted?: PoliciesPanelProps["onAccepted"];
++  onReadAccepted?: PoliciesPanelProps["onReadAccepted"];
+ }) {
+-  const text = useStrings(),
+-    [pathPrefix, setPath] = useState(policy?.pathPrefix ?? ""),
+-    [purpose, setPurpose] = useState(policy?.purpose ?? ""),
+-    [forbidden, setForbidden] = useState(
+-      policy?.forbiddenDependencies.join("\n") ?? "",
++  const accepted = useRef(onAccepted);
++  accepted.current = onAccepted;
++  const readAccepted = useRef(onReadAccepted);
++  readAccepted.current = onReadAccepted;
++  const controller = useMemo(() => {
++    const c = createPolicyController(
++      transport,
++      (response) => accepted.current?.(response),
++      undefined,
++      (response) => readAccepted.current?.(response),
+     );
++    c.selectProject(projectId);
++    return c;
++  }, [projectId, transport]);
++  const state = useStore(controller.store);
++  useEffect(() => {
++    void controller.reload();
++    return () => controller.dispose();
++  }, [controller]);
+   return (
+-    <form
+-      onSubmit={(e) => {
+-        e.preventDefault();
+-        onSave({
+-          ...(policy ? { id: policy.id } : {}),
+-          pathPrefix,
+-          purpose,
+-          forbiddenDependencies: forbidden
+-            .split("\n")
+-            .map((s) => s.trim())
+-            .filter(Boolean),
+-        });
+-      }}
+-    >
+-      <fieldset disabled={busy}>
+-        <label>
+-          {text.pathPrefix}
+-          <input
+-            placeholder="src/"
+-            value={pathPrefix}
+-            onChange={(e) => setPath(e.target.value)}
+-          />
+-        </label>
+-        <label>
+-          {text.purpose}
+-          <textarea
+-            aria-label={text.purpose}
+-            required
+-            value={purpose}
+-            onChange={(e) => setPurpose(e.target.value)}
+-          />
+-        </label>
+-        <label>
+-          {text.forbiddenDependencies}
+-          <textarea
+-            aria-label={text.forbiddenDependencies}
+-            placeholder="src/internal"
+-            value={forbidden}
+-            onChange={(e) => setForbidden(e.target.value)}
+-          />
+-        </label>
+-        <button>{text.savePolicy}</button>
+-      </fieldset>
+-    </form>
++    <StructurePolicyPanel
++      state={{ ...state, busy: state.busy || workspaceBusy }}
++      locale={locale}
++      integrated={!!onAccepted && !!onReadAccepted}
++      onReload={() => void controller.reload()}
++      onConflictRead={() => void controller.reload(true)}
++      onChoose={controller.choose}
++      onEdit={controller.edit}
++      onSave={() => void controller.save()}
++      onRetry={() => void controller.retry()}
++      onPreview={() => void controller.previewLegacy()}
++      onImport={() => void controller.importLegacy()}
++    />
+   );
+ }
+--- /dev/null
++++ b/apps/web/src/features/structure/policy-controller.ts
+@@ -0,0 +1,452 @@
++import { createStore } from "zustand/vanilla";
++import {
++  normalizeStructurePath,
++  projectStructurePolicies,
++  type DirectoryPolicy,
++  type StructureState,
++  type StructureWriteInput,
++} from "@codemap/core";
++import {
++  StructureClientError,
++  type LegacyPreview,
++  type PolicyCapture,
++  type StructureTransport,
++} from "../../api/structure-client.js";
++export type PolicyDraft = {
++  kind: "legacy" | "folder";
++  id?: string;
++  previousPath?: string;
++  path: string;
++  purpose: string;
++  forbidden: string;
++};
++export type AcceptedPolicyResponse = {
++  projectId: string;
++  epoch: number;
++  operation: StructureWriteInput["operation"];
++  result: DirectoryPolicy | StructureState;
++};
++export type AcceptedPolicyReadResponse = {
++  projectId: string;
++  epoch: number;
++  snapshot: StructureState;
++  policies: DirectoryPolicy[];
++};
++export type PolicyPanelState = {
++  projectId: string;
++  epoch: number;
++  busy: boolean;
++  draft: PolicyDraft;
++  dirty: boolean;
++  policies: DirectoryPolicy[];
++  snapshot?: StructureState;
++  capture?: PolicyCapture;
++  preview?: LegacyPreview;
++  error?: { code: string; message: string };
++  needsReload: boolean;
++  retryAvailable: boolean;
++  notice?: "saved";
++};
++type Request = {
++  projectId: string;
++  epoch: number;
++  input: StructureWriteInput;
++  kind: "legacy" | "structure";
++};
++const blankDraft = (): PolicyDraft => ({
++  kind: "legacy",
++  path: "",
++  purpose: "",
++  forbidden: "",
++});
++const same = (a: PolicyCapture, b: PolicyCapture) =>
++  a.structureRevision === b.structureRevision && a.fileDigest === b.fileDigest;
++const usable = (s?: StructureState) =>
++  s?.status === "ready" || s?.status === "missing";
++/** Project epochs and explicit captures are owned here, outside the shared workspace. */
++export function createPolicyController(
++  api: StructureTransport,
++  onAccepted: (
++    response: AcceptedPolicyResponse,
++  ) => void | Promise<void> = () => {},
++  uuid: () => string = () => crypto.randomUUID(),
++  onReadAccepted: (
++    response: AcceptedPolicyReadResponse,
++  ) => void | Promise<void> = () => {},
++) {
++  const store = createStore<PolicyPanelState>(() => ({
++    projectId: "",
++    epoch: 0,
++    busy: false,
++    draft: blankDraft(),
++    dirty: false,
++    policies: [],
++    needsReload: true,
++    retryAvailable: false,
++  }));
++  let generation = 0,
++    request: Request | undefined;
++  const current = (epoch: number, read?: number) =>
++    store.getState().epoch === epoch &&
++    (read === undefined || generation === read);
++  const error = (e: unknown) => ({
++    code:
++      e instanceof StructureClientError ? e.code : "STRUCTURE_REQUEST_FAILED",
++    message: e instanceof Error ? e.message : String(e),
++  });
++  const eligible = () => {
++    const s = store.getState();
++    return (
++      !!s.projectId &&
++      !s.busy &&
++      !s.needsReload &&
++      !!s.capture &&
++      usable(s.snapshot)
++    );
++  };
++  async function submit(r: Request) {
++    if (!current(r.epoch)) return;
++    request = r;
++    store.setState({
++      busy: true,
++      error: undefined,
++      retryAvailable: false,
++      preview: undefined,
++    });
++    try {
++      const op = r.input.operation;
++      const result = await (r.kind === "legacy" &&
++      op.kind === "upsertLegacyPolicy"
++        ? api.savePolicy(r.projectId, {
++            ...(op.id === undefined ? {} : { id: op.id }),
++            pathPrefix: op.pathPrefix,
++            purpose: op.purpose,
++            forbiddenDependencies: op.forbiddenDependencies,
++            mutationId: r.input.mutationId,
++            expectedStructureRevision: r.input.expectedStructureRevision,
++            expectedFileDigest: r.input.expectedFileDigest,
++          })
++        : api.writeStructure(r.projectId, r.input));
++      if (!current(r.epoch)) return;
++      if (result.projectId !== r.projectId)
++        throw new StructureClientError(
++          "PROJECT_MISMATCH",
++          "Write response belongs to another project.",
++          409,
++        );
++      // An ACK is not a fresh read capture. A new edit needs an explicit reread.
++      const draft = store.getState().draft;
++      let acknowledged = draft;
++      if (op.kind === "upsertLegacyPolicy" && r.kind === "legacy") {
++        const policy = result as DirectoryPolicy;
++        acknowledged = {
++          kind: "legacy",
++          id: policy.id,
++          path: policy.pathPrefix,
++          purpose: policy.purpose,
++          forbidden: policy.forbiddenDependencies.join("\n"),
++        };
++      } else if (op.kind === "upsertFolder") {
++        const path = normalizeStructurePath(op.path);
++        acknowledged = { ...draft, path, previousPath: path };
++      }
++      request = undefined;
++      store.setState({
++        busy: false,
++        draft: acknowledged,
++        dirty: false,
++        needsReload: true,
++        retryAvailable: false,
++        notice: "saved",
++      });
++      try {
++        await onAccepted({
++          projectId: r.projectId,
++          epoch: r.epoch,
++          operation: op,
++          result,
++        });
++      } catch (e) {
++        if (current(r.epoch))
++          store.setState({
++            error: {
++              code: "WORKSPACE_SYNC_REQUIRED",
++              message:
++                e instanceof Error ? e.message : "Workspace refresh required.",
++            },
++          });
++      }
++    } catch (e) {
++      if (!current(r.epoch)) return;
++      const terminal =
++        e instanceof StructureClientError &&
++        e.status !== undefined &&
++        e.status >= 400 &&
++        e.status < 500;
++      if (terminal) request = undefined;
++      store.setState({
++        busy: false,
++        error: error(e),
++        needsReload: terminal,
++        retryAvailable: !terminal,
++      });
++    }
++  }
++  return {
++    store,
++    selectProject(projectId: string) {
++      generation++;
++      request = undefined;
++      store.setState(
++        {
++          projectId,
++          epoch: store.getState().epoch + 1,
++          busy: false,
++          draft: blankDraft(),
++          dirty: false,
++          policies: [],
++          snapshot: undefined,
++          capture: undefined,
++          preview: undefined,
++          error: undefined,
++          needsReload: true,
++          retryAvailable: false,
++          notice: undefined,
++        },
++        true,
++      );
++    },
++    dispose() {
++      generation++;
++      request = undefined;
++      store.setState({ epoch: store.getState().epoch + 1, busy: false });
++    },
++    async reload(acceptExternalConflict = false) {
++      const s = store.getState();
++      if (!s.projectId || s.busy) return;
++      const epoch = s.epoch,
++        read = ++generation;
++      request = undefined;
++      store.setState({
++        busy: true,
++        error: undefined,
++        preview: undefined,
++        retryAvailable: false,
++        needsReload: true,
++        notice: undefined,
++      });
++      try {
++        const snapshot = await api.readState(
++          s.projectId,
++          acceptExternalConflict,
++        );
++        if (!current(epoch, read)) return;
++        if (
++          !Number.isSafeInteger(snapshot.structureRevision) ||
++          snapshot.structureRevision < 0 ||
++          (snapshot.fileDigest !== null &&
++            (typeof snapshot.fileDigest !== "string" ||
++              !/^[0-9a-f]{64}$/.test(snapshot.fileDigest)))
++        )
++          throw new StructureClientError(
++            "STRUCTURE_CAPTURE_INVALID",
++            "Structure response has no valid revision/digest capture.",
++          );
++        if (snapshot.projectId !== s.projectId)
++          throw new StructureClientError(
++            "PROJECT_MISMATCH",
++            "Structure belongs to another project.",
++          );
++        // Quarantined states can render diagnostics without pretending policies were read.
++        if (!usable(snapshot)) {
++          store.setState({
++            busy: false,
++            snapshot,
++            capture: undefined,
++            needsReload: true,
++          });
++          return;
++        }
++        const policies = await api.readPolicies(s.projectId);
++        if (!current(epoch, read)) return;
++        if (
++          !same(snapshot, policies) ||
++          snapshot.status !== policies.status ||
++          policies.policies.some((p) => p.projectId !== s.projectId)
++        )
++          throw new StructureClientError(
++            "STRUCTURE_CONFLICT",
++            "Structure changed during read. Read again explicitly.",
++            409,
++          );
++        const folderIds = new Set(
++          snapshot.document
++            ? projectStructurePolicies(
++                {
++                  ...snapshot.document,
++                  "x-atlasmode": { legacyPathPolicies: [] },
++                },
++                s.projectId,
++              ).map((p) => p.id)
++            : [],
++        );
++        store.setState({
++          busy: true,
++          snapshot,
++          policies: policies.policies.filter((p) => !folderIds.has(p.id)),
++          capture: {
++            structureRevision: snapshot.structureRevision,
++            fileDigest: snapshot.fileDigest,
++            verifiedAt: snapshot.verifiedAt,
++          },
++          needsReload: false,
++          error: undefined,
++        });
++        try {
++          await onReadAccepted({
++            projectId: s.projectId,
++            epoch,
++            snapshot,
++            policies: policies.policies,
++          });
++        } catch (e) {
++          throw new StructureClientError(
++            "WORKSPACE_SYNC_REQUIRED",
++            e instanceof Error ? e.message : "Workspace refresh required.",
++          );
++        }
++        if (current(epoch, read)) store.setState({ busy: false });
++      } catch (e) {
++        if (current(epoch, read))
++          store.setState({
++            busy: false,
++            error: error(e),
++            capture: undefined,
++            needsReload: true,
++          });
++      }
++    },
++    choose(selection: string) {
++      const s = store.getState();
++      if (s.busy || request) return;
++      let draft = blankDraft();
++      if (selection === "new-folder") draft = { ...draft, kind: "folder" };
++      else if (selection.startsWith("folder:")) {
++        const f = s.snapshot?.document?.folders.find(
++          (f) => f.path === selection.slice(7),
++        );
++        if (!f) return;
++        draft = {
++          kind: "folder",
++          previousPath: f.path,
++          path: f.path,
++          purpose: f.purpose,
++          forbidden: "",
++        };
++      } else if (selection.startsWith("legacy:")) {
++        const p = s.policies.find((p) => p.id === selection.slice(7));
++        if (!p) return;
++        draft = {
++          kind: "legacy",
++          id: p.id,
++          path: p.pathPrefix,
++          purpose: p.purpose,
++          forbidden: p.forbiddenDependencies.join("\n"),
++        };
++      }
++      store.setState({
++        draft,
++        dirty: false,
++        error: undefined,
++        notice: undefined,
++      });
++    },
++    edit(patch: Partial<Pick<PolicyDraft, "path" | "purpose" | "forbidden">>) {
++      if (store.getState().busy || request) return;
++      store.setState((s) => ({
++        draft: { ...s.draft, ...patch },
++        dirty: true,
++        notice: undefined,
++      }));
++    },
++    async save() {
++      if (!eligible() || request) return;
++      const s = store.getState(),
++        d = s.draft,
++        c = s.capture!;
++      const operation: StructureWriteInput["operation"] =
++        d.kind === "folder"
++          ? {
++              kind: "upsertFolder",
++              ...(d.previousPath === undefined
++                ? {}
++                : { previousPath: d.previousPath }),
++              path: d.path,
++              purpose: d.purpose,
++            }
++          : {
++              kind: "upsertLegacyPolicy",
++              ...(d.id === undefined ? {} : { id: d.id }),
++              pathPrefix: d.path,
++              purpose: d.purpose,
++              forbiddenDependencies: d.forbidden
++                .split("\n")
++                .map((s) => s.trim())
++                .filter(Boolean),
++            };
++      await submit({
++        projectId: s.projectId,
++        epoch: s.epoch,
++        kind: d.kind === "legacy" ? "legacy" : "structure",
++        input: {
++          mutationId: uuid(),
++          expectedStructureRevision: c.structureRevision,
++          expectedFileDigest: c.fileDigest,
++          operation,
++        },
++      });
++    },
++    async retry() {
++      const r = request;
++      if (!r || store.getState().busy || !store.getState().retryAvailable)
++        return;
++      await submit(r);
++    },
++    async previewLegacy() {
++      if (!eligible() || request) return;
++      const s = store.getState();
++      store.setState({ busy: true, error: undefined, preview: undefined });
++      try {
++        const p = await api.preview(s.projectId);
++        if (!current(s.epoch)) return;
++        if (!same(p, s.capture!))
++          throw new StructureClientError(
++            "STRUCTURE_CONFLICT",
++            "Migration preview changed. Read again explicitly.",
++            409,
++          );
++        store.setState({ busy: false, preview: p });
++      } catch (e) {
++        if (current(s.epoch))
++          store.setState({ busy: false, error: error(e), needsReload: true });
++      }
++    },
++    async importLegacy() {
++      if (!eligible() || request) return;
++      const s = store.getState(),
++        p = s.preview;
++      if (!p || !p.policies.length || !same(p, s.capture!)) return;
++      await submit({
++        projectId: s.projectId,
++        epoch: s.epoch,
++        kind: "structure",
++        input: {
++          mutationId: uuid(),
++          expectedStructureRevision: p.structureRevision,
++          expectedFileDigest: p.fileDigest,
++          operation: { kind: "importLegacy" },
++        },
++      });
++    },
++  };
++}
+--- /dev/null
++++ b/apps/web/src/features/structure/policy-controller.test.ts
+@@ -0,0 +1,355 @@
++import { expect, test, vi } from "vitest";
++import type { StructureState } from "@codemap/core";
++import { createPolicyController } from "./policy-controller.js";
++import type { StructureTransport } from "../../api/structure-client.js";
++import { StructureClientError } from "../../api/structure-client.js";
++const uuid = "00000000-0000-4000-8000-000000000001";
++const state = (p = "a", revision = 2): StructureState => ({
++  projectId: p,
++  schemaVersion: 1,
++  document: {
++    schemaVersion: 1,
++    folders: [
++      {
++        path: "src",
++        purpose: "code",
++        allowed: ["a"],
++        forbidden: ["b"],
++        future: { nested: "retained" },
++      },
++    ],
++    dependencyRules: [],
++    custom: "retained",
++  },
++  structureRevision: revision,
++  fileDigest: "a".repeat(64),
++  semanticDigest: "b".repeat(64),
++  verifiedAt: "t",
++  status: "ready",
++  diagnostics: [],
++  legacyPendingCount: 1,
++});
++function fixture() {
++  let current = state();
++  const policy = {
++    id: "db-only",
++    projectId: "a",
++    pathPrefix: "src",
++    purpose: "old",
++    forbiddenDependencies: ["internal"],
++  };
++  const api = {
++    readState: vi.fn<StructureTransport["readState"]>(async () => current),
++    readPolicies: vi.fn<StructureTransport["readPolicies"]>(async () => ({
++      policies: [policy],
++      structureRevision: current.structureRevision,
++      fileDigest: current.fileDigest,
++      verifiedAt: "t",
++      status: current.status,
++    })),
++    preview: vi.fn<StructureTransport["preview"]>(async () => ({
++      policies: [policy],
++      structureRevision: current.structureRevision,
++      fileDigest: current.fileDigest,
++      verifiedAt: "t",
++    })),
++    savePolicy: vi.fn<StructureTransport["savePolicy"]>(async () => policy),
++    writeStructure: vi.fn<StructureTransport["writeStructure"]>(
++      async () => current,
++    ),
++  };
++  const accepted = vi.fn();
++  const c = createPolicyController(api, accepted, () => uuid);
++  c.selectProject("a");
++  return {
++    api,
++    c,
++    accepted,
++    set: (s: StructureState) => {
++      current = s;
++    },
++  };
++}
++function hold<T>() {
++  let resolve!: (v: T) => void;
++  const promise = new Promise<T>((r) => {
++    resolve = r;
++  });
++  return { promise, resolve };
++}
++test("same-id DB legacy form captures actual rev/digest/uuid without migrating", async () => {
++  const { c, api, accepted } = fixture();
++  await c.reload();
++  c.choose("legacy:db-only");
++  c.edit({ purpose: "edited" });
++  await c.save();
++  expect(api.savePolicy).toHaveBeenCalledWith("a", {
++    id: "db-only",
++    pathPrefix: "src",
++    purpose: "edited",
++    forbiddenDependencies: ["internal"],
++    mutationId: uuid,
++    expectedStructureRevision: 2,
++    expectedFileDigest: "a".repeat(64),
++  });
++  expect(api.writeStructure).not.toHaveBeenCalled();
++  expect(accepted).toHaveBeenCalledTimes(1);
++  expect(c.store.getState().needsReload).toBe(true);
++});
++test("409 keeps all input and old capture; save remains blocked until explicit reload", async () => {
++  const { c, api, set } = fixture();
++  await c.reload();
++  c.choose("legacy:db-only");
++  c.edit({ purpose: "mine", forbidden: "x\ny" });
++  api.savePolicy.mockRejectedValueOnce(
++    new StructureClientError("STRUCTURE_CONFLICT", "external", 409),
++  );
++  await c.save();
++  expect(c.store.getState().draft).toMatchObject({
++    purpose: "mine",
++    forbidden: "x\ny",
++  });
++  expect(c.store.getState().capture?.structureRevision).toBe(2);
++  await c.save();
++  expect(api.savePolicy).toHaveBeenCalledTimes(1);
++  expect(api.readState).toHaveBeenCalledTimes(1);
++  set(state("a", 3));
++  await c.reload();
++  expect(c.store.getState().draft.purpose).toBe("mine");
++  await c.save();
++  expect(api.savePolicy.mock.calls[1]?.[1].expectedStructureRevision).toBe(3);
++});
++test("network failure only exact retry uses same immutable request and UUID", async () => {
++  const { c, api } = fixture();
++  await c.reload();
++  c.edit({ purpose: "mine" });
++  api.savePolicy
++    .mockRejectedValueOnce(new Error("offline"))
++    .mockResolvedValueOnce({
++      id: "db-only",
++      projectId: "a",
++      pathPrefix: "",
++      purpose: "mine",
++      forbiddenDependencies: [],
++    });
++  await c.save();
++  c.edit({ purpose: "must not change uncertain request" });
++  expect(c.store.getState().draft.purpose).toBe("mine");
++  await c.retry();
++  expect(api.savePolicy.mock.calls[1]).toEqual(api.savePolicy.mock.calls[0]);
++  expect(c.store.getState().draft.purpose).toBe("mine");
++});
++test("migration requires preview and explicit command, with preview capture", async () => {
++  const { c, api } = fixture();
++  await c.reload();
++  await c.importLegacy();
++  expect(api.writeStructure).not.toHaveBeenCalled();
++  await c.previewLegacy();
++  expect(api.writeStructure).not.toHaveBeenCalled();
++  await c.importLegacy();
++  expect(api.writeStructure).toHaveBeenCalledWith("a", {
++    mutationId: uuid,
++    expectedStructureRevision: 2,
++    expectedFileDigest: "a".repeat(64),
++    operation: { kind: "importLegacy" },
++  });
++});
++test("stale preview refuses migration without auto reread", async () => {
++  const { c, api } = fixture();
++  await c.reload();
++  api.preview.mockResolvedValueOnce({
++    policies: [],
++    structureRevision: 9,
++    fileDigest: null,
++    verifiedAt: "t",
++  });
++  await c.previewLegacy();
++  await c.importLegacy();
++  expect(api.writeStructure).not.toHaveBeenCalled();
++  expect(c.store.getState().error?.code).toBe("STRUCTURE_CONFLICT");
++});
++test("folder edit sends only path/purpose preserving raw unknown and allowed/forbidden server fields", async () => {
++  const { c, api } = fixture();
++  await c.reload();
++  c.choose("folder:src");
++  c.edit({ path: "lib", purpose: "new" });
++  await c.save();
++  expect(api.writeStructure.mock.calls[0]?.[1].operation).toEqual({
++    kind: "upsertFolder",
++    previousPath: "src",
++    path: "lib",
++    purpose: "new",
++  });
++  expect(api.savePolicy).not.toHaveBeenCalled();
++  expect(c.store.getState().snapshot?.document?.custom).toBe("retained");
++});
++test("A→B→A read responses never contaminate the new epoch", async () => {
++  const { c, api } = fixture();
++  const h = hold<StructureState>();
++  api.readState.mockReturnValueOnce(h.promise);
++  const old = c.reload();
++  c.selectProject("b");
++  c.selectProject("a");
++  await c.reload();
++  h.resolve(state("a", 99));
++  await old;
++  expect(c.store.getState().capture?.structureRevision).toBe(2);
++});
++test("late write ACK has no accepted callback or state after project switch", async () => {
++  const { c, api, accepted } = fixture();
++  await c.reload();
++  const h = hold<{
++    id: string;
++    projectId: string;
++    pathPrefix: string;
++    purpose: string;
++    forbiddenDependencies: string[];
++  }>();
++  api.savePolicy.mockReturnValueOnce(h.promise);
++  const save = c.save();
++  c.selectProject("b");
++  h.resolve({
++    id: "x",
++    projectId: "a",
++    pathPrefix: "",
++    purpose: "",
++    forbiddenDependencies: [],
++  });
++  await save;
++  expect(accepted).not.toHaveBeenCalled();
++  expect(c.store.getState().projectId).toBe("b");
++  expect(c.store.getState().snapshot).toBeUndefined();
++});
++test.each(["invalid", "recovery_pending", "unavailable"] as const)(
++  "%s state remains visible and cannot write",
++  async (status) => {
++    const { c, api, set } = fixture();
++    set({ ...state(), status });
++    await c.reload();
++    await c.save();
++    expect(api.savePolicy).not.toHaveBeenCalled();
++    expect(c.store.getState().snapshot?.status).toBe(status);
++  },
++);
++test("two inconsistent read captures fail closed without hiding form or automatically fetching latest", async () => {
++  const { c, api } = fixture();
++  api.readPolicies.mockResolvedValueOnce({
++    policies: [],
++    structureRevision: 8,
++    fileDigest: null,
++    verifiedAt: "t",
++    status: "ready",
++  });
++  await c.reload();
++  await c.save();
++  expect(api.savePolicy).not.toHaveBeenCalled();
++  expect(api.readState).toHaveBeenCalledTimes(1);
++  expect(c.store.getState().error?.code).toBe("STRUCTURE_CONFLICT");
++});
++
++test("foreign ACK never reaches accepted-response workspace callback", async () => {
++  const { c, api, accepted } = fixture();
++  await c.reload();
++  api.savePolicy.mockResolvedValueOnce({
++    id: "x",
++    projectId: "b",
++    pathPrefix: "",
++    purpose: "",
++    forbiddenDependencies: [],
++  });
++  await c.save();
++  expect(accepted).not.toHaveBeenCalled();
++  expect(c.store.getState().error?.code).toBe("PROJECT_MISMATCH");
++});
++test("missing digest/revision capture is never submitted as an undefined precondition", async () => {
++  const { c, api, set } = fixture();
++  set({ ...state(), fileDigest: undefined as unknown as null });
++  await c.reload();
++  await c.save();
++  expect(api.savePolicy).not.toHaveBeenCalled();
++  expect(c.store.getState().error?.code).toBe("STRUCTURE_CAPTURE_INVALID");
++});
++
++test("successful new policy ACK retains actual id for the next explicit edit", async () => {
++  const { c, api } = fixture();
++  await c.reload();
++  c.edit({ purpose: "created" });
++  await c.save();
++  expect(c.store.getState().draft.id).toBe("db-only");
++  await c.reload();
++  c.edit({ purpose: "next" });
++  await c.save();
++  expect(api.savePolicy.mock.calls[1]?.[1].id).toBe("db-only");
++});
++test("successful folder rename ACK advances previousPath for the next explicit edit", async () => {
++  const { c, api, set } = fixture();
++  await c.reload();
++  c.choose("folder:src");
++  c.edit({ path: "lib" });
++  const next = {
++    ...state(),
++    structureRevision: 3,
++    document: {
++      schemaVersion: 1 as const,
++      folders: [{ path: "lib", purpose: "code" }],
++      dependencyRules: [],
++    },
++  };
++  api.writeStructure.mockResolvedValueOnce(next);
++  await c.save();
++  set(next);
++  await c.reload();
++  c.edit({ purpose: "next" });
++  await c.save();
++  expect(api.writeStructure.mock.calls[1]?.[1].operation).toMatchObject({
++    previousPath: "lib",
++    path: "lib",
++    purpose: "next",
++  });
++});
++
++test("accepted read response supplies exact full policies/snapshot for future Workspace synchronization", async () => {
++  const { api } = fixture();
++  const read = vi.fn();
++  const c = createPolicyController(
++    api,
++    () => {},
++    () => uuid,
++    read,
++  );
++  c.selectProject("a");
++  await c.reload();
++  expect(read).toHaveBeenCalledWith({
++    projectId: "a",
++    epoch: 1,
++    snapshot: state(),
++    policies: [
++      {
++        id: "db-only",
++        projectId: "a",
++        pathPrefix: "src",
++        purpose: "old",
++        forbiddenDependencies: ["internal"],
++      },
++    ],
++  });
++});
++test("an asynchronous accepted-read callback cannot unlock editing or publish failure into a new project", async () => {
++  const { api } = fixture();
++  const h = hold<void>();
++  const c = createPolicyController(
++    api,
++    () => {},
++    () => uuid,
++    () => h.promise,
++  );
++  c.selectProject("a");
++  const load = c.reload();
++  await new Promise((r) => setTimeout(r, 0));
++  expect(c.store.getState().busy).toBe(true);
++  c.selectProject("b");
++  h.resolve();
++  await load;
++  expect(c.store.getState().projectId).toBe("b");
++  expect(c.store.getState().capture).toBeUndefined();
++});
+--- /dev/null
++++ b/apps/web/src/features/structure/StructurePolicyPanel.tsx
+@@ -0,0 +1,325 @@
++import { structureLegacyPolicies } from "@codemap/core";
++import type { PolicyDraft, PolicyPanelState } from "./policy-controller.js";
++const en = {
++  title: "Folder policies",
++  help: "Edit directory purpose or legacy path rules. Descriptive metadata does not prove a dependency rule is satisfied.",
++  reload: "Read structure again",
++  accept: "Accept external conflict and read again",
++  newPolicy: "New policy",
++  newFolder: "New file folder",
++  path: "Path prefix",
++  purpose: "Purpose",
++  forbidden: "Forbidden dependencies",
++  save: "Save policy",
++  preview: "Preview DB policy migration",
++  import: "Import these DB policies into structure.json",
++  metadata: "Read-only metadata",
++  metadataHelp:
++    "allowed / forbidden, dependencyRules and unknown fields are retained. This editor changes only path and purpose for a file folder.",
++  noPolicies: "No policies",
++  legacy: "Legacy path policies",
++  folders: "structure.json folders",
++  waiting: "Read current structure before saving.",
++  saved: "Saved. Read again before another edit.",
++  retry: "Retry the exact request",
++  migrationHelp:
++    "Preview first. Import is explicit and invalidates current approval; historical approvals remain recorded.",
++  noMigration: "No DB-only policies to migrate.",
++  unknown:
++    "Request outcome is uncertain; retry the same request or explicitly read again before editing.",
++  status: "Structure status",
++  digest: "File digest",
++  verified: "Verified",
++  choose: "Edit policy",
++  create: "Create a missing structure.json by saving a policy or file folder.",
++  sync: "Shared workspace synchronization is pending integration.",
++  dbSource: "Database policy; not migrated",
++  fileSource: "File extension policy",
++  machine: "Existing target-path checks",
++  purposeHelp: "Purpose description; requires human judgment",
++  ruleHelp: "Import constraints synchronized; checks not executed",
++  oldCopy: "Last valid copy; not current",
++};
++const zh: typeof en = {
++  title: "目录策略",
++  help: "编辑目录用途或旧路径规则。描述性元数据不能证明依赖规则已满足。",
++  reload: "重新读取结构",
++  accept: "接受外部冲突并重新读取",
++  newPolicy: "新建策略",
++  newFolder: "新建文件目录",
++  path: "路径前缀",
++  purpose: "用途",
++  forbidden: "禁止依赖",
++  save: "保存策略",
++  preview: "预览数据库策略迁移",
++  import: "将这些数据库策略导入 structure.json",
++  metadata: "只读元数据",
++  metadataHelp:
++    "allowed / forbidden、dependencyRules 和未知字段均保留。文件目录编辑只修改路径和用途。",
++  noPolicies: "暂无策略",
++  legacy: "旧路径策略",
++  folders: "structure.json 目录",
++  waiting: "保存前请读取当前结构。",
++  saved: "已保存。再次编辑前请重新读取。",
++  retry: "重试原请求",
++  migrationHelp: "先预览，再显式导入。导入会使当前批准失效，历史批准仍保留。",
++  noMigration: "没有待迁移的数据库策略。",
++  unknown: "请求结果尚未确定；请重试同一请求，或显式重新读取后再编辑。",
++  status: "结构状态",
++  digest: "文件摘要",
++  verified: "校验时间",
++  choose: "编辑策略",
++  create: "保存策略或文件目录可创建缺失的 structure.json。",
++  sync: "共享工作区同步尚待接线。",
++  dbSource: "数据库策略，尚未迁移",
++  fileSource: "文件扩展策略",
++  machine: "禁止目标路径（现有程序检查）",
++  purposeHelp: "职责说明，待人工判断",
++  ruleHelp: "导入约束已同步，尚未执行检查",
++  oldCopy: "旧有效副本，非当前数据",
++};
++export type StructurePolicyPanelProps = {
++  state: PolicyPanelState;
++  locale: "en" | "zh";
++  integrated?: boolean;
++  onReload: () => void;
++  onConflictRead: () => void;
++  onChoose: (selection: string) => void;
++  onEdit: (
++    patch: Partial<Pick<PolicyDraft, "path" | "purpose" | "forbidden">>,
++  ) => void;
++  onSave: () => void;
++  onRetry: () => void;
++  onPreview: () => void;
++  onImport: () => void;
++};
++/** Pure view with explicit commands; unknown/schema content is always escaped text. */
++export function StructurePolicyPanel({
++  state: s,
++  locale,
++  integrated = false,
++  ...actions
++}: StructurePolicyPanelProps) {
++  const t = locale === "zh" ? zh : en,
++    d = s.draft,
++    doc = s.snapshot?.document ?? s.snapshot?.lastGood?.document;
++  const fileIds = new Set(
++    doc ? structureLegacyPolicies(doc).map((p) => p.id) : [],
++  );
++  const disabled = s.busy || s.retryAvailable,
++    canSave =
++      !!s.capture &&
++      (s.snapshot?.status === "ready" || s.snapshot?.status === "missing") &&
++      !s.needsReload &&
++      !s.busy &&
++      !s.retryAvailable;
++  const selection =
++    d.kind === "folder"
++      ? d.previousPath === undefined
++        ? "new-folder"
++        : `folder:${d.previousPath}`
++      : d.id
++        ? `legacy:${d.id}`
++        : "new-policy";
++  return (
++    <section className="knowledge-panel" aria-busy={s.busy}>
++      <h2>{t.title}</h2>
++      <p>
++        <code>.codemap/structure.json</code> · schema v1
++      </p>
++      <p className="muted">{t.help}</p>
++      <button data-action="reload" disabled={s.busy} onClick={actions.onReload}>
++        {t.reload}
++      </button>
++      {s.snapshot?.status === "conflict" && (
++        <button
++          data-action="accept-conflict"
++          disabled={s.busy}
++          onClick={actions.onConflictRead}
++        >
++          {t.accept}
++        </button>
++      )}
++      {s.snapshot && (
++        <p>
++          {t.status}: {s.snapshot.status} · r{s.snapshot.structureRevision}
++          <br />
++          {t.digest}: <code>{s.snapshot.fileDigest ?? "∅"}</code>
++          <br />
++          {t.verified}: {s.snapshot.verifiedAt}
++        </p>
++      )}
++      {s.snapshot?.status === "missing" && <p>{t.create}</p>}
++      {s.error && (
++        <p role="alert">
++          <strong>{s.error.code}</strong>: {s.error.message}
++        </p>
++      )}
++      {s.snapshot?.diagnostics.map((issue, i) => (
++        <p role="alert" key={i}>
++          <code>{issue.pointer}</code>: {issue.message}
++        </p>
++      ))}
++      {s.needsReload && (
++        <p role="status">{s.notice === "saved" ? t.saved : t.waiting}</p>
++      )}
++      {s.notice === "saved" && !integrated && <p role="status">{t.sync}</p>}
++      {s.retryAvailable && (
++        <>
++          <p>{t.unknown}</p>
++          <button
++            data-action="retry"
++            disabled={s.busy}
++            onClick={actions.onRetry}
++          >
++            {t.retry}
++          </button>
++        </>
++      )}
++      <div>
++        <button
++          data-action="new-policy"
++          disabled={disabled}
++          onClick={() => actions.onChoose("new-policy")}
++        >
++          {t.newPolicy}
++        </button>
++        <button
++          data-action="new-folder"
++          disabled={disabled}
++          onClick={() => actions.onChoose("new-folder")}
++        >
++          {t.newFolder}
++        </button>
++      </div>
++      <label>
++        {t.choose}
++        <select
++          aria-label={t.choose}
++          disabled={disabled}
++          value={selection}
++          onChange={(e) => actions.onChoose(e.target.value)}
++        >
++          <option value="new-policy">{t.newPolicy}</option>
++          <option value="new-folder">{t.newFolder}</option>
++          {doc?.folders.map((f) => (
++            <option key={`folder:${f.path}`} value={`folder:${f.path}`}>
++              {f.path || "."} · {f.purpose}
++            </option>
++          ))}
++          {s.policies.map((p) => (
++            <option key={`legacy:${p.id}`} value={`legacy:${p.id}`}>
++              {p.pathPrefix || "."} · {p.purpose}
++            </option>
++          ))}
++        </select>
++      </label>
++      <form
++        onSubmit={(e) => {
++          e.preventDefault();
++          actions.onSave();
++        }}
++      >
++        <fieldset disabled={disabled}>
++          <label>
++            {t.path}
++            <input
++              aria-label={t.path}
++              placeholder="src/"
++              value={d.path}
++              onChange={(e) => actions.onEdit({ path: e.target.value })}
++            />
++          </label>
++          <label>
++            {t.purpose}
++            <textarea
++              aria-label={t.purpose}
++              required
++              value={d.purpose}
++              onChange={(e) => actions.onEdit({ purpose: e.target.value })}
++            />
++          </label>
++          {d.kind === "legacy" && (
++            <label>
++              {t.forbidden}
++              <textarea
++                aria-label={t.forbidden}
++                placeholder="src/internal"
++                value={d.forbidden}
++                onChange={(e) => actions.onEdit({ forbidden: e.target.value })}
++              />
++            </label>
++          )}
++          <button data-action="save" disabled={!canSave}>
++            {t.save}
++          </button>
++        </fieldset>
++      </form>
++      <h3>{t.legacy}</h3>
++      {!s.policies.length && <p>{t.noPolicies}</p>}
++      {s.policies.map((p) => (
++        <article key={p.id}>
++          <strong>{p.pathPrefix || "."}</strong>
++          <p>{p.purpose}</p>
++          <small>
++            {fileIds.has(p.id) ? t.fileSource : t.dbSource} · {t.machine}
++          </small>
++          <br />
++          <small>{t.forbidden}</small>
++          <ul>
++            {p.forbiddenDependencies.map((path, i) => (
++              <li key={i}>
++                <code>{path}</code>
++              </li>
++            ))}
++          </ul>
++        </article>
++      ))}
++      <h3>{t.folders}</h3>
++      <p className="muted">{t.purposeHelp}</p>
++      {doc?.folders.map((f) => (
++        <article key={f.path}>
++          <strong>{f.path || "."}</strong>
++          <p>{f.purpose}</p>
++        </article>
++      ))}
++      <details>
++        <summary>{t.metadata}</summary>
++        <p>{t.metadataHelp}</p>
++        <p>{t.ruleHelp}</p>
++        {!s.snapshot?.document && s.snapshot?.lastGood && <p>{t.oldCopy}</p>}
++        <pre>{doc ? JSON.stringify(doc, null, 2) : "∅"}</pre>
++      </details>
++      <p>{t.migrationHelp}</p>
++      <button
++        data-action="preview"
++        disabled={!canSave}
++        onClick={actions.onPreview}
++      >
++        {t.preview}
++      </button>
++      {s.preview && (
++        <div>
++          <ul>
++            {s.preview.policies.map((p) => (
++              <li key={p.id}>
++                {p.pathPrefix || "."} · {p.purpose} <code>{p.id}</code>
++              </li>
++            ))}
++          </ul>
++          {s.preview.policies.length ? (
++            <button
++              data-action="import"
++              disabled={!canSave}
++              onClick={actions.onImport}
++            >
++              {t.import}
++            </button>
++          ) : (
++            <p>{t.noMigration}</p>
++          )}
++        </div>
++      )}
++    </section>
++  );
++}
+--- /dev/null
++++ b/apps/web/src/features/structure/StructurePolicyPanel.test.tsx
+@@ -0,0 +1,207 @@
++import { createStore } from "zustand/vanilla";
++import { PoliciesPanel } from "./PoliciesPanel.js";
++import { createWorkspace } from "../../app/workspace.js";
++import { expect, test, vi } from "vitest";
++import { renderToStaticMarkup } from "react-dom/server";
++import { isValidElement, type ReactNode } from "react";
++import { StructurePolicyPanel } from "./StructurePolicyPanel.js";
++import { createPolicyController } from "./policy-controller.js";
++function node(n: ReactNode, action: string): Record<string, unknown> {
++  if (isValidElement(n)) {
++    const p = n.props as Record<string, unknown>;
++    if (p["data-action"] === action) return p;
++    for (const c of Array.isArray(p.children) ? p.children : [p.children]) {
++      try {
++        return node(c as ReactNode, action);
++      } catch {}
++    }
++  }
++  throw Error(action);
++}
++function fixture() {
++  const api = {
++    readState: vi.fn(),
++    readPolicies: vi.fn(),
++    preview: vi.fn(),
++    savePolicy: vi.fn(),
++    writeStructure: vi.fn(),
++  };
++  const c = createPolicyController(api);
++  c.selectProject("a");
++  const handlers = {
++    onReload: vi.fn(),
++    onConflictRead: vi.fn(),
++    onChoose: vi.fn(),
++    onEdit: vi.fn(),
++    onSave: vi.fn(),
++    onRetry: vi.fn(),
++    onPreview: vi.fn(),
++    onImport: vi.fn(),
++  };
++  return {
++    c,
++    handlers,
++    props: { state: c.store.getState(), locale: "en" as const, ...handlers },
++  };
++}
++test.each(["en", "zh"] as const)(
++  "%s retains accessible old form and explicit reread/preview/save controls",
++  (locale) => {
++    const { props } = fixture();
++    const html = renderToStaticMarkup(
++      <StructurePolicyPanel {...props} locale={locale} />,
++    );
++    for (const action of [
++      "save",
++      "reload",
++      "preview",
++      "new-folder",
++      "new-policy",
++    ])
++      expect(html).toContain(`data-action="${action}"`);
++    expect(html).toContain(
++      locale === "zh" ? "禁止依赖" : "Forbidden dependencies",
++    );
++    expect(html).toContain(locale === "zh" ? "用途" : "Purpose");
++  },
++);
++test("real component conflict read is explicit and passes a distinct callback", () => {
++  const { props, handlers } = fixture();
++  (node(StructurePolicyPanel(props), "reload").onClick as () => void)();
++  expect(handlers.onReload).toHaveBeenCalledTimes(1);
++  expect(handlers.onConflictRead).not.toHaveBeenCalled();
++});
++test("read-only schema metadata and diagnostics are escaped, never rendered as satisfied rules", () => {
++  const { props } = fixture();
++  props.state.snapshot = {
++    projectId: "a",
++    schemaVersion: 1,
++    structureRevision: 1,
++    fileDigest: null,
++    semanticDigest: null,
++    verifiedAt: "t",
++    legacyPendingCount: 0,
++    status: "invalid",
++    diagnostics: [
++      {
++        pointer: "/folders",
++        kind: "schema",
++        message: "<script>error</script>",
++      },
++    ],
++    document: {
++      schemaVersion: 1,
++      folders: [
++        {
++          path: "src",
++          purpose: "<script>purpose</script>",
++          allowed: ["allowed text"],
++          forbidden: ["forbidden text"],
++          custom: "kept",
++        },
++      ],
++      dependencyRules: [],
++      extension: { unknown: "retained" },
++    },
++  };
++  const html = renderToStaticMarkup(<StructurePolicyPanel {...props} />);
++  expect(html).toContain("allowed text");
++  expect(html).toContain("forbidden text");
++  expect(html).toContain("retained");
++  expect(html).toContain("&lt;script&gt;error");
++  expect(html).not.toContain("<script>");
++  expect(html).toContain("Read-only metadata");
++  expect(html).not.toContain("Rules satisfied");
++});
++
++test("actual DB-only and file-extension provenance is distinct from unexecuted folder metadata", () => {
++  const { props } = fixture();
++  props.state.policies = [
++    {
++      id: "db",
++      projectId: "a",
++      pathPrefix: "db",
++      purpose: "db purpose",
++      forbiddenDependencies: ["inside"],
++    },
++    {
++      id: "file",
++      projectId: "a",
++      pathPrefix: "file",
++      purpose: "file purpose",
++      forbiddenDependencies: [],
++    },
++  ];
++  props.state.snapshot = {
++    projectId: "a",
++    schemaVersion: 1,
++    structureRevision: 1,
++    fileDigest: null,
++    semanticDigest: null,
++    verifiedAt: "t",
++    legacyPendingCount: 1,
++    status: "ready",
++    diagnostics: [],
++    document: {
++      schemaVersion: 1,
++      folders: [],
++      dependencyRules: [],
++      "x-atlasmode": {
++        schemaVersion: 1,
++        legacyPathPolicies: [
++          {
++            id: "file",
++            pathPrefix: "file",
++            purpose: "file purpose",
++            forbiddenDependencies: [],
++          },
++        ],
++      },
++    },
++  };
++  const html = renderToStaticMarkup(<StructurePolicyPanel {...props} />);
++  expect(html).toContain("Database policy; not migrated");
++  expect(html).toContain("File extension policy");
++  expect(html).toContain("Existing target-path checks");
++  expect(html).toContain(".codemap/structure.json");
++});
++
++test.each(["knowledge", "project", "plan"])(
++  "existing wrapper retains %s busy gating without hiding old controls",
++  (busy) => {
++    const app = createWorkspace();
++    app.store.setState({
++      project: { id: "p", path: "/owned", name: "Owned" },
++      busy: { [busy]: true },
++      view: { positions: {}, locale: "en", theme: "light" },
++    });
++    // SSR uses getInitialState, so seed the real store before the renderer reads it.
++    const initial = app.store.getState();
++    const html = renderToStaticMarkup(
++      <PoliciesPanel app={{ ...app, store: createStore(() => initial) }} />,
++    );
++    expect(html).toContain('aria-busy="true"');
++    expect(html).toContain('<fieldset disabled=""');
++    expect(html).toContain('data-action="save"');
++    expect(html).toContain('data-action="new-policy"');
++    expect(html).toContain('aria-label="Purpose"');
++  },
++);
++test("controlled form retains unsaved purpose and dependency input while conflict requires reread", () => {
++  const { props } = fixture();
++  props.state.draft = {
++    kind: "legacy",
++    id: "db",
++    path: "src/mine",
++    purpose: "<mine purpose>",
++    forbidden: "one\ntwo",
++  };
++  props.state.error = { code: "STRUCTURE_CONFLICT", message: "read again" };
++  props.state.needsReload = true;
++  const html = renderToStaticMarkup(<StructurePolicyPanel {...props} />);
++  expect(html).toContain('value="src/mine"');
++  expect(html).toContain("&lt;mine purpose&gt;");
++  expect(html).toContain("one\ntwo");
++  expect(html).toContain('data-action="save" disabled=""');
++  expect(html).toContain('data-action="reload"');
++});
+--- /dev/null
++++ b/apps/web/src/api/structure-client.ts
+@@ -0,0 +1,95 @@
++import type {
++  DirectoryPolicy,
++  StructureDiagnostic,
++  StructureState,
++  StructureStatus,
++  StructureWriteInput,
++} from "@codemap/core";
++export type PolicyCapture = {
++  structureRevision: number;
++  fileDigest: string | null;
++  verifiedAt: string;
++};
++export type PolicyRead = PolicyCapture & {
++  policies: DirectoryPolicy[];
++  status: StructureStatus;
++};
++export type LegacyPreview = PolicyCapture & { policies: DirectoryPolicy[] };
++export type PolicyWrite = Omit<DirectoryPolicy, "id" | "projectId"> & {
++  id?: string;
++} & Omit<StructureWriteInput, "operation">;
++export interface StructureTransport {
++  readState(
++    projectId: string,
++    acceptExternalConflict?: boolean,
++  ): Promise<StructureState>;
++  readPolicies(projectId: string): Promise<PolicyRead>;
++  preview(projectId: string): Promise<LegacyPreview>;
++  savePolicy(projectId: string, input: PolicyWrite): Promise<DirectoryPolicy>;
++  writeStructure(
++    projectId: string,
++    input: StructureWriteInput,
++  ): Promise<StructureState>;
++}
++export class StructureClientError extends Error {
++  constructor(
++    readonly code: string,
++    message: string,
++    readonly status?: number,
++    readonly diagnostics: StructureDiagnostic[] = [],
++  ) {
++    super(message);
++  }
++}
++/** Independent transport: writes never read/rebase/retry their captured preconditions. */
++export class StructureClient implements StructureTransport {
++  constructor(private readonly transport: typeof fetch = fetch) {}
++  private async request<T>(
++    projectId: string,
++    suffix: string,
++    method = "GET",
++    body?: unknown,
++  ): Promise<T> {
++    const transport = this.transport;
++    const response = await transport(
++      `/api/projects/${encodeURIComponent(projectId)}${suffix}`,
++      {
++        method,
++        ...(body === undefined
++          ? {}
++          : {
++              headers: { "Content-Type": "application/json" },
++              body: JSON.stringify(body),
++            }),
++      },
++    );
++    const value = await response.json();
++    if (!response.ok) {
++      const error = value as {
++        code?: string;
++        message?: string;
++        diagnostics?: StructureDiagnostic[];
++      };
++      throw new StructureClientError(
++        error.code ?? "HTTP_ERROR",
++        error.message ?? `HTTP ${response.status}`,
++        response.status,
++        error.diagnostics ?? [],
++      );
++    }
++    return value as T;
++  }
++  readState = (id: string, accept = false) =>
++    this.request<StructureState>(
++      id,
++      `/structure${accept ? "?acceptExternalConflict=1" : ""}`,
++    );
++  readPolicies = (id: string) =>
++    this.request<PolicyRead>(id, "/policies?includeStructure=1");
++  preview = (id: string) =>
++    this.request<LegacyPreview>(id, "/structure/legacy-preview");
++  savePolicy = (id: string, input: PolicyWrite) =>
++    this.request<DirectoryPolicy>(id, "/policies", "POST", input);
++  writeStructure = (id: string, input: StructureWriteInput) =>
++    this.request<StructureState>(id, "/structure", "PUT", input);
++}
+--- /dev/null
++++ b/apps/web/src/api/structure-client.test.ts
+@@ -0,0 +1,85 @@
++import { expect, test, vi } from "vitest";
++import { StructureClient, StructureClientError } from "./structure-client.js";
++const capture = {
++  mutationId: "00000000-0000-4000-8000-000000000001",
++  expectedStructureRevision: 4,
++  expectedFileDigest: "a".repeat(64),
++};
++test("legacy POST sends only explicit captured CAS and keeps DB-only same id", async () => {
++  const fetcher = vi.fn(async (_path: RequestInfo | URL, _init?: RequestInit) =>
++    Response.json({ id: "db-only" }),
++  );
++  const api = new StructureClient(fetcher);
++  await api.savePolicy("project/a", {
++    ...capture,
++    id: "db-only",
++    pathPrefix: "src",
++    purpose: "retain",
++    forbiddenDependencies: ["internal"],
++  });
++  expect(fetcher.mock.calls[0]).toEqual([
++    "/api/projects/project%2Fa/policies",
++    {
++      method: "POST",
++      headers: { "Content-Type": "application/json" },
++      body: JSON.stringify({
++        ...capture,
++        id: "db-only",
++        pathPrefix: "src",
++        purpose: "retain",
++        forbiddenDependencies: ["internal"],
++      }),
++    },
++  ]);
++  expect(fetcher).toHaveBeenCalledTimes(1);
++});
++test("structure transport has real preview/import and explicit conflict acceptance paths", async () => {
++  const fetcher = vi.fn(async (_path: RequestInfo | URL, _init?: RequestInit) =>
++    Response.json({}),
++  );
++  const api = new StructureClient(fetcher);
++  await api.readState("p", true);
++  await api.readPolicies("p");
++  await api.preview("p");
++  await api.writeStructure("p", {
++    ...capture,
++    operation: { kind: "importLegacy" },
++  });
++  expect(fetcher.mock.calls.map((c) => c[0])).toEqual([
++    "/api/projects/p/structure?acceptExternalConflict=1",
++    "/api/projects/p/policies?includeStructure=1",
++    "/api/projects/p/structure/legacy-preview",
++    "/api/projects/p/structure",
++  ]);
++  expect(
++    JSON.parse((fetcher.mock.calls[3]?.[1] as RequestInit).body as string)
++      .operation,
++  ).toEqual({ kind: "importLegacy" });
++});
++test("HTTP conflict diagnostics propagate and never trigger hidden reads or retry", async () => {
++  const fetcher = vi.fn(async (_path: RequestInfo | URL, _init?: RequestInit) =>
++    Response.json(
++      {
++        code: "STRUCTURE_CONFLICT",
++        message: "changed",
++        diagnostics: [
++          { pointer: "/folders", kind: "schema", message: "invalid" },
++        ],
++      },
++      { status: 409 },
++    ),
++  );
++  const api = new StructureClient(fetcher);
++  await expect(
++    api.writeStructure("p", {
++      ...capture,
++      operation: { kind: "importLegacy" },
++    }),
++  ).rejects.toMatchObject({
++    status: 409,
++    code: "STRUCTURE_CONFLICT",
++    diagnostics: [{ pointer: "/folders", kind: "schema", message: "invalid" }],
++  });
++  expect(fetcher).toHaveBeenCalledTimes(1);
++  expect(StructureClientError).toBeDefined();
++});
+--- a/apps/mcp/src/server.ts
++++ b/apps/mcp/src/server.ts
+@@ -7,6 +7,8 @@
+   type PlanDetail,
+   type ProjectSummary,
+   type Project,
++  type DirectoryPolicy,
++  type StructureStatus,
+ } from "@codemap/core";
+ import { ApiClient, ApiError, errorValue } from "./client.js";
+ 
+@@ -302,12 +304,11 @@
+   );
+   tool(
+     "get_approved_plan",
+-    "Refresh actual source files, then read current plan/revision/approval/validity. Implement only when valid is true and approval revision/hash match the current plan. A historical approval on a newer draft is not authorization.",
++    "Read the current approved plan through the service freshness guard for actual source and structure. Implement only when valid is true and approval revision/hash match. Stale, pending or historical-only approval is rejected.",
+     plan,
+     async ({ projectId, planId }) => {
+       await ownedPlan(projectId, planId);
+-      await api.request(`${projectPath(projectId)}/refresh`, "POST", {});
+-      return ownedPlan(projectId, planId);
++      return api.request<PlanDetail>(`${planPath(planId)}/approved`);
+     },
+   );
+   tool(
+@@ -353,15 +354,25 @@
+   );
+   tool(
+     "get_folder_policies",
+-    "Read shared directory placement/dependency policies with pagination and current indexed snapshot identity.",
++    "Read fresh directory policy metadata with pagination, structure revision/digest/time and indexed snapshot identity. Prose/allowed/forbidden metadata does not prove machine rules satisfied.",
+     { ...project, ...pagination },
+-    async ({ projectId, ...input }) => ({
+-      ...page(
+-        await api.request<unknown[]>(`${projectPath(projectId)}/policies`),
+-        input,
+-      ),
+-      snapshotId: (await summary(projectId)).snapshotId,
+-    }),
++    async ({ projectId, ...input }) => {
++      const current = await api.request<{
++        policies: DirectoryPolicy[];
++        structureRevision: number;
++        fileDigest: string | null;
++        verifiedAt: string;
++        status: StructureStatus;
++      }>(`${projectPath(projectId)}/policies?includeStructure=1`);
++      return {
++        ...page(current.policies, input),
++        structureRevision: current.structureRevision,
++        fileDigest: current.fileDigest,
++        verifiedAt: current.verifiedAt,
++        status: current.status,
++        snapshotId: (await summary(projectId)).snapshotId,
++      };
++    },
+   );
+   return server;
+ }
+--- /dev/null
++++ b/apps/mcp/src/structure.test.ts
+@@ -0,0 +1,135 @@
++import { createConnection } from "node:net";
++import { expect, test } from "vitest";
++import { Client } from "@modelcontextprotocol/sdk/client/index.js";
++import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
++import { createServer } from "node:http";
++import { createMcpServer } from "./server.js";
++async function fixture(
++  run: (client: Client, paths: string[]) => Promise<void>,
++  fault = false,
++) {
++  const paths: string[] = [];
++  const api = createServer((req, res) => {
++    paths.push(`${req.method} ${req.url}`);
++    res.setHeader("Content-Type", "application/json");
++    if (req.url === "/api/plans/plan")
++      res.end(JSON.stringify({ plan: { id: "plan", projectId: "p" } }));
++    else if (req.url === "/api/plans/plan/approved") {
++      res.statusCode = fault ? 409 : 200;
++      res.end(
++        JSON.stringify(
++          fault
++            ? { code: "NOT_APPROVED", message: "external structure changed" }
++            : {
++                plan: { id: "plan", projectId: "p", revision: 2 },
++                valid: true,
++                approval: { planRevision: 2 },
++              },
++        ),
++      );
++    } else if (req.url === "/api/projects/p/policies?includeStructure=1")
++      res.end(
++        JSON.stringify({
++          policies: [{ id: "legacy", purpose: "metadata" }],
++          structureRevision: 3,
++          fileDigest: "a".repeat(64),
++          verifiedAt: "t",
++          status: "ready",
++        }),
++      );
++    else if (req.url === "/api/projects/p/summary")
++      res.end(JSON.stringify({ snapshotId: "s" }));
++    else {
++      res.statusCode = 404;
++      res.end(JSON.stringify({ code: "NOT_FOUND" }));
++    }
++  });
++  await new Promise<void>((r) => api.listen(0, "127.0.0.1", r));
++  const port = (api.address() as { port: number }).port;
++  const mcp = createMcpServer(`http://127.0.0.1:${port}`, { projectId: "p" });
++  const client = new Client({ name: "pol01", version: "1" });
++  const [a, b] = InMemoryTransport.createLinkedPair();
++  try {
++    await mcp.connect(a);
++    await client.connect(b);
++    await run(client, paths);
++  } finally {
++    await client.close();
++    await mcp.close();
++    await new Promise<void>((r) => api.close(() => r()));
++    const probe = await new Promise<string>((resolve) => {
++      const socket = createConnection({ host: "127.0.0.1", port });
++      socket.on("connect", () => {
++        socket.destroy();
++        resolve("open");
++      });
++      socket.on("error", (error) =>
++        resolve((error as NodeJS.ErrnoException).code ?? "unknown"),
++      );
++    });
++    expect(probe).toBe("ECONNREFUSED");
++    console.info(
++      JSON.stringify({
++        receipt: "POL01_MCP_OWNED_HTTP_CLOSED",
++        workerPid: process.pid,
++        port,
++        portProbe: probe,
++        mcp: "closed",
++        sdkClient: "closed",
++        http: "closed",
++        tunnelsCreated: 0,
++        fixture: "owned in-memory HTTP protocol responses; no user DB",
++      }),
++    );
++  }
++}
++const value = (v: unknown) =>
++  JSON.parse((v as { content: { text: string }[] }).content[0]!.text);
++test("existing approved tool uses strong fresh GET after owner check without refresh writes or new tools", () =>
++  fixture(async (client, paths) => {
++    const tools = (await client.listTools()).tools;
++    expect(tools).toHaveLength(18);
++    expect(
++      tools.find((t) => t.name === "get_approved_plan")?.annotations
++        ?.readOnlyHint,
++    ).toBe(false);
++    const result = await client.callTool({
++      name: "get_approved_plan",
++      arguments: { projectId: "p", planId: "plan" },
++    });
++    expect(value(result).valid).toBe(true);
++    expect(paths).toEqual([
++      "GET /api/plans/plan",
++      "GET /api/plans/plan/approved",
++    ]);
++  }));
++test("existing folder tool reports same fresh structure capture and preserves pagination", () =>
++  fixture(async (client, paths) => {
++    const result = await client.callTool({
++      name: "get_folder_policies",
++      arguments: { projectId: "p", limit: 1 },
++    });
++    expect(value(result)).toMatchObject({
++      items: [{ id: "legacy" }],
++      total: 1,
++      structureRevision: 3,
++      fileDigest: "a".repeat(64),
++      verifiedAt: "t",
++      status: "ready",
++      snapshotId: "s",
++    });
++    expect(paths[0]).toBe("GET /api/projects/p/policies?includeStructure=1");
++  }));
++test("strong current approval failure stays an error instead of falling back to cached history", () =>
++  fixture(async (client, paths) => {
++    const result = await client.callTool({
++      name: "get_approved_plan",
++      arguments: { projectId: "p", planId: "plan" },
++    });
++    expect(result.isError).toBe(true);
++    expect(value(result).code).toBe("NOT_APPROVED");
++    expect(paths).toEqual([
++      "GET /api/plans/plan",
++      "GET /api/plans/plan/approved",
++    ]);
++  }, true));

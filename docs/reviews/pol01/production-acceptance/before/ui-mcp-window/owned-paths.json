@@ -1,0 +1,11 @@
+[
+  "apps/web/src/features/structure/PoliciesPanel.tsx",
+  "apps/web/src/features/structure/policy-controller.ts",
+  "apps/web/src/features/structure/policy-controller.test.ts",
+  "apps/web/src/features/structure/StructurePolicyPanel.tsx",
+  "apps/web/src/features/structure/StructurePolicyPanel.test.tsx",
+  "apps/web/src/api/structure-client.ts",
+  "apps/web/src/api/structure-client.test.ts",
+  "apps/mcp/src/server.ts",
+  "apps/mcp/src/structure.test.ts"
+]

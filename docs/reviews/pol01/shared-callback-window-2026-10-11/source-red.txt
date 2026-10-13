@@ -1,0 +1,120 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90m/home/agent/projects/AtlasMode[39m
+
+ [31m❯[39m apps/web/src/app/pol01-policy-sync.test.ts [2m([22m[2m13 tests[22m[2m | [22m[31m13 failed[39m[2m)[22m[32m 72[2mms[22m[39m
+[31m   [31m×[31m ACK synchronizes full policy/summary/actual plan revision read-only and preserves historical approval/source/group[39m[32m 42[2mms[22m[39m
+[31m   [31m×[31m dirty plan retains exact body/revision/CAS while refreshed list and validity change[39m[32m 2[2mms[22m[39m
+[31m   [31m×[31m read failure /policies rejects and keeps old collection/current receipt unusable[39m[32m 1[2mms[22m[39m
+[31m   [31m×[31m read failure /plans rejects and keeps old collection/current receipt unusable[39m[32m 1[2mms[22m[39m
+[31m   [31m×[31m read failure /summary rejects and keeps old collection/current receipt unusable[39m[32m 1[2mms[22m[39m
+[31m   [31m×[31m only authoritative 409 NOT_APPROVED may recover; context-invalid and 503 never fall back[39m[32m 1[2mms[22m[39m
+[31m   [31m×[31m matched strong v1 approval is accepted, mismatched plan revision/owner is rejected[39m[32m 1[2mms[22m[39m
+[31m   [31m×[31m full captured policy read >50 is accepted, stale or foreign policies are rejected[39m[32m 1[2mms[22m[39m
+[31m   [31m×[31m late strong approval during public project A→B→A cannot commit even with same project id[39m[32m 1[2mms[22m[39m
+[31m   [31m×[31m same-epoch old callback failure neither clears newer busy nor overwrites newer result[39m[32m 1[2mms[22m[39m
+[31m   [31m×[31m public planning context change during strong read cannot overwrite newly selected plan[39m[32m 1[2mms[22m[39m
+[31m   [31m×[31m other knowledge owner remains busy; foreign ACK/quarantine cannot become an accepted read[39m[32m 1[2mms[22m[39m
+[31m   [31m×[31m real controller known ACK + parent sync failure keeps saved notice and never replays PUT[39m[32m 15[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 13 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/app/pol01-policy-sync.test.ts[2m > [22mACK synchronizes full policy/summary/actual plan revision read-only and preserves historical approval/source/group
+[31m[1mTypeError[22m: f.app.acceptPolicyWrite is not a function[39m
+[36m [2m❯[22m apps/web/src/app/pol01-policy-sync.test.ts:[2m40:64[22m[39m
+
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/13]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/app/pol01-policy-sync.test.ts[2m > [22mdirty plan retains exact body/revision/CAS while refreshed list and validity change
+[31m[1mTypeError[22m: f.app.acceptPolicyWrite is not a function[39m
+[36m [2m❯[22m apps/web/src/app/pol01-policy-sync.test.ts:[2m44:133[22m[39m
+
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/13]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/app/pol01-policy-sync.test.ts[2m > [22mread failure /policies rejects and keeps old collection/current receipt unusable
+[41m[1m FAIL [22m[49m apps/web/src/app/pol01-policy-sync.test.ts[2m > [22mread failure /plans rejects and keeps old collection/current receipt unusable
+[41m[1m FAIL [22m[49m apps/web/src/app/pol01-policy-sync.test.ts[2m > [22mread failure /summary rejects and keeps old collection/current receipt unusable
+[31m[1mTypeError[22m: f.app.acceptPolicyWrite is not a function[39m
+[36m [2m❯[22m apps/web/src/app/pol01-policy-sync.test.ts:[2m48:85[22m[39m
+
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/13]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/app/pol01-policy-sync.test.ts[2m > [22monly authoritative 409 NOT_APPROVED may recover; context-invalid and 503 never fall back
+[31m[1mTypeError[22m: f.app.acceptPolicyWrite is not a function[39m
+[36m [2m❯[22m apps/web/src/app/pol01-policy-sync.test.ts:[2m51:185[22m[39m
+
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/13]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/app/pol01-policy-sync.test.ts[2m > [22mmatched strong v1 approval is accepted, mismatched plan revision/owner is rejected
+[31m[1mTypeError[22m: f.app.acceptPolicyWrite is not a function[39m
+[36m [2m❯[22m apps/web/src/app/pol01-policy-sync.test.ts:[2m54:171[22m[39m
+
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/13]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/app/pol01-policy-sync.test.ts[2m > [22mfull captured policy read >50 is accepted, stale or foreign policies are rejected
+[31m[1mTypeError[22m: f.app.acceptPolicyRead is not a function[39m
+[36m [2m❯[22m apps/web/src/app/pol01-policy-sync.test.ts:[2m58:104[22m[39m
+
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/13]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/app/pol01-policy-sync.test.ts[2m > [22mlate strong approval during public project A→B→A cannot commit even with same project id
+[31m[1mTypeError[22m: f.app.acceptPolicyWrite is not a function[39m
+[36m [2m❯[22m apps/web/src/app/pol01-policy-sync.test.ts:[2m63:61[22m[39m
+
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/13]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/app/pol01-policy-sync.test.ts[2m > [22msame-epoch old callback failure neither clears newer busy nor overwrites newer result
+[31m[1mTypeError[22m: f.app.acceptPolicyWrite is not a function[39m
+[36m [2m❯[22m apps/web/src/app/pol01-policy-sync.test.ts:[2m67:55[22m[39m
+
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/13]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/app/pol01-policy-sync.test.ts[2m > [22mpublic planning context change during strong read cannot overwrite newly selected plan
+[31m[1mTypeError[22m: f.app.acceptPolicyWrite is not a function[39m
+[36m [2m❯[22m apps/web/src/app/pol01-policy-sync.test.ts:[2m71:60[22m[39m
+
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/13]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/app/pol01-policy-sync.test.ts[2m > [22mother knowledge owner remains busy; foreign ACK/quarantine cannot become an accepted read
+[31m[1mTypeError[22m: f.app.acceptPolicyWrite is not a function[39m
+[36m [2m❯[22m apps/web/src/app/pol01-policy-sync.test.ts:[2m74:85[22m[39m
+
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/13]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/app/pol01-policy-sync.test.ts[2m > [22mreal controller known ACK + parent sync failure keeps saved notice and never replays PUT
+[31m[1mAssertionError[22m: expected { projectId: 'p', epoch: 1, …(11) } to match object { notice: 'saved', …(3) }
+(27 matching properties omitted from actual)[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[32m-   "error": {[39m
+[32m-     "code": "WORKSPACE_SYNC_REQUIRED",[39m
+[32m-   },[39m
+[31m+   "error": undefined,[39m
+[2m    "needsReload": true,[22m
+[2m    "notice": "saved",[22m
+[2m    "retryAvailable": false,[22m
+[2m  }[22m
+
+[36m [2m❯[22m apps/web/src/app/pol01-policy-sync.test.ts:[2m80:195[22m[39m
+
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/13]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m13 failed[39m[22m[90m (13)[39m
+[2m   Start at [22m 01:36:31
+[2m   Duration [22m 1.03s[2m (transform 472ms, setup 0ms, import 683ms, tests 72ms, environment 0ms)[22m
+

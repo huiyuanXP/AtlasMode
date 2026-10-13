@@ -1,0 +1,24 @@
+
+/home/agent/projects/AtlasMode/packages/core/src/structure.test.ts
+  2:1  error  'node:fs' import is restricted from being used by a pattern. Core must remain pure and free of platform I/O  no-restricted-imports
+
+/home/agent/projects/AtlasMode/packages/core/src/structure.ts
+  194:26  error  '_projectId' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  195:21  error  '_kind' is assigned a value but never used       @typescript-eslint/no-unused-vars
+
+/home/agent/projects/AtlasMode/packages/service/src/structure-sync.test.ts
+    7:1   error  '@codemap/storage' import is restricted from being used by a pattern. The service workspace cannot depend on storage  no-restricted-imports
+  104:22  error  '_projectId' is assigned a value but never used                                                                       @typescript-eslint/no-unused-vars
+  145:97  error  'candidate' is defined but never used. Allowed unused args must match /^_/u                                           @typescript-eslint/no-unused-vars
+  263:22  error  '_projectId' is assigned a value but never used                                                                       @typescript-eslint/no-unused-vars
+
+/home/agent/projects/AtlasMode/packages/service/src/structure-sync.ts
+    4:23  error  'normalizeStructurePath' is defined but never used  @typescript-eslint/no-unused-vars
+   47:23  error  '_oldDocument' is assigned a value but never used   @typescript-eslint/no-unused-vars
+   77:29  error  '_document' is assigned a value but never used      @typescript-eslint/no-unused-vars
+   88:27  error  '_document' is assigned a value but never used      @typescript-eslint/no-unused-vars
+   88:48  error  '_lastGood' is assigned a value but never used      @typescript-eslint/no-unused-vars
+  301:23  error  '_document' is assigned a value but never used      @typescript-eslint/no-unused-vars
+
+✖ 13 problems (13 errors, 0 warnings)
+

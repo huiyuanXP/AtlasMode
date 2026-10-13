@@ -1,0 +1,8 @@
+
+SyntaxError: The requested module '@codemap/storage' does not provide an export named 'StructureFileStore'
+
+Error: No tests found.
+Make sure that arguments are regular expressions matching test files.
+You may need to escape symbols like "$" or "*" and quote the arguments.
+Listing tests:
+Total: 0 tests in 0 files

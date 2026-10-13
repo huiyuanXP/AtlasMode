@@ -1,0 +1,97 @@
+{
+  "trace": "/tmp/atlas-pol01-callback-20261011-40dxsb3i/planning-results-final/planning-production-UI-and-0ffc9-d-verification-flow-offline/trace.zip",
+  "traceSHA256": "18850a8f1f8edffb514388005bffc31ad01c4c5f285eaa4462bd3c14c6b7c545",
+  "requestCount": 3,
+  "consoleCount": 3,
+  "candidateAPIOrigin": "http://127.0.0.1:35027",
+  "ownedServerSpawn": [
+    {
+      "utc": "2026-10-11T01:56:27.330Z",
+      "observerPid": 160862,
+      "event": "child-spawn",
+      "method": "spawn",
+      "pid": 160931,
+      "command": "/home/agent/.node/node-v24.19.0-linux-x64/bin/node",
+      "args": [
+        "--import",
+        "file:///tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/tests/support/graceful-preload.mjs",
+        "/tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/apps/server/dist/index.js"
+      ],
+      "cwd": "/tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace",
+      "port": "35027",
+      "data": "/tmp/atlas-e2e-z5bG4v/data"
+    },
+    {
+      "utc": "2026-10-11T01:56:43.175Z",
+      "observerPid": 160862,
+      "event": "child-spawn",
+      "method": "spawn",
+      "pid": 160976,
+      "command": "/home/agent/.node/node-v24.19.0-linux-x64/bin/node",
+      "args": [
+        "--import",
+        "file:///tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/tests/support/graceful-preload.mjs",
+        "/tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/apps/server/dist/index.js"
+      ],
+      "cwd": "/tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace",
+      "port": "35027",
+      "data": "/tmp/atlas-e2e-z5bG4v/data"
+    }
+  ],
+  "requests": [
+    {
+      "traceEntry": "1-trace.network",
+      "url": "http://127.0.0.1:35027/api/plans/5320a7b9-ed30-48e2-b866-1ff1c6f995d9/approved",
+      "method": "GET",
+      "status": 409,
+      "body": {
+        "code": "NOT_APPROVED",
+        "message": "Plan no longer has a valid current approval."
+      },
+      "bodyEntry": "resources/d340313b469cdec6d52ac45e7e4c8f7cb91aa8d7.json"
+    },
+    {
+      "traceEntry": "1-trace.network",
+      "url": "http://127.0.0.1:35027/api/plans/5320a7b9-ed30-48e2-b866-1ff1c6f995d9/approved",
+      "method": "GET",
+      "status": 409,
+      "body": {
+        "code": "NOT_APPROVED",
+        "message": "Plan no longer has a valid current approval."
+      },
+      "bodyEntry": "resources/d340313b469cdec6d52ac45e7e4c8f7cb91aa8d7.json"
+    },
+    {
+      "traceEntry": "1-trace.network",
+      "url": "http://127.0.0.1:35027/api/plans/5320a7b9-ed30-48e2-b866-1ff1c6f995d9/approved",
+      "method": "GET",
+      "status": 409,
+      "body": {
+        "code": "NOT_APPROVED",
+        "message": "Plan no longer has a valid current approval."
+      },
+      "bodyEntry": "resources/d340313b469cdec6d52ac45e7e4c8f7cb91aa8d7.json"
+    }
+  ],
+  "consoles": [
+    {
+      "traceEntry": "1-trace.trace",
+      "text": "Failed to load resource: the server responded with a status of 409 (Conflict)",
+      "url": "http://127.0.0.1:35027/api/plans/5320a7b9-ed30-48e2-b866-1ff1c6f995d9/approved",
+      "time": 15906.334
+    },
+    {
+      "traceEntry": "1-trace.trace",
+      "text": "Failed to load resource: the server responded with a status of 409 (Conflict)",
+      "url": "http://127.0.0.1:35027/api/plans/5320a7b9-ed30-48e2-b866-1ff1c6f995d9/approved",
+      "time": 16086.011
+    },
+    {
+      "traceEntry": "1-trace.trace",
+      "text": "Failed to load resource: the server responded with a status of 409 (Conflict)",
+      "url": "http://127.0.0.1:35027/api/plans/5320a7b9-ed30-48e2-b866-1ff1c6f995d9/approved",
+      "time": 16444.209
+    }
+  ],
+  "exactOneToOneURLAndCount": true
+}

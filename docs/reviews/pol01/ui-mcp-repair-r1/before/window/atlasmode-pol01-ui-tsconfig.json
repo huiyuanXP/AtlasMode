@@ -1,0 +1,34 @@
+{
+  "extends": "/home/agent/projects/AtlasMode/tsconfig.base.json",
+  "compilerOptions": {
+    "paths": {
+      "@codemap/core": [
+        "/home/agent/projects/AtlasMode/packages/core/src/index.ts"
+      ]
+    },
+    "noEmit": true,
+    "rootDir": "/",
+    "typeRoots": [
+      "/home/agent/projects/AtlasMode/node_modules/@types"
+    ],
+    "jsx": "react-jsx",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "lib": [
+      "ES2023",
+      "DOM",
+      "DOM.Iterable"
+    ]
+  },
+  "include": [
+    "/home/agent/projects/AtlasMode/apps/web/src/features/structure/PoliciesPanel.tsx",
+    "/home/agent/projects/AtlasMode/apps/web/src/features/structure/policy-controller.ts",
+    "/home/agent/projects/AtlasMode/apps/web/src/features/structure/policy-controller.test.ts",
+    "/home/agent/projects/AtlasMode/apps/web/src/features/structure/StructurePolicyPanel.tsx",
+    "/home/agent/projects/AtlasMode/apps/web/src/features/structure/StructurePolicyPanel.test.tsx",
+    "/home/agent/projects/AtlasMode/apps/web/src/api/structure-client.ts",
+    "/home/agent/projects/AtlasMode/apps/web/src/api/structure-client.test.ts",
+    "/home/agent/projects/AtlasMode/apps/mcp/src/server.ts",
+    "/home/agent/projects/AtlasMode/apps/mcp/src/structure.test.ts"
+  ]
+}

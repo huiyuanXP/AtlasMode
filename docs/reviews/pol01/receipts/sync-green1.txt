@@ -1,0 +1,47 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90m/home/agent/projects/AtlasMode[39m
+
+ [31m❯[39m packages/service/src/structure-sync.test.ts [2m([22m[2m12 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[33m 785[2mms[22m[39m
+   [32m✓[39m UI write commits matching real file state plans history and audit[32m 88[2mms[22m[39m
+   [32m✓[39m same-version concurrent writes have one success and one conflict[32m 64[2mms[22m[39m
+   [32m✓[39m mutation retry finalizes once and different payload cannot reuse id[32m 68[2mms[22m[39m
+   [32m✓[39m external formatting changes structure version but does not invalidate plan[32m 47[2mms[22m[39m
+[31m   [31m×[31m invalid repeated read and deletion never reuse a valid current context[39m[32m 55[2mms[22m[39m
+   [32m✓[39m DB-only same-id editing keeps bytes and explicit migration switches source once[32m 108[2mms[22m[39m
+   [32m✓[39m equal extension migration changes only source and approval, not file[32m 59[2mms[22m[39m
+   [32m✓[39m rename then database failure recovers on a new SQLite instance only once[32m 82[2mms[22m[39m
+   [32m✓[39m prepublication failure preserves original file and migration DB records[32m 49[2mms[22m[39m
+   [32m✓[39m failed audit distinguishes attempted B from external observed C[32m 49[2mms[22m[39m
+   [32m✓[39m third-digest recovery retains external bytes until explicit refresh[32m 53[2mms[22m[39m
+   [32m✓[39m queue scope prevents an approved read from escaping an unfinished publication[32m 60[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m packages/service/src/structure-sync.test.ts[2m > [22minvalid repeated read and deletion never reuse a valid current context
+[31m[1mAssertionError[22m: expected { id: 'plan', projectId: 'p', …(3) } to match object { revision: 3 }
+(4 matching properties omitted from actual)[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[32m-   "revision": 3,[39m
+[31m+   "revision": 2,[39m
+[2m  }[22m
+
+[36m [2m❯[22m packages/service/src/structure-sync.test.ts:[2m80:37[22m[39m
+    [90m 78|[39m   [35mawait[39m [34munlink[39m(f[33m.[39mpath)[33m;[39m
+    [90m 79|[39m   [34mexpect[39m(([35mawait[39m f[33m.[39msync[33m.[39m[34mgetStructure[39m([32m"p"[39m))[33m.[39mstatus)[33m.[39m[34mtoBe[39m([32m"missing"[39m)[33m;[39m
+    [90m 80|[39m   [34mexpect[39m(f[33m.[39mdb[33m.[39m[35mget[39m([32m"plans"[39m[33m,[39m [32m"plan"[39m))[33m.[39m[34mtoMatchObject[39m({ revision[33m:[39m [34m3[39m })[33m;[39m
+    [90m   |[39m                                     [31m^[39m
+    [90m 81|[39m })[33m;[39m
+    [90m 82|[39m test("DB-only same-id editing keeps bytes and explicit migration switc…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m11 passed[39m[22m[90m (12)[39m
+[2m   Start at [22m 16:12:18
+[2m   Duration [22m 1.14s[2m (transform 143ms, setup 0ms, import 235ms, tests 785ms, environment 0ms)[22m
+

@@ -1,0 +1,48 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90m/home/agent/projects/AtlasMode[39m
+
+ [31m❯[39m apps/web/src/features/structure/StructurePolicyPanel.test.tsx [2m([22m[2m4 tests[22m[2m | [22m[31m4 failed[39m[2m)[22m[32m 35[2mms[22m[39m
+[31m   [31m×[31m en retains accessible old form and explicit reread/preview/save controls[39m[32m 28[2mms[22m[39m
+[31m   [31m×[31m zh retains accessible old form and explicit reread/preview/save controls[39m[32m 2[2mms[22m[39m
+[31m   [31m×[31m real component conflict read is explicit and passes a distinct callback[39m[32m 1[2mms[22m[39m
+[31m   [31m×[31m read-only schema metadata and diagnostics are escaped, never rendered as satisfied rules[39m[32m 2[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 4 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/features/structure/StructurePolicyPanel.test.tsx[2m > [22men retains accessible old form and explicit reread/preview/save controls
+[41m[1m FAIL [22m[49m apps/web/src/features/structure/StructurePolicyPanel.test.tsx[2m > [22mzh retains accessible old form and explicit reread/preview/save controls
+[31m[1mAssertionError[22m: expected '<section></section>' to contain 'data-action="save"'[39m
+
+Expected: [32m"data-action="save""[39m
+Received: [31m"<section></section>"[39m
+
+[36m [2m❯[22m apps/web/src/features/structure/StructurePolicyPanel.test.tsx:[2m4:309[22m[39m
+
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/features/structure/StructurePolicyPanel.test.tsx[2m > [22mreal component conflict read is explicit and passes a distinct callback
+[31m[1mError[22m: reload[39m
+[36m [2m❯[22m node apps/web/src/features/structure/StructurePolicyPanel.test.tsx:[2m2:288[22m[39m
+
+[90m [2m❯[22m apps/web/src/features/structure/StructurePolicyPanel.test.tsx:[2m5:118[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/features/structure/StructurePolicyPanel.test.tsx[2m > [22mread-only schema metadata and diagnostics are escaped, never rendered as satisfied rules
+[31m[1mAssertionError[22m: expected '<section></section>' to contain 'allowed text'[39m
+
+Expected: [32m"allowed text"[39m
+Received: [31m"<section></section>"[39m
+
+[36m [2m❯[22m apps/web/src/features/structure/StructurePolicyPanel.test.tsx:[2m6:653[22m[39m
+
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m4 failed[39m[22m[90m (4)[39m
+[2m   Start at [22m 18:21:10
+[2m   Duration [22m 816ms[2m (transform 286ms, setup 0ms, import 517ms, tests 35ms, environment 0ms)[22m
+

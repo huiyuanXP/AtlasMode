@@ -1,0 +1,40 @@
+
+Running 1 test using 1 worker
+
+{"requestedRelation":"plan:new-call","clickedRoute":{"x":674.6982168263639,"y":359.78514420986176,"visualRoute":"rf__edge-plan:new-call"}}
+{"requestedRelation":"fact:relation:b7e3273cba7761869b456b64c4d2356a","clickedRoute":{"x":968.265344627107,"y":278.94421423479275,"visualRoute":"rf__edge-group-edge:fact:relation:b7e3273cba7761869b456b64c4d2356a:0"}}
+  ✘  1 tests/e2e/planning.spec.mjs:18:1 › production UI and SDK share the complete planning, approval, persistence and verification flow offline (29.8s)
+
+
+  1) tests/e2e/planning.spec.mjs:18:1 › production UI and SDK share the complete planning, approval, persistence and verification flow offline 
+
+    TimeoutError: locator.selectOption: Timeout 15000ms exceeded.
+    Call log:
+      - waiting for getByRole('combobox', { name: 'Directory responsibilities', exact: true })
+
+
+      493 |         exact: true,
+      494 |       })
+    > 495 |       .selectOption(policy.id);
+          |        ^
+      496 |     await page
+      497 |       .getByLabel("Forbidden dependencies", {
+      498 |         exact: true,
+        at /tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/tests/e2e/planning.spec.mjs:495:8
+
+    attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../planning-results/planning-production-UI-and-0ffc9-d-verification-flow-offline/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../planning-results/planning-production-UI-and-0ffc9-d-verification-flow-offline/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../planning-results/planning-production-UI-and-0ffc9-d-verification-flow-offline/trace.zip
+    Usage:
+
+        npx playwright show-trace ../planning-results/planning-production-UI-and-0ffc9-d-verification-flow-offline/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests/e2e/planning.spec.mjs:18:1 › production UI and SDK share the complete planning, approval, persistence and verification flow offline 

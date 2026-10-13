@@ -1,0 +1,13 @@
+{
+  "createdAt": "2026-10-10T18:28:30.653892+00:00",
+  "head": "8c305ae5fd68118f53d16e544e8b5f5dc81bfab5",
+  "original21": "/tmp/atlas-fs01-ui-r1-baseline-20261010-1800/original-21-freeze",
+  "rawReviewSha256": "d0510e5d873b1afb20765dc437e609fb2ee9643ab48993e4ff6bcc654f60fb3f",
+  "intermediateNotReviewReady": "/tmp/atlas-fs01-ui-r1-freeze-20261010-1823",
+  "tests": "62/62 PASS, 4 files",
+  "lint": "six changed files exit 0",
+  "ownedNoEmit": "exit 0; four product entries and their transitive imports; source aliases; --listFiles excludes unfrozen PERF overview-layout",
+  "broadNoEmit": "exit 2; six readonly assignments in other-owner unfrozen overview-layout.ts:447; raw failure preserved",
+  "productBrowser": "NOT RUN; six existing production cases retained; two added regression cases pending separate parent followup",
+  "processCleanup": "No server/fixture/tunnel launched in this repair phase; own SSH/scp/test/typecheck invocations exited; no real user DB/target source writes/shared builds/stage/commit"
+}

@@ -1,0 +1,676 @@
+--- a/apps/web/src/features/structure/ownership-session.ts
++++ b/apps/web/src/features/structure/ownership-session.ts
+@@ -16,7 +16,7 @@
+   type TargetTrayState,
+ } from "./ownership-controller.js";
+ export type OwnershipCapture = OwnershipTuple &
+-  Readonly<{ snapshotHash: string }>;
++  Readonly<{ snapshotHash: string; epoch?: number }>;
+ export type OwnershipContext = OwnershipCapture & {
+   selectedId?: string;
+   operations: Operation[];
+@@ -92,7 +92,8 @@
+     a.planId === b.planId &&
+     a.revision === b.revision &&
+     a.snapshotId === b.snapshotId &&
+-    a.snapshotHash === b.snapshotHash
++    a.snapshotHash === b.snapshotHash &&
++    (a.epoch ?? 0) === (b.epoch ?? 0)
+   );
+ }
+ const idle = (): OwnershipSessionState => ({
+@@ -118,9 +119,55 @@
+   const set = store.setState,
+     get = store.getState;
+   let generation = 0;
+-  const tray = createTargetTrayController(ports.fetchScope, (value) =>
+-    set({ tray: value }),
++  let observed: OwnershipCapture | undefined;
++  const capture = (context: OwnershipCapture): OwnershipCapture =>
++    Object.freeze({
++      projectId: context.projectId,
++      planId: context.planId,
++      revision: context.revision,
++      snapshotId: context.snapshotId,
++      snapshotHash: context.snapshotHash,
++      epoch: context.epoch ?? 0,
++    });
++  // A target scope depends on current project/plan/view/snapshot, not plan revision.
++  const sameAuthority = (a: OwnershipCapture, b: OwnershipCapture) =>
++    sameOwnershipCapture({ ...a, revision: b.revision }, b);
++  const requestCurrent = (request: TargetRequest) => {
++    const context = ports.current();
++    return (
++      !!context &&
++      !!observed &&
++      sameAuthority(observed, context) &&
++      request.projectId === context.projectId &&
++      request.snapshotId === context.snapshotId &&
++      (request.epoch ?? 0) === (context.epoch ?? 0) &&
++      request.budget === 100
++    );
++  };
++  const tray = createTargetTrayController(
++    ports.fetchScope,
++    (value) => set({ tray: value }),
++    requestCurrent,
+   );
++  const targetsReady = (
++    context: OwnershipCapture | undefined = ports.current(),
++  ) => {
++    const state = get().tray;
++    return (
++      !!context &&
++      !!observed &&
++      sameAuthority(observed, context) &&
++      state.status === "ready" &&
++      !!state.request &&
++      !!state.scope &&
++      requestCurrent(state.request) &&
++      state.request.projectId === context.projectId &&
++      state.request.snapshotId === context.snapshotId &&
++      state.scope.snapshotId === context.snapshotId &&
++      state.scope.path === state.request.path &&
++      state.scope.kind === "folder"
++    );
++  };
+   const eligible = (context?: OwnershipContext) =>
+     !!context &&
+     !context.busy &&
+@@ -131,6 +178,7 @@
+     const state = get(),
+       context = ports.current();
+     return (
++      state.status !== "expired" &&
+       !!state.intent &&
+       !!state.capture &&
+       !!context &&
+@@ -157,42 +205,54 @@
+       path: undefined,
+     });
+   };
++  const retire = () => {
++    if (get().intent && get().status !== "expired") {
++      generation++;
++      set({ status: "expired" });
++    }
++  };
+   const reconcile = () => {
+     const state = get(),
+       context = ports.current();
+     if (state.mode !== "ownership") return;
+     if (
+       !context ||
+-      (state.capture &&
+-        (state.capture.projectId !== context.projectId ||
+-          state.capture.planId !== context.planId))
++      (observed &&
++        (observed.projectId !== context.projectId ||
++          observed.planId !== context.planId ||
++          (observed.epoch ?? 0) !== (context.epoch ?? 0)))
+     ) {
+       generation++;
++      observed = undefined;
+       tray.cancel();
+       set(idle());
+       return;
+     }
++    if (
++      observed &&
++      (observed.snapshotId !== context.snapshotId ||
++        observed.snapshotHash !== context.snapshotHash)
++    ) {
++      // Retire the scope even when no gesture exists; cancel also rejects pending replies.
++      retire();
++      observed = capture(context);
++      tray.cancel();
++      return;
++    }
+     if (state.status === "saving") {
+-      // Own busy/revision ACK is expected; a newer selection or snapshot retires
+-      // this preview permanently even if selection later returns to the same ID.
+-      if (
+-        state.intent &&
+-        state.capture &&
+-        (context.selectedId !== state.intent.sourceId ||
+-          context.snapshotId !== state.capture.snapshotId ||
+-          context.snapshotHash !== state.capture.snapshotHash)
+-      ) {
+-        generation++;
+-        set({ status: "expired" });
+-      }
++      // Own busy/revision ACK is expected; another selection permanently retires the preview.
++      if (state.intent && context.selectedId !== state.intent.sourceId)
++        retire();
+       return;
+     }
+-    if (state.intent && !currentIntent()) set({ status: "expired" });
++    if (state.intent && !currentIntent()) retire();
+   };
+   const choose = (target: OwnershipTarget, nonce?: string) => {
++    reconcile();
+     const state = get();
+     if (
+       !currentIntent() ||
++      !targetsReady(state.capture) ||
+       state.status === "saving" ||
+       (nonce !== undefined && nonce !== state.intent?.nonce)
+     )
+@@ -225,9 +285,11 @@
+     store,
+     reconcile,
+     cancel,
++    targetsReady,
+     async setMode(mode: OwnershipSessionState["mode"]) {
+       if (mode === "layout") {
+         generation++;
++        observed = undefined;
+         tray.cancel();
+         set(idle());
+         return;
+@@ -235,14 +297,17 @@
+       const context = ports.current();
+       if (!eligible(context)) return;
+       cancel();
++      observed = capture(context!);
+       set({ mode: "ownership" });
+       await tray.load({
+         projectId: context!.projectId,
+         snapshotId: context!.snapshotId,
++        epoch: context!.epoch ?? 0,
+         path: ".",
+       });
+     },
+     async browse(path: string) {
++      reconcile();
+       const context = ports.current();
+       if (
+         get().mode !== "ownership" ||
+@@ -257,11 +322,13 @@
+       });
+     },
+     begin(id: string) {
++      reconcile();
+       const context = ports.current(),
+         proof = ports.resolveSource(id);
+       if (
+         get().mode !== "ownership" ||
+         !eligible(context) ||
++        !targetsReady(context) ||
+         !proof ||
+         context!.selectedId !== id ||
+         get().status === "saving"
+@@ -272,6 +339,7 @@
+           projectId: context!.projectId,
+           snapshotId: context!.snapshotId,
+           snapshotHash: context!.snapshotHash,
++          epoch: context!.epoch ?? 0,
+           planId: context!.planId,
+           revision: context!.revision,
+         });
+@@ -321,10 +389,20 @@
+       set({ filename, path });
+     },
+     async confirm() {
++      reconcile();
+       const state = get(),
+         context = ports.current();
+       if (
+         !currentIntent() ||
++        !targetsReady(state.capture) ||
++        !state.target ||
++        !ownershipTargets(state.tray, state.operations ?? []).some(
++          (target) =>
++            target.kind === state.target!.kind &&
++            target.path === state.target!.path &&
++            target.id === state.target!.id &&
++            !!target.planned === !!state.target!.planned,
++        ) ||
+         !state.source ||
+         !state.operations ||
+         !state.capture ||
+--- a/apps/web/src/features/structure/ownership-session.test.ts
++++ b/apps/web/src/features/structure/ownership-session.test.ts
+@@ -28,11 +28,13 @@
+   const requests: unknown[] = [];
+   let saved: Operation[] | undefined;
+   let saveResult = true;
++  let nonceCount = 0;
+   const app = createOwnershipSession({
+     current: () => context,
+     resolveSource: (id) =>
+-      id === "f" ? { node, snapshotId: "S0" } : undefined,
+-    nonce: () => "local-nonce",
++      id === "f" ? { node, snapshotId: context.snapshotId } : undefined,
++    nonce: () =>
++      ++nonceCount === 1 ? "local-nonce" : `local-nonce-${nonceCount}`,
+     fetchScope: async (request) => {
+       requests.push(request);
+       return {
+@@ -187,11 +189,8 @@
+   f.app.choose(target, "local-nonce");
+   expect(await f.app.confirm()).toBe(true);
+   expect(f.saved).toBeUndefined();
+-  f.app.begin("f");
+-  f.app.choose(
+-    { kind: "folder", path: "dest", id: "folder:dest" },
+-    "local-nonce",
+-  );
++  const fresh = f.app.begin("f");
++  f.app.choose({ kind: "folder", path: "dest", id: "folder:dest" }, fresh);
+   f.app.filename("c.ts");
+   await f.app.setMode("layout");
+   expect(f.saved).toBeUndefined();
+@@ -230,3 +229,150 @@
+   });
+   expect(f.app.store.getState().intent?.nonce).toBe("local-nonce");
+ });
++
++it.each([
++  [{ selectedId: "B" }, { selectedId: "f" }],
++  [{ dirty: true }, { dirty: false }],
++  [{ groupSelection: true }, { groupSelection: false }],
++])(
++  "expired non-saving capture cannot revive after context returns: %j",
++  async (away, back) => {
++    const f = fixture();
++    await f.app.setMode("ownership");
++    const old = f.app.begin("f");
++    f.app.choose({ kind: "folder", path: "dest", id: "folder:dest" }, old);
++    f.app.filename("kept.ts");
++    f.setContext(away);
++    f.setContext(back);
++    expect(f.app.store.getState().status).toBe("expired");
++    expect(f.app.choose(target, old)).toBe(false);
++    expect(f.app.choose(target)).toBe(false);
++    expect(await f.app.confirm()).toBe(false);
++    expect(f.saved).toBeUndefined();
++    expect(f.app.store.getState().filename).toBe("kept.ts");
++    const fresh = f.app.begin("f");
++    expect(fresh).toBeTruthy();
++    expect(fresh).not.toBe(old);
++    expect(f.app.choose(target, old)).toBe(false);
++    expect(f.app.choose(target, fresh)).toBe(true);
++    expect(await f.app.confirm()).toBe(true);
++  },
++);
++it("idle S0 tray is retired across S1 verification and fresh S1 plan before a new begin", async () => {
++  const f = fixture();
++  await f.app.setMode("ownership");
++  expect(f.app.store.getState().tray.scope?.snapshotId).toBe("S0");
++  expect(f.app.store.getState().intent).toBeUndefined();
++  f.setContext({ snapshotId: "S1", snapshotHash: "h1", stale: true });
++  f.setContext({ planId: "fresh-plan", revision: 1, stale: false });
++  expect(f.app.store.getState().tray.status).toBe("idle");
++  expect(f.app.begin("f")).toBeUndefined();
++  expect(f.app.choose(target)).toBe(false);
++  expect(await f.app.confirm()).toBe(false);
++  expect(f.saved).toBeUndefined();
++  await f.app.setMode("ownership");
++  expect(f.app.store.getState().tray.scope?.snapshotId).toBe("S1");
++  const fresh = f.app.begin("f");
++  expect(fresh).toBeTruthy();
++  expect(f.app.choose(target, fresh)).toBe(true);
++});
++it.each([
++  "requestProject",
++  "requestSnapshot",
++  "requestEpoch",
++  "scopeSnapshot",
++  "scopePath",
++  "scopeKind",
++])(
++  "choose and confirm fail closed when current target proof disagrees: %s",
++  async (kind) => {
++    const f = fixture();
++    await f.app.setMode("ownership");
++    const nonce = f.app.begin("f");
++    expect(f.app.choose(target, nonce)).toBe(true);
++    const tray = structuredClone(f.app.store.getState().tray);
++    if (kind === "requestProject")
++      tray.request = { ...tray.request!, projectId: "foreign" };
++    if (kind === "requestSnapshot")
++      tray.request = { ...tray.request!, snapshotId: "other" };
++    if (kind === "requestEpoch")
++      tray.request = { ...tray.request!, epoch: 999 };
++    if (kind === "scopeSnapshot")
++      tray.scope = { ...tray.scope!, snapshotId: "other" };
++    if (kind === "scopePath")
++      tray.scope = { ...tray.scope!, path: "elsewhere" };
++    if (kind === "scopeKind") tray.scope = { ...tray.scope!, kind: "file" };
++    f.app.store.setState({ tray });
++    expect(f.app.choose(target, nonce)).toBe(false);
++    expect(await f.app.confirm()).toBe(false);
++    expect(f.saved).toBeUndefined();
++  },
++);
++
++it.each([
++  { snapshotId: "S1", snapshotHash: "h1" },
++  { snapshotHash: "changed" },
++  { epoch: 1 },
++  { projectId: "other" },
++])(
++  "idle scope loading is canceled before a late S0 response across authority changes: %j",
++  async (delta) => {
++    let context: OwnershipContext = {
++      projectId: "p",
++      planId: "plan",
++      snapshotId: "S0",
++      snapshotHash: "h",
++      epoch: 0,
++      revision: 1,
++      operations: [],
++      title: "P",
++      description: "",
++      selectedId: "f",
++      busy: false,
++      dirty: false,
++      groupSelection: false,
++    };
++    let resolve!: (
++      scope: import("./ownership-controller.js").TargetScope,
++    ) => void;
++    const requests: unknown[] = [];
++    const app = createOwnershipSession({
++      current: () => context,
++      resolveSource: () => ({ node, snapshotId: context.snapshotId }),
++      fetchScope: (request) => {
++        requests.push(request);
++        return new Promise((done) => {
++          resolve = done;
++        });
++      },
++      save: async () => {
++        throw new Error("A retired target must not save");
++      },
++    });
++    const pending = app.setMode("ownership");
++    expect(app.store.getState().tray.status).toBe("loading");
++    expect(app.store.getState().intent).toBeUndefined();
++    context = { ...context, ...delta };
++    app.reconcile();
++    expect(app.store.getState().tray.status).toBe("idle");
++    resolve({
++      snapshotId: "S0",
++      path: ".",
++      kind: "folder",
++      nodes: [
++        { id: target.id, kind: "file", name: "b.ts", filePath: target.path },
++      ],
++      relations: [],
++      dataSource: "code",
++      truncated: false,
++    });
++    await pending;
++    expect(app.store.getState().tray.status).toBe("idle");
++    expect(app.begin("f")).toBeUndefined();
++    expect(app.choose(target)).toBe(false);
++    expect(await app.confirm()).toBe(false);
++    expect(requests).toEqual([
++      { projectId: "p", snapshotId: "S0", epoch: 0, path: ".", budget: 100 },
++    ]);
++  },
++);
+--- a/apps/web/src/features/structure/ownership-controller.ts
++++ b/apps/web/src/features/structure/ownership-controller.ts
+@@ -5,6 +5,7 @@
+   snapshotId: string;
+   path: string;
+   budget: number;
++  epoch?: number;
+ }>;
+ export type TargetTrayState = {
+   status: "idle" | "loading" | "ready" | "error";
+@@ -16,6 +17,7 @@
+ export function createTargetTrayController(
+   fetchScope: (request: TargetRequest) => Promise<TargetScope>,
+   publish: (state: TargetTrayState) => void,
++  isCurrent: (request: TargetRequest) => boolean = () => true,
+ ) {
+   let generation = 0;
+   return {
+@@ -26,6 +28,11 @@
+       try {
+         const scope = await fetchScope(request);
+         if (current !== generation) return;
++        if (!isCurrent(request)) {
++          generation++;
++          publish({ status: "idle" });
++          return;
++        }
+         if (
+           scope.snapshotId !== request.snapshotId ||
+           scope.path !== request.path ||
+@@ -34,7 +41,10 @@
+           throw new Error("Target scope changed; choose it again.");
+         publish({ status: "ready", request, scope });
+       } catch {
+-        if (current === generation)
++        if (current === generation && !isCurrent(request)) {
++          generation++;
++          publish({ status: "idle" });
++        } else if (current === generation)
+           publish({
+             status: "error",
+             request,
+--- a/apps/web/src/features/structure/OwnershipControls.tsx
++++ b/apps/web/src/features/structure/OwnershipControls.tsx
+@@ -16,13 +16,22 @@
+     state.dirtyPlanEditor ||
+     state.groupSelectionMode ||
+     !!state.groupDraft ||
+-    session.status === "saving" || !state.plan || !state.summary || state.plan.plan.status==="stale" || state.plan.plan.baselineSnapshotId!==state.summary.snapshotId || state.plan.plan.baselineContentHash!==state.summary.contentHash;
++    session.status === "saving" ||
++    !state.plan ||
++    !state.summary ||
++    state.plan.plan.status === "stale" ||
++    state.plan.plan.baselineSnapshotId !== state.summary.snapshotId ||
++    state.plan.plan.baselineContentHash !== state.summary.contentHash;
+   return (
+     <section className="ownership-controls" aria-label={text.ownershipMode}>
+       <p>{text.ownershipHelp}</p>
+       <button
+         type="button"
+-        disabled={disabled || state.selectedNode?.kind !== "function"}
++        disabled={
++          disabled ||
++          !app.ownership.targetsReady() ||
++          state.selectedNode?.kind !== "function"
++        }
+         onClick={() => {
+           if (state.selectedNode) app.beginOwnership(state.selectedNode);
+         }}
+@@ -46,7 +55,11 @@
+           browse: text.ownershipBrowse,
+           parent: text.ownershipParent,
+         }}
+-        disabled={disabled}
++        disabled={
++          disabled ||
++          !app.ownership.targetsReady() ||
++          session.status === "expired"
++        }
+         onChoose={(target) => app.ownership.choose(target)}
+         onBrowse={(path) => void app.ownership.browse(path)}
+         onDrop={(target, nonce) => app.ownership.choose(target, nonce)}
+--- a/apps/web/src/app/workspace.ts
++++ b/apps/web/src/app/workspace.ts
+@@ -156,6 +156,7 @@
+   const scope = new ProjectScope();
+   let memberNavigationSequence = 0;
+   let focusGeneration = 0,
++    ownershipEpoch = 0,
+     dirtyPlanEditor = false;
+   const histories = new Map<string, PlanHistory>();
+   const set = store.setState,
+@@ -184,6 +185,7 @@
+       revision: plan.revision,
+       snapshotId: summary.snapshotId,
+       snapshotHash: summary.contentHash,
++      epoch: ownershipEpoch,
+     });
+   };
+   const fail = (key: string, error: unknown) =>
+@@ -295,6 +297,7 @@
+     return { summary, view, plans, routes, groups, policies, graph };
+   };
+   const selectProject = async (project: Project) => {
++    ownershipEpoch++;
+     focusGeneration++;
+     scope.select(project.id);
+     set({ ...blank(), project });
+@@ -306,6 +309,7 @@
+     );
+   };
+   const openProject = async (path: string) => {
++    ownershipEpoch++;
+     focusGeneration++;
+     scope.select("");
+     set(blank());
+--- a/apps/web/src/app/workspace-ownership.test.ts
++++ b/apps/web/src/app/workspace-ownership.test.ts
+@@ -234,3 +234,143 @@
+   await f.app.approve();
+   expect(f.calls.some((path) => path.endsWith("/approve"))).toBe(false);
+ });
++
++it("actual verify then createPlan path retires idle S0 targets before S1 fresh begin", async () => {
++  const oldTarget = {
++    kind: "file" as const,
++    id: "file:old",
++    path: "dest/deleted.ts",
++  };
++  const newTarget = {
++    kind: "file" as const,
++    id: "file:new",
++    path: "dest/current.ts",
++  };
++  const requests: { path: string; body?: Record<string, unknown> }[] = [];
++  const old = {
++    valid: true,
++    issues: [],
++    plan: {
++      id: "old-plan",
++      projectId: "p",
++      revision: 1,
++      title: "Old",
++      description: "",
++      status: "draft",
++      baselineSnapshotId: "S0",
++      baselineContentHash: "h0",
++      operations: [],
++    },
++  } as unknown as PlanDetail;
++  const fresh = {
++    ...old,
++    valid: false,
++    plan: {
++      ...old.plan,
++      id: "new-plan",
++      title: "Fresh",
++      baselineSnapshotId: "S1",
++      baselineContentHash: "h1",
++    },
++  };
++  const s0 = { ...summary, contentHash: "h0" },
++    s1 = { ...summary, snapshotId: "S1", contentHash: "h1" };
++  const api = new HttpApi((async (input, init) => {
++    const path = String(input),
++      body = init?.body ? JSON.parse(String(init.body)) : undefined;
++    requests.push({ path, body });
++    const reply = (data: unknown) => new Response(JSON.stringify(data));
++    if (path.endsWith("/verify"))
++      return reply({ id: "v", planId: "old-plan", revision: 1, items: [] });
++    if (path.endsWith("/summary")) return reply(s1);
++    if (path.endsWith("/plans") && init?.method !== "POST")
++      return reply([{ ...old, plan: { ...old.plan, status: "stale" } }]);
++    if (path === "/api/plans" && init?.method === "POST") return reply(fresh);
++    if (path.endsWith("/scope")) {
++      const sid = body.snapshotId;
++      const target = sid === "S0" ? oldTarget : newTarget;
++      return reply({
++        snapshotId: sid,
++        path: body.path,
++        kind: "folder",
++        nodes: [
++          {
++            id: target.id,
++            kind: "file",
++            name: target.path.split("/").at(-1),
++            filePath: target.path,
++          },
++        ],
++        relations: [],
++        dataSource: "code",
++        truncated: false,
++      });
++    }
++    if (path.includes("/functions/"))
++      return reply({
++        node: fact,
++        snapshotId: "S1",
++        incoming: [],
++        outgoing: [],
++        totalIncoming: 0,
++        totalOutgoing: 0,
++        truncated: false,
++      });
++    if (path.endsWith("/subgraph"))
++      return reply({
++        snapshotId: "S1",
++        nodes: [fact],
++        relations: [],
++        dataSource: "code",
++        truncated: false,
++      });
++    if (path === "/api/plans/new-plan" && init?.method === "PUT")
++      return reply({
++        ...fresh,
++        plan: { ...fresh.plan, revision: 2, operations: body.operations },
++      });
++    return reply([]);
++  }) as typeof fetch);
++  const app = createWorkspace(api);
++  app.store.setState({
++    project: summary.project,
++    summary: s0,
++    plan: old,
++    plans: [old],
++    selectedNode: fact,
++  });
++  await app.ownership.setMode("ownership");
++  expect(app.ownership.store.getState().tray.scope?.snapshotId).toBe("S0");
++  expect(app.ownership.store.getState().intent).toBeUndefined();
++  await app.verify();
++  expect(app.store.getState().summary?.snapshotId).toBe("S1");
++  await app.createPlan("Fresh");
++  expect(app.store.getState().plan?.plan.id).toBe("new-plan");
++  expect(app.ownership.store.getState().tray.status).toBe("idle");
++  expect(app.beginOwnership(fact)).toBeUndefined();
++  expect(app.ownership.choose(oldTarget)).toBe(false);
++  expect(await app.ownership.confirm()).toBe(false);
++  expect(
++    requests.filter((r) => r.body && r.path === "/api/plans/new-plan"),
++  ).toEqual([]);
++  await app.ownership.setMode("ownership");
++  const nonce = app.beginOwnership(fact);
++  expect(nonce).toBeTruthy();
++  expect(app.ownership.choose(oldTarget, nonce)).toBe(false);
++  expect(app.ownership.choose(newTarget, nonce)).toBe(true);
++  expect(await app.ownership.confirm()).toBe(true);
++  expect(
++    requests
++      .filter((r) => r.path.endsWith("/scope"))
++      .map((r) => r.body?.snapshotId),
++  ).toEqual(["S0", "S1"]);
++  expect(
++    requests.find((r) => r.path === "/api/plans/new-plan" && r.body)?.body,
++  ).toMatchObject({
++    expectedRevision: 1,
++    expectedSnapshotId: "S1",
++    operations: [
++      { kind: "move_function", nodeId: fact.id, filePath: "dest/current.ts" },
++    ],
++  });
++});

@@ -1,0 +1,679 @@
+{
+  "pids": [
+    {
+      "pid": 158729,
+      "absentESRCH": true
+    },
+    {
+      "pid": 158737,
+      "absentESRCH": true
+    },
+    {
+      "pid": 158747,
+      "absentESRCH": true
+    },
+    {
+      "pid": 158763,
+      "absentESRCH": true
+    },
+    {
+      "pid": 158779,
+      "absentESRCH": true
+    },
+    {
+      "pid": 158795,
+      "absentESRCH": true
+    },
+    {
+      "pid": 158810,
+      "absentESRCH": true
+    },
+    {
+      "pid": 158824,
+      "absentESRCH": true
+    },
+    {
+      "pid": 158834,
+      "absentESRCH": true
+    },
+    {
+      "pid": 158877,
+      "absentESRCH": true
+    },
+    {
+      "pid": 158892,
+      "absentESRCH": true
+    },
+    {
+      "pid": 158905,
+      "absentESRCH": true
+    },
+    {
+      "pid": 158961,
+      "absentESRCH": true
+    },
+    {
+      "pid": 158975,
+      "absentESRCH": true
+    },
+    {
+      "pid": 158988,
+      "absentESRCH": true
+    },
+    {
+      "pid": 159047,
+      "absentESRCH": true
+    },
+    {
+      "pid": 159119,
+      "absentESRCH": true
+    },
+    {
+      "pid": 159133,
+      "absentESRCH": true
+    },
+    {
+      "pid": 159146,
+      "absentESRCH": true
+    },
+    {
+      "pid": 159206,
+      "absentESRCH": true
+    },
+    {
+      "pid": 159219,
+      "absentESRCH": true
+    },
+    {
+      "pid": 159304,
+      "absentESRCH": true
+    },
+    {
+      "pid": 159318,
+      "absentESRCH": true
+    },
+    {
+      "pid": 159332,
+      "absentESRCH": true
+    },
+    {
+      "pid": 159392,
+      "absentESRCH": true
+    },
+    {
+      "pid": 159442,
+      "absentESRCH": true
+    },
+    {
+      "pid": 159455,
+      "absentESRCH": true
+    },
+    {
+      "pid": 159515,
+      "absentESRCH": true
+    },
+    {
+      "pid": 159547,
+      "absentESRCH": true
+    },
+    {
+      "pid": 159619,
+      "absentESRCH": true
+    },
+    {
+      "pid": 159632,
+      "absentESRCH": true
+    },
+    {
+      "pid": 159645,
+      "absentESRCH": true
+    },
+    {
+      "pid": 159702,
+      "absentESRCH": true
+    },
+    {
+      "pid": 159715,
+      "absentESRCH": true
+    },
+    {
+      "pid": 159899,
+      "absentESRCH": true
+    },
+    {
+      "pid": 159913,
+      "absentESRCH": true
+    },
+    {
+      "pid": 159927,
+      "absentESRCH": true
+    },
+    {
+      "pid": 159989,
+      "absentESRCH": true
+    },
+    {
+      "pid": 160017,
+      "absentESRCH": true
+    },
+    {
+      "pid": 160032,
+      "absentESRCH": true
+    },
+    {
+      "pid": 160112,
+      "absentESRCH": true
+    },
+    {
+      "pid": 160126,
+      "absentESRCH": true
+    },
+    {
+      "pid": 160139,
+      "absentESRCH": true
+    },
+    {
+      "pid": 160193,
+      "absentESRCH": true
+    },
+    {
+      "pid": 160206,
+      "absentESRCH": true
+    },
+    {
+      "pid": 160394,
+      "absentESRCH": true
+    },
+    {
+      "pid": 160414,
+      "absentESRCH": true
+    },
+    {
+      "pid": 160431,
+      "absentESRCH": true
+    },
+    {
+      "pid": 160439,
+      "absentESRCH": true
+    },
+    {
+      "pid": 160452,
+      "absentESRCH": true
+    },
+    {
+      "pid": 160511,
+      "absentESRCH": true
+    },
+    {
+      "pid": 160524,
+      "absentESRCH": true
+    },
+    {
+      "pid": 160586,
+      "absentESRCH": true
+    },
+    {
+      "pid": 160587,
+      "absentESRCH": true
+    },
+    {
+      "pid": 160625,
+      "absentESRCH": true
+    },
+    {
+      "pid": 160640,
+      "absentESRCH": true
+    },
+    {
+      "pid": 160849,
+      "absentESRCH": true
+    },
+    {
+      "pid": 160862,
+      "absentESRCH": true
+    },
+    {
+      "pid": 160875,
+      "absentESRCH": true
+    },
+    {
+      "pid": 160931,
+      "absentESRCH": true
+    },
+    {
+      "pid": 160945,
+      "absentESRCH": true
+    },
+    {
+      "pid": 160976,
+      "absentESRCH": true
+    },
+    {
+      "pid": 160989,
+      "absentESRCH": true
+    },
+    {
+      "pid": 161005,
+      "absentESRCH": true
+    },
+    {
+      "pid": 161543,
+      "absentESRCH": true
+    },
+    {
+      "pid": 161557,
+      "absentESRCH": true
+    },
+    {
+      "pid": 161570,
+      "absentESRCH": true
+    },
+    {
+      "pid": 161630,
+      "absentESRCH": true
+    },
+    {
+      "pid": 161643,
+      "absentESRCH": true
+    },
+    {
+      "pid": 161674,
+      "absentESRCH": true
+    },
+    {
+      "pid": 161687,
+      "absentESRCH": true
+    },
+    {
+      "pid": 161703,
+      "absentESRCH": true
+    }
+  ],
+  "ports": [
+    {
+      "port": 32961,
+      "connectResult": 111,
+      "closed": true
+    },
+    {
+      "port": 33787,
+      "connectResult": 111,
+      "closed": true
+    },
+    {
+      "port": 35027,
+      "connectResult": 111,
+      "closed": true
+    },
+    {
+      "port": 36033,
+      "connectResult": 111,
+      "closed": true
+    },
+    {
+      "port": 36495,
+      "connectResult": 111,
+      "closed": true
+    },
+    {
+      "port": 36919,
+      "connectResult": 111,
+      "closed": true
+    },
+    {
+      "port": 37649,
+      "connectResult": 111,
+      "closed": true
+    },
+    {
+      "port": 38865,
+      "connectResult": 111,
+      "closed": true
+    },
+    {
+      "port": 39161,
+      "connectResult": 111,
+      "closed": true
+    },
+    {
+      "port": 39411,
+      "connectResult": 111,
+      "closed": true
+    },
+    {
+      "port": 39521,
+      "connectResult": 111,
+      "closed": true
+    },
+    {
+      "port": 40259,
+      "connectResult": 111,
+      "closed": true
+    },
+    {
+      "port": 40623,
+      "connectResult": 111,
+      "closed": true
+    },
+    {
+      "port": 40829,
+      "connectResult": 111,
+      "closed": true
+    },
+    {
+      "port": 41003,
+      "connectResult": 111,
+      "closed": true
+    },
+    {
+      "port": 41651,
+      "connectResult": 111,
+      "closed": true
+    },
+    {
+      "port": 42175,
+      "connectResult": 111,
+      "closed": true
+    },
+    {
+      "port": 43325,
+      "connectResult": 111,
+      "closed": true
+    },
+    {
+      "port": 44537,
+      "connectResult": 111,
+      "closed": true
+    },
+    {
+      "port": 44561,
+      "connectResult": 111,
+      "closed": true
+    },
+    {
+      "port": 45827,
+      "connectResult": 111,
+      "closed": true
+    },
+    {
+      "port": 45979,
+      "connectResult": 111,
+      "closed": true
+    }
+  ],
+  "ownedRoots": [
+    {
+      "path": "/tmp/atlas-e2e-58WpF5",
+      "exists": false,
+      "policy": "original test cleanup"
+    },
+    {
+      "path": "/tmp/atlas-e2e-CeZfoO",
+      "exists": false,
+      "policy": "original test cleanup"
+    },
+    {
+      "path": "/tmp/atlas-e2e-SyVZQW",
+      "exists": false,
+      "policy": "original test cleanup"
+    },
+    {
+      "path": "/tmp/atlas-e2e-sxSfwE",
+      "exists": false,
+      "policy": "original test cleanup"
+    },
+    {
+      "path": "/tmp/atlas-e2e-wozQzL",
+      "exists": false,
+      "policy": "original test cleanup"
+    },
+    {
+      "path": "/tmp/atlas-e2e-z5bG4v",
+      "exists": false,
+      "policy": "original test cleanup"
+    },
+    {
+      "path": "/tmp/atlas-pol01-acceptance-119hi6",
+      "exists": true,
+      "policy": "retained owned evidence"
+    },
+    {
+      "path": "/tmp/atlas-pol01-acceptance-9hqkUx",
+      "exists": true,
+      "policy": "retained owned evidence"
+    },
+    {
+      "path": "/tmp/atlas-pol01-acceptance-CrhbFA",
+      "exists": true,
+      "policy": "retained owned evidence"
+    },
+    {
+      "path": "/tmp/atlas-pol01-acceptance-EABAcR",
+      "exists": true,
+      "policy": "retained owned evidence"
+    },
+    {
+      "path": "/tmp/atlas-pol01-acceptance-KBbQ4C",
+      "exists": true,
+      "policy": "retained owned evidence"
+    },
+    {
+      "path": "/tmp/atlas-pol01-acceptance-KRjNIa",
+      "exists": true,
+      "policy": "retained owned evidence"
+    },
+    {
+      "path": "/tmp/atlas-pol01-acceptance-Lm7Zko",
+      "exists": true,
+      "policy": "retained owned evidence"
+    },
+    {
+      "path": "/tmp/atlas-pol01-acceptance-NfxEVu",
+      "exists": true,
+      "policy": "retained owned evidence"
+    },
+    {
+      "path": "/tmp/atlas-pol01-acceptance-dQSYar",
+      "exists": true,
+      "policy": "retained owned evidence"
+    },
+    {
+      "path": "/tmp/atlas-pol01-acceptance-gsAtwV",
+      "exists": true,
+      "policy": "retained owned evidence"
+    },
+    {
+      "path": "/tmp/atlas-pol01-acceptance-rEwPCs",
+      "exists": true,
+      "policy": "retained owned evidence"
+    }
+  ],
+  "planningFixtureArchive": [
+    {
+      "utc": "2026-10-11T01:53:48.515Z",
+      "observerPid": 160431,
+      "event": "owned-fixture-archived-before-original-test-cleanup",
+      "pid": 160511,
+      "root": "/tmp/atlas-e2e-wozQzL",
+      "archive": "/tmp/atlas-pol01-callback-20261011-40dxsb3i/retained-planning-fixtures/atlas-e2e-wozQzL-pid160511",
+      "files": [
+        {
+          "path": "data/atlasmode.sqlite",
+          "sha256": "8f24586ec5b637fd7d50c8304b4f0685992454b5e2c7d592dd577f2f97d00c24"
+        },
+        {
+          "path": "python/app.py",
+          "sha256": "2c94f3a89797a2360756ddb5541e73df7831cb23efcecb1744478fe44fba9625"
+        },
+        {
+          "path": "typescript/.codemap/structure.json",
+          "sha256": "a572d63293df730a553c983af28de66fa1505c1d7a07cfec27651c1bb3d696ad"
+        },
+        {
+          "path": "typescript/main.ts",
+          "sha256": "022403921b94b5faee0c4f95051c73da8f58a04b1e32b0dd6ede5e77aff11bcc"
+        },
+        {
+          "path": "typescript/never-execute.ts",
+          "sha256": "e833543011b50d27383d5d2e2f63c69d916049c02b148e2ae4f06132b376fa1b"
+        },
+        {
+          "path": "typescript/requests.ts",
+          "sha256": "a3248bc721216de7cfdca845a15ea29c184ad9a8b3a0fd19beca101b616699bb"
+        }
+      ],
+      "actualRootRemoved": true
+    },
+    {
+      "utc": "2026-10-11T01:56:43.168Z",
+      "observerPid": 160862,
+      "event": "owned-fixture-archived-before-original-test-cleanup",
+      "pid": 160931,
+      "root": "/tmp/atlas-e2e-z5bG4v",
+      "archive": "/tmp/atlas-pol01-callback-20261011-40dxsb3i/retained-planning-fixtures/atlas-e2e-z5bG4v-pid160931",
+      "files": [
+        {
+          "path": "data/atlasmode.sqlite",
+          "sha256": "c3b8d73f06e9e1c0e10e4bcd4987e760f5aad8f73214bbf5c165b262ddfd581c"
+        },
+        {
+          "path": "python/app.py",
+          "sha256": "95dfff65d23a024b08b20c35fe806d126b900443c6d71201f855ece57ae811c2"
+        },
+        {
+          "path": "typescript/.codemap/structure.json",
+          "sha256": "6bf22818a910d9928585982625d21dd6845cf1ce6a7269f9ef35fbd73e903eb6"
+        },
+        {
+          "path": "typescript/main.ts",
+          "sha256": "022403921b94b5faee0c4f95051c73da8f58a04b1e32b0dd6ede5e77aff11bcc"
+        },
+        {
+          "path": "typescript/never-execute.ts",
+          "sha256": "0b7686dc8aef4cbd5ead97c4de2ae49a0df633905b514acaab17b0521e77e1c0"
+        },
+        {
+          "path": "typescript/requests.ts",
+          "sha256": "a3248bc721216de7cfdca845a15ea29c184ad9a8b3a0fd19beca101b616699bb"
+        }
+      ],
+      "actualRootRemoved": true
+    },
+    {
+      "utc": "2026-10-11T01:56:47.655Z",
+      "observerPid": 160862,
+      "event": "owned-fixture-archived-before-original-test-cleanup",
+      "pid": 160976,
+      "root": "/tmp/atlas-e2e-z5bG4v",
+      "archive": "/tmp/atlas-pol01-callback-20261011-40dxsb3i/retained-planning-fixtures/atlas-e2e-z5bG4v-pid160976",
+      "files": [
+        {
+          "path": "data/atlasmode.sqlite",
+          "sha256": "84f5a1d5a2fe5e7c6f37c183e193c36dd7378f1df8fd56019ac15c207d21c6e1"
+        },
+        {
+          "path": "python/app.py",
+          "sha256": "95dfff65d23a024b08b20c35fe806d126b900443c6d71201f855ece57ae811c2"
+        },
+        {
+          "path": "typescript/.codemap/structure.json",
+          "sha256": "6bf22818a910d9928585982625d21dd6845cf1ce6a7269f9ef35fbd73e903eb6"
+        },
+        {
+          "path": "typescript/main.ts",
+          "sha256": "a3a257460002a8530ecacafc7f8be156f0c9b81f9b1a4c805a78c21ac9611dd7"
+        },
+        {
+          "path": "typescript/never-execute.ts",
+          "sha256": "0b7686dc8aef4cbd5ead97c4de2ae49a0df633905b514acaab17b0521e77e1c0"
+        },
+        {
+          "path": "typescript/requests.ts",
+          "sha256": "a3248bc721216de7cfdca845a15ea29c184ad9a8b3a0fd19beca101b616699bb"
+        },
+        {
+          "path": "typescript/services/notes.ts",
+          "sha256": "7a873775f2525bd60f061fe3a0ccb54dd099db2380a92aa7d7861c69b889ca53"
+        }
+      ],
+      "actualRootRemoved": true
+    },
+    {
+      "utc": "2026-10-11T02:02:58.549Z",
+      "observerPid": 161557,
+      "event": "owned-fixture-archived-before-original-test-cleanup",
+      "pid": 161630,
+      "root": "/tmp/atlas-e2e-sxSfwE",
+      "archive": "/tmp/atlas-pol01-callback-20261011-40dxsb3i/retained-planning-fixtures/atlas-e2e-sxSfwE-pid161630",
+      "files": [
+        {
+          "path": "data/atlasmode.sqlite",
+          "sha256": "d741430e6be41798651006322322347068e03912360630111e41c6926fe6aa8c"
+        },
+        {
+          "path": "python/app.py",
+          "sha256": "720d7a1a1e6ae5e09dc3582f3cf48ed89cafc4ec2c1b92fc063d347af60aa90f"
+        },
+        {
+          "path": "typescript/.codemap/structure.json",
+          "sha256": "b33e1eb812a6746f46890c73464b67a11b954de0b2a2f4ed96078666a51b6e0d"
+        },
+        {
+          "path": "typescript/main.ts",
+          "sha256": "022403921b94b5faee0c4f95051c73da8f58a04b1e32b0dd6ede5e77aff11bcc"
+        },
+        {
+          "path": "typescript/never-execute.ts",
+          "sha256": "c396107ca92453df795cceae0a656eb17470d3be1ce98d43adc0a4d511fee325"
+        },
+        {
+          "path": "typescript/requests.ts",
+          "sha256": "a3248bc721216de7cfdca845a15ea29c184ad9a8b3a0fd19beca101b616699bb"
+        }
+      ],
+      "actualRootRemoved": true
+    },
+    {
+      "utc": "2026-10-11T02:03:03.072Z",
+      "observerPid": 161557,
+      "event": "owned-fixture-archived-before-original-test-cleanup",
+      "pid": 161674,
+      "root": "/tmp/atlas-e2e-sxSfwE",
+      "archive": "/tmp/atlas-pol01-callback-20261011-40dxsb3i/retained-planning-fixtures/atlas-e2e-sxSfwE-pid161674",
+      "files": [
+        {
+          "path": "data/atlasmode.sqlite",
+          "sha256": "a7b5247f7c93935e5024e04bfb0e8d086988487ec8c516217bda918393da3311"
+        },
+        {
+          "path": "python/app.py",
+          "sha256": "720d7a1a1e6ae5e09dc3582f3cf48ed89cafc4ec2c1b92fc063d347af60aa90f"
+        },
+        {
+          "path": "typescript/.codemap/structure.json",
+          "sha256": "b33e1eb812a6746f46890c73464b67a11b954de0b2a2f4ed96078666a51b6e0d"
+        },
+        {
+          "path": "typescript/main.ts",
+          "sha256": "a3a257460002a8530ecacafc7f8be156f0c9b81f9b1a4c805a78c21ac9611dd7"
+        },
+        {
+          "path": "typescript/never-execute.ts",
+          "sha256": "c396107ca92453df795cceae0a656eb17470d3be1ce98d43adc0a4d511fee325"
+        },
+        {
+          "path": "typescript/requests.ts",
+          "sha256": "a3248bc721216de7cfdca845a15ea29c184ad9a8b3a0fd19beca101b616699bb"
+        },
+        {
+          "path": "typescript/services/notes.ts",
+          "sha256": "7a873775f2525bd60f061fe3a0ccb54dd099db2380a92aa7d7861c69b889ca53"
+        }
+      ],
+      "actualRootRemoved": true
+    }
+  ],
+  "allObservedPidsAbsent": true,
+  "allObservedPortsClosed": true,
+  "scope": "Only child/node pids from own privatecandidate gated commands; no global kills/removals"
+}

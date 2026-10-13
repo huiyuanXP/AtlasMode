@@ -1,0 +1,16 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90m/home/agent/projects/AtlasMode[39m
+
+ [32m✓[39m packages/service/src/workspace.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 69[2mms[22m[39m
+ [32m✓[39m apps/server/src/pol01-workspace-http.test.ts [2m([22m[2m9 tests[22m[2m)[22m[33m 9776[2mms[22m[39m
+   [33m[2m✓[22m[39m HTTP real file write, array/meta policies, stale CAS and invalid diagnostics use one service boundary [33m 602[2mms[22m[39m
+   [33m[2m✓[22m[39m owned process crash before recovers before HTTP availability without touching user files [33m 2951[2mms[22m[39m
+   [33m[2m✓[22m[39m owned process crash after recovers before HTTP availability without touching user files [33m 2168[2mms[22m[39m
+   [33m[2m✓[22m[39m owned process crash third recovers before HTTP availability without touching user files [33m 1682[2mms[22m[39m
+   [33m[2m✓[22m[39m owned process crash unknown recovers before HTTP availability without touching user files [33m 1494[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m2 passed[39m[22m[90m (2)[39m
+[2m      Tests [22m [1m[32m16 passed[39m[22m[90m (16)[39m
+[2m   Start at [22m 17:06:15
+[2m   Duration [22m 12.63s[2m (transform 1.19s, setup 0ms, import 3.09s, tests 9.85s, environment 0ms)[22m
+

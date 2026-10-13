@@ -1,0 +1,9 @@
+
+Running 2 tests using 1 worker
+
+{"receipt":"POL01_SQLITE_STDIO_OWNED","root":"/tmp/atlas-pol01-acceptance-Lm7Zko","runtime":"/tmp/atlas-pol01-acceptance-Lm7Zko/runtime-receipt.json","records":[{"kind":"server","mode":"compiled","pid":160586,"port":36033,"exit":[0,null],"portClosed":true,"output":"AtlasMode API listening on 127.0.0.1:36033 (built web assets available)\n"}],"rootCleanup":"retained-evidence"}
+  ✓  1 tests/e2e/pol01-structure.spec.ts:41:1 › production native policy edit/import retains unsent input and actual 409 requires explicit reload (5.6s)
+{"receipt":"POL01_SQLITE_STDIO_OWNED","root":"/tmp/atlas-pol01-acceptance-rEwPCs","runtime":"/tmp/atlas-pol01-acceptance-rEwPCs/runtime-receipt.json","records":[{"kind":"server","mode":"compiled","pid":160625,"port":42175,"exit":[0,null],"portClosed":true,"output":"AtlasMode API listening on 127.0.0.1:42175 (built web assets available)\n"},{"kind":"server","mode":"compiled","pid":160640,"port":40623,"exit":[0,null],"portClosed":true,"output":"AtlasMode API listening on 127.0.0.1:40623 (built web assets available)\n"}],"rootCleanup":"retained-evidence"}
+  ✓  2 tests/e2e/pol01-structure.spec.ts:164:1 › production native quarantine disables writing and owned restart preserves invalid file bytes (3.1s)
+
+  2 passed (12.5s)

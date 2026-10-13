@@ -1,0 +1,51 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90m/home/agent/projects/AtlasMode[39m
+
+ [31m❯[39m scripts/build-agent-job.test.ts [2m([22m[2m5 tests[22m[2m | [22m[31m5 failed[39m[2m)[22m[32m 46[2mms[22m[39m
+[31m     [31m×[31m refuses unsupported linux/x64 before producing artifacts[39m[32m 21[2mms[22m[39m
+[31m     [31m×[31m refuses unsupported darwin/arm64 before producing artifacts[39m[32m 3[2mms[22m[39m
+[31m     [31m×[31m refuses unsupported win32/arm64 before producing artifacts[39m[32m 2[2mms[22m[39m
+[31m     [31m×[31m refuses unsupported win32/ia32 before producing artifacts[39m[32m 2[2mms[22m[39m
+[31m     [31m×[31m binds the digest to literal source path and exact bytes in deterministic order[39m[32m 14[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 5 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m scripts/build-agent-job.test.ts[2m > [22mstandalone Windows owned Job build interface[2m > [22mrefuses unsupported linux/x64 before producing artifacts
+[41m[1m FAIL [22m[49m scripts/build-agent-job.test.ts[2m > [22mstandalone Windows owned Job build interface[2m > [22mrefuses unsupported darwin/arm64 before producing artifacts
+[41m[1m FAIL [22m[49m scripts/build-agent-job.test.ts[2m > [22mstandalone Windows owned Job build interface[2m > [22mrefuses unsupported win32/arm64 before producing artifacts
+[41m[1m FAIL [22m[49m scripts/build-agent-job.test.ts[2m > [22mstandalone Windows owned Job build interface[2m > [22mrefuses unsupported win32/ia32 before producing artifacts
+[31m[1mAssertionError[22m: expected [Function] to throw error matching /Windows x64/u but got 'not implemented'[39m
+
+[32m- Expected:[39m
+/Windows x64/u
+
+[31m+ Received:[39m
+"not implemented"
+
+[36m [2m❯[22m scripts/build-agent-job.test.ts:[2m9:51[22m[39m
+    [90m  7|[39m [34mdescribe[39m([32m"standalone Windows owned Job build interface"[39m[33m,[39m () [33m=>[39m {
+    [90m  8|[39m   it.each([["linux", "x64"], ["darwin", "arm64"], ["win32", "arm64"], …
+    [90m  9|[39m     await expect(buildAgentJob({ platform, arch })).rejects.toThrow(/W…
+    [90m   |[39m                                                   [31m^[39m
+    [90m 10|[39m   })[33m;[39m
+    [90m 11|[39m   it("binds the digest to literal source path and exact bytes in deter…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m scripts/build-agent-job.test.ts[2m > [22mstandalone Windows owned Job build interface[2m > [22mbinds the digest to literal source path and exact bytes in deterministic order
+[31m[1mError[22m: not implemented[39m
+[36m [2m❯[22m sourceDigest scripts/build-agent-job.mjs:[2m2:46[22m[39m
+    [90m  1|[39m export async function buildAgentJob() { throw new Error("not implement…
+    [90m  2|[39m export async function sourceDigest() { throw new Error("not implemente…
+    [90m   |[39m                                              [31m^[39m
+    [90m  3|[39m
+[90m [2m❯[22m scripts/build-agent-job.test.ts:[2m16:27[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m5 failed[39m[22m[90m (5)[39m
+[2m   Start at [22m 19:18:08
+[2m   Duration [22m 347ms[2m (transform 51ms, setup 0ms, import 76ms, tests 46ms, environment 0ms)[22m
+

@@ -1,0 +1,2 @@
+tests/support/pol01-acceptance.ts(141,11): error TS2339: Property 'NO_COLOR' does not exist on type '{ TSX_TSCONFIG_PATH: string; CODEMAP_DATA_DIR: string; CODEMAP_WORKSPACE_ROOT: string; }'.
+tests/support/pol01-acceptance.ts(141,46): error TS2339: Property 'FORCE_COLOR' does not exist on type '{ TSX_TSCONFIG_PATH: string; CODEMAP_DATA_DIR: string; CODEMAP_WORKSPACE_ROOT: string; }'.

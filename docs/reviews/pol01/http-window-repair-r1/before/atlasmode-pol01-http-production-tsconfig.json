@@ -1,0 +1,35 @@
+{
+  "extends": "/home/agent/projects/AtlasMode/tsconfig.base.json",
+  "compilerOptions": {
+    "paths": {
+      "@codemap/core": [
+        "/home/agent/projects/AtlasMode/packages/core/src/index.ts"
+      ],
+      "@codemap/service": [
+        "/home/agent/projects/AtlasMode/packages/service/src/index.ts"
+      ],
+      "@codemap/storage": [
+        "/home/agent/projects/AtlasMode/packages/storage/src/index.ts"
+      ],
+      "@codemap/indexer": [
+        "/home/agent/projects/AtlasMode/packages/indexer/src/index.ts"
+      ]
+    },
+    "noEmit": true,
+    "rootDir": "/",
+    "typeRoots": [
+      "/home/agent/projects/AtlasMode/node_modules/@types"
+    ],
+    "allowImportingTsExtensions": true
+  },
+  "include": [
+    "/home/agent/projects/AtlasMode/packages/service/src/workspace.ts",
+    "/home/agent/projects/AtlasMode/packages/service/src/knowledge.ts",
+    "/home/agent/projects/AtlasMode/apps/server/src/index.ts",
+    "/home/agent/projects/AtlasMode/apps/server/src/routes.ts",
+    "/home/agent/projects/AtlasMode/apps/server/src/server.ts",
+    "/home/agent/projects/AtlasMode/apps/server/src/pol01-workspace-http.test.ts",
+    "/home/agent/projects/AtlasMode/tests/support/structure-file-port.ts",
+    "/home/agent/projects/AtlasMode/tests/support/pol01-crash.ts"
+  ]
+}
