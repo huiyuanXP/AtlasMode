@@ -1,0 +1,26 @@
+[
+  {
+    "file": "2026-10-10-diff01-design.md",
+    "beforeSha256": "5a33442fd50956d44fae5d4d71f87de01f7f769d1310e715013ba4f4c01b402f",
+    "afterSha256": "acdf7b831a49b9eba9dde0d7333daa301f31974748537fe66198361c7c032b24",
+    "bytes": 28759
+  },
+  {
+    "file": "2026-10-10-diff01.md",
+    "beforeSha256": "7ab46071e1e7920fbf1d8effab3707d66ba539bf92f9dfd19756608105248828",
+    "afterSha256": "4c6e347b7edb13156b8f235c1fea181ced7721e3b8deda6cc74d4438217fd60e",
+    "bytes": 21347
+  },
+  {
+    "file": "diff01-readonly-design-basis.md",
+    "beforeSha256": "507adf0a7fad69263fe4da6b792607f155901deea16bfc1d528e5f8d7f896ea1",
+    "afterSha256": "507adf0a7fad69263fe4da6b792607f155901deea16bfc1d528e5f8d7f896ea1",
+    "bytes": 5876
+  },
+  {
+    "file": "diff01-independent-design-review.md",
+    "beforeSha256": "61176835b8028fa7ae29d96eb07f40126aaa494178601c080a7d416b78ce5536",
+    "afterSha256": "61176835b8028fa7ae29d96eb07f40126aaa494178601c080a7d416b78ce5536",
+    "bytes": 14194
+  }
+]

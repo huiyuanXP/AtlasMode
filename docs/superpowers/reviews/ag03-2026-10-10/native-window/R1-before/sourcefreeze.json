@@ -1,0 +1,56 @@
+{
+  "head": "0991dbc962981c4aa1b1a13473fce66abd6b8502",
+  "sourceFiles": {
+    "apps/server/native/agent-job/job.cpp": {
+      "sha256": "f554166967be9dd401f8861d771f920d1ebccfd1b8e9a963a3d037b0e64e524d",
+      "bytes": 6000
+    },
+    "apps/server/native/agent-job/job.h": {
+      "sha256": "5edd4354919dddba7671c96a56c8c3411313478ba25b80fb4f22a25022b9e289",
+      "bytes": 1573
+    },
+    "apps/server/native/agent-job/main.cpp": {
+      "sha256": "fb9a794385346db22fee23ef99eef8a656665dc589ed960249ba49b2f5278b17",
+      "bytes": 9845
+    },
+    "apps/server/native/agent-job/protocol.cpp": {
+      "sha256": "05f62592550b0b050bc97d1f2188cbc923b2d12d4a8dea8efa2a56b44166205b",
+      "bytes": 8581
+    },
+    "apps/server/native/agent-job/protocol.h": {
+      "sha256": "c84b0233c834e60b804a33cef1499e6b4dccccd60a72b506f8a3dba16e0543e5",
+      "bytes": 1352
+    },
+    "apps/server/native/agent-job/tests/job-fixture.cpp": {
+      "sha256": "44eac715255bc2873e53f48456ea5e9ceabaf24fb41c1f2b36f79677f6ecbe39",
+      "bytes": 2877
+    },
+    "apps/server/native/agent-job/tests/job-harness.cpp": {
+      "sha256": "98445d606d5e2fa57a0a32ff4565065e683482e98b82de3d8944ef1fac3a1f17",
+      "bytes": 11964
+    },
+    "apps/server/native/agent-job/tests/protocol-tests.cpp": {
+      "sha256": "6b0137f04b77931550f7e248e10530d9741377005bd675015c49de96cc6e5957",
+      "bytes": 2714
+    },
+    "apps/server/src/agent/windows-job-protocol.test.ts": {
+      "sha256": "a63e43da4461381160e8e5fb0b6cc67ac63cac64c1b5a14ba7af3d7283a611b3",
+      "bytes": 3035
+    },
+    "apps/server/src/agent/windows-job-protocol.ts": {
+      "sha256": "6f95df84ddc441b62e887c8c037a5af7220aa0c873f2250cca3a42c70d03ece2",
+      "bytes": 5790
+    },
+    "scripts/build-agent-job.mjs": {
+      "sha256": "3484dabcb9d0b43315a591072e338d21d21d18ae1e8a7466e24d9bfaf60092e9",
+      "bytes": 6168
+    },
+    "scripts/build-agent-job.test.ts": {
+      "sha256": "1c3154d2d4654b3e7eb38b0c1780e8b1244cd2904a232480515960fedce2906b",
+      "bytes": 1448
+    }
+  },
+  "scope": "native first window only",
+  "nativeWindows": "UNRUN",
+  "guardA": "UNCHANGED"
+}

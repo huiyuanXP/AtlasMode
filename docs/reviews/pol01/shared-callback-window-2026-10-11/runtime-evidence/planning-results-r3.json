@@ -1,0 +1,172 @@
+{
+  "config": {
+    "argv": [
+      "/home/agent/.node/node-v24.19.0-linux-x64/bin/node",
+      "/tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/node_modules/.bin/playwright",
+      "test",
+      "tests/e2e/planning.spec.mjs",
+      "--output",
+      "../planning-results-r3",
+      "--reporter",
+      "list,json"
+    ],
+    "configFile": "/tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/playwright.config.ts",
+    "rootDir": "/tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/tests/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/tmp/atlas-pol01-callback-20261011-40dxsb3i/planning-results-r3",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "",
+        "name": "",
+        "testDir": "/tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 120000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list"
+      ],
+      [
+        "json"
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.63.0",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "planning.spec.mjs",
+      "file": "planning.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "production UI and SDK share the complete planning, approval, persistence and verification flow offline",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 13524,
+                  "error": {
+                    "message": "AssertionError: {\"content\":[{\"type\":\"text\",\"text\":\"{\\\"code\\\":\\\"NOT_APPROVED\\\",\\\"message\\\":\\\"Plan no longer has a valid current approval.\\\",\\\"status\\\":409}\"}],\"isError\":true}",
+                    "stack": "AssertionError: {\"content\":[{\"type\":\"text\",\"text\":\"{\\\"code\\\":\\\"NOT_APPROVED\\\",\\\"message\\\":\\\"Plan no longer has a valid current approval.\\\",\\\"status\\\":409}\"}],\"isError\":true}\n    at Object.call (/tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/tests/support/production.mjs:125:14)\n    at /tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/tests/e2e/planning.spec.mjs:542:8",
+                    "location": {
+                      "file": "/tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/tests/support/production.mjs",
+                      "column": 14,
+                      "line": 125
+                    },
+                    "snippet": "   at ../support/production.mjs:125\n\n  123 |     call: async (name, args = {}) => {\n  124 |       const result = await client.callTool({ name, arguments: args });\n> 125 |       assert.notEqual(result.isError, true, JSON.stringify(result));\n      |              ^\n  126 |       return JSON.parse(result.content[0].text);\n  127 |     },\n  128 |   };"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/tests/support/production.mjs",
+                        "column": 14,
+                        "line": 125
+                      },
+                      "message": "AssertionError: {\"content\":[{\"type\":\"text\",\"text\":\"{\\\"code\\\":\\\"NOT_APPROVED\\\",\\\"message\\\":\\\"Plan no longer has a valid current approval.\\\",\\\"status\\\":409}\"}],\"isError\":true}\n\n   at ../support/production.mjs:125\n\n  123 |     call: async (name, args = {}) => {\n  124 |       const result = await client.callTool({ name, arguments: args });\n> 125 |       assert.notEqual(result.isError, true, JSON.stringify(result));\n      |              ^\n  126 |       return JSON.parse(result.content[0].text);\n  127 |     },\n  128 |   };\n    at Object.call (/tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/tests/support/production.mjs:125:14)\n    at /tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/tests/e2e/planning.spec.mjs:542:8"
+                    }
+                  ],
+                  "stdout": [
+                    {
+                      "text": "{\"requestedRelation\":\"plan:new-call\",\"clickedRoute\":{\"x\":674.6982168263639,\"y\":359.78514420986176,\"visualRoute\":\"rf__edge-plan:new-call\"}}\n"
+                    },
+                    {
+                      "text": "{\"requestedRelation\":\"fact:relation:6a34ee4cd5f8d9b283cce289b2f563f6\",\"clickedRoute\":{\"x\":968.2657000624076,\"y\":278.9443355612656,\"visualRoute\":\"rf__edge-group-edge:fact:relation:6a34ee4cd5f8d9b283cce289b2f563f6:0\"}}\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-11T01:53:35.510Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "joint-flow-evidence",
+                      "contentType": "application/json",
+                      "body": "ewogICJlcnJvcnMiOiBbCiAgICAiY29uc29sZTogRmFpbGVkIHRvIGxvYWQgcmVzb3VyY2U6IHRoZSBzZXJ2ZXIgcmVzcG9uZGVkIHdpdGggYSBzdGF0dXMgb2YgNDA5IChDb25mbGljdCkiLAogICAgImNvbnNvbGU6IEZhaWxlZCB0byBsb2FkIHJlc291cmNlOiB0aGUgc2VydmVyIHJlc3BvbmRlZCB3aXRoIGEgc3RhdHVzIG9mIDQwOSAoQ29uZmxpY3QpIgogIF0sCiAgImV4dGVybmFsIjogW10sCiAgImNsaXBib2FyZCI6ICJhY3R1YWwgbmF2aWdhdG9yLmNsaXBib2FyZC5yZWFkVGV4dCBpbiBDaHJvbWl1bSIKfQ=="
+                    },
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/tmp/atlas-pol01-callback-20261011-40dxsb3i/planning-results-r3/planning-production-UI-and-0ffc9-d-verification-flow-offline/test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/tmp/atlas-pol01-callback-20261011-40dxsb3i/planning-results-r3/planning-production-UI-and-0ffc9-d-verification-flow-offline/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/tmp/atlas-pol01-callback-20261011-40dxsb3i/planning-results-r3/planning-production-UI-and-0ffc9-d-verification-flow-offline/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/tests/support/production.mjs",
+                    "column": 14,
+                    "line": 125
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "29288311451816bbf8b3-6832f790e4a8238f5b69",
+          "file": "planning.spec.mjs",
+          "line": 18,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-10-11T01:53:33.566Z",
+    "duration": 16403.041,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 1,
+    "flaky": 0
+  }
+}

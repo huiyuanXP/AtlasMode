@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "folders": [
+    {
+      "path": "src",
+      "purpose": "changed"
+    }
+  ],
+  "dependencyRules": []
+}

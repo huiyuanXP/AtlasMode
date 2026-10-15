@@ -1,0 +1,62 @@
+  update(
+    id: string,
+    input: {
+      expectedRevision: number;
+      expectedSnapshotId?: string;
+      operations: Operation[];
+      title?: string;
+      description?: string;
+    },
+  ): PlanDetail {
+    inputKeys(input, [
+      "expectedRevision",
+      "expectedSnapshotId",
+      "operations",
+      "title",
+      "description",
+    ]);
+    return this.storage.transaction(() => {
+      const current = this.raw(id);
+      this.checkRevision(current, input.expectedRevision);
+      if (input.expectedSnapshotId !== undefined) {
+        if (
+          typeof input.expectedSnapshotId !== "string" ||
+          !input.expectedSnapshotId.trim()
+        )
+          throw new DomainError(
+            "INVALID_INPUT",
+            "Expected a nonempty snapshot id.",
+          );
+        // Reads current projects/snapshots in the same storage transaction used
+        // by WorkspaceService.storeSnapshot publication; no await/preflight gap.
+        const snapshot = this.snapshot(current.projectId);
+        if (snapshot.id !== input.expectedSnapshotId)
+          throw new DomainError(
+            "SNAPSHOT_CHANGED",
+            "Project snapshot has changed.",
+          );
+        if (
+          current.baselineSnapshotId !== snapshot.id ||
+          current.baselineContentHash !== snapshot.contentHash
+        )
+          throw new DomainError(
+            "BASELINE_CONFLICT",
+            "Plan baseline is no longer current.",
+          );
+      }
+      const plan = this.parse({
+        ...current,
+        title: input.title === undefined ? current.title : input.title,
+        description:
+          input.description === undefined
+            ? current.description
+            : input.description,
+        operations: input.operations,
+        revision: current.revision + 1,
+        status: "draft",
+        updatedAt: new Date().toISOString(),
+      });
+      this.storage.put("plans", id, plan);
+      return this.get(id);
+    });
+  }

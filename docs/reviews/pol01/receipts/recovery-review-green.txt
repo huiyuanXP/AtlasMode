@@ -1,0 +1,11 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90m/home/agent/projects/AtlasMode[39m
+
+ [32m✓[39m packages/core/src/structure.test.ts [2m([22m[2m20 tests[22m[2m)[22m[32m 17[2mms[22m[39m
+ [32m✓[39m apps/server/src/structure-sync.test.ts [2m([22m[2m29 tests[22m[2m)[22m[33m 2548[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m2 passed[39m[22m[90m (2)[39m
+[2m      Tests [22m [1m[32m49 passed[39m[22m[90m (49)[39m
+[2m   Start at [22m 16:42:44
+[2m   Duration [22m 3.14s[2m (transform 483ms, setup 0ms, import 737ms, tests 2.57s, environment 0ms)[22m
+

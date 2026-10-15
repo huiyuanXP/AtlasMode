@@ -1,3 +1,7 @@
+import {
+  MemoryStructureFiles,
+  policyWrite,
+} from "../../../tests/support/structure-file-port.js";
 import { expect, test } from "vitest";
 import type {
   CodeSnapshot,
@@ -72,7 +76,11 @@ test("an edit during approval refresh conflicts with expectedRevision and create
       return snapshot(id);
     },
   };
-  const service = new WorkspaceService({ storage, indexer });
+  const service = new WorkspaceService({
+    structureFiles: new MemoryStructureFiles(),
+    storage,
+    indexer,
+  });
   const project = await service.openProject("/project");
   const plan = service.createPlan({
     projectId: project.id,
@@ -112,7 +120,11 @@ test("refreshes serialize per project while another project progresses independe
       return snapshot(id, "newer");
     },
   };
-  const service = new WorkspaceService({ storage, indexer });
+  const service = new WorkspaceService({
+    structureFiles: new MemoryStructureFiles(),
+    storage,
+    indexer,
+  });
   const first = await service.openProject("/first"),
     second = await service.openProject("/second");
   slowId = first.id;
@@ -136,6 +148,7 @@ test("a failed refresh preserves prior snapshot and does not poison subsequent r
   let fail = false;
   const storage = new MemoryStorage(),
     service = new WorkspaceService({
+      structureFiles: new MemoryStructureFiles(),
       storage,
       indexer: {
         async index(_root, id) {
@@ -155,6 +168,7 @@ test("a failed refresh preserves prior snapshot and does not poison subsequent r
 });
 test("unavailable source port gives an actionable domain error", async () => {
   const service = new WorkspaceService({
+    structureFiles: new MemoryStructureFiles(),
     storage: new MemoryStorage(),
     indexer: {
       async index(_root, id) {
@@ -171,6 +185,7 @@ test("unavailable source port gives an actionable domain error", async () => {
 test("policy responsibility and constraints require renewed approval, preserve historical verification and reject old revisions", async () => {
   const storage = new MemoryStorage();
   const service = new WorkspaceService({
+    structureFiles: new MemoryStructureFiles(),
     storage,
     indexer: {
       async index(_root, id) {
@@ -180,7 +195,7 @@ test("policy responsibility and constraints require renewed approval, preserve h
   });
   const a = await service.openProject("/a");
   const b = await service.openProject("/b");
-  const policy = service.savePolicy({
+  const policy = await policyWrite(service, {
     projectId: a.id,
     pathPrefix: "src/",
     purpose: "Old responsibility",
@@ -189,7 +204,7 @@ test("policy responsibility and constraints require renewed approval, preserve h
   const plan = service.createPlan({ projectId: a.id, title: "A" }).plan;
   const other = service.createPlan({ projectId: b.id, title: "B" }).plan;
   const approval = (await service.approvePlan(plan.id, 1)).approval!;
-  service.savePolicy({ ...policy, purpose: "New responsibility" });
+  await policyWrite(service, { ...policy, purpose: "New responsibility" });
   expect(service.getPlan(plan.id)).toMatchObject({
     valid: false,
     plan: { revision: 2, status: "draft" },
@@ -207,14 +222,14 @@ test("policy responsibility and constraints require renewed approval, preserve h
     JSON.parse(service.exportPlan(plan.id, "json")).approvedPlan.revision,
   ).toBe(1);
   const approved = await service.approvePlan(plan.id, 2);
-  service.savePolicy({
+  await policyWrite(service, {
     ...policy,
     purpose: "New responsibility",
     pathPrefix: "src",
     forbiddenDependencies: ["lib", "vendor", "lib"],
   });
   expect(service.getPlan(plan.id)).toEqual(approved);
-  service.savePolicy({
+  await policyWrite(service, {
     ...policy,
     purpose: "New responsibility",
     forbiddenDependencies: ["other"],
@@ -228,6 +243,7 @@ test("policy responsibility and constraints require renewed approval, preserve h
 test("shared group members do not move facts; group design changes invalidate only its project's plans", async () => {
   const storage = new MemoryStorage();
   const service = new WorkspaceService({
+    structureFiles: new MemoryStructureFiles(),
     storage,
     indexer: {
       async index(_root, id) {
@@ -296,6 +312,7 @@ test("knowledge write and every affected plan roll back together on storage fail
   }
   const storage = new FailingStorage();
   const service = new WorkspaceService({
+    structureFiles: new MemoryStructureFiles(),
     storage,
     indexer: {
       async index(_root, id) {
@@ -307,15 +324,31 @@ test("knowledge write and every affected plan roll back together on storage fail
   const a = service.createPlan({ projectId: project.id, title: "A" }).plan;
   const b = service.createPlan({ projectId: project.id, title: "B" }).plan;
   storage.failId = b.id;
-  expect(() =>
-    service.savePolicy({
+  await expect(
+    policyWrite(service, {
       projectId: project.id,
       pathPrefix: "src",
       purpose: "Responsibility",
       forbiddenDependencies: [],
     }),
-  ).toThrow("disk failed");
-  expect(service.listPolicies(project.id)).toEqual([]);
-  expect(service.getPlan(a.id).plan.revision).toBe(1);
-  expect(service.getPlan(b.id).plan.revision).toBe(1);
+  ).rejects.toMatchObject({ code: "STRUCTURE_RECOVERY_PENDING" });
+  expect(storage.list("policies")).toEqual([]);
+  expect(storage.get<{ revision: number }>("plans", a.id)?.revision).toBe(1);
+  expect(storage.get<{ revision: number }>("plans", b.id)?.revision).toBe(1);
+  expect(() => service.listPolicies(project.id)).toThrow(
+    expect.objectContaining({ code: "STRUCTURE_RECOVERY_PENDING" }),
+  );
+  await expect(service.approvePlan(a.id, 1)).rejects.toMatchObject({
+    code: "STRUCTURE_RECOVERY_PENDING",
+  });
+  storage.failId = "";
+  expect(await service.recoverStructureWrites()).toMatchObject({
+    recoveredProjectIds: [project.id],
+    blockedProjectIds: [],
+  });
+  expect(service.listPolicies(project.id)[0]?.purpose).toBe("Responsibility");
+  expect(service.getPlan(a.id).plan.revision).toBe(2);
+  expect(service.getPlan(b.id).plan.revision).toBe(2);
+  await service.recoverStructureWrites();
+  expect(service.getPlan(a.id).plan.revision).toBe(2);
 });

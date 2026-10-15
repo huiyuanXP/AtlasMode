@@ -1,0 +1,20 @@
+{
+  "extends": "/home/agent/projects/AtlasMode/apps/web/tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "/home/agent/projects/AtlasMode",
+    "paths": {
+      "@codemap/core": [
+        "/home/agent/projects/AtlasMode/packages/core/src/index.ts"
+      ]
+    },
+    "typeRoots": [
+      "/home/agent/projects/AtlasMode/node_modules/@types"
+    ]
+  },
+  "include": [
+    "/home/agent/projects/AtlasMode/apps/web/src/features/structure/ownership-session.ts",
+    "/home/agent/projects/AtlasMode/apps/web/src/features/structure/ownership-controller.ts",
+    "/home/agent/projects/AtlasMode/apps/web/src/features/structure/OwnershipControls.tsx",
+    "/home/agent/projects/AtlasMode/apps/web/src/app/workspace.ts"
+  ]
+}

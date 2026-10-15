@@ -1,0 +1,47 @@
+
+Running 1 test using 1 worker
+
+{"requestedRelation":"plan:new-call","clickedRoute":{"x":674.6982168263639,"y":359.78514420986176,"visualRoute":"rf__edge-plan:new-call"}}
+{"requestedRelation":"fact:relation:99a01b1372bfcafbd9a889cc54c3714b","clickedRoute":{"x":967.0816083700174,"y":276.9426691979395,"visualRoute":"rf__edge-group-edge:fact:relation:99a01b1372bfcafbd9a889cc54c3714b:0"}}
+  ✘  1 tests/e2e/planning.spec.mjs:18:1 › production UI and SDK share the complete planning, approval, persistence and verification flow offline (21.4s)
+
+
+  1) tests/e2e/planning.spec.mjs:18:1 › production UI and SDK share the complete planning, approval, persistence and verification flow offline 
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 5
+
+    - Array []
+    + Array [
+    +   "console: Failed to load resource: the server responded with a status of 409 (Conflict)",
+    +   "console: Failed to load resource: the server responded with a status of 409 (Conflict)",
+    +   "console: Failed to load resource: the server responded with a status of 409 (Conflict)",
+    + ]
+
+      782 |     await f.assertNotExecuted();
+      783 |     expect(external).toEqual([]);
+    > 784 |     expect(errors).toEqual([]);
+          |                    ^
+      785 |     expect(mcp.stderr()).toBe("");
+      786 |   } finally {
+      787 |     await writeFile(
+        at /tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/tests/e2e/planning.spec.mjs:784:20
+
+    attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../planning-results-final/planning-production-UI-and-0ffc9-d-verification-flow-offline/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../planning-results-final/planning-production-UI-and-0ffc9-d-verification-flow-offline/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../planning-results-final/planning-production-UI-and-0ffc9-d-verification-flow-offline/trace.zip
+    Usage:
+
+        npx playwright show-trace ../planning-results-final/planning-production-UI-and-0ffc9-d-verification-flow-offline/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests/e2e/planning.spec.mjs:18:1 › production UI and SDK share the complete planning, approval, persistence and verification flow offline 

@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "folders": [
+    {
+      "path": "src",
+      "purpose": "candidate B",
+      "unknown": [
+        1,
+        null
+      ]
+    }
+  ],
+  "dependencyRules": []
+}

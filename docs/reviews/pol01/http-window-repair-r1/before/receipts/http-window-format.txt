@@ -1,0 +1,18 @@
+packages/service/src/workspace.ts 322ms
+packages/service/src/knowledge.ts 83ms (unchanged)
+apps/server/src/index.ts 29ms (unchanged)
+apps/server/src/routes.ts 69ms
+apps/server/src/server.ts 25ms
+apps/server/src/pol01-workspace-http.test.ts 79ms
+tests/support/structure-file-port.ts 8ms
+tests/support/pol01-crash.ts 6ms
+packages/service/src/workspace.test.ts 69ms
+apps/server/src/server.test.ts 154ms
+apps/server/src/agent/bridge.test.ts 58ms
+apps/server/src/agent/direct-loop.test.ts 166ms
+apps/server/src/agent/routes.test.ts 35ms
+apps/server/src/group-view.test.ts 20ms
+tests/integration/group-view.test.ts 10ms
+tests/integration/workspace-lifecycle.test.ts 145ms
+tests/integration/server-shutdown.test.ts 22ms
+tests/e2e/agent-chat.spec.ts 64ms

@@ -1,0 +1,47 @@
+{
+  "ownedHTTP": [
+    {
+      "receipt": "POL01_MCP_OWNED_HTTP_CLOSED",
+      "workerPid": 115981,
+      "port": 44329,
+      "portProbe": "ECONNREFUSED",
+      "mcp": "closed",
+      "sdkClient": "closed",
+      "http": "closed",
+      "tunnelsCreated": 0,
+      "fixture": "owned in-memory HTTP protocol responses; no user DB",
+      "laterPidProbe": "absent-ESRCH",
+      "laterPortProbe": "closed-ECONNREFUSED"
+    },
+    {
+      "receipt": "POL01_MCP_OWNED_HTTP_CLOSED",
+      "workerPid": 115981,
+      "port": 37745,
+      "portProbe": "ECONNREFUSED",
+      "mcp": "closed",
+      "sdkClient": "closed",
+      "http": "closed",
+      "tunnelsCreated": 0,
+      "fixture": "owned in-memory HTTP protocol responses; no user DB",
+      "laterPidProbe": "absent-ESRCH",
+      "laterPortProbe": "closed-ECONNREFUSED"
+    },
+    {
+      "receipt": "POL01_MCP_OWNED_HTTP_CLOSED",
+      "workerPid": 115981,
+      "port": 34831,
+      "portProbe": "ECONNREFUSED",
+      "mcp": "closed",
+      "sdkClient": "closed",
+      "http": "closed",
+      "tunnelsCreated": 0,
+      "fixture": "owned in-memory HTTP protocol responses; no user DB",
+      "laterPidProbe": "absent-ESRCH",
+      "laterPortProbe": "closed-ECONNREFUSED"
+    }
+  ],
+  "tunnelsCreated": 0,
+  "dbOrRootsCreated": 0,
+  "sourceAndEvidenceDeleted": false,
+  "fixture": "Actual SDK/MCP protocol and owned real TCP in-memory HTTP response fixtures. They do not claim real SQLite business-service integration."
+}

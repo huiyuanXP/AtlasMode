@@ -1,0 +1,9 @@
+7f25a6aefe4dc01b60e3995d003dc73e2e137b87fe3fe4aa142291541c31fca5  apps/web/src/features/structure/PoliciesPanel.tsx
+b8c611289f37f6da95254b51bcb1ad3a5a94b7a0b3ce12f6a985ce832f393428  apps/web/src/features/structure/policy-controller.ts
+642e55fcf263eb8f3208682348bb5af06876313341fecacde9c378f9b973b9f7  apps/web/src/features/structure/policy-controller.test.ts
+ac3bf71a6e0d774948156d2b24289c13fe3208e471b6aa99cb0ba0c185fec87b  apps/web/src/features/structure/StructurePolicyPanel.tsx
+296abb33412e847d86cb8d971aea4a85d9e577ec0730c1a233c8c0591f5b3857  apps/web/src/features/structure/StructurePolicyPanel.test.tsx
+81e003af17b21a0f7a3b573acb8b747dd5d9022729b6283f747ef232f66cb1b8  apps/web/src/api/structure-client.ts
+daa1f25d04c8bfa105b45baf92b66200196214592460518c96227100b94276a8  apps/web/src/api/structure-client.test.ts
+2039168ec634179df6350c3f083adf4bd6640338ba09b8c78799004317f59b04  apps/mcp/src/server.ts
+1a51e975af1d749787cd2c22c8fd26bafd59566ead48d8684b85e038b9ed6b02  apps/mcp/src/structure.test.ts

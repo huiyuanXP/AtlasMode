@@ -1,4 +1,10 @@
 import { z } from "zod";
+export {
+  approvalSchema,
+  legacyApprovalSchema,
+  v1ApprovalSchema,
+  approvalReviewContextSchema,
+} from "./approval-schema.js";
 import { DomainError } from "./model.js";
 import type {
   BrowseRoute,

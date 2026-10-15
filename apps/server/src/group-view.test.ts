@@ -3,7 +3,7 @@ import { mkdtemp, mkdir, writeFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { SourceIndexer } from "@codemap/indexer";
-import { SqliteStorage } from "@codemap/storage";
+import { SqliteStorage, StructureFileStore } from "@codemap/storage";
 import { WorkspaceService } from "@codemap/service";
 import { createServer } from "./server.js";
 const cleanups: (() => Promise<void>)[] = [];
@@ -16,6 +16,7 @@ it("accepts old views and bounded collapse IDs over HTTP, rejects malformed arra
   const storage = new SqliteStorage(join(root, "state.sqlite"));
   cleanups.push(async () => storage.close());
   const service = new WorkspaceService({
+    structureFiles: new StructureFileStore(),
     storage,
     indexer: new SourceIndexer(),
   });

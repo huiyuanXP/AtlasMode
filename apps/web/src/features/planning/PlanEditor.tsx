@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { PlanDetail, Operation } from "@codemap/core";
 import { useStrings } from "../../i18n/index.js";
 import { deleteTemporary, editFunction, temporaryId } from "./operations.js";
 import type { PlanningPanelProps } from "./PlanningPanel.js";
 import { FunctionForm } from "./FunctionForm.js";
 import { RelationEditor } from "./RelationEditor.js";
+import { effectiveFunctionPath } from "./function-target.js";
 export function PlanEditor(props: PlanningPanelProps & { detail: PlanDetail }) {
   const zh = useStrings();
   const { detail, node, edge } = props,
@@ -13,12 +14,60 @@ export function PlanEditor(props: PlanningPanelProps & { detail: PlanDetail }) {
   const [title, setTitle] = useState(plan.title),
     [description, setDescription] = useState(plan.description),
     [annotation, setAnnotation] = useState("");
+  const [functionDirty, setFunctionDirty] = useState(false);
+  const [addDirty, setAddDirty] = useState(false);
+  const metadataGeneration = useRef(0);
+  const contextKey = JSON.stringify([
+    plan.projectId,
+    plan.id,
+    plan.baselineSnapshotId,
+    plan.baselineContentHash,
+  ]);
+  type PendingSave = {
+    contextKey: string;
+    revision: number;
+    operations: string;
+    title: string;
+    description: string;
+  };
+  const matchesSave = (pending?: PendingSave) =>
+    !!pending &&
+    pending.contextKey === contextKey &&
+    plan.revision === pending.revision + 1 &&
+    JSON.stringify(operations) === pending.operations &&
+    plan.title === pending.title &&
+    plan.description === pending.description;
+  const pendingSave = (
+    next: Operation[],
+    nextTitle = plan.title,
+    nextDescription = plan.description,
+  ): PendingSave => ({
+    contextKey,
+    revision: plan.revision,
+    operations: JSON.stringify(next),
+    title: nextTitle,
+    description: nextDescription,
+  });
+  const [pendingAdd, setPendingAdd] = useState<PendingSave>();
+  const [pendingMetadata, setPendingMetadata] = useState<
+    PendingSave & { generation: number }
+  >();
+  const [metadataBasis, setMetadataBasis] = useState({
+    title: plan.title,
+    description: plan.description,
+    revision: plan.revision,
+  });
+  const [pendingFunction, setPendingFunction] = useState<PendingSave>();
   const planned = operations.filter(
     (o): o is Extract<Operation, { kind: "add_function" }> =>
       o.kind === "add_function",
   );
   const temporary = node && planned.find((o) => o.tempId === node.id);
-  const effectiveNode = temporary
+  const physicalNode =
+    node &&
+    (props.nodes.find((n) => n.id === node.id && n.kind === "function") ??
+      node);
+  const originalNode = temporary
     ? {
         id: temporary.tempId,
         kind: "function" as const,
@@ -26,12 +75,78 @@ export function PlanEditor(props: PlanningPanelProps & { detail: PlanDetail }) {
         filePath: temporary.filePath,
         signature: temporary.signature,
       }
-    : node;
+    : physicalNode;
+  const effectiveNode =
+    originalNode?.kind === "function"
+      ? {
+          ...originalNode,
+          filePath: effectiveFunctionPath(operations, originalNode),
+        }
+      : originalNode;
   const metadataDirty =
-    title !== plan.title || description !== plan.description;
+    title !== metadataBasis.title || description !== metadataBasis.description;
+  const metadataStale =
+    metadataDirty && metadataBasis.revision !== plan.revision;
+  const semanticDirty = metadataDirty || functionDirty || addDirty;
+  const saveAcknowledged = matchesSave(pendingFunction);
+  const addAcknowledged = matchesSave(pendingAdd);
+  const metadataAcknowledged = matchesSave(pendingMetadata);
   useEffect(() => {
-    props.onDirtyChange?.(metadataDirty);
-  }, [metadataDirty, props.onDirtyChange]);
+    // An accepted advance (matching or conflicting) retires the outstanding claim.
+    // A failed response at the old revision retains it for a later recovery reread.
+    if (
+      pendingFunction &&
+      (pendingFunction.contextKey !== contextKey ||
+        plan.revision > pendingFunction.revision)
+    )
+      setPendingFunction(undefined);
+    if (
+      pendingAdd &&
+      (pendingAdd.contextKey !== contextKey ||
+        plan.revision > pendingAdd.revision)
+    )
+      setPendingAdd(undefined);
+  }, [contextKey, plan.revision, pendingFunction, pendingAdd]);
+  useEffect(() => {
+    if (
+      pendingMetadata &&
+      (pendingMetadata.contextKey !== contextKey ||
+        plan.revision > pendingMetadata.revision)
+    ) {
+      setPendingMetadata(undefined);
+      if (
+        metadataAcknowledged &&
+        metadataGeneration.current === pendingMetadata.generation
+      ) {
+        setMetadataBasis({
+          title: plan.title,
+          description: plan.description,
+          revision: plan.revision,
+        });
+        return;
+      }
+    }
+    if (!metadataDirty) {
+      setTitle(plan.title);
+      setDescription(plan.description);
+      setMetadataBasis({
+        title: plan.title,
+        description: plan.description,
+        revision: plan.revision,
+      });
+    }
+  }, [
+    metadataDirty,
+    plan.title,
+    plan.description,
+    plan.revision,
+    contextKey,
+    pendingMetadata,
+    metadataAcknowledged,
+  ]);
+  useEffect(() => {
+    props.onDirtyChange?.(semanticDirty);
+  }, [semanticDirty, props.onDirtyChange]);
   useEffect(() => () => props.onDirtyChange?.(false), [props.onDirtyChange]);
   return (
     <fieldset disabled={props.busy} className="plan-editor">
@@ -56,7 +171,13 @@ export function PlanEditor(props: PlanningPanelProps & { detail: PlanDetail }) {
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          props.onSave(operations, title, description);
+          if (!metadataStale) {
+            setPendingMetadata({
+              ...pendingSave(operations, title, description),
+              generation: metadataGeneration.current,
+            });
+            props.onSave(operations, title, description);
+          }
         }}
       >
         <label>
@@ -64,7 +185,10 @@ export function PlanEditor(props: PlanningPanelProps & { detail: PlanDetail }) {
           <input
             required
             value={title}
-            onChange={(e) => setTitle(e.target.value)}
+            onChange={(e) => {
+              metadataGeneration.current++;
+              setTitle(e.target.value);
+            }}
           />
         </label>
         <label>
@@ -72,10 +196,34 @@ export function PlanEditor(props: PlanningPanelProps & { detail: PlanDetail }) {
           <textarea
             aria-label={zh.description}
             value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            onChange={(e) => {
+              metadataGeneration.current++;
+              setDescription(e.target.value);
+            }}
           />
         </label>
-        <button type="submit" disabled={!metadataDirty}>
+        {metadataStale && (
+          <>
+            <p role="alert">{zh.conflictHelp}</p>
+            <button
+              type="button"
+              onClick={() => {
+                metadataGeneration.current++;
+                setPendingMetadata(undefined);
+                setTitle(plan.title);
+                setDescription(plan.description);
+                setMetadataBasis({
+                  title: plan.title,
+                  description: plan.description,
+                  revision: plan.revision,
+                });
+              }}
+            >
+              {zh.refreshPlan}
+            </button>
+          </>
+        )}
+        <button type="submit" disabled={!metadataDirty || metadataStale}>
           {zh.saveTitle}
         </button>
       </form>
@@ -85,12 +233,12 @@ export function PlanEditor(props: PlanningPanelProps & { detail: PlanDetail }) {
         <button
           className="primary"
           onClick={props.onApprove}
-          disabled={metadataDirty}
+          disabled={semanticDirty}
         >
           {zh.approve}
         </button>
       </div>
-      {metadataDirty && <p className="warning">{zh.dirty}</p>}
+      {semanticDirty && <p className="warning">{zh.dirty}</p>}
       <div className="button-row">
         <button onClick={() => props.onExport("markdown")}>
           {zh.exportMd}
@@ -119,12 +267,17 @@ export function PlanEditor(props: PlanningPanelProps & { detail: PlanDetail }) {
         <p className="muted">{zh.newFileHelp}</p>
         <FunctionForm
           add
-          onSave={(edit) =>
-            props.onSave([
+          revisionKey={`${contextKey}:${plan.revision}`}
+          onDirtyChange={setAddDirty}
+          saveAcknowledged={addAcknowledged}
+          onSave={(edit) => {
+            const next: Operation[] = [
               ...operations,
               { kind: "add_function", tempId: temporaryId(), ...edit },
-            ])
-          }
+            ];
+            setPendingAdd(pendingSave(next));
+            props.onSave(next);
+          }}
         />
       </details>
       {effectiveNode?.kind === "function" && (
@@ -137,9 +290,15 @@ export function PlanEditor(props: PlanningPanelProps & { detail: PlanDetail }) {
             key={effectiveNode.id}
             node={effectiveNode}
             description={temporary?.description}
-            onSave={(edit) =>
-              props.onSave(editFunction(operations, effectiveNode, edit))
-            }
+            revisionKey={`${contextKey}:${plan.revision}`}
+            onDirtyChange={setFunctionDirty}
+            saveAcknowledged={saveAcknowledged}
+            onSave={(edit) => {
+              const next = editFunction(operations, originalNode!, edit);
+              if (JSON.stringify(next) === JSON.stringify(operations)) return;
+              setPendingFunction(pendingSave(next));
+              props.onSave(next);
+            }}
           />
           <button
             className="danger"

@@ -1,0 +1,82 @@
+
+Running 2 tests using 1 worker
+
+{"receipt":"POL01_SQLITE_STDIO_OWNED","root":"/tmp/atlas-pol01-acceptance-119hi6","runtime":"/tmp/atlas-pol01-acceptance-119hi6/runtime-receipt.json","records":[{"kind":"server","mode":"compiled","pid":158961,"port":40259,"exit":[0,null],"portClosed":true,"output":"AtlasMode API listening on 127.0.0.1:40259 (built web assets available)\n"}],"rootCleanup":"retained-evidence"}
+  ✘  1 tests/e2e/pol01-structure.spec.ts:37:1 › production native policy edit/import retains unsent input and actual 409 requires explicit reload (2.4s)
+{"receipt":"POL01_SQLITE_STDIO_OWNED","root":"/tmp/atlas-pol01-acceptance-KRjNIa","runtime":"/tmp/atlas-pol01-acceptance-KRjNIa/runtime-receipt.json","records":[{"kind":"server","mode":"compiled","pid":159047,"port":39521,"exit":[0,null],"portClosed":true,"output":"AtlasMode API listening on 127.0.0.1:39521 (built web assets available)\n"}],"rootCleanup":"retained-evidence"}
+  ✘  2 tests/e2e/pol01-structure.spec.ts:148:1 › production native quarantine disables writing and owned restart preserves invalid file bytes (1.1s)
+
+
+  1) tests/e2e/pol01-structure.spec.ts:37:1 › production native policy edit/import retains unsent input and actual 409 requires explicit reload 
+
+    AssertionError: {"status":400,"body":{"code":"INVALID_INPUT","message":"Invalid request.","issues":[{"path":["positions"],"message":"Invalid input: expected record, received undefined"},{"path":["theme"],"message":"Invalid option: expected one of \"light\"|\"dark\""}]}}
+
+       at ../support/pol01-acceptance.ts:219
+
+      217 |   async function json<T>(suffix: string, method = "GET", body?: unknown) {
+      218 |     const response = await raw<T>(suffix, method, body);
+    > 219 |     assert(
+          |     ^
+      220 |       response.status >= 200 && response.status < 300,
+      221 |       JSON.stringify(response),
+      222 |     );
+        at Object.json (/tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/tests/support/pol01-acceptance.ts:219:5)
+        at openPanel (/tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/tests/e2e/pol01-structure.spec.ts:15:3)
+        at /tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/tests/e2e/pol01-structure.spec.ts:42:19
+
+    attachment #1: owned-runtime-receipt (application/json) ────────────────────────────────────────
+    ../policy-results/pol01-structure-production-60b0b-09-requires-explicit-reload/attachments/owned-runtime-receipt-ff9598f933011bfd53f757baf078fe482efb1dcc.json
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../policy-results/pol01-structure-production-60b0b-09-requires-explicit-reload/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../policy-results/pol01-structure-production-60b0b-09-requires-explicit-reload/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../policy-results/pol01-structure-production-60b0b-09-requires-explicit-reload/trace.zip
+    Usage:
+
+        npx playwright show-trace ../policy-results/pol01-structure-production-60b0b-09-requires-explicit-reload/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) tests/e2e/pol01-structure.spec.ts:148:1 › production native quarantine disables writing and owned restart preserves invalid file bytes 
+
+    AssertionError: {"status":400,"body":{"code":"INVALID_INPUT","message":"Invalid request.","issues":[{"path":["positions"],"message":"Invalid input: expected record, received undefined"},{"path":["theme"],"message":"Invalid option: expected one of \"light\"|\"dark\""}]}}
+
+       at ../support/pol01-acceptance.ts:219
+
+      217 |   async function json<T>(suffix: string, method = "GET", body?: unknown) {
+      218 |     const response = await raw<T>(suffix, method, body);
+    > 219 |     assert(
+          |     ^
+      220 |       response.status >= 200 && response.status < 300,
+      221 |       JSON.stringify(response),
+      222 |     );
+        at Object.json (/tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/tests/support/pol01-acceptance.ts:219:5)
+        at openPanel (/tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/tests/e2e/pol01-structure.spec.ts:15:3)
+        at /tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/tests/e2e/pol01-structure.spec.ts:153:19
+
+    attachment #1: owned-runtime-receipt (application/json) ────────────────────────────────────────
+    ../policy-results/pol01-structure-production-41aaf-reserves-invalid-file-bytes/attachments/owned-runtime-receipt-6ee6ccff10ac09e691ba57327efd9c78c7121209.json
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../policy-results/pol01-structure-production-41aaf-reserves-invalid-file-bytes/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../policy-results/pol01-structure-production-41aaf-reserves-invalid-file-bytes/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../policy-results/pol01-structure-production-41aaf-reserves-invalid-file-bytes/trace.zip
+    Usage:
+
+        npx playwright show-trace ../policy-results/pol01-structure-production-41aaf-reserves-invalid-file-bytes/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2 failed
+    tests/e2e/pol01-structure.spec.ts:37:1 › production native policy edit/import retains unsent input and actual 409 requires explicit reload 
+    tests/e2e/pol01-structure.spec.ts:148:1 › production native quarantine disables writing and owned restart preserves invalid file bytes 

@@ -17,24 +17,26 @@
 
 | 未完成票 | 当前进度与具体依赖 / 阻塞 |
 | --- | --- |
-| FS-01 | 表单复审通过，第二 UI 窗口独立审查发现过期预览复活与旧 snapshot tray 两项 Important，正在定向修复；仍待完整编译后真实鼠标/保存重载/竞态验收 |
-| KN-01 | 数据库迁移与审批模块复审通过；独立注释页面 41 项源测试通过，独立审查 APPROVE（空历史分页 Minor 待接线修）；POL 共享服务已释放，开始 notes HTTP/刷新原子接线；仍待真实注释/失联/重新绑定流程 |
-| POL-01 | 文件同步与恢复模块复审通过；服务接线两 Important 定向修复已独立 APPROVE，106 项源测试通过；UI/MCP 尚待接线与真实交互 |
+| FS-01 | 表单、过期预览/旧 tray 和非零 epoch 定向修复已独立 APPROVE；无 request 目标面板崩溃及原生拖放/刷新夹具 R3 已窄修并独立 APPROVE。隔离重建成功，单轮真实九项浏览器全部通过（31.2s），相关 51/5 单测通过；原始 1247 PASS/1 FAIL、首轮九失败和二轮 3 PASS/6 FAIL 均保留。仍须整合 KN/POL 页面接线并恢复原 planning 流程、全量检查；不提前标 DONE |
+| KN-01 | 数据库迁移与审批模块复审通过；独立注释页面 41 项源测试通过，独立审查 APPROVE（空历史分页 Minor 待接线修）；notes HTTP/刷新原子接线 134/7 PASS 且独立 APPROVE；共享 Web 接线冻结：136/15、实际 HTTP/SQLite 4、四项 mounted 浏览器单轮通过；独立 high 审查 REQUEST_CHANGES 两恢复竞态（3a4468…），原作者正窄修；成功状态截图/运行收据待补齐，整票保持未完成 |
+| POL-01 | 文件同步与恢复模块复审通过；服务接线两 Important 定向修复已独立 APPROVE，106 项源测试通过；UI/MCP 51 PASS 定向修复已独立 APPROVE；共享回调接线等 KN Web 冻结后串行，真实页面/业务 SQLite/stdio/重启尚待验收 |
 | KN-02 | 设计三 Important 已定向修订并独立 APPROVE；依赖 KN-01 和 POL-01 稳定接口，导入先预览并显式应用，DB 知识和目录文件两个应用域各自收据 |
 | DATA-01 | 依赖 KN-02；尚未完成一致备份、恢复与中断保护实施/验收 |
 | POL-02 | 依赖 POL-01；允许/禁止/带理由例外及批准新鲜度尚未实施 |
 | IDX-04 | 设计复审通过、测试路径 Minor 已修；等待共享 core/KN 绑定接口窗口，身份候选须用户显式接受 |
-| DIFF-01 | 依赖 IDX-04；完整快照与引用变化证据尚未实施，不能以零入边推断死代码 |
+| DIFF-01 | 依赖 IDX-04；设计 3 Important/1 Minor 已窄修并独立 APPROVE（398f3…）；bounded 历史存储读取和身份生产前置仍未实施；不能以零入边推断死代码 |
 | GRP-03 | 设计复审通过、两 Minor 已修；依赖 FS/KN/POL 共用规划接口冻结后实施 sequence/wrapper 流程 |
-| PERF-01 | IDX-03 已满足前置；只读设计开始；增量索引/监听的一致性、回退和真实中型性能尚未实施 |
-| PERF-02 | 设计预算缺口修订后已独立 APPROVE；只授纯 target/布局/Worker controller 新模块实现，共享画布窗口等待 FS，真实中型性能未测 |
+| PERF-01 | IDX-03 已满足前置；设计 root 见证 Important 已窄修并独立 APPROVE（117b723…）；增量索引/监听的一致性、回退和真实中型性能尚未实施 |
+| PERF-02 | 设计预算缺口修订后已独立 APPROVE；纯 target/布局/Worker controller 73/4 PASS、超时边界窄修独立 APPROVE；bounded HTTP/API Window B 104/6 源测试通过且独立 APPROVE（90c777…）；共享 client 等 KN 串行释放，真实 Worker/画布/中型性能未测 |
 | QA-02 | 仍缺真实 Codex/Claude 两客户端接入收据、Windows 交互 Ctrl+C；原生 CI/SDK 不替代这些；历史 SIGKILL 因果仍未证明 |
 | OPS-01 | 依赖 QA-02、可恢复备份/分发成果；独立新云目标与相关授权尚未具备，本 VM 临时目录不算新云验收 |
 | FUT-01 | 依赖 DIFF-01；额外语言、GitNexus、运行时证据、远程多人分别评估，不提前标完成 |
 | AG-02 | 设计复审通过；依赖 KN 当前 v1 批准守卫、POL 新鲜度和写入前复核接线；源码 writer 尚未实施 |
-| AG-03 | Windows 自有 Job helper 设计定向复审已 APPROVE（仅设计）；尚未授源码窗口，待原生所属进程机制与真实 Windows 证据，不提前解除原生 Chat 限制 |
+| AG-03 | Windows 自有 Job helper 设计定向复审已 APPROVE（仅设计）；已授限定 native/protocol/build 脚本源码窗口；12 新源首窗口及 harness I1 窄修冻结，28 项窄验证通过、独立 SOURCE checkpoint APPROVE（ecc43d6…）；Unicode M1 原生证据门保持，源码/portable C++ 通过不替代实际 Windows 证据，不提前解除原生 Chat 限制 |
 | AG-05 | HTTP/SSE/真实 SDK MCP 实施已推送；仍缺当前真实外部 Provider 配置和最小真实调用授权/收据，保持 PARTIAL |
 
 支持工作：夹具提交 84fd8b3 已推送，CI 38072384523 四项全部成功。实际 Windows 日志为 configCapture 26 项通过、全体 863 通过/18 跳过；浏览器单轮 19 项通过。本支持工作不计用户票完成，也不替代 QA02 的真实客户端/交互退出。原 c9 Windows 超时和清理失败日志、隔离首次缺 core 入口失败、修复的 RED/GREEN 均保留。
 
 资源收尾尚未宣告完成。最终逐一核本任务 tunnel、合成服务的 PID/启动身份/端口/退出与清理收据，只收口本任务资源；保留源码、冻结字节、截图、追踪和原始验收日志，不操作他人的标签、进程或目录。
+
+最新支持提交 0991dbc 已推送。CI 38077305771：browser、Linux、macOS 成功；Windows 861 PASS / 18 跳过 / 2 FAIL（Python 首两例 5s 超时），原始失败已保留。隔离两文件夹具修复 55/55 PASS，真实长生命周期故障原 RED 与修复判据均留存，I1 独立窄复审 APPROVE（befcf749…）；候选未写共享源码，真实 Windows 修复后 CI 未运行，不能称四项全绿。产品完成计数仍为 19/36。

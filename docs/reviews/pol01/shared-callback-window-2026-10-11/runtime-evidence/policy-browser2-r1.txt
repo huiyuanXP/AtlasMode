@@ -1,0 +1,43 @@
+
+Running 2 tests using 1 worker
+
+{"receipt":"POL01_SQLITE_STDIO_OWNED","root":"/tmp/atlas-pol01-acceptance-EABAcR","runtime":"/tmp/atlas-pol01-acceptance-EABAcR/runtime-receipt.json","records":[{"kind":"server","mode":"compiled","pid":159392,"port":41003,"exit":[0,null],"portClosed":true,"output":"AtlasMode API listening on 127.0.0.1:41003 (built web assets available)\n"}],"rootCleanup":"retained-evidence"}
+  ✘  1 tests/e2e/pol01-structure.spec.ts:41:1 › production native policy edit/import retains unsent input and actual 409 requires explicit reload (19.2s)
+{"receipt":"POL01_SQLITE_STDIO_OWNED","root":"/tmp/atlas-pol01-acceptance-gsAtwV","runtime":"/tmp/atlas-pol01-acceptance-gsAtwV/runtime-receipt.json","records":[{"kind":"server","mode":"compiled","pid":159515,"port":39161,"exit":[0,null],"portClosed":true,"output":"AtlasMode API listening on 127.0.0.1:39161 (built web assets available)\n"},{"kind":"server","mode":"compiled","pid":159547,"port":44561,"exit":[0,null],"portClosed":true,"output":"AtlasMode API listening on 127.0.0.1:44561 (built web assets available)\n"}],"rootCleanup":"retained-evidence"}
+  ✓  2 tests/e2e/pol01-structure.spec.ts:152:1 › production native quarantine disables writing and owned restart preserves invalid file bytes (6.4s)
+
+
+  1) tests/e2e/pol01-structure.spec.ts:41:1 › production native policy edit/import retains unsent input and actual 409 requires explicit reload 
+
+    TimeoutError: page.waitForResponse: Timeout 15000ms exceeded while waiting for event "response"
+
+      60 |       .getByRole("textbox", { name: "Purpose", exact: true })
+      61 |       .fill("DB edit A");
+    > 62 |     const dbSave = page.waitForResponse(
+         |                         ^
+      63 |       (r) =>
+      64 |         r.url().endsWith(`/api/projects/${f.project.id}/policies`) &&
+      65 |         r.request().method() === "POST",
+        at /tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/tests/e2e/pol01-structure.spec.ts:62:25
+
+    attachment #1: owned-runtime-receipt (application/json) ────────────────────────────────────────
+    ../policy-results-r1/pol01-structure-production-60b0b-09-requires-explicit-reload/attachments/owned-runtime-receipt-b4a52b0396b1ce193c9beb67d01f83232ee46da5.json
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../policy-results-r1/pol01-structure-production-60b0b-09-requires-explicit-reload/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../policy-results-r1/pol01-structure-production-60b0b-09-requires-explicit-reload/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../policy-results-r1/pol01-structure-production-60b0b-09-requires-explicit-reload/trace.zip
+    Usage:
+
+        npx playwright show-trace ../policy-results-r1/pol01-structure-production-60b0b-09-requires-explicit-reload/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests/e2e/pol01-structure.spec.ts:41:1 › production native policy edit/import retains unsent input and actual 409 requires explicit reload 
+  1 passed (33.6s)

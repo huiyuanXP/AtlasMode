@@ -9,12 +9,18 @@ export function GroupCardContent({
   onToggle,
   onSelect,
   ports = false,
+  ownershipEnabled = false,
+  onOwnershipStart,
+  onOwnershipEnd,
 }: {
   group: GroupCardData;
   locale: Locale;
   onToggle: (id: string) => void;
   onSelect: (node: CodeNode) => void;
   ports?: boolean;
+  ownershipEnabled?: boolean;
+  onOwnershipStart?: (node: CodeNode) => string | undefined;
+  onOwnershipEnd?: () => void;
 }) {
   const text = dictionaries[locale];
   return (
@@ -72,6 +78,25 @@ export function GroupCardContent({
                     className="group-endpoint nodrag nopan"
                     key={id}
                     data-domain-id={id}
+                    draggable={ownershipEnabled && node.kind === "function"}
+                    onDragStart={(event) => {
+                      if (!ownershipEnabled || node.kind !== "function") {
+                        event.preventDefault();
+                        return;
+                      }
+                      const nonce = onOwnershipStart?.(node);
+                      if (!nonce) {
+                        event.preventDefault();
+                        return;
+                      }
+                      event.stopPropagation();
+                      event.dataTransfer.effectAllowed = "move";
+                      event.dataTransfer.setData(
+                        "application/x-atlas-ownership",
+                        nonce,
+                      );
+                    }}
+                    onDragEnd={onOwnershipEnd}
                     title={`${node.name} · ${node.filePath ?? node.id}`}
                     onClick={(event) => {
                       event.stopPropagation();
@@ -104,6 +129,12 @@ export function GroupCard({ data }: NodeProps<GraphNode>) {
         onToggle={data.onToggleGroup as (id: string) => void}
         onSelect={data.onSelectMember as (node: CodeNode) => void}
         ports
+        ownershipEnabled={!!data.ownershipMode && !!data.ownershipEnabled}
+        onOwnershipStart={
+          data.onOwnershipStart as
+            ((node: CodeNode) => string | undefined) | undefined
+        }
+        onOwnershipEnd={data.onOwnershipEnd as (() => void) | undefined}
       />
     </div>
   );

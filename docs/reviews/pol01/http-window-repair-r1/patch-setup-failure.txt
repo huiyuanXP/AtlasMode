@@ -1,0 +1,1 @@
+First inline SSH Python patch failed during parsing (unterminated triple-quoted string due to shell quote in comment); no source was written. Tool exit2 retained in conversation; independent script replaces quoting, not a product RED.

@@ -1,0 +1,85 @@
+{
+  "files": {
+    "apps/server/src/agent/process.ts": {
+      "sha256": "34592ff12a90b75b900796f89fff7b7a1979630939d38275bea9860405a91eb0",
+      "bytes": 9389
+    },
+    "apps/server/src/agent/native.ts": {
+      "sha256": "9051c19aad5f2f24f63511dcc91f57a8ca7991ed79f7623654402ff21636052d",
+      "bytes": 10971
+    },
+    "apps/server/src/agent/gateway.ts": {
+      "sha256": "59541d6bef5723be82f7f72d0ed5c95604020c18e10a083630fef151847fb80c",
+      "bytes": 7207
+    },
+    "apps/server/src/agent/bridge.ts": {
+      "sha256": "6fe21a3b7c687bf3f97ad8f599ff9f8e6a220dbe3b3877f7f1c68ab898a5d68d",
+      "bytes": 15347
+    },
+    "apps/server/src/agent/types.ts": {
+      "sha256": "5addb74004bf7a351788593e02e8036cf980144026ae1bb9838329d8edf28125",
+      "bytes": 1439
+    },
+    "apps/server/src/agent/routes.ts": {
+      "sha256": "9f5ac0f102dc3b932b6b3eaf5b3df351b153392a36e6292d51c48859cdbd1df6",
+      "bytes": 2163
+    },
+    "apps/server/src/server.ts": {
+      "sha256": "5b1132a2fda456a079fd629076cf3a50e2d040c988603ec1e5c96b34b595d4ec",
+      "bytes": 5559
+    },
+    "apps/server/src/index.ts": {
+      "sha256": "7599bc60f8ff0226c754de975c24fa5a5df584a749cf38d46336c23c399768be",
+      "bytes": 3470
+    },
+    "scripts/dev.mjs": {
+      "sha256": "056a5e1ee7900760a1935c1e39f9a8d30687d75d9578a1b57e29f962ae9d8585",
+      "bytes": 3097
+    },
+    ".github/workflows/ci.yml": {
+      "sha256": "a982c07858397e4a55881503748fea499ee34a00d7fa8102a33c6b5844722095",
+      "bytes": 1377
+    },
+    "apps/server/package.json": {
+      "sha256": "aa83873de5cfde8f78fedeefb106eaa3249ba1cc02dc7b5415b77b422a02f540",
+      "bytes": 794
+    },
+    "apps/web/src/features/chat/controller.ts": {
+      "sha256": "41cea4f9167bdaa602dd8e2d065dab64c4af415a6512f1cd7d2311b4c20f34bf",
+      "bytes": 6790
+    },
+    "apps/web/src/features/chat/strings.ts": {
+      "sha256": "ba3e07357a1172ec19270d3be487b76a81b5ab298b5c6a76beb6072472846a8a",
+      "bytes": 6811
+    },
+    "docs/superpowers/specs/2026-10-10-ag03-design.md": {
+      "sha256": "3a17c125eb89aa4e4f46b569f51331f653fc00401905732f1a25900b5a73186b",
+      "bytes": 25155
+    },
+    "docs/superpowers/plans/2026-10-10-ag03.md": {
+      "sha256": "cd4adb3b88294dbc8e5b6c2e6e5fc594e525f00bc8c7ea858cb6369c94c26150",
+      "bytes": 22410
+    },
+    "docs/superpowers/reviews/ag03-2026-10-10/independent-design-review.md": {
+      "sha256": "5ebdaca2642cd7b87f23d519270ec5cae3a01c1a0949fa88dea341eba2528abd",
+      "bytes": 8866
+    },
+    "docs/superpowers/reviews/ag03-2026-10-10/targeted-independent-review.md": {
+      "sha256": "51f3f65897b44689fbe062ffbeb2f0e6441affc72d78e1b895595101d38581d5",
+      "bytes": 5394
+    },
+    "docs/superpowers/reviews/ag03-2026-10-10/rev1-I1-M1-repair-receipt.json": {
+      "sha256": "977695b854fa5405f808fd2496e09b705980e00ee0ae32fd72e5ee626e49832c",
+      "bytes": 4686
+    },
+    "package.json": {
+      "sha256": "e9e609078de582fa90d21f7a7651ffc273e571cc15d9eb79c7b76739fa07b875",
+      "bytes": 1187
+    },
+    "package-lock.json": {
+      "sha256": "f26ef3a7cf494becb903226ef01d86dfa7ca1e014c271e284bb0db1b9cee49c4",
+      "bytes": 215637
+    }
+  },
+  "allBeforeFilesUnchanged": true
+}

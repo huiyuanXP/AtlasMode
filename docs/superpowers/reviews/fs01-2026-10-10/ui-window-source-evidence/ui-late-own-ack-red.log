@@ -1,0 +1,45 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90m/home/agent/projects/AtlasMode[39m
+
+ [31m❯[39m apps/web/src/features/structure/ownership-session.test.ts [2m([22m[2m13 tests[22m[2m | [22m[31m1 failed[39m[2m | [22m[33m12 skipped[39m[2m)[22m[32m 11[2mms[22m[39m
+   [2m[90m↓[39m[22m defaults to layout; only a captured current function can start and only tray targets can preview
+   [2m[90m↓[39m[22m folder preview starts without filename; full path must be explicitly completed before saving
+   [2m[90m↓[39m[22m changed capture expires preview, retains filename and refuses save: {"revision":2}
+   [2m[90m↓[39m[22m changed capture expires preview, retains filename and refuses save: {"snapshotId":"S1"}
+   [2m[90m↓[39m[22m changed capture expires preview, retains filename and refuses save: {"snapshotHash":"new"}
+   [2m[90m↓[39m[22m changed capture expires preview, retains filename and refuses save: {"selectedId":"other"}
+   [2m[90m↓[39m[22m changed capture expires preview, retains filename and refuses save: {"dirty":true}
+   [2m[90m↓[39m[22m changed capture expires preview, retains filename and refuses save: {"groupSelection":true}
+   [2m[90m↓[39m[22m project/plan switch cancels rather than retaining foreign preview: {"projectId":"other"}
+   [2m[90m↓[39m[22m project/plan switch cancels rather than retaining foreign preview: {"planId":"other"}
+   [2m[90m↓[39m[22m cancel/layout never saves; no-op preserves revision/history and own annotations
+   [2m[90m↓[39m[22m failed save retains preview and never treats failure as accepted
+[31m   [31m×[31m a late save ACK cannot clear a preview after another selection, even when selection returns to the original function[39m[32m 9[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/features/structure/ownership-session.test.ts[2m > [22ma late save ACK cannot clear a preview after another selection, even when selection returns to the original function
+[31m[1mAssertionError[22m: expected true to be false // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- false[39m
+[31m+ true[39m
+
+[36m [2m❯[22m apps/web/src/features/structure/ownership-session.test.ts:[2m216:24[22m[39m
+    [90m214|[39m  await f.app.setMode("ownership");f.app.begin("f");f.app.choose(target…
+    [90m215|[39m  expect(f.app.store.getState().status).toBe("saving");f.setContext({se…
+    [90m216|[39m  expect(await pending).toBe(false);expect(f.app.store.getState()).toMa…
+    [90m   |[39m                        [31m^[39m
+    [90m217|[39m })[33m;[39m
+    [90m218|[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m1 failed[39m[22m[2m | [22m[33m12 skipped[39m[90m (13)[39m
+[2m   Start at [22m 17:46:09
+[2m   Duration [22m 499ms[2m (transform 191ms, setup 0ms, import 311ms, tests 11ms, environment 0ms)[22m
+

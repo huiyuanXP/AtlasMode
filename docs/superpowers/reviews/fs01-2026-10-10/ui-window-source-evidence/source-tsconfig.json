@@ -1,0 +1,14 @@
+{
+  "extends": "/home/agent/projects/AtlasMode/apps/web/tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "/home/agent/projects/AtlasMode",
+    "paths": {
+      "@codemap/core": [
+        "/home/agent/projects/AtlasMode/packages/core/src/index.ts"
+      ]
+    },
+    "typeRoots": [
+      "/home/agent/projects/AtlasMode/node_modules/@types"
+    ]
+  }
+}

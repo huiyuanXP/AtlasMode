@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "folders": [],
+  "dependencyRules": [],
+  "x-atlasmode": {
+    "schemaVersion": 1,
+    "legacyPathPolicies": [
+      {
+        "id": "legacy-policy:46f5091205e47742e6b307abde93756c",
+        "pathPrefix": "services",
+        "purpose": "Reuse requests; reviewed policy version",
+        "forbiddenDependencies": [
+          "internal"
+        ]
+      }
+    ]
+  }
+}

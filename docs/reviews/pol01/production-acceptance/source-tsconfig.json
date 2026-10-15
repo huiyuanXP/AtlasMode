@@ -1,0 +1,37 @@
+{
+  "extends": "/home/agent/projects/AtlasMode/tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "rootDir": "/",
+    "jsx": "react-jsx",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "lib": [
+      "ES2023",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    "typeRoots": [
+      "/home/agent/projects/AtlasMode/node_modules/@types"
+    ],
+    "paths": {
+      "@codemap/core": [
+        "/home/agent/projects/AtlasMode/packages/core/src/index.ts"
+      ],
+      "@codemap/service": [
+        "/home/agent/projects/AtlasMode/packages/service/src/index.ts"
+      ],
+      "@codemap/storage": [
+        "/home/agent/projects/AtlasMode/packages/storage/src/index.ts"
+      ],
+      "@codemap/indexer": [
+        "/home/agent/projects/AtlasMode/packages/indexer/src/index.ts"
+      ]
+    }
+  },
+  "include": [
+    "/home/agent/projects/AtlasMode/tests/support/pol01-acceptance.ts",
+    "/home/agent/projects/AtlasMode/tests/integration/pol01-stdio-acceptance.test.ts",
+    "/home/agent/projects/AtlasMode/tests/e2e/pol01-structure.spec.ts"
+  ]
+}

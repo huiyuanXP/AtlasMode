@@ -4,7 +4,7 @@ import { stat } from "node:fs/promises";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import type { FastifyInstance } from "fastify";
 import { SourceIndexer } from "@codemap/indexer";
-import { SqliteStorage } from "@codemap/storage";
+import { SqliteStorage, StructureFileStore } from "@codemap/storage";
 import { WorkspaceService } from "@codemap/service";
 import { createServer } from "./server.js";
 export { createServer } from "./server.js";
@@ -62,7 +62,9 @@ async function main(): Promise<void> {
     const service = new WorkspaceService({
       storage,
       indexer: new SourceIndexer(),
+      structureFiles: new StructureFileStore(),
     });
+    await service.recoverStructureWrites();
     if (process.env.CODEMAP_WORKSPACE_ROOT)
       await service.openProject(process.env.CODEMAP_WORKSPACE_ROOT);
     const candidate = fileURLToPath(

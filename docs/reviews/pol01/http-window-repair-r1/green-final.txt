@@ -1,0 +1,148 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90m/home/agent/projects/AtlasMode[39m
+
+[90mstdout[2m | apps/server/src/pol01-http-repair.test.ts[2m > [22m[2mI1 direct json HTTP export synchronizes external semantics and preserves immutable history
+[22m[39m{"receipt":"POL01_OWNED_FIXTURE_CLOSED","root":"/tmp/atlas-pol01-repair-EdcCCZ","sqliteConnections":"closed","apps":"closed","listener":"inject-only/no-listener","rootCleanup":"retained-evidence","workerPid":99540}
+
+[90mstdout[2m | apps/server/src/pol01-workspace-http.test.ts[2m > [22m[2mHTTP real file write, array/meta policies, stale CAS and invalid diagnostics use one service boundary
+[22m[39m{"receipt":"POL01_OWNED_FIXTURE_CLOSED","root":"/tmp/atlas-pol01-http-maubnc","sqliteConnections":"closed","apps":"closed","rootCleanup":"retained-evidence","workerPid":99539}
+
+[90mstdout[2m | apps/server/src/pol01-http-repair.test.ts[2m > [22m[2mI1 direct markdown HTTP export synchronizes external semantics and preserves immutable history
+[22m[39m{"receipt":"POL01_OWNED_FIXTURE_CLOSED","root":"/tmp/atlas-pol01-repair-jgbdhD","sqliteConnections":"closed","apps":"closed","listener":"inject-only/no-listener","rootCleanup":"retained-evidence","workerPid":99540}
+
+[90mstdout[2m | apps/server/src/pol01-workspace-http.test.ts[2m > [22m[2mold policy POST requires explicit CAS, preserves DB source until preview plus migration, then edits file
+[22m[39m{"receipt":"POL01_OWNED_FIXTURE_CLOSED","root":"/tmp/atlas-pol01-http-l3fEUV","sqliteConnections":"closed","apps":"closed","rootCleanup":"retained-evidence","workerPid":99539}
+
+[90mstdout[2m | apps/server/src/pol01-http-repair.test.ts[2m > [22m[2mI2 queued B claim is revalidated before publication after A commits the identity
+[22m[39m{"receipt":"POL01_OWNED_FIXTURE_CLOSED","root":"/tmp/atlas-pol01-repair-hXR7Ld","sqliteConnections":"closed","apps":"closed","listener":"inject-only/no-listener","rootCleanup":"retained-evidence","workerPid":99540}
+
+[90mstdout[2m | apps/server/src/pol01-workspace-http.test.ts[2m > [22m[2mactual Workspace approval/current-read queue blocks prepared structure write
+[22m[39m{"receipt":"POL01_OWNED_FIXTURE_CLOSED","root":"/tmp/atlas-pol01-http-7SWxUa","sqliteConnections":"closed","apps":"closed","rootCleanup":"retained-evidence","workerPid":99539}
+
+[90mstdout[2m | apps/server/src/pol01-http-repair.test.ts[2m > [22m[2mI1 export first observes invalid bytes instead of cached current approval
+[22m[39m{"receipt":"POL01_OWNED_FIXTURE_CLOSED","root":"/tmp/atlas-pol01-repair-6ZpzI8","sqliteConnections":"closed","apps":"closed","listener":"inject-only/no-listener","rootCleanup":"retained-evidence","workerPid":99540}
+
+[90mstdout[2m | apps/server/src/pol01-http-repair.test.ts[2m > [22m[2mI1 export first observes deleted bytes instead of cached current approval
+[22m[39m{"receipt":"POL01_OWNED_FIXTURE_CLOSED","root":"/tmp/atlas-pol01-repair-pdzPkT","sqliteConnections":"closed","apps":"closed","listener":"inject-only/no-listener","rootCleanup":"retained-evidence","workerPid":99540}
+
+[90mstdout[2m | apps/server/src/pol01-workspace-http.test.ts[2m > [22m[2mactual Workspace approval/current-read queue blocks published structure write
+[22m[39m{"receipt":"POL01_OWNED_FIXTURE_CLOSED","root":"/tmp/atlas-pol01-http-Ru4ClZ","sqliteConnections":"closed","apps":"closed","rootCleanup":"retained-evidence","workerPid":99539}
+
+[90mstdout[2m | apps/server/src/pol01-http-repair.test.ts[2m > [22m[2mI2 prepared simultaneous claim loses before publication and winner remains usable
+[22m[39m{"receipt":"POL01_OWNED_FIXTURE_CLOSED","root":"/tmp/atlas-pol01-repair-E11wSg","sqliteConnections":"closed","apps":"closed","listener":"inject-only/no-listener","rootCleanup":"retained-evidence","workerPid":99540}
+
+[90mstdout[2m | apps/server/src/pol01-http-repair.test.ts[2m > [22m[2mI1 export is queued behind prepared publication before it reports current validity
+[22m[39m{"receipt":"POL01_OWNED_FIXTURE_CLOSED","root":"/tmp/atlas-pol01-repair-7FsusY","sqliteConnections":"closed","apps":"closed","listener":"inject-only/no-listener","rootCleanup":"retained-evidence","workerPid":99540}
+
+[90mstdout[2m | apps/server/src/pol01-http-repair.test.ts[2m > [22m[2mI1 export is queued behind published publication before it reports current validity
+[22m[39m{"receipt":"POL01_OWNED_FIXTURE_CLOSED","root":"/tmp/atlas-pol01-repair-oeRMlS","sqliteConnections":"closed","apps":"closed","listener":"inject-only/no-listener","rootCleanup":"retained-evidence","workerPid":99540}
+
+[90mstdout[2m | apps/server/src/pol01-workspace-http.test.ts[2m > [22m[2mowned process crash before recovers before HTTP availability without touching user files
+[22m[39m{"receipt":"POL01_OWNED_RUNTIME","phase":"before","pid":99714,"exitCode":null,"signal":"SIGKILL","root":"/tmp/atlas-pol01-http-ugkQjc","database":"/tmp/atlas-pol01-http-ugkQjc/atlasmode.sqlite","port":null,"portState":"no-listener","processExited":true,"rootCleanup":"retained-evidence"}
+
+[90mstdout[2m | apps/server/src/pol01-workspace-http.test.ts[2m > [22m[2mowned process crash before recovers before HTTP availability without touching user files
+[22m[39m{"receipt":"POL01_OWNED_FIXTURE_CLOSED","root":"/tmp/atlas-pol01-http-ugkQjc","sqliteConnections":"closed","apps":"closed","rootCleanup":"retained-evidence","workerPid":99539}
+
+[90mstdout[2m | apps/server/src/pol01-http-repair.test.ts[2m > [22m[2mI2 durable before crash claim prevents losing publication and recovery releases only proved-before claims
+[22m[39m{"receipt":"POL01_OWNED_RUNTIME","phase":"before","pid":99741,"exitCode":null,"signal":"SIGKILL","database":"/tmp/atlas-pol01-repair-skfl41/owned.sqlite","root":"/tmp/atlas-pol01-repair-skfl41","port":null,"portState":"no-listener","rootCleanup":"retained-evidence","processExited":true}
+
+[90mstdout[2m | apps/server/src/pol01-http-repair.test.ts[2m > [22m[2mI2 durable before crash claim prevents losing publication and recovery releases only proved-before claims
+[22m[39m{"receipt":"POL01_OWNED_FIXTURE_CLOSED","root":"/tmp/atlas-pol01-repair-skfl41","sqliteConnections":"closed","apps":"closed","listener":"inject-only/no-listener","rootCleanup":"retained-evidence","workerPid":99540}
+
+[90mstdout[2m | apps/server/src/pol01-workspace-http.test.ts[2m > [22m[2mowned process crash after recovers before HTTP availability without touching user files
+[22m[39m{"receipt":"POL01_OWNED_RUNTIME","phase":"after","pid":99783,"exitCode":null,"signal":"SIGKILL","root":"/tmp/atlas-pol01-http-0o7sCb","database":"/tmp/atlas-pol01-http-0o7sCb/atlasmode.sqlite","port":null,"portState":"no-listener","processExited":true,"rootCleanup":"retained-evidence"}
+
+[90mstdout[2m | apps/server/src/pol01-workspace-http.test.ts[2m > [22m[2mowned process crash after recovers before HTTP availability without touching user files
+[22m[39m{"receipt":"POL01_OWNED_FIXTURE_CLOSED","root":"/tmp/atlas-pol01-http-0o7sCb","sqliteConnections":"closed","apps":"closed","rootCleanup":"retained-evidence","workerPid":99539}
+
+[90mstdout[2m | apps/server/src/pol01-http-repair.test.ts[2m > [22m[2mI2 durable after crash claim prevents losing publication and recovery releases only proved-before claims
+[22m[39m{"receipt":"POL01_OWNED_RUNTIME","phase":"after","pid":99835,"exitCode":null,"signal":"SIGKILL","database":"/tmp/atlas-pol01-repair-uPT0nv/owned.sqlite","root":"/tmp/atlas-pol01-repair-uPT0nv","port":null,"portState":"no-listener","rootCleanup":"retained-evidence","processExited":true}
+
+[90mstdout[2m | apps/server/src/pol01-http-repair.test.ts[2m > [22m[2mI2 durable after crash claim prevents losing publication and recovery releases only proved-before claims
+[22m[39m{"receipt":"POL01_OWNED_FIXTURE_CLOSED","root":"/tmp/atlas-pol01-repair-uPT0nv","sqliteConnections":"closed","apps":"closed","listener":"inject-only/no-listener","rootCleanup":"retained-evidence","workerPid":99540}
+
+ [32m✓[39m tests/integration/workspace-lifecycle.test.ts [2m([22m[2m31 tests[22m[2m)[22m[33m 7855[2mms[22m[39m
+   [33m[2m✓[22m[39m opens projects idempotently and isolates plans, routes, groups, policies and views [33m 409[2mms[22m[39m
+   [33m[2m✓[22m[39m approval saves SHA-256, revision and baseline atomically; layout leaves approval valid [33m 323[2mms[22m[39m
+   [33m[2m✓[22m[39m verification refreshes and checks the latest approved historical revision after draft edits [33m 377[2mms[22m[39m
+   [33m[2m✓[22m[39m verification maps moved endpoints and removed call facts across snapshots [33m 311[2mms[22m[39m
+   [33m[2m✓[22m[39m removing a function remains unmet if the same symbol merely moved to another file [33m 341[2mms[22m[39m
+   [33m[2m✓[22m[39m new temporary functions bind by target path/name and ambiguous candidates stay unknown [33m 361[2mms[22m[39m
+   [33m[2m✓[22m[39m parse diagnostics prevent absence being treated as proof of removal [33m 301[2mms[22m[39m
+   [33m[2m✓[22m[39m group and policy edits cannot overwrite records from another project; paths and members are checked [33m 347[2mms[22m[39m
+   [33m[2m✓[22m[39m directory dependency constraints block approval and invalidate previously approved plans [33m 335[2mms[22m[39m
+   [33m[2m✓[22m[39m same-source capability refresh preserves original immutable snapshot and marks approval stale [33m 327[2mms[22m[39m
+   [33m[2m✓[22m[39m removal absence depends on incomplete files in the symbol's language search scope [33m 323[2mms[22m[39m
+[90mstdout[2m | apps/server/src/pol01-workspace-http.test.ts[2m > [22m[2mowned process crash third recovers before HTTP availability without touching user files
+[22m[39m{"receipt":"POL01_OWNED_RUNTIME","phase":"third","pid":99878,"exitCode":null,"signal":"SIGKILL","root":"/tmp/atlas-pol01-http-hTp3sr","database":"/tmp/atlas-pol01-http-hTp3sr/atlasmode.sqlite","port":null,"portState":"no-listener","processExited":true,"rootCleanup":"retained-evidence"}
+
+[90mstdout[2m | apps/server/src/pol01-workspace-http.test.ts[2m > [22m[2mowned process crash third recovers before HTTP availability without touching user files
+[22m[39m{"receipt":"POL01_OWNED_FIXTURE_CLOSED","root":"/tmp/atlas-pol01-http-hTp3sr","sqliteConnections":"closed","apps":"closed","rootCleanup":"retained-evidence","workerPid":99539}
+
+[90mstdout[2m | apps/server/src/pol01-http-repair.test.ts[2m > [22m[2mI2 durable unknown crash claim prevents losing publication and recovery releases only proved-before claims
+[22m[39m{"receipt":"POL01_OWNED_RUNTIME","phase":"unknown","pid":99903,"exitCode":null,"signal":"SIGKILL","database":"/tmp/atlas-pol01-repair-PmIsqB/owned.sqlite","root":"/tmp/atlas-pol01-repair-PmIsqB","port":null,"portState":"no-listener","rootCleanup":"retained-evidence","processExited":true}
+
+[90mstdout[2m | apps/server/src/pol01-http-repair.test.ts[2m > [22m[2mI2 durable unknown crash claim prevents losing publication and recovery releases only proved-before claims
+[22m[39m{"receipt":"POL01_OWNED_FIXTURE_CLOSED","root":"/tmp/atlas-pol01-repair-PmIsqB","sqliteConnections":"closed","apps":"closed","listener":"inject-only/no-listener","rootCleanup":"retained-evidence","workerPid":99540}
+
+[90mstdout[2m | apps/server/src/pol01-http-repair.test.ts[2m > [22m[2mI2 two initially unclaimed IDs are coordinated before any durable intent or publication
+[22m[39m{"receipt":"POL01_OWNED_FIXTURE_CLOSED","root":"/tmp/atlas-pol01-repair-GqXFDc","sqliteConnections":"closed","apps":"closed","listener":"inject-only/no-listener","rootCleanup":"retained-evidence","workerPid":99540}
+
+ [32m✓[39m apps/server/src/pol01-http-repair.test.ts [2m([22m[2m12 tests[22m[2m)[22m[33m 8819[2mms[22m[39m
+   [33m[2m✓[22m[39m I1 direct json HTTP export synchronizes external semantics and preserves immutable history [33m 770[2mms[22m[39m
+   [33m[2m✓[22m[39m I1 direct markdown HTTP export synchronizes external semantics and preserves immutable history [33m 335[2mms[22m[39m
+   [33m[2m✓[22m[39m I2 queued B claim is revalidated before publication after A commits the identity [33m 474[2mms[22m[39m
+   [33m[2m✓[22m[39m I1 export first observes invalid bytes instead of cached current approval [33m 325[2mms[22m[39m
+   [33m[2m✓[22m[39m I1 export first observes deleted bytes instead of cached current approval [33m 337[2mms[22m[39m
+   [33m[2m✓[22m[39m I2 prepared simultaneous claim loses before publication and winner remains usable [33m 352[2mms[22m[39m
+   [33m[2m✓[22m[39m I1 export is queued behind prepared publication before it reports current validity [33m 411[2mms[22m[39m
+   [33m[2m✓[22m[39m I1 export is queued behind published publication before it reports current validity [33m 414[2mms[22m[39m
+   [33m[2m✓[22m[39m I2 durable before crash claim prevents losing publication and recovery releases only proved-before claims [33m 1870[2mms[22m[39m
+   [33m[2m✓[22m[39m I2 durable after crash claim prevents losing publication and recovery releases only proved-before claims [33m 1772[2mms[22m[39m
+   [33m[2m✓[22m[39m I2 durable unknown crash claim prevents losing publication and recovery releases only proved-before claims [33m 1529[2mms[22m[39m
+[90mstdout[2m | apps/server/src/pol01-workspace-http.test.ts[2m > [22m[2mowned process crash unknown recovers before HTTP availability without touching user files
+[22m[39m{"receipt":"POL01_OWNED_RUNTIME","phase":"unknown","pid":99929,"exitCode":null,"signal":"SIGKILL","root":"/tmp/atlas-pol01-http-ayNr02","database":"/tmp/atlas-pol01-http-ayNr02/atlasmode.sqlite","port":null,"portState":"no-listener","processExited":true,"rootCleanup":"retained-evidence"}
+
+[90mstdout[2m | apps/server/src/pol01-workspace-http.test.ts[2m > [22m[2mowned process crash unknown recovers before HTTP availability without touching user files
+[22m[39m{"receipt":"POL01_OWNED_FIXTURE_CLOSED","root":"/tmp/atlas-pol01-http-ayNr02","sqliteConnections":"closed","apps":"closed","rootCleanup":"retained-evidence","workerPid":99539}
+
+[90mstdout[2m | apps/server/src/pol01-workspace-http.test.ts[2m > [22m[2mHTTP published-file finalize failure blocks policies/approval then atomically recovers once
+[22m[39m{"receipt":"POL01_OWNED_FIXTURE_CLOSED","root":"/tmp/atlas-pol01-http-YZufvu","sqliteConnections":"closed","apps":"closed","rootCleanup":"retained-evidence","workerPid":99539}
+
+[90mstdout[2m | apps/server/src/pol01-workspace-http.test.ts[2m > [22m[2mactual source entrypoint recovers published intent before it listens
+[22m[39m{"receipt":"POL01_OWNED_RUNTIME","phase":"entrypoint-prepared-crash","pid":99982,"exitCode":null,"signal":"SIGKILL","root":"/tmp/atlas-pol01-http-mbQ2RE","database":"/tmp/atlas-pol01-http-mbQ2RE/atlasmode.sqlite","port":null,"portState":"no-listener","processExited":true,"rootCleanup":"retained-evidence"}
+
+ [32m✓[39m apps/server/src/server.test.ts [2m([22m[2m15 tests[22m[2m)[22m[33m 3443[2mms[22m[39m
+   [33m[2m✓[22m[39m health and project opening expose real indexed projects without choosing cwd implicitly [33m 335[2mms[22m[39m
+   [33m[2m✓[22m[39m domain failures map actionable unavailable errors and sanitize internal details [33m 916[2mms[22m[39m
+ [32m✓[39m packages/service/src/workspace.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 54[2mms[22m[39m
+[90mstdout[2m | apps/server/src/pol01-workspace-http.test.ts[2m > [22m[2mactual source entrypoint recovers published intent before it listens
+[22m[39m{"receipt":"POL01_OWNED_RUNTIME","phase":"source-entrypoint","pid":100040,"exitCode":0,"signal":null,"root":"/tmp/atlas-pol01-http-mbQ2RE","database":"/tmp/atlas-pol01-http-mbQ2RE/atlasmode.sqlite","port":38847,"portState":"closed-ECONNREFUSED","processExited":true,"rootCleanup":"retained-evidence"}
+
+[90mstdout[2m | apps/server/src/pol01-workspace-http.test.ts[2m > [22m[2mactual source entrypoint recovers published intent before it listens
+[22m[39m{"receipt":"POL01_OWNED_FIXTURE_CLOSED","root":"/tmp/atlas-pol01-http-mbQ2RE","sqliteConnections":"closed","apps":"closed","rootCleanup":"retained-evidence","workerPid":99539}
+
+[90mstdout[2m | apps/server/src/pol01-workspace-http.test.ts[2m > [22m[2mHTTP current approval requires the current revision while verification retains immutable approval history
+[22m[39m{"receipt":"POL01_OWNED_FIXTURE_CLOSED","root":"/tmp/atlas-pol01-http-hYvscZ","sqliteConnections":"closed","apps":"closed","rootCleanup":"retained-evidence","workerPid":99539}
+
+ [32m✓[39m apps/server/src/structure-sync.test.ts [2m([22m[2m29 tests[22m[2m)[22m[33m 4165[2mms[22m[39m
+[90mstdout[2m | apps/server/src/pol01-workspace-http.test.ts[2m > [22m[2mHTTP malformed approval context is an explicit conflict without a historical fallback
+[22m[39m{"receipt":"POL01_OWNED_FIXTURE_CLOSED","root":"/tmp/atlas-pol01-http-lzy8yi","sqliteConnections":"closed","apps":"closed","rootCleanup":"retained-evidence","workerPid":99539}
+
+ [32m✓[39m apps/server/src/pol01-workspace-http.test.ts [2m([22m[2m12 tests[22m[2m)[22m[33m 13266[2mms[22m[39m
+   [33m[2m✓[22m[39m HTTP real file write, array/meta policies, stale CAS and invalid diagnostics use one service boundary [33m 957[2mms[22m[39m
+   [33m[2m✓[22m[39m old policy POST requires explicit CAS, preserves DB source until preview plus migration, then edits file [33m 335[2mms[22m[39m
+   [33m[2m✓[22m[39m actual Workspace approval/current-read queue blocks prepared structure write [33m 485[2mms[22m[39m
+   [33m[2m✓[22m[39m actual Workspace approval/current-read queue blocks published structure write [33m 501[2mms[22m[39m
+   [33m[2m✓[22m[39m owned process crash before recovers before HTTP availability without touching user files [33m 2393[2mms[22m[39m
+   [33m[2m✓[22m[39m owned process crash after recovers before HTTP availability without touching user files [33m 1839[2mms[22m[39m
+   [33m[2m✓[22m[39m owned process crash third recovers before HTTP availability without touching user files [33m 1507[2mms[22m[39m
+   [33m[2m✓[22m[39m owned process crash unknown recovers before HTTP availability without touching user files [33m 1393[2mms[22m[39m
+   [33m[2m✓[22m[39m actual source entrypoint recovers published intent before it listens [33m 3071[2mms[22m[39m
+   [33m[2m✓[22m[39m HTTP current approval requires the current revision while verification retains immutable approval history [33m 314[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m6 passed[39m[22m[90m (6)[39m
+[2m      Tests [22m [1m[32m106 passed[39m[22m[90m (106)[39m
+[2m   Start at [22m 17:53:41
+[2m   Duration [22m 16.07s[2m (transform 2.37s, setup 0ms, import 8.00s, tests 37.60s, environment 1ms)[22m
+

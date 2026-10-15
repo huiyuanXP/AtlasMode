@@ -1,0 +1,56 @@
+[
+  {
+    "root": "/tmp/atlas-pol01-acceptance-2AYacj",
+    "runtimeReceipt": true,
+    "markerAbsent": true,
+    "rootCleanup": "retained-evidence"
+  },
+  {
+    "root": "/tmp/atlas-pol01-acceptance-G222TX",
+    "runtimeReceipt": true,
+    "markerAbsent": true,
+    "rootCleanup": "retained-evidence"
+  },
+  {
+    "root": "/tmp/atlas-pol01-acceptance-Uka0GW",
+    "runtimeReceipt": true,
+    "markerAbsent": true,
+    "rootCleanup": "retained-evidence"
+  },
+  {
+    "root": "/tmp/atlas-pol01-acceptance-UpTcgj",
+    "runtimeReceipt": true,
+    "markerAbsent": true,
+    "rootCleanup": "retained-evidence"
+  },
+  {
+    "root": "/tmp/atlas-pol01-acceptance-UqGM6S",
+    "runtimeReceipt": false,
+    "markerAbsent": true,
+    "rootCleanup": "retained-evidence"
+  },
+  {
+    "root": "/tmp/atlas-pol01-acceptance-g3rA7o",
+    "runtimeReceipt": false,
+    "markerAbsent": true,
+    "rootCleanup": "retained-evidence"
+  },
+  {
+    "root": "/tmp/atlas-pol01-acceptance-hPi9xK",
+    "runtimeReceipt": true,
+    "markerAbsent": true,
+    "rootCleanup": "retained-evidence"
+  },
+  {
+    "root": "/tmp/atlas-pol01-acceptance-jfFcz1",
+    "runtimeReceipt": true,
+    "markerAbsent": true,
+    "rootCleanup": "retained-evidence"
+  },
+  {
+    "root": "/tmp/atlas-pol01-acceptance-yk2NaF",
+    "runtimeReceipt": false,
+    "markerAbsent": true,
+    "rootCleanup": "retained-evidence"
+  }
+]

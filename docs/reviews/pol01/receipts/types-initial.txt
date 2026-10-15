@@ -1,0 +1,5 @@
+../../../../tmp/atlasmode-pol01-core.ts(1,15): error TS5097: An import path can only end with a '.ts' extension when 'allowImportingTsExtensions' is enabled.
+../../../../tmp/atlasmode-pol01-core.ts(2,15): error TS5097: An import path can only end with a '.ts' extension when 'allowImportingTsExtensions' is enabled.
+../../../../tmp/atlasmode-pol01-core.ts(3,15): error TS5097: An import path can only end with a '.ts' extension when 'allowImportingTsExtensions' is enabled.
+../../../../tmp/atlasmode-pol01-core.ts(4,15): error TS5097: An import path can only end with a '.ts' extension when 'allowImportingTsExtensions' is enabled.
+../../../../tmp/atlasmode-pol01-core.ts(5,15): error TS5097: An import path can only end with a '.ts' extension when 'allowImportingTsExtensions' is enabled.

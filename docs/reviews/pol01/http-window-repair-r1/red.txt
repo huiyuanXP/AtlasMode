@@ -1,0 +1,209 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90m/home/agent/projects/AtlasMode[39m
+
+ [31m❯[39m apps/server/src/pol01-http-repair.test.ts [2m([22m[2m6 tests[22m[2m | [22m[31m6 failed[39m[2m)[22m[33m 1535[2mms[22m[39m
+[31m   [31m×[31m I1 direct json HTTP export synchronizes external semantics and preserves immutable history[39m[33m 597[2mms[22m[39m
+[31m   [31m×[31m I1 direct markdown HTTP export synchronizes external semantics and preserves immutable history[39m[32m 168[2mms[22m[39m
+[31m   [31m×[31m I2 queued B claim is revalidated before publication after A commits the identity[39m[32m 223[2mms[22m[39m
+[31m   [31m×[31m I1 export first observes invalid bytes instead of cached current approval[39m[32m 159[2mms[22m[39m
+[31m   [31m×[31m I1 export first observes deleted bytes instead of cached current approval[39m[32m 186[2mms[22m[39m
+[31m   [31m×[31m I2 prepared simultaneous claim loses before publication and winner remains usable[39m[32m 199[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 6 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m apps/server/src/pol01-http-repair.test.ts[2m > [22mI1 direct json HTTP export synchronizes external semantics and preserves immutable history
+[31m[1mAssertionError[22m: expected { plan: { …(11) }, …(6) } to match object { valid: false, …(3) }
+(17 matching properties omitted from actual)[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[33m@@ -4,9 +4,9 @@[39m
+[2m    },[22m
+[2m    "approvedPlan": {[22m
+[2m      "revision": 1,[22m
+[2m    },[22m
+[2m    "plan": {[22m
+[32m-     "revision": 2,[39m
+[31m+     "revision": 1,[39m
+[2m    },[22m
+[32m-   "valid": false,[39m
+[31m+   "valid": true,[39m
+[2m  }[22m
+
+[36m [2m❯[22m apps/server/src/pol01-http-repair.test.ts:[2m38:50[22m[39m
+    [90m 36|[39m   const response = await f.app.inject({ method: "GET", url: `/api/plan…
+    [90m 37|[39m   [34mexpect[39m(response[33m.[39mstatusCode)[33m.[39m[34mtoBe[39m([34m200[39m)[33m;[39m
+    [90m 38|[39m   if (format === "json") expect(response.json()).toMatchObject({ valid…
+    [90m   |[39m                                                  [31m^[39m
+    [90m 39|[39m   else { expect(response.body).toContain("Current valid: false"); expe…
+    [90m 40|[39m   expect(f.storage.list("approvals")).toEqual(history); expect(f.stora…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/server/src/pol01-http-repair.test.ts[2m > [22mI1 direct markdown HTTP export synchronizes external semantics and preserves immutable history
+[31m[1mAssertionError[22m: expected '# export\n\nCurrent revision: 1\n\nCu…' to contain 'Current valid: false'[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- Current valid: false[39m
+[31m+ # export[39m
+[31m+[39m
+[31m+ Current revision: 1[39m
+[31m+[39m
+[31m+ Current valid: true[39m
+[31m+[39m
+[31m+ Approved revision: 1[39m
+[31m+[39m
+[31m+ Semantic SHA-256: 742b7db3aa5cd2c6f157d015b8f86cec9b6dcfd12a9a442a0687be72c62c32a3[39m
+[31m+[39m
+[31m+ Annotation review: v1[39m
+[31m+[39m
+[31m+ Knowledge SHA-256: 7c4a83c2c0da0d45cbed63816b1d7ddbd8ef4631b3b0bf67c3187bdbc7f026f5[39m
+[31m+[39m
+[31m+[39m
+[31m+[39m
+[31m+ ```json[39m
+[31m+ {[39m
+[31m+   "plan": {[39m
+[31m+     "id": "7dc14a5b-d3e6-4760-ab21-1a53db483338",[39m
+[31m+     "projectId": "project:43e91aad7f69df6dc786ecb4e942dfba",[39m
+[31m+     "title": "export",[39m
+[31m+     "description": "",[39m
+[31m+     "baselineSnapshotId": "snapshot:fac7187dd7f32a306f4f42152ca01c87",[39m
+[31m+     "baselineContentHash": "0903ca34d57823816b23408e43b6c3cd504ca316421c32d4fc25c6f166d2816b",[39m
+[31m+     "revision": 1,[39m
+[31m+     "operations": [],[39m
+[31m+     "status": "approved",[39m
+[31m+     "createdAt": "2026-10-10T17:46:01.282Z",[39m
+[31m+     "updatedAt": "2026-10-10T17:46:01.282Z"[39m
+[31m+   },[39m
+[31m+   "approval": {[39m
+[31m+     "id": "b5ba8609-ddd0-42c2-a297-70634474ab74",[39m
+[31m+     "planId": "7dc14a5b-d3e6-4760-ab21-1a53db483338",[39m
+[31m+     "revision": 1,[39m
+[31m+     "semanticHash": "742b7db3aa5cd2c6f157d015b8f86cec9b6dcfd12a9a442a0687be72c62c32a3",[39m
+[31m+     "baselineSnapshotId": "snapshot:fac7187dd7f32a306f4f42152ca01c87",[39m
+[31m+     "baselineContentHash": "0903ca34d57823816b23408e43b6c3cd504ca316421c32d4fc25c6f166d2816b",[39m
+[31m+     "approvedAt": "2026-10-10T17:46:01.302Z",[39m
+[31m+     "actor": "user",[39m
+[31m+     "reviewContext": {[39m
+[31m+       "version": 1,[39m
+[31m+       "knowledgeHash": "7c4a83c2c0da0d45cbed63816b1d7ddbd8ef4631b3b0bf67c3187bdbc7f026f5"[39m
+[31m+     }[39m
+[31m+   },[39m
+[31m+   "valid": true,[39m
+[31m+   "issues": [],[39m
+[31m+   "approvedPlan": {[39m
+[31m+     "id": "7dc14a5b-d3e6-4760-ab21-1a53db483338",[39m
+[31m+     "projectId": "project:43e91aad7f69df6dc786ecb4e942dfba",[39m
+[31m+     "title": "export",[39m
+[31m+     "description": "",[39m
+[31m+     "baselineSnapshotId": "snapshot:fac7187dd7f32a306f4f42152ca01c87",[39m
+[31m+     "baselineContentHash": "0903ca34d57823816b23408e43b6c3cd504ca316421c32d4fc25c6f166d2816b",[39m
+[31m+     "revision": 1,[39m
+[31m+     "operations": [],[39m
+[31m+     "status": "approved",[39m
+[31m+     "createdAt": "2026-10-10T17:46:01.282Z",[39m
+[31m+     "updatedAt": "2026-10-10T17:46:01.282Z"[39m
+[31m+   },[39m
+[31m+   "contextStatus": "v1",[39m
+[31m+   "annotationContext": {[39m
+[31m+     "version": 1,[39m
+[31m+     "projectId": "project:43e91aad7f69df6dc786ecb4e942dfba",[39m
+[31m+     "snapshotId": "snapshot:fac7187dd7f32a306f4f42152ca01c87",[39m
+[31m+     "annotations": [][39m
+[31m+   }[39m
+[31m+ }[39m
+[31m+ ```[39m
+[31m+[39m
+
+[36m [2m❯[22m apps/server/src/pol01-http-repair.test.ts:[2m39:32[22m[39m
+    [90m 37|[39m   [34mexpect[39m(response[33m.[39mstatusCode)[33m.[39m[34mtoBe[39m([34m200[39m)[33m;[39m
+    [90m 38|[39m   if (format === "json") expect(response.json()).toMatchObject({ valid…
+    [90m 39|[39m   else { expect(response.body).toContain("Current valid: false"); expe…
+    [90m   |[39m                                [31m^[39m
+    [90m 40|[39m   expect(f.storage.list("approvals")).toEqual(history); expect(f.stora…
+    [90m 41|[39m   expect((await f.app.inject({ method: "GET", url: `/api/plans/${plan.…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/server/src/pol01-http-repair.test.ts[2m > [22mI2 queued B claim is revalidated before publication after A commits the identity
+[31m[1mAssertionError[22m: expected [ 400, 409 ] to include 200[39m
+[36m [2m❯[22m apps/server/src/pol01-http-repair.test.ts:[2m59:59[22m[39m
+    [90m 57|[39m   [35mfinally[39m { holdB [33m=[39m [35mfalse[39m[33m;[39m release[33m.[39m[34mresolve[39m()[33m;[39m }
+    [90m 58|[39m   [35mawait[39m refreshing[33m;[39m [35mconst[39m loser [33m=[39m [35mawait[39m losing[33m;[39m
+    [90m 59|[39m   expect(winner.statusCode).toBe(200); expect([400, 409]).toContain(lo…
+    [90m   |[39m                                                           [31m^[39m
+    [90m 60|[39m   expect(await readFile(f.path(1))).toEqual(before); expect(f.storage.…
+    [90m 61|[39m   expect(f.service.listStructureAudit(f.projects[1]!.id, { offset: 0, …
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/server/src/pol01-http-repair.test.ts[2m > [22mI1 export first observes invalid bytes instead of cached current approval
+[31m[1mAssertionError[22m: expected 200 to be 422 // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- 422[39m
+[31m+ 200[39m
+
+[36m [2m❯[22m apps/server/src/pol01-http-repair.test.ts:[2m71:57[22m[39m
+    [90m 69|[39m   if (kind === "invalid") await writeFile(f.path(), "{invalid"); else …
+    [90m 70|[39m   const response = await f.app.inject({ method: "GET", url: `/api/plan…
+    [90m 71|[39m   if (kind === "invalid") { expect(response.statusCode).toBe(422); exp…
+    [90m   |[39m                                                         [31m^[39m
+    [90m 72|[39m   else { expect(response.statusCode).toBe(200); expect(response.json()…
+    [90m 73|[39m   [34mexpect[39m(f[33m.[39mstorage[33m.[39m[34mlist[39m([32m"approvals"[39m))[33m.[39m[34mtoEqual[39m(history)[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/server/src/pol01-http-repair.test.ts[2m > [22mI1 export first observes deleted bytes instead of cached current approval
+[31m[1mAssertionError[22m: expected { plan: { …(11) }, …(6) } to match object { valid: false, …(2) }
+(27 matching properties omitted from actual)[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[2m    "approvedPlan": {[22m
+[2m      "revision": 1,[22m
+[2m    },[22m
+[2m    "plan": {[22m
+[32m-     "revision": 2,[39m
+[31m+     "revision": 1,[39m
+[2m    },[22m
+[32m-   "valid": false,[39m
+[31m+   "valid": true,[39m
+[2m  }[22m
+
+[36m [2m❯[22m apps/server/src/pol01-http-repair.test.ts:[2m72:73[22m[39m
+    [90m 70|[39m   const response = await f.app.inject({ method: "GET", url: `/api/plan…
+    [90m 71|[39m   if (kind === "invalid") { expect(response.statusCode).toBe(422); exp…
+    [90m 72|[39m   else { expect(response.statusCode).toBe(200); expect(response.json()…
+    [90m   |[39m                                                                         [31m^[39m
+    [90m 73|[39m   [34mexpect[39m(f[33m.[39mstorage[33m.[39m[34mlist[39m([32m"approvals"[39m))[33m.[39m[34mtoEqual[39m(history)[33m;[39m
+    [90m 74|[39m })[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/server/src/pol01-http-repair.test.ts[2m > [22mI2 prepared simultaneous claim loses before publication and winner remains usable
+[31m[1mAssertionError[22m: expected [ 400, 409 ] to include 200[39m
+[36m [2m❯[22m apps/server/src/pol01-http-repair.test.ts:[2m84:68[22m[39m
+    [90m 82|[39m   try { loser = await f.app.inject({ method: "PUT", url: url(f, 1), pa…
+    [90m 83|[39m   [35mfinally[39m { release[33m.[39m[34mresolve[39m()[33m;[39m }
+    [90m 84|[39m   expect((await winning).statusCode).toBe(200); expect([400, 409]).toC…
+    [90m   |[39m                                                                    [31m^[39m
+    [90m 85|[39m   expect((await f.app.inject({ method: "GET", url: `/api/projects/${f.…
+    [90m 86|[39m })[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/6]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m6 failed[39m[22m[90m (6)[39m
+[2m   Start at [22m 17:45:57
+[2m   Duration [22m 4.46s[2m (transform 940ms, setup 0ms, import 2.64s, tests 1.54s, environment 0ms)[22m
+

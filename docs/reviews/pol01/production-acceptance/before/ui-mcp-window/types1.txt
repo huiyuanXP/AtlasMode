@@ -1,0 +1,7 @@
+apps/web/src/api/structure-client.test.ts(13,37): error TS2493: Tuple type '[]' of length '0' has no element at index '0'.
+apps/web/src/api/structure-client.test.ts(14,21): error TS2352: Conversion of type 'undefined' to type 'RequestInit' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+apps/web/src/api/structure-client.test.ts(14,45): error TS2493: Tuple type '[]' of length '0' has no element at index '1'.
+apps/web/src/features/structure/policy-controller.test.ts(14,691): error TS2532: Object is possibly 'undefined'.
+apps/web/src/features/structure/policy-controller.test.ts(14,722): error TS2493: Tuple type '[]' of length '0' has no element at index '1'.
+apps/web/src/features/structure/policy-controller.test.ts(18,233): error TS2532: Object is possibly 'undefined'.
+apps/web/src/features/structure/policy-controller.test.ts(18,268): error TS2493: Tuple type '[]' of length '0' has no element at index '1'.

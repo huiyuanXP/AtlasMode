@@ -1,0 +1,40 @@
+
+Running 1 test using 1 worker
+
+{"requestedRelation":"plan:new-call","clickedRoute":{"x":674.6982168263639,"y":359.78514420986176,"visualRoute":"rf__edge-plan:new-call"}}
+{"requestedRelation":"fact:relation:6a34ee4cd5f8d9b283cce289b2f563f6","clickedRoute":{"x":968.2657000624076,"y":278.9443355612656,"visualRoute":"rf__edge-group-edge:fact:relation:6a34ee4cd5f8d9b283cce289b2f563f6:0"}}
+  ✘  1 tests/e2e/planning.spec.mjs:18:1 › production UI and SDK share the complete planning, approval, persistence and verification flow offline (13.5s)
+
+
+  1) tests/e2e/planning.spec.mjs:18:1 › production UI and SDK share the complete planning, approval, persistence and verification flow offline 
+
+    AssertionError: {"content":[{"type":"text","text":"{\"code\":\"NOT_APPROVED\",\"message\":\"Plan no longer has a valid current approval.\",\"status\":409}"}],"isError":true}
+
+       at ../support/production.mjs:125
+
+      123 |     call: async (name, args = {}) => {
+      124 |       const result = await client.callTool({ name, arguments: args });
+    > 125 |       assert.notEqual(result.isError, true, JSON.stringify(result));
+          |              ^
+      126 |       return JSON.parse(result.content[0].text);
+      127 |     },
+      128 |   };
+        at Object.call (/tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/tests/support/production.mjs:125:14)
+        at /tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/tests/e2e/planning.spec.mjs:542:8
+
+    attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../planning-results-r3/planning-production-UI-and-0ffc9-d-verification-flow-offline/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../planning-results-r3/planning-production-UI-and-0ffc9-d-verification-flow-offline/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../planning-results-r3/planning-production-UI-and-0ffc9-d-verification-flow-offline/trace.zip
+    Usage:
+
+        npx playwright show-trace ../planning-results-r3/planning-production-UI-and-0ffc9-d-verification-flow-offline/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests/e2e/planning.spec.mjs:18:1 › production UI and SDK share the complete planning, approval, persistence and verification flow offline 

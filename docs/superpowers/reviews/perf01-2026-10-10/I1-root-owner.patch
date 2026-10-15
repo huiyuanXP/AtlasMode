@@ -1,0 +1,87 @@
+--- a/docs/superpowers/specs/2026-10-10-perf01-design.md
++++ b/docs/superpowers/specs/2026-10-10-perf01-design.md
+@@ -28,11 +28,21 @@
+ 
+ 自动与手工索引均继续调用现有完整 scan：检查 canonical root/regular-file/containment，捕获排序文件集合、源码 bytes、配置闭包、包清单、ignore/排除规则、availability、capture diagnostics。mtime、inode 大小和 watch 事件只是提示，不能替代源字节 hash；消失事件不能直接删图或把 annotation 变 orphan。解析始终只读取本轮捕获，不让 CompilerHost 回读目标目录或猜 dist→src。
+ 
+-`IndexerPort.index(rootPath, projectId, options?)` 拟增可选 `{ mode?: "auto" | "full"; signal?: AbortSignal }`，旧两参数实现仍兼容；未给 mode 默认为 auto。另增可选 `releaseProject?(projectId):void`，只清私有缓存/使 generation 失效，供 stop/close 调用；不影响快照/存储。`full` 必须绕过所有 Program 缓存，走保留的当前 ts-morph 完整 builder，不能暗用缓存作为测试 oracle。HTTP 既有 refresh 明确调用 full；approve/verify 必需的 freshness 可以 auto，但仍每次完整捕获。full 和 auto 共用同一 capture、Graph 和指纹规则，不新增 snapshot schema/hash version。
++`IndexerPort.index(rootPath, projectId, options?)` 拟增可选 `{ mode?: "auto" | "full"; signal?: AbortSignal; expectedRoot?: IndexRootOwner }`，旧两参数实现仍兼容；未给 mode 默认为 auto。另增可选 `observeRoot?(rootPath):Promise<IndexRootOwner>` 和 `releaseProject?(projectId):void`：前者只读并证明可靠的根归属，声明这个 capability 的 adapter 必须在 index 中执行下述 expectedRoot 协议；后者只清私有缓存/使 generation 失效，不影响快照/存储。`IndexRootOwner={canonicalRoot,identity}` 是 indexer/service 内部端口见证，不加入 snapshot、存储证据、HTTP/MCP/UI DTO；不具备该 capability 的旧 adapter 仍支持原手工索引，但自动监听不可启用，不可忽略 expectedRoot 后称已保护。`full` 必须绕过所有 Program 缓存，走保留的当前 ts-morph 完整 builder，不能暗用缓存作为测试 oracle。HTTP 既有 refresh 明确调用 full；approve/verify 必需的 freshness 可以 auto，但仍每次完整捕获。full 和 auto 共用同一 capture、Graph 和指纹规则，不新增 snapshot schema/hash version。
+ 
+ 配置/extends/references、package exports/workspaces/module mode、ignore/exclusion 证据变化，解析授权 scope 身份/归属变化，rename/大小写冲突提示，未知事件/overflow、capture 不完整、配置授权不确定或 compiler 版本/options 改变，丢弃本项目 Program 缓存，执行完整 builder。未知授权仍按 IDX-02/03 给 unknown，不放宽错误连边。普通源码 edit、明确 add/delete 经完整字节 inventory 证实后可以走 oldProgram；root 集合变化由编译器拒绝结构复用并重新建 Program，不手工保留被删 SourceFile。新图与旧图的差异不改变现有 identity；rename 本票 full fallback，后续 IDX-04 迁移由独立契约处理。
+ 
+ 完成分析后再完整捕获一次，对比其输入 witness（包括源码/config/package bytes、排除规则、availability/diagnostics 的语义字段）；相同才返回可发布候选。变化最多重新尝试一次，两次仍变则抛 INDEX_INPUTS_CHANGED，保留旧快照、标记 dirty 并等待下一次事件或 reconciliation。发现 parse diagnostics 并不等于不能发布：稳定捕获下的当前完整 builder 保守 partial/unknown 行为保持；解析异常/缓存异常先清 cache，使用当前捕获完整重算一次，完整重算仍失败则不发布。采集不是整个文件系统原子快照；这里只证明发布候选基于捕获字节，且完成时重读相同，仍保留随后变更的刷新提示，不宣称不存在下一瞬间变更。
++
++### 根归属是独立的候选发布前提（I1 定向修订）
++
++根 witness 与内容 witness 分开。`IndexRootOwner` 的 canonicalRoot 来自每次对最初打开/入队的 rootPath（包括 alias）重新 realpath，identity 是平台 provider 对该 directory 取得的稳定、可靠归属标识；不能以 path、bytes、mtime/size 或 watch filename 代替。dev/ino 等身份字段仅在该平台/文件系统能可靠判别时采用；无法取得、读失败或无法证明可靠时为 unavailable，不能把空值/零值作为可相等 owner。当前 scan 只有 canonical root 字符串，实施时需增加私有 capture owner witness 和平台真实支持证明，不假设现源码已有它。
++
++在项目队列内首次明确 path-confirmed open 时建立 expectedOwner，并保留为该项目本进程的 root owner；WatchSession 只能使用这一个已建立 owner。任务入队时固定 expectedOwner/session epoch，实际执行时不得从新的 scan/currentPath 自动重建 expectedOwner。两次完整 capture 各自在读取前和读取结束时从原 rootPath 观察 owner，四个观测都必须等于同一 expectedOwner；两份 capture 的 owner 与其内容 witness 一起带到内部 candidate。canonical path 相同、源/config/inventory bytes 相同但 directory identity 不同也失败；alias 指向新 canonical root 同样失败。已有 owner 的手工 full/approve freshness 和所有 cache/full fallback 都沿用该 owner，不能以 full 绕过归属验证。
++
++分析/第二次 capture 成功后，Workspace 在同一 `StructureSync.withProject` 锁内、进入同步 joint publication transaction 前，重新从原 rootPath 观察 current owner，核对它、candidate 的两次 owner、expectedOwner、session/global epoch；检查完成到同步 transaction handoff 之间不再 await/排队或做其它分析。失配或 unavailable 均 discard candidate/cache、使 session epoch 失效、关闭 watcher/timers/hints，返回 root_changed，**不进入 storeSnapshot/knowledge reconciliation/plan invalidation**。snapshot pointer、knowledge revisions/history、旧批准/context 保持原值。普通 retry、30s reconciliation、open 的后台重试与 forceFull 不得复活该 owner/session；普通完整刷新也不能自行认领新根。既有 stopped session 持续停止，只有用户明确确认路径并重新打开才可建立新的 owner/session，后续知识仍按 KN/IDX 身份规则，不自动迁移或重绑。这里是 root_changed 后的显式新 owner，不复活旧 session；用户主动 stop 的本进程禁用标记仍按后文保持，根确认不会清除该标记或偷偷恢复监听。
++
++这个协议保证已观察到的 owner 失配会阻止候选发布，不保证外部 filesystem 与 SQLite 原子，也不能排除最终 owner 观测后、同步 commit 前无法观察的外部变化；对此保留后续事件/reconciliation 提示，不能称为 FS 原子快照。native identity unavailable 仍是实际平台门的未通过项。
+ 
+ ### Program cache 的所有权
+ 
+@@ -83,7 +93,7 @@
+ 1. 强制 full oracle 与 warmed auto 各用独立 cache/Graph、同一稳定捕获、固定 gitRevision/clock：只剔除 createdAt 比较；projectId/id/contentHash/hashVersion、nodes/relations 的完整数组顺序和 IDs、source evidence、diagnostics、coverage/configurationProjectGraph 全等。若两次直接索引同输入，createdAt 可不同，但 id 仍相同；storeSnapshot 历史回用既有对象也验证。不能仅比较总数或排序后比较。
+ 2. 真实 fixture edit/add/delete、只更改 mtime 但 bytes 相同、bytes 改变 mtime 不变、module target 删除→恢复/缺失→新增、未改 importer 改 exporter/re-export、global script 新增/删除、conditional package/config/extends/reference/ignore变化、rename/case/root替换均测等价和保守 fallback。
+ 3. 两项目同相对路径、两个隔离 scopes、reference global no-import/side-effect-only/named-binding、另 scope namespace/prototype 写入撤销旧 call、CommonJS 逃逸/循环、type-only imports、UTF16 等，证明没有复用旧解析/旧 callable 授权。保留 IDX01 全 Express 入口、IDX02 workspace 条件 exports/真实 AtlasMode dist 排除 unknown、IDX03 references 的历史失败/修复证据。
+-4. 真实 fs.watch 触发 edit/delete/config/rename，不依赖只 mock event；丢失 filename/overflow、watch error/unsupported 注入验证 polling 和 forceFull。barrier 阻塞 analysis，期间手工 refresh/approve/stop/close 到达，断言单 auto pending、有界 hints、手工不饿死、no post-stop publication、source/structure joint 仅一次 invalidation、rollback preserves所有知识。根 symlink/替换不能串旧知识。停止及全局关闭后 owned watcher/timer/helper 无遗留；未 settle 的 DB 保持可用，whenIdle 后才关。
++4. 真实 fs.watch 触发 edit/delete/config/rename，不依赖只 mock event；丢失 filename/overflow、watch error/unsupported 注入验证 polling 和 forceFull。barrier 阻塞 analysis，期间手工 refresh/approve/stop/close 到达，断言单 auto pending、有界 hints、手工不饿死、no post-stop publication、source/structure joint 仅一次 invalidation、rollback preserves所有知识。根归属真实 FS 负例分别在 analysis 中、第二次 capture 后至锁内 prepublish 前将 A 原路径替换为不同 identity 的 B（captured source/config/inventory bytes 完全相同）；另将最初 root alias 从 A retarget 到 B。压制/延迟 watcher 提示，只有实际两次 capture/prepublish owner 检查发现变化；断言 root_changed、session stopped、旧项目 pointer/全部知识/history/revisions/invalidation计数不变、无 candidate 发布与 cache/session 复活，普通 full/retry/reconciliation 不绕过，只有显式路径确认 reopen 才建立新 owner。各平台真实 identity/capability不可用时 failclosed 并保留未验证，不能用 mock owner 值冒 native 身份证明。停止及全局关闭后 owned watcher/timer/helper 无遗留；未 settle 的 DB 保持可用，whenIdle 后才关。
+ 5. 同 snapshot 的 HTTP/MCP SDK/source/context 和真实浏览器诊断展开、状态更新、停止、手工完整刷新、切项目/折叠取消请求，四态截图及 en/zh 文案；使用独立 DB/random ports，不操作现有实例。Linux/macOS/Windows 原生监听机制验证；无 native Windows 环境保持外部未验证，不能以 Linux 或 mock 填补。
+ 6. 真实中型性能：已有完整 Express v5.2.1 checkout `/tmp/atlasmode-idx01-express`，固定 commit `dbac741a49a5a64336b70c06e85c2e2706e36336`，本轮只读 HEAD 相符、working tree clean。以前的 142 文件/3070 函数/35 entry 是功能记录，不是 PERF 测量。未来在 owned 完整副本上测当前源 freeze 的 cold/warm full baseline 与最终 full/auto，禁止执行目标代码/安装目标依赖。每组至少 5 次预热、20 次交错配对（每次同 edit，另一进程 full oracle）；计完整 capture、二次验证、queue wait、TS/Python/semantic/store 总 wall time、p50/p95、RSS/heap、cache复用/回退数。增量 single-file update p50 至少比最终 forced-full 低 20%，p95、cold total 与峰值 RSS 相较原 full baseline 不退化超过 10%；记录硬件/OS/Node/lock/源码 SHA、目标原始和修改后 bytes SHA及原始每样本记录，不删异常值。add/delete/config/fallback测一致性与 latency，不用小 synthetic 的快数字替换真实 medium。达不到提升或必要机制门缺失就是 PARTIAL，附原因，不能以 build/schema PASS 标 DONE。
+ 
+@@ -91,4 +101,4 @@
+ 
+ 未来最小窗口：indexer 捕获/program helper 与 index/TS/Python owned cancellation；core IndexerPort 可选 options 和单独 status DTO/schema；service owned watch scheduler + workspace/StructureSync drain（接 KN/POL joint）；server routes/bootstrap/preClose（接 AG03）；web client/workspace/Navigation + en/zh 与专属小 status component；专属测试/benchmark/evidence helper。storage 不加表、migration 或身份算法；MCP 不加 tools，只验已有路径。应先独立设计审查、KN/POL joint 冻结、主控授予共享文件窗口，再实施。所有 commit/push 归主控，不能直接根 build 或共享 dist。
+ 
+-作者自审：安全充分性依赖完整 bytes/captured 授权，不依赖 event/mtime；mutable AST 使用编译器协议且 scope 独占，不复用 checker/calls；capture 稳定性有有界重试；authority/joint事务唯一；自动队列与 timer 有 owner/stop fence；visible status 不是文档虚称监听；历史知识保留；真实 medium/native/HTTP/MCP/browser 均列未来门。尚待独立高审查；Program 复用正确性和足够性能必须由实现后证据决定。
++作者自审：安全充分性依赖完整 bytes/captured 授权，不依赖 event/mtime；mutable AST 使用编译器协议且 scope 独占，不复用 checker/calls；capture 稳定性有有界重试；authority/joint事务唯一；自动队列与 timer 有 owner/stop fence；visible status 不是文档虚称监听；历史知识保留；真实 medium/native/HTTP/MCP/browser 均列未来门。I1 窄修自审：expectedOwner在两次capture开始/结束及锁内prepublish都独立验证，同路径同bytes不同identity拒绝，无event/aliasretarget barrier覆盖，full/retry不认领新owner，原userstop禁用保持；未声称外部FS原子保证。原REQUEST_CHANGES报告保留，待原独立high定向复审；Program 复用正确性和足够性能必须由实现后证据决定。
+--- a/docs/superpowers/plans/2026-10-10-perf01.md
++++ b/docs/superpowers/plans/2026-10-10-perf01.md
+@@ -46,7 +46,10 @@
+ ```ts
+ // core/model.ts；现有两参数 IndexerPort 实现仍兼容
+ index(rootPath: string, projectId: string,
+-  options?: { mode?: "auto" | "full"; signal?: AbortSignal }): Promise<CodeSnapshot>;
++  options?: { mode?: "auto" | "full"; signal?: AbortSignal;
++    expectedRoot?: IndexRootOwner }): Promise<CodeSnapshot>;
++type IndexRootOwner = { canonicalRoot: string; identity: string };
++observeRoot?(rootPath: string): Promise<IndexRootOwner>;
+ releaseProject?(projectId: string): void; // 仅清cache并使旧generation失效
+ 
+ // core/index-watch.ts；strict schema，无 runtime对象/绝对路径
+@@ -71,6 +74,8 @@
+ 
+ `CapturedPrograms` 只给 indexer 内部 `build(capture, context, {full,signal})` 提供 Program；context 定义来自现有 configurationResolver 授权分组，不从缓存反推授权。返回完整 oracle 与增量路径都需要的普通 Program，不跨层暴露 ts类型。`WatchSession` 通过 callbacks `refresh(mode,epoch)` 调现有 lock-held joint authority，无存储能力。现有 public refreshIndex 继续 full；内部自动入口使用 auto且在同queue/session检查 epoch，不能队列外先算快照。
+ 
++I1 根协议补充：IndexRootOwner 是私有跨包端口的可靠 directory witness，不进入 public HTTP/MCP/UI DTO 或 CodeSnapshot；observeRoot capability 表示同 adapter 的 index 会校验 expectedRoot。无此能力旧 adapter 可继续旧手工模式，不能启自动监听。明确 open 在现有项目锁内建立 expectedOwner；已有 owner 的 full/approve/auto均沿用，capture 不自动认领新owner。原 rootPath 每次重新 realpath/身份观测，两次 capture 开始/结束各核对 expectedOwner；内部 candidate 保留两次 owner；Workspace 锁内 prepublish 再观测 owner/epoch，马上进入同步 joint transaction。失配/unavailable直接 root_changed/stop/discard，无 full fallback 或 retry 绕过。只经用户显式路径确认 reopen 建立新owner；root_changed旧session不复活，原userstop禁用标记也不因根确认清除。不扩身份迁移或外部FS原子保证。
++
+ ## Task 1：独立完整 oracle 与 mutable Program 协议
+ 
+ **Files:** Create capturedPrograms.ts/incremental.test.ts；Modify typescript.ts/index.ts、core/model.ts（授权后）。
+@@ -89,9 +94,9 @@
+ 
+ **Consumes:** 任务1的full/auto；**Produces:** bounded二次采集、abort/exception回退、完整输出等价与旧索引回归证据。
+ 
+-- [ ] Step 1 写 `mtimeIsNotAuthority`（mtime变化bytes同、bytes变化mtime同两例）；`configReferencesExportsIgnoreForceFull`；`capturedInputsChangedTwiceRetainsOldSnapshot`；`cacheFailureRetriesFullOnce`；`pythonMixedProjectStillFull`；缓存两项目/4096/64contexts/64MiB及全局128MiB/10min懒淘汰/stop释放测试。边界测试用实际可控 inputs，内存压力用小配置注入同生产budget逻辑，不重复512/513大fixture串行IO历史问题。
++- [ ] Step 1 写 `mtimeIsNotAuthority`（mtime变化bytes同、bytes变化mtime同两例）；`configReferencesExportsIgnoreForceFull`；`capturedInputsChangedTwiceRetainsOldSnapshot`；`identicalBytesRootReplacementDuringAnalysisRejectsCandidate`：真实 owned FS 在 analysis barrier 将 A 原路径换成不同identity的同内容B，抑制watch提示，第二次capture必须按expectedOwner拒绝；`aliasRetargetDuringCaptureRejectsOwner`：原入队alias改指B，不从已缓存canonical字符串验根；`unavailableIdentityNeverComparesEqual`；`cacheFailureRetriesFullOnce`；`pythonMixedProjectStillFull`；缓存两项目/4096/64contexts/64MiB及全局128MiB/10min懒淘汰/stop释放测试。边界测试用实际可控 inputs，内存压力用小配置注入同生产budget逻辑，不重复512/513大fixture串行IO历史问题。
+ - [ ] Step 2 运行 `npx vitest run packages/indexer/src/incremental.test.ts` 保存 RED，真实barrier改变第一次分析后源字节；缺 filename/rename等forceFull原因由任务3补。
+-- [ ] Step 3 实现 policywitness完整比较、full原因、两次尝试上限与失败 INDEX_INPUTS_CHANGED。稳定partial遵循现有诊断；异常清cache→同capture full一次。abort各阶段不publish；Pythonhelperowned kill后等close，无法及时结束保留pending。
++- [ ] Step 3 实现 policywitness完整比较、full原因、两次尝试上限与失败 INDEX_INPUTS_CHANGED；capture开始/结束均从原rootPath取得私有owner并对比同一expectedRoot，两次capture记录owner。失配/unavailable是root_changed，不是内容重试/缓存fallback，直接discard，不更新expectedRoot。稳定partial遵循现有诊断；异常清cache→同capture full一次也保留根guard。abort各阶段不publish；Pythonhelperowned kill后等close，无法及时结束保留pending。
+ - [ ] Step 4 GREEN 并运行 `npx vitest run packages/indexer/src`（先协调slot），保存实际PASS数，继承IDX01/02/03负例。恢复/删除target、reexports、global新增删除、type-only、UTF16、解析错误unknown与旧scope不串edge均 exactfull比对。
+ - [ ] Step 5 固定完整Express真实index/source gate，AtlasMode captureddist排除unknown、workspaceexports/references fixture同步source证据；不运行目标代码、不把旧PASS日志冒本轮回归。
+ 
+@@ -113,9 +118,9 @@
+ 
+ **Consumes:** 最终KN/POL共同事务和AG03 ownerclosing契约、任务3epoch。**Produces:** 唯一publication接入、beginClose/close/whenIdle和storage安全收口。
+ 
+-- [ ] Step 1 写真实SQLite `sourceAndStructureChangeInvalidatesOnce`、`noOpNeitherRevisionNorHistory`、`deletedSourcePreservesAnnotationOrphanHistory`、`unknownCaptureDoesNotOrphan`、`snapshotCommitFailureRollsBackJointKnowledge`；barrier `stopAfterDispatchPreventsPublication`、`closePendingKeepsStorageOpenUntilIdle`、`lateEventCannotStartAfterClosing`。
++- [ ] Step 1 写真实SQLite `sourceAndStructureChangeInvalidatesOnce`、`noOpNeitherRevisionNorHistory`、`deletedSourcePreservesAnnotationOrphanHistory`、`unknownCaptureDoesNotOrphan`、`snapshotCommitFailureRollsBackJointKnowledge`；barrier `stopAfterDispatchPreventsPublication`、`closePendingKeepsStorageOpenUntilIdle`、`lateEventCannotStartAfterClosing`。I1新增 `samePathSameBytesReplacementBeforePublishStopsOwner` 和 `aliasRetargetBeforePublishStopsOwner`：在第二capture完成后/锁内prepublish前替换真实root或retargetalias，事件压制/延迟；prepublish从原path实际observe，而非cache/filename，断言无storeSnapshot/知识reconcile/计划invalidate，pointer/全部records历史原值、root_changed/stopped、cache/session不复活。普通full/retry/周期reconcile仍拒，显式path-confirmed reopen才可重建；native identity unavailable failclosed且不冒nativePASS。
+ - [ ] Step 2 scopedservice/server测试RED，保存原joint基线用例，不改期待来掩盖重复invalidations。批准/审批context/revision历史保留。
+-- [ ] Step 3 仅在现有lock-heldjoint刷新接auto/full和epoch；同步transaction内部不await，不再分步invalidate。close先fence/abort/timerclose，StructureSync 禁新admission，既有工作后续mutation/commit查globalepoch；等待queue/helper/dispatchownedpromise；5000ms超时truthfulpending+whenIdle，serverstorageclose只能在idle后。与AG03公共关闭registry合并，别建竞争secondregistry。
++- [ ] Step 3 仅在现有lock-heldjoint刷新接auto/full和epoch；锁内prepublish observeRoot 原path并比较expectedOwner/两capture owner/session与globalepoch，验证完成后不再await直接进入同步joint transaction，内部不await/重复invalidate。root mismatch/unavailable先stop/discard/清cache，不能fallback或自动建立新owner；不宣称最终观测后的外部FS原子保证。close先fence/abort/timerclose，StructureSync 禁新admission，既有工作后续mutation/commit查globalepoch；等待queue/helper/dispatchownedpromise；5000ms超时truthfulpending+whenIdle，serverstorageclose只能在idle后。与AG03公共关闭registry合并，别建竞争secondregistry。
+ - [ ] Step 4 GREEN；实际进程owneddb/randomports验证activeparse/HTTP刷新shutdown无事后发布、storage未早close、正常close无watcher/timer/Pythonhelper。同步Compiler不可硬deadline行为记录限制，不宣称5000ms强抢占。
+ - [ ] Step 5 主控独立审查共享hunks；冻源码与编译SHA再开始下一项真实gate。
+ 

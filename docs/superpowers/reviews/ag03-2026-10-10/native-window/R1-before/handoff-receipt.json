@@ -1,0 +1,40 @@
+{
+  "model": "gpt-6.1-sol high",
+  "status": "FROZEN_PENDING_INDEPENDENT_REVIEW",
+  "nativeWindows": "UNRUN",
+  "guardA": "UNCHANGED",
+  "sourceCount": 12,
+  "sourceStillFrozen": true,
+  "allSharedStillSame": true,
+  "files": {
+    "before-manifest.json": {
+      "sha256": "b58eb816f0cf3b6748871d31f2ad484a5e8103c51f756f0c03c8d793aa8f9178",
+      "bytes": 4739
+    },
+    "sourcefreeze.json": {
+      "sha256": "309270eb5d5c3571b0003d48bf220cb9707349b6beb733ee05cde980f6e55b26",
+      "bytes": 2118
+    },
+    "native-source.patch": {
+      "sha256": "b327ab59c2dc06ef940161b0502198a6839249f32a268f04f909893cae9cb230",
+      "bytes": 63060
+    },
+    "frozen-checks.json": {
+      "sha256": "8f920ae9aeda400f5f46a5a708e640d3930bb60af3a29c6e7bfb142358e4d0ec",
+      "bytes": 4910
+    },
+    "shared-after.json": {
+      "sha256": "8202d4868b6e84f95f14cd284f59ede1591643f759e95b3d9482614db321e9fa",
+      "bytes": 3185
+    },
+    "cross-language-wire.json": {
+      "sha256": "41607fdeb78d2d4f3e65f86906f9017caa436dfef252a6cb220bb69fec5d5d07",
+      "bytes": 123
+    },
+    "report.md": {
+      "sha256": "0af10588a15feb388c7a7200e506b8729d19fd76ab70da01fb001954ce1aee1b",
+      "bytes": 9259
+    }
+  },
+  "noStageCommitPushSpawn": true
+}

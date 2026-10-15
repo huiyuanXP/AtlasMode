@@ -1,0 +1,22 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90m/home/agent/projects/AtlasMode[39m
+
+[90mstdout[2m | tests/integration/pol01-stdio-acceptance.test.ts[2m > [22m[2mactual SQLite/API: v1 unknown roundtrip, DB-only edit then explicit import retains unsent controller draft
+[22m[39m{"receipt":"POL01_SQLITE_STDIO_OWNED","root":"/tmp/atlas-pol01-acceptance-jfFcz1","runtime":"/tmp/atlas-pol01-acceptance-jfFcz1/runtime-receipt.json","records":[{"kind":"server","mode":"source","pid":127254,"port":36219,"exit":[0,null],"portClosed":true,"output":"AtlasMode API listening on 127.0.0.1:36219 (built web assets available)\n"},{"kind":"server","mode":"source","pid":127294,"port":36069,"exit":[0,null],"portClosed":true,"output":"AtlasMode API listening on 127.0.0.1:36069 (built web assets available)\n"}],"rootCleanup":"retained-evidence"}
+
+[90mstdout[2m | tests/integration/pol01-stdio-acceptance.test.ts[2m > [22m[2mactual HTTP 409 preserves draft and old capture until explicit reread, no implicit CAS rebase
+[22m[39m{"receipt":"POL01_SQLITE_STDIO_OWNED","root":"/tmp/atlas-pol01-acceptance-G222TX","runtime":"/tmp/atlas-pol01-acceptance-G222TX/runtime-receipt.json","records":[{"kind":"server","mode":"source","pid":127349,"port":34941,"exit":[0,null],"portClosed":true,"output":"AtlasMode API listening on 127.0.0.1:34941 (built web assets available)\n"}],"rootCleanup":"retained-evidence"}
+
+[90mstdout[2m | tests/integration/pol01-stdio-acceptance.test.ts[2m > [22m[2mactual SDK stdio current approval is fresh after external edit; quarantine persists across actual API restart
+[22m[39m{"receipt":"POL01_SQLITE_STDIO_OWNED","root":"/tmp/atlas-pol01-acceptance-UpTcgj","runtime":"/tmp/atlas-pol01-acceptance-UpTcgj/runtime-receipt.json","records":[{"kind":"mcp-stdio","mode":"source","pid":127428,"pidAbsent":true,"stderr":""},{"kind":"server","mode":"source","pid":127364,"port":35169,"exit":[0,null],"portClosed":true,"output":"AtlasMode API listening on 127.0.0.1:35169 (built web assets available)\n"},{"kind":"server","mode":"source","pid":127443,"port":44865,"exit":[0,null],"portClosed":true,"output":"AtlasMode API listening on 127.0.0.1:44865 (built web assets available)\n"}],"rootCleanup":"retained-evidence"}
+
+ [32m✓[39m tests/integration/pol01-stdio-acceptance.test.ts [2m([22m[2m3 tests[22m[2m)[22m[33m 10005[2mms[22m[39m
+   [33m[2m✓[22m[39m actual SQLite/API: v1 unknown roundtrip, DB-only edit then explicit import retains unsent controller draft [33m 4333[2mms[22m[39m
+   [33m[2m✓[22m[39m actual HTTP 409 preserves draft and old capture until explicit reread, no implicit CAS rebase [33m 1815[2mms[22m[39m
+   [33m[2m✓[22m[39m actual SDK stdio current approval is fresh after external edit; quarantine persists across actual API restart [33m 3855[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m3 passed[39m[22m[90m (3)[39m
+[2m   Start at [22m 19:06:42
+[2m   Duration [22m 11.68s[2m (transform 714ms, setup 0ms, import 1.49s, tests 10.00s, environment 0ms)[22m
+

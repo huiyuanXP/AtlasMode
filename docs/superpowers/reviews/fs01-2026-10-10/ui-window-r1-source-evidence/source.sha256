@@ -1,0 +1,6 @@
+580ce066f4fdb14c499f1d5eb9ce1a2e77cd3199f0871a3d98da60ed188da0f7  apps/web/src/features/structure/ownership-session.ts
+2c45011de0ef9bfabab6d2be9e2db7007c98652d12462d52489ce922e3cd86a3  apps/web/src/features/structure/ownership-session.test.ts
+1070a70e5461d1c6995b1bd49ec8a16dbaead2ad487c1c984bc692f49fc5e7ef  apps/web/src/features/structure/ownership-controller.ts
+6991b82b35b7a9a88cb70897211df6da7e4997a097d724ee8bc899698c133014  apps/web/src/features/structure/OwnershipControls.tsx
+63130c58c958c4e557feea65d0118018db49a8d04d3fd37e865b0e96e715fd39  apps/web/src/app/workspace.ts
+2121f7f03d5af4fe3b23a92383c0df8d5d21d509c09fbf5c0efcfe17a7b46606  apps/web/src/app/workspace-ownership.test.ts

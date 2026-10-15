@@ -3,7 +3,7 @@ import fastifyStatic from "@fastify/static";
 import { resolve, extname } from "node:path";
 import type { IncomingMessage } from "node:http";
 import type { Socket } from "node:net";
-import { DomainError } from "@codemap/core";
+import { DomainError, StructureError } from "@codemap/core";
 import type { WorkspaceService } from "@codemap/service";
 import { ZodError } from "zod";
 import { registerRoutes } from "./routes.js";
@@ -21,7 +21,13 @@ const domainStatuses: Record<string, number> = {
   BASELINE_CONFLICT: 409,
   SNAPSHOT_CHANGED: 409,
   NOT_APPROVED: 409,
+  APPROVAL_CONTEXT_INVALID: 409,
   SOURCE_UNAVAILABLE: 503,
+  INVALID_STRUCTURE: 422,
+  STRUCTURE_CONFLICT: 409,
+  STRUCTURE_RECOVERY_PENDING: 503,
+  STRUCTURE_PRECONDITION_REQUIRED: 428,
+  STRUCTURE_WRITE_FAILED: 503,
 };
 export async function createServer({
   service,
@@ -110,6 +116,9 @@ export async function createServer({
       return reply.code(status).send({
         code: status === 500 ? "INTERNAL_ERROR" : error.code,
         message: status === 500 ? "Internal server error." : error.message,
+        ...(error instanceof StructureError
+          ? { diagnostics: error.diagnostics }
+          : {}),
       });
     }
     const statusCode = (error as { statusCode?: number }).statusCode;

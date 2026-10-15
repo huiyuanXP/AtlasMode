@@ -1,0 +1,56 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90m/home/agent/projects/AtlasMode[39m
+
+[90mstdout[2m | apps/server/src/pol01-http-repair.test.ts[2m > [22m[2mI1 direct json HTTP export synchronizes external semantics and preserves immutable history
+[22m[39m{"receipt":"POL01_OWNED_FIXTURE_CLOSED","root":"/tmp/atlas-pol01-repair-BR1crt","sqliteConnections":"closed","apps":"closed","listener":"inject-only/no-listener","rootCleanup":"retained-evidence","workerPid":99072}
+
+[90mstdout[2m | apps/server/src/pol01-http-repair.test.ts[2m > [22m[2mI1 direct markdown HTTP export synchronizes external semantics and preserves immutable history
+[22m[39m{"receipt":"POL01_OWNED_FIXTURE_CLOSED","root":"/tmp/atlas-pol01-repair-bKhcVm","sqliteConnections":"closed","apps":"closed","listener":"inject-only/no-listener","rootCleanup":"retained-evidence","workerPid":99072}
+
+[90mstdout[2m | apps/server/src/pol01-http-repair.test.ts[2m > [22m[2mI2 queued B claim is revalidated before publication after A commits the identity
+[22m[39m{"receipt":"POL01_OWNED_FIXTURE_CLOSED","root":"/tmp/atlas-pol01-repair-iDa84O","sqliteConnections":"closed","apps":"closed","listener":"inject-only/no-listener","rootCleanup":"retained-evidence","workerPid":99072}
+
+[90mstdout[2m | apps/server/src/pol01-http-repair.test.ts[2m > [22m[2mI1 export first observes invalid bytes instead of cached current approval
+[22m[39m{"receipt":"POL01_OWNED_FIXTURE_CLOSED","root":"/tmp/atlas-pol01-repair-P03ZQ2","sqliteConnections":"closed","apps":"closed","listener":"inject-only/no-listener","rootCleanup":"retained-evidence","workerPid":99072}
+
+[90mstdout[2m | apps/server/src/pol01-http-repair.test.ts[2m > [22m[2mI1 export first observes deleted bytes instead of cached current approval
+[22m[39m{"receipt":"POL01_OWNED_FIXTURE_CLOSED","root":"/tmp/atlas-pol01-repair-IoGXPl","sqliteConnections":"closed","apps":"closed","listener":"inject-only/no-listener","rootCleanup":"retained-evidence","workerPid":99072}
+
+[90mstdout[2m | apps/server/src/pol01-http-repair.test.ts[2m > [22m[2mI2 prepared simultaneous claim loses before publication and winner remains usable
+[22m[39m{"receipt":"POL01_OWNED_FIXTURE_CLOSED","root":"/tmp/atlas-pol01-repair-MZhUb8","sqliteConnections":"closed","apps":"closed","listener":"inject-only/no-listener","rootCleanup":"retained-evidence","workerPid":99072}
+
+[90mstdout[2m | apps/server/src/pol01-http-repair.test.ts[2m > [22m[2mI1 export is queued behind prepared publication before it reports current validity
+[22m[39m{"receipt":"POL01_OWNED_FIXTURE_CLOSED","root":"/tmp/atlas-pol01-repair-xjaa7R","sqliteConnections":"closed","apps":"closed","listener":"inject-only/no-listener","rootCleanup":"retained-evidence","workerPid":99072}
+
+[90mstdout[2m | apps/server/src/pol01-http-repair.test.ts[2m > [22m[2mI1 export is queued behind published publication before it reports current validity
+[22m[39m{"receipt":"POL01_OWNED_FIXTURE_CLOSED","root":"/tmp/atlas-pol01-repair-Mi9iZ8","sqliteConnections":"closed","apps":"closed","listener":"inject-only/no-listener","rootCleanup":"retained-evidence","workerPid":99072}
+
+[90mstdout[2m | apps/server/src/pol01-http-repair.test.ts[2m > [22m[2mI2 durable before crash claim prevents losing publication and recovery releases only proved-before claims
+[22m[39m{"receipt":"POL01_OWNED_RUNTIME","phase":"before","pid":99144,"exitCode":null,"signal":"SIGKILL","database":"/tmp/atlas-pol01-repair-S4hMh8/owned.sqlite","root":"/tmp/atlas-pol01-repair-S4hMh8","port":null,"portState":"no-listener","rootCleanup":"retained-evidence","processExited":true}
+
+[90mstdout[2m | apps/server/src/pol01-http-repair.test.ts[2m > [22m[2mI2 durable before crash claim prevents losing publication and recovery releases only proved-before claims
+[22m[39m{"receipt":"POL01_OWNED_FIXTURE_CLOSED","root":"/tmp/atlas-pol01-repair-S4hMh8","sqliteConnections":"closed","apps":"closed","listener":"inject-only/no-listener","rootCleanup":"retained-evidence","workerPid":99072}
+
+[90mstdout[2m | apps/server/src/pol01-http-repair.test.ts[2m > [22m[2mI2 durable after crash claim prevents losing publication and recovery releases only proved-before claims
+[22m[39m{"receipt":"POL01_OWNED_RUNTIME","phase":"after","pid":99170,"exitCode":null,"signal":"SIGKILL","database":"/tmp/atlas-pol01-repair-0b1R1g/owned.sqlite","root":"/tmp/atlas-pol01-repair-0b1R1g","port":null,"portState":"no-listener","rootCleanup":"retained-evidence","processExited":true}
+
+[90mstdout[2m | apps/server/src/pol01-http-repair.test.ts[2m > [22m[2mI2 durable after crash claim prevents losing publication and recovery releases only proved-before claims
+[22m[39m{"receipt":"POL01_OWNED_FIXTURE_CLOSED","root":"/tmp/atlas-pol01-repair-0b1R1g","sqliteConnections":"closed","apps":"closed","listener":"inject-only/no-listener","rootCleanup":"retained-evidence","workerPid":99072}
+
+[90mstdout[2m | apps/server/src/pol01-http-repair.test.ts[2m > [22m[2mI2 durable unknown crash claim prevents losing publication and recovery releases only proved-before claims
+[22m[39m{"receipt":"POL01_OWNED_RUNTIME","phase":"unknown","pid":99187,"exitCode":null,"signal":"SIGKILL","database":"/tmp/atlas-pol01-repair-ETUCkv/owned.sqlite","root":"/tmp/atlas-pol01-repair-ETUCkv","port":null,"portState":"no-listener","rootCleanup":"retained-evidence","processExited":true}
+
+[90mstdout[2m | apps/server/src/pol01-http-repair.test.ts[2m > [22m[2mI2 durable unknown crash claim prevents losing publication and recovery releases only proved-before claims
+[22m[39m{"receipt":"POL01_OWNED_FIXTURE_CLOSED","root":"/tmp/atlas-pol01-repair-ETUCkv","sqliteConnections":"closed","apps":"closed","listener":"inject-only/no-listener","rootCleanup":"retained-evidence","workerPid":99072}
+
+ [32m✓[39m apps/server/src/pol01-http-repair.test.ts [2m([22m[2m11 tests[22m[2m)[22m[33m 11877[2mms[22m[39m
+   [33m[2m✓[22m[39m I1 direct json HTTP export synchronizes external semantics and preserves immutable history [33m 594[2mms[22m[39m
+   [33m[2m✓[22m[39m I2 durable before crash claim prevents losing publication and recovery releases only proved-before claims [33m 3535[2mms[22m[39m
+   [33m[2m✓[22m[39m I2 durable after crash claim prevents losing publication and recovery releases only proved-before claims [33m 3309[2mms[22m[39m
+   [33m[2m✓[22m[39m I2 durable unknown crash claim prevents losing publication and recovery releases only proved-before claims [33m 3097[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m11 passed[39m[22m[90m (11)[39m
+[2m   Start at [22m 17:51:41
+[2m   Duration [22m 15.00s[2m (transform 957ms, setup 0ms, import 2.81s, tests 11.88s, environment 0ms)[22m
+

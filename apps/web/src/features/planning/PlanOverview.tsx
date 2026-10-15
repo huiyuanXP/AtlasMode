@@ -1,3 +1,4 @@
+import { effectiveFunctionPath } from "./function-target.js";
 import { useState } from "react";
 import { canApprovePlan } from "./pending.js";
 import type { CodeNode, PlanDetail, Operation } from "@codemap/core";
@@ -34,11 +35,18 @@ export function PlanOverview(props: PlanOverviewProps) {
   const describe = (op: Operation) => {
     switch (op.kind) {
       case "add_function":
-        return `${s.add_function} · ${op.name} → ${op.filePath}`;
+        return `${s.add_function} · ${op.name} → ${effectiveFunctionPath(plan?.operations ?? [], { id: op.tempId, kind: "function", name: op.name, filePath: op.filePath })}`;
       case "remove_function":
         return `${s.remove_function} · ${name(op.nodeId)}`;
-      case "move_function":
-        return `${s.move_function} · ${name(op.nodeId)} → ${op.filePath}`;
+      case "move_function": {
+        const effective = effectiveFunctionPath(plan?.operations ?? [], {
+          id: op.nodeId,
+          kind: "function",
+          name: name(op.nodeId),
+          filePath: op.filePath,
+        });
+        return `${s.move_function} · ${name(op.nodeId)} → ${effective}${effective !== op.filePath ? ` · ${s.ownershipSuperseded}: ${op.filePath}` : ""}`;
+      }
       case "add_relation":
         return `${s[op.type]} · ${name(op.sourceId)} → ${name(op.targetId)}`;
       case "remove_relation":

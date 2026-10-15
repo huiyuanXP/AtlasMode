@@ -1,0 +1,13 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90m/home/agent/projects/AtlasMode[39m
+
+ [32m✓[39m apps/web/src/features/structure/ownership-session.test.ts [2m([22m[2m27 tests[22m[2m)[22m[32m 40[2mms[22m[39m
+ [32m✓[39m apps/web/src/app/workspace-ownership.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 182[2mms[22m[39m
+ [32m✓[39m apps/web/src/app/workspace.test.ts [2m([22m[2m24 tests[22m[2m)[22m[32m 254[2mms[22m[39m
+ [32m✓[39m apps/web/src/features/structure/ownership-controller.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m4 passed[39m[22m[90m (4)[39m
+[2m      Tests [22m [1m[32m62 passed[39m[22m[90m (62)[39m
+[2m   Start at [22m 18:22:16
+[2m   Duration [22m 1.28s[2m (transform 1.24s, setup 0ms, import 2.03s, tests 481ms, environment 1ms)[22m
+

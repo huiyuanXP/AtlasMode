@@ -72,15 +72,16 @@ export function editFunction(
   const planned = operations.find(
     (o) => o.kind === "add_function" && o.tempId === node.id,
   );
+  const retargeted = retargetFunction(operations, node, edit.filePath);
   if (planned)
-    return operations.map((o) => (o === planned ? { ...planned, ...edit } : o));
-  const result = [...operations];
-  if (edit.filePath !== node.filePath)
-    result.push({
-      kind: "move_function",
-      nodeId: node.id,
-      filePath: edit.filePath,
-    });
+    return retargeted
+      .filter((o) => !(o.kind === "move_function" && o.nodeId === node.id))
+      .map((o) =>
+        o.kind === "add_function" && o.tempId === node.id
+          ? { ...o, ...edit, filePath: normalizeFunctionTarget(edit.filePath) }
+          : o,
+      );
+  const result = [...retargeted];
   const text = [
     edit.name !== node.name ? `name: ${edit.name}` : "",
     edit.signature !== (node.signature ?? "")
@@ -95,3 +96,7 @@ export function editFunction(
 }
 
 export const temporaryId = () => `temp:${crypto.randomUUID()}`;
+import {
+  normalizeFunctionTarget,
+  retargetFunction,
+} from "./function-target.js";

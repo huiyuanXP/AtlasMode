@@ -1,0 +1,1 @@
+export default { resolve: { alias: { '@codemap/service': '/home/agent/projects/AtlasMode/packages/service/src/index.ts', '@codemap/core': '/tmp/atlasmode-pol01-core.ts', '@codemap/storage': '/home/agent/projects/AtlasMode/packages/storage/src/index.ts' } }, test: { include: ['packages/**/*.test.ts', 'apps/**/*.test.ts'], environment: 'node' } };

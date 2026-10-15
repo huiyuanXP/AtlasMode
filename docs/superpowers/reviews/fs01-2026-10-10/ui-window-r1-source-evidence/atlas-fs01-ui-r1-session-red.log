@@ -1,0 +1,87 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90m/home/agent/projects/AtlasMode[39m
+
+ [31m❯[39m apps/web/src/features/structure/ownership-session.test.ts [2m([22m[2m23 tests[22m[2m | [22m[31m10 failed[39m[2m | [22m[33m13 skipped[39m[2m)[22m[32m 27[2mms[22m[39m
+   [2m[90m↓[39m[22m defaults to layout; only a captured current function can start and only tray targets can preview
+   [2m[90m↓[39m[22m folder preview starts without filename; full path must be explicitly completed before saving
+   [2m[90m↓[39m[22m changed capture expires preview, retains filename and refuses save: {"revision":2}
+   [2m[90m↓[39m[22m changed capture expires preview, retains filename and refuses save: {"snapshotId":"S1"}
+   [2m[90m↓[39m[22m changed capture expires preview, retains filename and refuses save: {"snapshotHash":"new"}
+   [2m[90m↓[39m[22m changed capture expires preview, retains filename and refuses save: {"selectedId":"other"}
+   [2m[90m↓[39m[22m changed capture expires preview, retains filename and refuses save: {"dirty":true}
+   [2m[90m↓[39m[22m changed capture expires preview, retains filename and refuses save: {"groupSelection":true}
+   [2m[90m↓[39m[22m project/plan switch cancels rather than retaining foreign preview: {"projectId":"other"}
+   [2m[90m↓[39m[22m project/plan switch cancels rather than retaining foreign preview: {"planId":"other"}
+   [2m[90m↓[39m[22m cancel/layout never saves; no-op preserves revision/history and own annotations
+   [2m[90m↓[39m[22m failed save retains preview and never treats failure as accepted
+   [2m[90m↓[39m[22m a late save ACK cannot clear a preview after another selection, even when selection returns to the original function
+[31m   [31m×[31m expired non-saving capture cannot revive after context returns: {"selectedId":"B"}[39m[32m 14[2mms[22m[39m
+[31m   [31m×[31m expired non-saving capture cannot revive after context returns: {"dirty":true}[39m[32m 1[2mms[22m[39m
+[31m   [31m×[31m expired non-saving capture cannot revive after context returns: {"groupSelection":true}[39m[32m 1[2mms[22m[39m
+[31m   [31m×[31m idle S0 tray is retired across S1 verification and fresh S1 plan before a new begin[39m[32m 3[2mms[22m[39m
+[31m   [31m×[31m choose and confirm fail closed when current target proof disagrees: requestProject[39m[32m 1[2mms[22m[39m
+[31m   [31m×[31m choose and confirm fail closed when current target proof disagrees: requestSnapshot[39m[32m 1[2mms[22m[39m
+[31m   [31m×[31m choose and confirm fail closed when current target proof disagrees: requestEpoch[39m[32m 1[2mms[22m[39m
+[31m   [31m×[31m choose and confirm fail closed when current target proof disagrees: scopeSnapshot[39m[32m 1[2mms[22m[39m
+[31m   [31m×[31m choose and confirm fail closed when current target proof disagrees: scopePath[39m[32m 1[2mms[22m[39m
+[31m   [31m×[31m choose and confirm fail closed when current target proof disagrees: scopeKind[39m[32m 1[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 10 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/features/structure/ownership-session.test.ts[2m > [22mexpired non-saving capture cannot revive after context returns: {"selectedId":"B"}
+[41m[1m FAIL [22m[49m apps/web/src/features/structure/ownership-session.test.ts[2m > [22mexpired non-saving capture cannot revive after context returns: {"dirty":true}
+[41m[1m FAIL [22m[49m apps/web/src/features/structure/ownership-session.test.ts[2m > [22mexpired non-saving capture cannot revive after context returns: {"groupSelection":true}
+[31m[1mAssertionError[22m: expected true to be false // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- false[39m
+[31m+ true[39m
+
+[36m [2m❯[22m apps/web/src/features/structure/ownership-session.test.ts:[2m242:35[22m[39m
+
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/10]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/features/structure/ownership-session.test.ts[2m > [22midle S0 tray is retired across S1 verification and fresh S1 plan before a new begin
+[31m[1mAssertionError[22m: expected 'ready' to be 'idle' // Object.is equality[39m
+
+Expected: [32m"idle"[39m
+Received: [31m"ready"[39m
+
+[36m [2m❯[22m apps/web/src/features/structure/ownership-session.test.ts:[2m248:45[22m[39m
+
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/10]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/features/structure/ownership-session.test.ts[2m > [22mchoose and confirm fail closed when current target proof disagrees: requestProject
+[41m[1m FAIL [22m[49m apps/web/src/features/structure/ownership-session.test.ts[2m > [22mchoose and confirm fail closed when current target proof disagrees: requestSnapshot
+[41m[1m FAIL [22m[49m apps/web/src/features/structure/ownership-session.test.ts[2m > [22mchoose and confirm fail closed when current target proof disagrees: requestEpoch
+[41m[1m FAIL [22m[49m apps/web/src/features/structure/ownership-session.test.ts[2m > [22mchoose and confirm fail closed when current target proof disagrees: scopeSnapshot
+[41m[1m FAIL [22m[49m apps/web/src/features/structure/ownership-session.test.ts[2m > [22mchoose and confirm fail closed when current target proof disagrees: scopePath
+[41m[1m FAIL [22m[49m apps/web/src/features/structure/ownership-session.test.ts[2m > [22mchoose and confirm fail closed when current target proof disagrees: scopeKind
+[31m[1mAssertionError[22m: expected true to be false // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- false[39m
+[31m+ true[39m
+
+[36m [2m❯[22m apps/web/src/features/structure/ownership-session.test.ts:[2m259:66[22m[39m
+    [90m257|[39m  [35mif[39m(kind[33m===[39m[32m"scopePath"[39m)tray[33m.[39mscope[33m=[39m{[33m...[39mtray[33m.[39mscope[33m![39m[33m,[39mpath[33m:[39m[32m"elsewhere"[39m}[33m;[39m
+    [90m258|[39m  [35mif[39m(kind[33m===[39m[32m"scopeKind"[39m)tray[33m.[39mscope[33m=[39m{[33m...[39mtray[33m.[39mscope[33m![39m[33m,[39mkind[33m:[39m[32m"file"[39m}[33m;[39m
+    [90m259|[39m  f.app.store.setState({tray});expect(f.app.choose(target,nonce)).toBe(…
+    [90m   |[39m                                                                  [31m^[39m
+    [90m260|[39m })[33m;[39m
+    [90m261|[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/10]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m10 failed[39m[22m[2m | [22m[33m13 skipped[39m[90m (23)[39m
+[2m   Start at [22m 18:17:39
+[2m   Duration [22m 718ms[2m (transform 256ms, setup 0ms, import 417ms, tests 27ms, environment 0ms)[22m
+

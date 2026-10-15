@@ -1,3 +1,4 @@
+import { effectiveFunctionPath } from "../planning/function-target.js";
 import { dictionaries, type Locale } from "../../i18n/index.js";
 import type {
   CodeNode,
@@ -79,7 +80,15 @@ export function projectGraph(
   }
   const changes = (id: string) =>
     visibleOps.flatMap((op) => {
-      if (op.kind === "move_function" && op.nodeId === id)
+      if (
+        op.kind === "move_function" &&
+        op.nodeId === id &&
+        op ===
+          visibleOps.findLast(
+            (candidate) =>
+              candidate.kind === "move_function" && candidate.nodeId === id,
+          )
+      )
         return [`→ ${op.filePath}`];
       if (op.kind === "remove_function" && op.nodeId === id)
         return [`− ${text.plannedRemoval}`];
@@ -112,7 +121,12 @@ export function projectGraph(
           kind: "function",
           declarationKind: "function",
           name: op.name,
-          filePath: op.filePath,
+          filePath: effectiveFunctionPath(visibleOps, {
+            id: op.tempId,
+            kind: "function",
+            name: op.name,
+            filePath: op.filePath,
+          }),
           signature: op.signature,
           language: op.language,
         },

@@ -1,0 +1,408 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90m/home/agent/projects/AtlasMode[39m
+
+ [31m❯[39m apps/server/src/structure-sync.test.ts [2m([22m[2m29 tests[22m[2m | [22m[31m9 failed[39m[2m)[22m[33m 3136[2mms[22m[39m
+   [32m✓[39m UI write commits matching real file state plans history and audit[32m 130[2mms[22m[39m
+   [32m✓[39m same-version concurrent writes have one success and one conflict[32m 85[2mms[22m[39m
+   [32m✓[39m mutation retry finalizes once and different payload cannot reuse id[32m 87[2mms[22m[39m
+   [32m✓[39m external formatting changes structure version but does not invalidate plan[32m 69[2mms[22m[39m
+   [32m✓[39m invalid repeated read and deletion never reuse a valid current context[32m 80[2mms[22m[39m
+   [32m✓[39m DB-only same-id editing keeps bytes and explicit migration switches source once[32m 121[2mms[22m[39m
+   [32m✓[39m equal extension migration changes only source and approval, not file[32m 72[2mms[22m[39m
+   [32m✓[39m rename then database failure recovers on a new SQLite instance only once[32m 131[2mms[22m[39m
+   [32m✓[39m prepublication failure preserves original file and migration DB records[32m 78[2mms[22m[39m
+   [32m✓[39m failed audit distinguishes attempted B from external observed C[32m 84[2mms[22m[39m
+   [32m✓[39m third-digest recovery retains external bytes until explicit refresh[32m 76[2mms[22m[39m
+   [32m✓[39m queue scope blocks an approved read during prepared publication[32m 104[2mms[22m[39m
+   [32m✓[39m queue scope blocks an approved read during published publication[32m 104[2mms[22m[39m
+   [32m✓[39m zero-record migration does not create a missing file or change revisions[32m 72[2mms[22m[39m
+   [32m✓[39m equivalent migrated legacy editing preserves unknown values and original bytes[32m 89[2mms[22m[39m
+   [32m✓[39m prepared interruption aborts before-digest recovery without replay or deleting legacy[32m 118[2mms[22m[39m
+   [32m✓[39m unrecoverable finalize blocks fresh approval context and migration deletion until atomic recovery[32m 113[2mms[22m[39m
+   [32m✓[39m external same-id disagreement is an explicit blocked state with no current projection[32m 77[2mms[22m[39m
+   [32m✓[39m equal extension migration rechecks actual disk before switching DB source[32m 95[2mms[22m[39m
+   [32m✓[39m roundtrips the repository actual v1 document[32m 3[2mms[22m[39m
+[31m   [31m×[31m direct mutation retry respects recovered before-digest terminal outcome[39m[32m 152[2mms[22m[39m
+[31m   [31m×[31m direct mutation retry respects recovered after-digest terminal outcome[39m[32m 157[2mms[22m[39m
+[31m   [31m×[31m transient unknown disk read stays pending then recovers actual before digest[39m[32m 122[2mms[22m[39m
+[31m   [31m×[31m transient unknown disk read stays pending then recovers actual after digest[39m[32m 149[2mms[22m[39m
+[31m   [31m×[31m transient unknown disk read stays pending then recovers actual third digest[39m[32m 120[2mms[22m[39m
+[31m   [31m×[31m folder no-op persists idempotent receipt without publication audit[39m[32m 194[2mms[22m[39m
+[31m   [31m×[31m db_legacy no-op persists idempotent receipt without publication audit[39m[32m 157[2mms[22m[39m
+[31m   [31m×[31m file_legacy no-op persists idempotent receipt without publication audit[39m[32m 154[2mms[22m[39m
+[31m   [31m×[31m empty_migration no-op persists idempotent receipt without publication audit[39m[32m 140[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 9 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m apps/server/src/structure-sync.test.ts[2m > [22mdirect mutation retry respects recovered before-digest terminal outcome
+[31m[1mAssertionError[22m: promise resolved "{ projectId: 'p', …(10) }" instead of rejecting[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- Error {[39m
+[32m-   "message": "rejected promise",[39m
+[31m+ {[39m
+[31m+   "diagnostics": [],[39m
+[31m+   "document": {[39m
+[31m+     "dependencyRules": [],[39m
+[31m+     "folders": [[39m
+[31m+       {[39m
+[31m+         "extra": {[39m
+[31m+           "kept": [[39m
+[31m+             1,[39m
+[31m+             null,[39m
+[31m+           ],[39m
+[31m+         },[39m
+[31m+         "path": "src",[39m
+[31m+         "purpose": "new",[39m
+[31m+       },[39m
+[31m+     ],[39m
+[31m+     "schemaVersion": 1,[39m
+[31m+   },[39m
+[31m+   "fileDigest": "71405bc68cbb19b7c30dabd6fc5cb1751860e94d5841fcb3428248fd55370253",[39m
+[31m+   "lastGood": {[39m
+[31m+     "document": {[39m
+[31m+       "dependencyRules": [],[39m
+[31m+       "folders": [[39m
+[31m+         {[39m
+[31m+           "extra": {[39m
+[31m+             "kept": [[39m
+[31m+               1,[39m
+[31m+               null,[39m
+[31m+             ],[39m
+[31m+           },[39m
+[31m+           "path": "src",[39m
+[31m+           "purpose": "new",[39m
+[31m+         },[39m
+[31m+       ],[39m
+[31m+       "schemaVersion": 1,[39m
+[31m+     },[39m
+[31m+     "fileDigest": "71405bc68cbb19b7c30dabd6fc5cb1751860e94d5841fcb3428248fd55370253",[39m
+[31m+     "semanticDigest": "448903ef02bc42375622687b463f836523adcf9d475086d851b565daaa8d69c2",[39m
+[31m+   },[39m
+[31m+   "legacyPendingCount": 0,[39m
+[31m+   "projectId": "p",[39m
+[31m+   "schemaVersion": 1,[39m
+[31m+   "semanticDigest": "448903ef02bc42375622687b463f836523adcf9d475086d851b565daaa8d69c2",[39m
+[31m+   "status": "ready",[39m
+[31m+   "structureRevision": 2,[39m
+[31m+   "verifiedAt": "2026-10-10T16:40:14.348Z",[39m
+[2m  }[22m
+
+[36m [2m❯[22m apps/server/src/structure-sync.test.ts:[2m713:52[22m[39m
+    [90m711|[39m     [34mexpect[39m(f[33m.[39mdb[33m.[39m[35mget[39m([32m"plans"[39m[33m,[39m [32m"plan"[39m))[33m.[39m[34mtoMatchObject[39m({ revision[33m:[39m [34m2[39m })[33m;[39m
+    [90m712|[39m   } [35melse[39m {
+    [90m713|[39m     await expect(sync.updateStructure("p", request)).rejects.toMatchOb…
+    [90m   |[39m                                                    [31m^[39m
+    [90m714|[39m     await expect(sync.updateStructure("p", request)).rejects.toMatchOb…
+    [90m715|[39m     [34mexpect[39m([35mawait[39m [34mreadFile[39m(f[33m.[39mpath[33m,[39m [32m"utf8"[39m))[33m.[39m[34mtoBe[39m([34mtext[39m())[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/9]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/server/src/structure-sync.test.ts[2m > [22mdirect mutation retry respects recovered after-digest terminal outcome
+[31m[1mDomainError[22m: Structure file or version changed. Reread before saving.[39m
+[36m [2m❯[22m StructureSync.updateLocked packages/service/src/structure-sync.ts:[2m468:13[22m[39m
+    [90m466|[39m       state[33m.[39mfileDigest [33m!==[39m input[33m.[39mexpectedFileDigest
+    [90m467|[39m     )
+    [90m468|[39m       [35mthrow[39m [35mnew[39m [33mStructureError[39m(
+    [90m   |[39m             [31m^[39m
+    [90m469|[39m         [32m"STRUCTURE_CONFLICT"[39m[33m,[39m
+    [90m470|[39m         [32m"Structure file or version changed. Reread before saving."[39m[33m,[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/9]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/server/src/structure-sync.test.ts[2m > [22mtransient unknown disk read stays pending then recovers actual before digest
+[41m[1m FAIL [22m[49m apps/server/src/structure-sync.test.ts[2m > [22mtransient unknown disk read stays pending then recovers actual after digest
+[41m[1m FAIL [22m[49m apps/server/src/structure-sync.test.ts[2m > [22mtransient unknown disk read stays pending then recovers actual third digest
+[31m[1mAssertionError[22m: expected 'conflict' to be 'recovery_pending' // Object.is equality[39m
+
+Expected: [32m"recovery_pending"[39m
+Received: [31m"conflict"[39m
+
+[36m [2m❯[22m apps/server/src/structure-sync.test.ts:[2m739:49[22m[39m
+    [90m737|[39m   await expect(sync.updateStructure("p", request)).rejects.toMatchObje…
+    [90m738|[39m   expect(await sync.recoverStructureWrites()).toMatchObject({ recovere…
+    [90m739|[39m   expect((await sync.getStructure("p")).status).toBe("recovery_pending…
+    [90m   |[39m                                                 [31m^[39m
+    [90m740|[39m   await expect(sync.withProject("p", async (session) => { await sessio…
+    [90m741|[39m   [34mexpect[39m(f[33m.[39mdb[33m.[39m[35mget[39m([32m"approvals"[39m[33m,[39m [32m"unknown-disk"[39m))[33m.[39m[34mtoBeUndefined[39m()[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/9]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/server/src/structure-sync.test.ts[2m > [22mfolder no-op persists idempotent receipt without publication audit
+[31m[1mAssertionError[22m: promise resolved "{ projectId: 'p', …(10) }" instead of rejecting[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- Error {[39m
+[32m-   "message": "rejected promise",[39m
+[31m+ {[39m
+[31m+   "diagnostics": [],[39m
+[31m+   "document": {[39m
+[31m+     "dependencyRules": [],[39m
+[31m+     "folders": [[39m
+[31m+       {[39m
+[31m+         "extra": {[39m
+[31m+           "kept": [[39m
+[31m+             1,[39m
+[31m+             null,[39m
+[31m+           ],[39m
+[31m+         },[39m
+[31m+         "path": "src",[39m
+[31m+         "purpose": "different payload",[39m
+[31m+       },[39m
+[31m+     ],[39m
+[31m+     "schemaVersion": 1,[39m
+[31m+   },[39m
+[31m+   "fileDigest": "9577fd45ea11d9a5a77275813cd5b8e7a8b897bb623b79142e93a61abcfe46ee",[39m
+[31m+   "lastGood": {[39m
+[31m+     "document": {[39m
+[31m+       "dependencyRules": [],[39m
+[31m+       "folders": [[39m
+[31m+         {[39m
+[31m+           "extra": {[39m
+[31m+             "kept": [[39m
+[31m+               1,[39m
+[31m+               null,[39m
+[31m+             ],[39m
+[31m+           },[39m
+[31m+           "path": "src",[39m
+[31m+           "purpose": "different payload",[39m
+[31m+         },[39m
+[31m+       ],[39m
+[31m+       "schemaVersion": 1,[39m
+[31m+     },[39m
+[31m+     "fileDigest": "9577fd45ea11d9a5a77275813cd5b8e7a8b897bb623b79142e93a61abcfe46ee",[39m
+[31m+     "semanticDigest": "25da92a6ab2e0a3970df902ada5e81d2ca0e791644d8434d514a973ea8eb0860",[39m
+[31m+   },[39m
+[31m+   "legacyPendingCount": 0,[39m
+[31m+   "projectId": "p",[39m
+[31m+   "schemaVersion": 1,[39m
+[31m+   "semanticDigest": "25da92a6ab2e0a3970df902ada5e81d2ca0e791644d8434d514a973ea8eb0860",[39m
+[31m+   "status": "ready",[39m
+[31m+   "structureRevision": 2,[39m
+[31m+   "verifiedAt": "2026-10-10T16:40:15.092Z",[39m
+[2m  }[22m
+
+[36m [2m❯[22m apps/server/src/structure-sync.test.ts:[2m772:163[22m[39m
+
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/9]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/server/src/structure-sync.test.ts[2m > [22mdb_legacy no-op persists idempotent receipt without publication audit
+[31m[1mAssertionError[22m: promise resolved "{ projectId: 'p', …(10) }" instead of rejecting[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- Error {[39m
+[32m-   "message": "rejected promise",[39m
+[31m+ {[39m
+[31m+   "diagnostics": [],[39m
+[31m+   "document": {[39m
+[31m+     "dependencyRules": [],[39m
+[31m+     "folders": [[39m
+[31m+       {[39m
+[31m+         "extra": {[39m
+[31m+           "kept": [[39m
+[31m+             1,[39m
+[31m+             null,[39m
+[31m+           ],[39m
+[31m+         },[39m
+[31m+         "path": "src",[39m
+[31m+         "purpose": "different payload",[39m
+[31m+       },[39m
+[31m+     ],[39m
+[31m+     "schemaVersion": 1,[39m
+[31m+   },[39m
+[31m+   "fileDigest": "9577fd45ea11d9a5a77275813cd5b8e7a8b897bb623b79142e93a61abcfe46ee",[39m
+[31m+   "lastGood": {[39m
+[31m+     "document": {[39m
+[31m+       "dependencyRules": [],[39m
+[31m+       "folders": [[39m
+[31m+         {[39m
+[31m+           "extra": {[39m
+[31m+             "kept": [[39m
+[31m+               1,[39m
+[31m+               null,[39m
+[31m+             ],[39m
+[31m+           },[39m
+[31m+           "path": "src",[39m
+[31m+           "purpose": "different payload",[39m
+[31m+         },[39m
+[31m+       ],[39m
+[31m+       "schemaVersion": 1,[39m
+[31m+     },[39m
+[31m+     "fileDigest": "9577fd45ea11d9a5a77275813cd5b8e7a8b897bb623b79142e93a61abcfe46ee",[39m
+[31m+     "semanticDigest": "25da92a6ab2e0a3970df902ada5e81d2ca0e791644d8434d514a973ea8eb0860",[39m
+[31m+   },[39m
+[31m+   "legacyPendingCount": 1,[39m
+[31m+   "projectId": "p",[39m
+[31m+   "schemaVersion": 1,[39m
+[31m+   "semanticDigest": "25da92a6ab2e0a3970df902ada5e81d2ca0e791644d8434d514a973ea8eb0860",[39m
+[31m+   "status": "ready",[39m
+[31m+   "structureRevision": 2,[39m
+[31m+   "verifiedAt": "2026-10-10T16:40:15.250Z",[39m
+[2m  }[22m
+
+[36m [2m❯[22m apps/server/src/structure-sync.test.ts:[2m772:163[22m[39m
+
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/9]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/server/src/structure-sync.test.ts[2m > [22mfile_legacy no-op persists idempotent receipt without publication audit
+[31m[1mAssertionError[22m: promise resolved "{ projectId: 'p', …(10) }" instead of rejecting[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- Error {[39m
+[32m-   "message": "rejected promise",[39m
+[31m+ {[39m
+[31m+   "diagnostics": [],[39m
+[31m+   "document": {[39m
+[31m+     "dependencyRules": [],[39m
+[31m+     "folders": [[39m
+[31m+       {[39m
+[31m+         "extra": {[39m
+[31m+           "kept": [[39m
+[31m+             1,[39m
+[31m+             null,[39m
+[31m+           ],[39m
+[31m+         },[39m
+[31m+         "path": "src",[39m
+[31m+         "purpose": "different payload",[39m
+[31m+       },[39m
+[31m+     ],[39m
+[31m+     "schemaVersion": 1,[39m
+[31m+     "x-atlasmode": {[39m
+[31m+       "legacyPathPolicies": [[39m
+[31m+         {[39m
+[31m+           "forbiddenDependencies": [[39m
+[31m+             "private",[39m
+[31m+           ],[39m
+[31m+           "id": "old-policy",[39m
+[31m+           "pathPrefix": "src",[39m
+[31m+           "purpose": "old legacy",[39m
+[31m+         },[39m
+[31m+       ],[39m
+[31m+       "schemaVersion": 1,[39m
+[31m+     },[39m
+[31m+   },[39m
+[31m+   "fileDigest": "40d965cd89d60a6a83eba71d5156baedc5c9a033101e4ef307578aebcd9a2a7a",[39m
+[31m+   "lastGood": {[39m
+[31m+     "document": {[39m
+[31m+       "dependencyRules": [],[39m
+[31m+       "folders": [[39m
+[31m+         {[39m
+[31m+           "extra": {[39m
+[31m+             "kept": [[39m
+[31m+               1,[39m
+[31m+               null,[39m
+[31m+             ],[39m
+[31m+           },[39m
+[31m+           "path": "src",[39m
+[31m+           "purpose": "different payload",[39m
+[31m+         },[39m
+[31m+       ],[39m
+[31m+       "schemaVersion": 1,[39m
+[31m+       "x-atlasmode": {[39m
+[31m+         "legacyPathPolicies": [[39m
+[31m+           {[39m
+[31m+             "forbiddenDependencies": [[39m
+[31m+               "private",[39m
+[31m+             ],[39m
+[31m+             "id": "old-policy",[39m
+[31m+             "pathPrefix": "src",[39m
+[31m+             "purpose": "old legacy",[39m
+[31m+           },[39m
+[31m+         ],[39m
+[31m+         "schemaVersion": 1,[39m
+[31m+       },[39m
+[31m+     },[39m
+[31m+     "fileDigest": "40d965cd89d60a6a83eba71d5156baedc5c9a033101e4ef307578aebcd9a2a7a",[39m
+[31m+     "semanticDigest": "b7c66c86d1b34d42714f07b6f0828b69584e07902fbe10cd2305556f6d720479",[39m
+[31m+   },[39m
+[31m+   "legacyPendingCount": 0,[39m
+[31m+   "projectId": "p",[39m
+[31m+   "schemaVersion": 1,[39m
+[31m+   "semanticDigest": "b7c66c86d1b34d42714f07b6f0828b69584e07902fbe10cd2305556f6d720479",[39m
+[31m+   "status": "ready",[39m
+[31m+   "structureRevision": 3,[39m
+[31m+   "verifiedAt": "2026-10-10T16:40:15.404Z",[39m
+[2m  }[22m
+
+[36m [2m❯[22m apps/server/src/structure-sync.test.ts:[2m772:163[22m[39m
+
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/9]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/server/src/structure-sync.test.ts[2m > [22mempty_migration no-op persists idempotent receipt without publication audit
+[31m[1mAssertionError[22m: promise resolved "{ projectId: 'p', …(10) }" instead of rejecting[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- Error {[39m
+[32m-   "message": "rejected promise",[39m
+[31m+ {[39m
+[31m+   "diagnostics": [],[39m
+[31m+   "document": {[39m
+[31m+     "dependencyRules": [],[39m
+[31m+     "folders": [[39m
+[31m+       {[39m
+[31m+         "extra": {[39m
+[31m+           "kept": [[39m
+[31m+             1,[39m
+[31m+             null,[39m
+[31m+           ],[39m
+[31m+         },[39m
+[31m+         "path": "src",[39m
+[31m+         "purpose": "different payload",[39m
+[31m+       },[39m
+[31m+     ],[39m
+[31m+     "schemaVersion": 1,[39m
+[31m+   },[39m
+[31m+   "fileDigest": "9577fd45ea11d9a5a77275813cd5b8e7a8b897bb623b79142e93a61abcfe46ee",[39m
+[31m+   "lastGood": {[39m
+[31m+     "document": {[39m
+[31m+       "dependencyRules": [],[39m
+[31m+       "folders": [[39m
+[31m+         {[39m
+[31m+           "extra": {[39m
+[31m+             "kept": [[39m
+[31m+               1,[39m
+[31m+               null,[39m
+[31m+             ],[39m
+[31m+           },[39m
+[31m+           "path": "src",[39m
+[31m+           "purpose": "different payload",[39m
+[31m+         },[39m
+[31m+       ],[39m
+[31m+       "schemaVersion": 1,[39m
+[31m+     },[39m
+[31m+     "fileDigest": "9577fd45ea11d9a5a77275813cd5b8e7a8b897bb623b79142e93a61abcfe46ee",[39m
+[31m+     "semanticDigest": "25da92a6ab2e0a3970df902ada5e81d2ca0e791644d8434d514a973ea8eb0860",[39m
+[31m+   },[39m
+[31m+   "legacyPendingCount": 0,[39m
+[31m+   "projectId": "p",[39m
+[31m+   "schemaVersion": 1,[39m
+[31m+   "semanticDigest": "25da92a6ab2e0a3970df902ada5e81d2ca0e791644d8434d514a973ea8eb0860",[39m
+[31m+   "status": "ready",[39m
+[31m+   "structureRevision": 2,[39m
+[31m+   "verifiedAt": "2026-10-10T16:40:15.547Z",[39m
+[2m  }[22m
+
+[36m [2m❯[22m apps/server/src/structure-sync.test.ts:[2m772:163[22m[39m
+
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/9]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m9 failed[39m[22m[2m | [22m[1m[32m20 passed[39m[22m[90m (29)[39m
+[2m   Start at [22m 16:40:11
+[2m   Duration [22m 3.59s[2m (transform 236ms, setup 0ms, import 329ms, tests 3.14s, environment 0ms)[22m
+

@@ -1,0 +1,42 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90m/home/agent/projects/AtlasMode[39m
+
+ [31m❯[39m apps/web/src/features/structure/StructurePolicyPanel.test.tsx [2m([22m[2m9 tests[22m[2m | [22m[31m3 failed[39m[2m)[22m[32m 45[2mms[22m[39m
+   [32m✓[39m en retains accessible old form and explicit reread/preview/save controls[32m 17[2mms[22m[39m
+   [32m✓[39m zh retains accessible old form and explicit reread/preview/save controls[32m 2[2mms[22m[39m
+   [32m✓[39m real component conflict read is explicit and passes a distinct callback[32m 2[2mms[22m[39m
+   [32m✓[39m read-only schema metadata and diagnostics are escaped, never rendered as satisfied rules[32m 3[2mms[22m[39m
+   [32m✓[39m actual DB-only and file-extension provenance is distinct from unexecuted folder metadata[32m 3[2mms[22m[39m
+[31m   [31m×[31m existing wrapper retains knowledge busy gating without hiding old controls[39m[32m 12[2mms[22m[39m
+[31m   [31m×[31m existing wrapper retains project busy gating without hiding old controls[39m[32m 2[2mms[22m[39m
+[31m   [31m×[31m existing wrapper retains plan busy gating without hiding old controls[39m[32m 1[2mms[22m[39m
+   [32m✓[39m controlled form retains unsaved purpose and dependency input while conflict requires reread[32m 2[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 3 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/features/structure/StructurePolicyPanel.test.tsx[2m > [22mexisting wrapper retains knowledge busy gating without hiding old controls
+[41m[1m FAIL [22m[49m apps/web/src/features/structure/StructurePolicyPanel.test.tsx[2m > [22mexisting wrapper retains project busy gating without hiding old controls
+[41m[1m FAIL [22m[49m apps/web/src/features/structure/StructurePolicyPanel.test.tsx[2m > [22mexisting wrapper retains plan busy gating without hiding old controls
+[31m[1mAssertionError[22m: expected '' to contain 'aria-busy="true"'[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- aria-busy="true"[39m
+
+[36m [2m❯[22m apps/web/src/features/structure/StructurePolicyPanel.test.tsx:[2m178:18[22m[39m
+    [90m176|[39m     })[33m;[39m
+    [90m177|[39m     [35mconst[39m html [33m=[39m [34mrenderToStaticMarkup[39m([33m<[39m[33mPoliciesPanel[39m [33mapp[39m[33m=[39m[33m{[39mapp[33m}[39m [33m/[39m[33m>[39m)[33m;[39m
+    [90m178|[39m     [34mexpect[39m(html)[33m.[39m[34mtoContain[39m([32m'aria-busy="true"'[39m)[33m;[39m
+    [90m   |[39m                  [31m^[39m
+    [90m179|[39m     [34mexpect[39m(html)[33m.[39m[34mtoContain[39m([32m'<fieldset disabled=""'[39m)[33m;[39m
+    [90m180|[39m     [34mexpect[39m(html)[33m.[39m[34mtoContain[39m([32m'data-action="save"'[39m)[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m3 failed[39m[22m[2m | [22m[1m[32m6 passed[39m[22m[90m (9)[39m
+[2m   Start at [22m 18:29:50
+[2m   Duration [22m 915ms[2m (transform 391ms, setup 0ms, import 648ms, tests 45ms, environment 0ms)[22m
+

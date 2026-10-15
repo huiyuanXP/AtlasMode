@@ -1,0 +1,44 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90m/home/agent/projects/AtlasMode[39m
+
+ [31m❯[39m packages/service/src/workspace.test.ts [2m([22m[2m7 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[32m 83[2mms[22m[39m
+   [32m✓[39m an edit during approval refresh conflicts with expectedRevision and creates no approval[32m 22[2mms[22m[39m
+   [32m✓[39m refreshes serialize per project while another project progresses independently[32m 4[2mms[22m[39m
+   [32m✓[39m a failed refresh preserves prior snapshot and does not poison subsequent refresh[32m 3[2mms[22m[39m
+   [32m✓[39m unavailable source port gives an actionable domain error[32m 2[2mms[22m[39m
+   [32m✓[39m policy responsibility and constraints require renewed approval, preserve historical verification and reject old revisions[32m 28[2mms[22m[39m
+   [32m✓[39m shared group members do not move facts; group design changes invalidate only its project's plans[32m 7[2mms[22m[39m
+[31m   [31m×[31m knowledge write and every affected plan roll back together on storage failure[39m[32m 15[2mms[22m[39m
+ [32m✓[39m apps/server/src/server.test.ts [2m([22m[2m15 tests[22m[2m)[22m[33m 2882[2mms[22m[39m
+   [33m[2m✓[22m[39m health and project opening expose real indexed projects without choosing cwd implicitly [33m 496[2mms[22m[39m
+   [33m[2m✓[22m[39m domain failures map actionable unavailable errors and sanitize internal details [33m 576[2mms[22m[39m
+ [32m✓[39m apps/server/src/pol01-workspace-http.test.ts [2m([22m[2m7 tests[22m[2m)[22m[33m 8507[2mms[22m[39m
+   [33m[2m✓[22m[39m HTTP real file write, array/meta policies, stale CAS and invalid diagnostics use one service boundary [33m 473[2mms[22m[39m
+   [33m[2m✓[22m[39m owned process crash before recovers before HTTP availability without touching user files [33m 2980[2mms[22m[39m
+   [33m[2m✓[22m[39m owned process crash after recovers before HTTP availability without touching user files [33m 2923[2mms[22m[39m
+   [33m[2m✓[22m[39m owned process crash third recovers before HTTP availability without touching user files [33m 1559[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m packages/service/src/workspace.test.ts[2m > [22mknowledge write and every affected plan roll back together on storage failure
+[31m[1mAssertionError[22m: expected [Function] to throw error including 'disk failed' but got 'File is published; database synchroni…'[39m
+
+Expected: [32m"disk failed"[39m
+Received: [31m"File is published; database synchronization requires recovery."[39m
+
+[36m [2m❯[22m packages/service/src/workspace.test.ts:[2m318:3[22m[39m
+    [90m316|[39m       forbiddenDependencies[33m:[39m [][33m,[39m
+    [90m317|[39m     })[33m,[39m
+    [90m318|[39m   )[33m.[39mrejects[33m.[39m[34mtoThrow[39m([32m"disk failed"[39m)[33m;[39m
+    [90m   |[39m   [31m^[39m
+    [90m319|[39m   [34mexpect[39m(service[33m.[39m[34mlistPolicies[39m(project[33m.[39mid))[33m.[39m[34mtoEqual[39m([])[33m;[39m
+    [90m320|[39m   [34mexpect[39m(service[33m.[39m[34mgetPlan[39m(a[33m.[39mid)[33m.[39mplan[33m.[39mrevision)[33m.[39m[34mtoBe[39m([34m1[39m)[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m2 passed[39m[22m[90m (3)[39m
+[2m      Tests [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m28 passed[39m[22m[90m (29)[39m
+[2m   Start at [22m 17:04:35
+[2m   Duration [22m 11.00s[2m (transform 1.56s, setup 0ms, import 5.01s, tests 11.47s, environment 1ms)[22m
+

@@ -1,0 +1,182 @@
+[
+  {
+    "path": "apps/web/src/features/structure/PoliciesPanel.tsx",
+    "sha256": "7f25a6aefe4dc01b60e3995d003dc73e2e137b87fe3fe4aa142291541c31fca5",
+    "origin": "POL9 approved unchanged"
+  },
+  {
+    "path": "apps/web/src/features/structure/policy-controller.ts",
+    "sha256": "57b28c5e479b18f6ae96f62a437737c7da55e35ef879d1f178ff34770b25396a",
+    "origin": "POL9 approved unchanged"
+  },
+  {
+    "path": "apps/web/src/features/structure/policy-controller.test.ts",
+    "sha256": "9238a7b8cf860d03395032b672f130f4b33ac2b754f66f5895d66cc0dafe0427",
+    "origin": "POL9 approved unchanged"
+  },
+  {
+    "path": "apps/web/src/features/structure/StructurePolicyPanel.tsx",
+    "sha256": "7a377dd1680bfd8f6dd90d091f554179aee2f9136fa8a1f8919abe45217de69a",
+    "origin": "POL9 approved unchanged"
+  },
+  {
+    "path": "apps/web/src/features/structure/StructurePolicyPanel.test.tsx",
+    "sha256": "289df0ab4d6e357f461517208c3c9d8dc6c1deba4db17b4b84cc08835622de70",
+    "origin": "POL9 approved unchanged"
+  },
+  {
+    "path": "apps/web/src/api/structure-client.ts",
+    "sha256": "81e003af17b21a0f7a3b573acb8b747dd5d9022729b6283f747ef232f66cb1b8",
+    "origin": "POL9 approved unchanged"
+  },
+  {
+    "path": "apps/web/src/api/structure-client.test.ts",
+    "sha256": "daa1f25d04c8bfa105b45baf92b66200196214592460518c96227100b94276a8",
+    "origin": "POL9 approved unchanged"
+  },
+  {
+    "path": "apps/mcp/src/server.ts",
+    "sha256": "2039168ec634179df6350c3f083adf4bd6640338ba09b8c78799004317f59b04",
+    "origin": "POL9 approved unchanged"
+  },
+  {
+    "path": "apps/mcp/src/structure.test.ts",
+    "sha256": "1a51e975af1d749787cd2c22c8fd26bafd59566ead48d8684b85e038b9ed6b02",
+    "origin": "POL9 approved unchanged"
+  },
+  {
+    "path": "tests/support/pol01-acceptance.ts",
+    "sha256": "f5506eaa40d2bf29725b7506417504b74777975ae865325f3ff7790fd5116b0f",
+    "origin": "POL3 previous proof unchanged except authorized nativefixture"
+  },
+  {
+    "path": "tests/integration/pol01-stdio-acceptance.test.ts",
+    "sha256": "3ca4281f80bcbeddcf842c054b3c87748861886918a7ad79dc0050d0a97d42f6",
+    "origin": "POL3 previous proof unchanged except authorized nativefixture"
+  },
+  {
+    "path": "apps/web/src/api/client.ts",
+    "sha256": "857148cc421036173fab6d35508508048bb5916bd16e6af24a82b64d99ef8bc4",
+    "origin": "KN R2 approved unchanged except callbackWorkspace"
+  },
+  {
+    "path": "apps/web/src/app/WorkspacePanels.tsx",
+    "sha256": "1c8eb98b81080ffb4a272745f9481c2c8819e27a1f100cb79252f5d19841c4d9",
+    "origin": "KN R2 approved unchanged except callbackWorkspace"
+  },
+  {
+    "path": "apps/web/src/app/annotations-workspace-races.test.ts",
+    "sha256": "f67936359f6d2f31784ca5fdd144bd0f1c0530df3af15316749b48afa47b55af",
+    "origin": "KN R2 approved unchanged except callbackWorkspace"
+  },
+  {
+    "path": "apps/web/src/app/annotations-workspace.test.ts",
+    "sha256": "837305cea193fb0b3054bf03fb67505fea0e60227e09c074eb83ab1738c17fd9",
+    "origin": "KN R2 approved unchanged except callbackWorkspace"
+  },
+  {
+    "path": "apps/web/src/features/annotations/AnnotationHistoryView.tsx",
+    "sha256": "ccf9c1939f90d234e787fb35b3aa2e9bfef1901ab156d9f4c8492118f6bd894b",
+    "origin": "KN R2 approved unchanged except callbackWorkspace"
+  },
+  {
+    "path": "apps/web/src/features/annotations/AnnotationRecord.tsx",
+    "sha256": "fc8dfdac3cebcc537ce689239792d516eb0815bfe61394fb008f020012fe5e1f",
+    "origin": "KN R2 approved unchanged except callbackWorkspace"
+  },
+  {
+    "path": "apps/web/src/features/annotations/AnnotationsPanel.test.tsx",
+    "sha256": "2d64c884535cb2ef0377492832b460b7119b38bfb6702e25f221c92f9942906a",
+    "origin": "KN R2 approved unchanged except callbackWorkspace"
+  },
+  {
+    "path": "apps/web/src/features/annotations/AnnotationsPanel.tsx",
+    "sha256": "5e4f7ad93c750396e2bdcb6ef08c626327c29c691aa6c8c6c9ed51b142bc161d",
+    "origin": "KN R2 approved unchanged except callbackWorkspace"
+  },
+  {
+    "path": "apps/web/src/features/annotations/WorkspaceAnnotationsPanel.tsx",
+    "sha256": "beaad97c84e06425f4474568e1c2f7b56cf0e9c1a4a52995b01d52bed9bf8692",
+    "origin": "KN R2 approved unchanged except callbackWorkspace"
+  },
+  {
+    "path": "apps/web/src/features/annotations/annotations.css",
+    "sha256": "8d88d303533aeb4e782f1e3f6c793f5ca863aa21f18451d12b7321a4863fe134",
+    "origin": "KN R2 approved unchanged except callbackWorkspace"
+  },
+  {
+    "path": "apps/web/src/features/annotations/controller.test.ts",
+    "sha256": "faef2c3e6d7ef17059d0424fe660b847419a14a2d19740a5a7d3b4ea04a2dde4",
+    "origin": "KN R2 approved unchanged except callbackWorkspace"
+  },
+  {
+    "path": "apps/web/src/features/annotations/controller.ts",
+    "sha256": "98c138953b6b8e855f0484187eee7c7a4b768df024689820ea063e0d88afda38",
+    "origin": "KN R2 approved unchanged except callbackWorkspace"
+  },
+  {
+    "path": "apps/web/src/features/annotations/draft.test.ts",
+    "sha256": "49bdc1ead13208a1202a86f272806cec669255eba6b19738b73ccc878249d72e",
+    "origin": "KN R2 approved unchanged except callbackWorkspace"
+  },
+  {
+    "path": "apps/web/src/features/annotations/draft.ts",
+    "sha256": "0c3183f6e8a6cbb23c80065ff8e8cd1e6065e40e2d0ada8483b99a6154ba6427",
+    "origin": "KN R2 approved unchanged except callbackWorkspace"
+  },
+  {
+    "path": "apps/web/src/features/annotations/fixtures.test-support.ts",
+    "sha256": "02d69989fc41c2e9338c79c6cbaeafca012868a321b8551651f2e74982418afc",
+    "origin": "KN R2 approved unchanged except callbackWorkspace"
+  },
+  {
+    "path": "apps/web/src/features/annotations/history-empty.test.tsx",
+    "sha256": "5c567f9dd83391c9ee6c8af186078a9ef6751d641eced5918594fc2258651fad",
+    "origin": "KN R2 approved unchanged except callbackWorkspace"
+  },
+  {
+    "path": "apps/web/src/features/annotations/labels.ts",
+    "sha256": "6db3e79947e537d27dda6631814b07829afa1e091d54b7a20f082d81bb7ed493",
+    "origin": "KN R2 approved unchanged except callbackWorkspace"
+  },
+  {
+    "path": "apps/web/src/features/annotations/reads.ts",
+    "sha256": "4e5bd211d78d90529d992e9fc57977c321b3600d6086d604b6826f65abac26b6",
+    "origin": "KN R2 approved unchanged except callbackWorkspace"
+  },
+  {
+    "path": "apps/web/src/i18n/en.ts",
+    "sha256": "f90887bd912980d0bf887169b1b4cc2adb45a659b588c5cc0a35681d7316f8b1",
+    "origin": "KN R2 approved unchanged except callbackWorkspace"
+  },
+  {
+    "path": "apps/web/src/i18n/zh.ts",
+    "sha256": "066c685e8a80edb516a833a9701cfef932832cb5e5653887ab119690d147a159",
+    "origin": "KN R2 approved unchanged except callbackWorkspace"
+  },
+  {
+    "path": "tests/e2e/annotations.spec.ts",
+    "sha256": "ee9a085185401afa3ef616c3dc860c90cdec005faadf45ba23702fdf3ed91ff2",
+    "origin": "KN R2 approved unchanged except callbackWorkspace"
+  },
+  {
+    "path": "tests/integration/annotation-web.test.ts",
+    "sha256": "ca6ab0a1f69709c94def9b8a92e3ec2eaf4f92b101df6ef9f439e1754d822d65",
+    "origin": "KN R2 approved unchanged except callbackWorkspace"
+  },
+  {
+    "path": "packages/service/src/planning.ts",
+    "sha256": "89fdba1f61a4ba2ba9917133f99974ea7fb42a89b20bfff69975a12cd5fbc86f",
+    "origin": "whole protected backend (includes FS Planning.update unchanged)"
+  },
+  {
+    "path": "packages/service/src/workspace.ts",
+    "sha256": "b3a9f0da90de2b99fc9bdab3c086a3eab08c27081f3b2260b1aed7afd702cc3b",
+    "origin": "whole protected backend (includes FS Planning.update unchanged)"
+  },
+  {
+    "path": "packages/service/src/structure-sync.ts",
+    "sha256": "467dd4fa8ada8da7b9ed88db6bee510dc07a6f8d28d985f6785278a278e304cc",
+    "origin": "whole protected backend (includes FS Planning.update unchanged)"
+  }
+]

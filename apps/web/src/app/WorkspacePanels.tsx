@@ -1,3 +1,4 @@
+import { WorkspaceAnnotationsPanel } from "../features/annotations/WorkspaceAnnotationsPanel.js";
 import { useMemo, useState } from "react";
 import type { Operation } from "@codemap/core";
 import { useStore } from "zustand";
@@ -54,8 +55,12 @@ export function WorkspacePanels({
   onOpenProject: () => void;
 }) {
   const zh = useStrings();
+  const ownership = useStore(app.ownership.store);
+  const annotations = useStore(app.annotations.store);
   const state = useStore(app.store),
-    [tab, setTab] = useState<"chat" | "source" | "plan" | "verify">("chat"),
+    [tab, setTab] = useState<
+      "chat" | "source" | "plan" | "verify" | "annotations"
+    >("chat"),
     [planningChatOpen, setPlanningChatOpen] = useState(false),
     [edge, setEdge] = useState<EdgeReference>(),
     [relationType, setRelationType] =
@@ -68,6 +73,18 @@ export function WorkspacePanels({
   const busy = Object.values(state.busy).some(Boolean),
     planBusy =
       !!state.busy.plan || !!state.busy.project || !!state.busy.knowledge;
+  const capture = app.capturePlan();
+  const ownershipReady =
+    !!capture &&
+    !!plan &&
+    plan.plan.status !== "stale" &&
+    plan.plan.baselineSnapshotId === capture.snapshotId &&
+    plan.plan.baselineContentHash === capture.snapshotHash &&
+    !planBusy &&
+    !state.dirtyPlanEditor &&
+    !state.groupSelectionMode &&
+    !state.groupDraft;
+  const draftBlocked = state.dirtyPlanEditor || !!ownership.intent;
   const connect = (
     source: string,
     target: string,
@@ -208,10 +225,28 @@ export function WorkspacePanels({
           }}
         />
         <div className="graph-toolbar">
+          <div className="button-row" aria-label={zh.ownershipMode}>
+            <button
+              type="button"
+              aria-pressed={ownership.mode === "layout"}
+              disabled={ownership.status === "saving"}
+              onClick={() => void app.ownership.setMode("layout")}
+            >
+              {zh.ownershipLayout}
+            </button>
+            <button
+              type="button"
+              aria-pressed={ownership.mode === "ownership"}
+              disabled={!ownershipReady || ownership.status === "saving"}
+              onClick={() => void app.ownership.setMode("ownership")}
+            >
+              {zh.ownershipMode}
+            </button>
+          </div>
           <button
             type="button"
             aria-pressed={state.groupSelectionMode}
-            disabled={!!state.busy.project}
+            disabled={!!state.busy.project || ownership.mode === "ownership"}
             onClick={() => app.setGroupSelectionMode(!state.groupSelectionMode)}
           >
             {state.groupSelectionMode
@@ -239,7 +274,7 @@ export function WorkspacePanels({
           <label>
             {zh.relationType}
             <select
-              disabled={!plan || planBusy}
+              disabled={!plan || planBusy || annotations.executionBlocked}
               value={relationType}
               onChange={(e) =>
                 setRelationType(e.target.value as PlannedRelation["type"])
@@ -268,6 +303,20 @@ export function WorkspacePanels({
           projectId={project.id}
           selectedNodeId={state.selectedNode?.id}
           groups={state.groups}
+          ownershipMode={ownership.mode === "ownership"}
+          ownershipEnabled={ownershipReady}
+          onOwnershipStart={app.beginOwnership}
+          onOwnershipEnd={app.ownership.endDrag}
+          onOwnershipDrop={(node, nonce) => {
+            if (
+              (node.kind === "file" || node.kind === "folder") &&
+              node.filePath
+            )
+              app.ownership.choose(
+                { kind: node.kind, path: node.filePath, id: node.id },
+                nonce,
+              );
+          }}
           onToggleGroup={app.toggleGroupCollapse}
           groupSelectionMode={state.groupSelectionMode}
           groupSelectionIds={state.groupSelection.map((n) => n.id)}
@@ -331,7 +380,7 @@ export function WorkspacePanels({
             setEdge(undefined);
           }}
           onExitFunnel={app.exitFunnel}
-          canEdit={!!plan && !planBusy}
+          canEdit={!!plan && !planBusy && ownership.mode !== "ownership"}
           relationType={relationType}
           onSelect={(n) => {
             if (n.kind === "folder")
@@ -374,6 +423,14 @@ export function WorkspacePanels({
             );
           }}
         />
+        {annotations.executionBlocked && tab !== "annotations" && (
+          <div role="status">
+            <p>{zh.annotationExecutionBlocked}</p>
+            <button type="button" onClick={() => setTab("annotations")}>
+              {zh.annotationRecover}
+            </button>
+          </div>
+        )}
         <nav className="tabs">
           {tab !== "chat" && (
             <button onClick={() => setTab("chat")}>{zh.backToChat}</button>
@@ -397,6 +454,13 @@ export function WorkspacePanels({
           >
             {zh.verifyTab}
           </button>
+          <button
+            type="button"
+            aria-pressed={tab === "annotations"}
+            onClick={() => setTab("annotations")}
+          >
+            {zh.annotationsTab}
+          </button>
         </nav>
         <div className="inspector-scroll">
           {tab === "chat" && (
@@ -404,7 +468,7 @@ export function WorkspacePanels({
               plans={state.plans}
               detail={plan}
               nodes={candidates}
-              busy={planBusy}
+              busy={planBusy || draftBlocked || annotations.executionBlocked}
               canUndo={!!state.history?.past.length}
               canRedo={!!state.history?.future.length}
               onChoose={(id) => {
@@ -453,20 +517,23 @@ export function WorkspacePanels({
             />
           </details>
           {tab === "source" && (
-            <Inspector
-              key={state.selectedNode?.id ?? "none"}
-              node={state.selectedNode}
-              source={state.source}
-              context={state.context}
-              busy={!!state.busy.inspect}
-              onPage={(offset) => {
-                if (state.selectedNode) void app.pageInspection(offset);
-              }}
-              onExpand={(budget) => {
-                if (state.selectedNode)
-                  void app.expand(state.selectedNode.id, 1, budget);
-              }}
-            />
+            <>
+              <p className="muted">{zh.ownershipLiveSource}</p>
+              <Inspector
+                key={state.selectedNode?.id ?? "none"}
+                node={state.selectedNode}
+                source={state.source}
+                context={state.context}
+                busy={!!state.busy.inspect}
+                onPage={(offset) => {
+                  if (state.selectedNode) void app.pageInspection(offset);
+                }}
+                onExpand={(budget) => {
+                  if (state.selectedNode)
+                    void app.expand(state.selectedNode.id, 1, budget);
+                }}
+              />
+            </>
           )}
           {tab === "plan" && (
             <>
@@ -491,15 +558,16 @@ export function WorkspacePanels({
                 node={state.selectedNode}
                 nodes={candidates}
                 edge={edge}
-                busy={planBusy || !summary}
+                busy={planBusy || !summary || !!ownership.intent}
                 onChoose={(id) => {
                   setEdge(undefined);
                   void app.choosePlan(id);
                 }}
                 onCreate={(title) => void app.createPlan(title)}
-                onSave={(ops, title, description) =>
-                  void app.savePlan(ops, title, description)
-                }
+                onSave={(ops, title, description) => {
+                  if (capture)
+                    void app.savePlanCaptured(capture, ops, title, description);
+                }}
                 onValidate={() => void app.validate()}
                 onApprove={() => void app.approve()}
                 onExport={(format) => void app.exportPlan(format, download)}
@@ -507,6 +575,9 @@ export function WorkspacePanels({
                 onDirtyChange={app.setPlanEditorDirty}
               />
             </>
+          )}
+          {tab === "annotations" && (
+            <WorkspaceAnnotationsPanel app={app} locale={state.view.locale} />
           )}
           {tab === "verify" && (
             <VerificationPanel

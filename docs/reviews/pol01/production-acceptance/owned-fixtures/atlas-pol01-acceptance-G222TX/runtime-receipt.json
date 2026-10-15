@@ -1,0 +1,20 @@
+{
+  "root": "/tmp/atlas-pol01-acceptance-G222TX",
+  "database": "/tmp/atlas-pol01-acceptance-G222TX/data/atlasmode.sqlite",
+  "rootCleanup": "retained-evidence",
+  "sourceDigest": "44e0982121fb3a04763cd3ac0d15ffe98ae2dfb07ab174336aa6aa156d215a06",
+  "records": [
+    {
+      "kind": "server",
+      "mode": "source",
+      "pid": 127349,
+      "port": 34941,
+      "exit": [
+        0,
+        null
+      ],
+      "portClosed": true,
+      "output": "AtlasMode API listening on 127.0.0.1:34941 (built web assets available)\n"
+    }
+  ]
+}

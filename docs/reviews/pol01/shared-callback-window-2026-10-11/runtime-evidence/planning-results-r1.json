@@ -1,0 +1,172 @@
+{
+  "config": {
+    "argv": [
+      "/home/agent/.node/node-v24.19.0-linux-x64/bin/node",
+      "/tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/node_modules/.bin/playwright",
+      "test",
+      "tests/e2e/planning.spec.mjs",
+      "--output",
+      "../planning-results-r1",
+      "--reporter",
+      "list,json"
+    ],
+    "configFile": "/tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/playwright.config.ts",
+    "rootDir": "/tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/tests/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/tmp/atlas-pol01-callback-20261011-40dxsb3i/planning-results-r1",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "",
+        "name": "",
+        "testDir": "/tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 120000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list"
+      ],
+      [
+        "json"
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.63.0",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "planning.spec.mjs",
+      "file": "planning.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "production UI and SDK share the complete planning, approval, persistence and verification flow offline",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 29332,
+                  "error": {
+                    "message": "TimeoutError: locator.selectOption: Timeout 15000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('combobox', { name: 'Edit policy', exact: true })\u001b[22m\n\u001b[2m    - locator resolved to <select aria-label=\"Edit policy\">…</select>\u001b[22m\n\u001b[2m  - attempting select option action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible and enabled\u001b[22m\n\u001b[2m      - did not find some options\u001b[22m\n\u001b[2m    - retrying select option action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible and enabled\u001b[22m\n\u001b[2m      - did not find some options\u001b[22m\n\u001b[2m    - retrying select option action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    29 × waiting for element to be visible and enabled\u001b[22m\n\u001b[2m       - did not find some options\u001b[22m\n\u001b[2m     - retrying select option action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n",
+                    "stack": "TimeoutError: locator.selectOption: Timeout 15000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('combobox', { name: 'Edit policy', exact: true })\u001b[22m\n\u001b[2m    - locator resolved to <select aria-label=\"Edit policy\">…</select>\u001b[22m\n\u001b[2m  - attempting select option action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible and enabled\u001b[22m\n\u001b[2m      - did not find some options\u001b[22m\n\u001b[2m    - retrying select option action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible and enabled\u001b[22m\n\u001b[2m      - did not find some options\u001b[22m\n\u001b[2m    - retrying select option action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    29 × waiting for element to be visible and enabled\u001b[22m\n\u001b[2m       - did not find some options\u001b[22m\n\u001b[2m     - retrying select option action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\n    at /tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/tests/e2e/planning.spec.mjs:495:8",
+                    "location": {
+                      "file": "/tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/tests/e2e/planning.spec.mjs",
+                      "column": 8,
+                      "line": 495
+                    },
+                    "snippet": "  493 |         exact: true,\n  494 |       })\n> 495 |       .selectOption(`legacy:${policy.id}`);\n      |        ^\n  496 |     await page\n  497 |       .getByLabel(\"Forbidden dependencies\", {\n  498 |         exact: true,"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/tests/e2e/planning.spec.mjs",
+                        "column": 8,
+                        "line": 495
+                      },
+                      "message": "TimeoutError: locator.selectOption: Timeout 15000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('combobox', { name: 'Edit policy', exact: true })\u001b[22m\n\u001b[2m    - locator resolved to <select aria-label=\"Edit policy\">…</select>\u001b[22m\n\u001b[2m  - attempting select option action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible and enabled\u001b[22m\n\u001b[2m      - did not find some options\u001b[22m\n\u001b[2m    - retrying select option action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible and enabled\u001b[22m\n\u001b[2m      - did not find some options\u001b[22m\n\u001b[2m    - retrying select option action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    29 × waiting for element to be visible and enabled\u001b[22m\n\u001b[2m       - did not find some options\u001b[22m\n\u001b[2m     - retrying select option action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\n\n  493 |         exact: true,\n  494 |       })\n> 495 |       .selectOption(`legacy:${policy.id}`);\n      |        ^\n  496 |     await page\n  497 |       .getByLabel(\"Forbidden dependencies\", {\n  498 |         exact: true,\n    at /tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/tests/e2e/planning.spec.mjs:495:8"
+                    }
+                  ],
+                  "stdout": [
+                    {
+                      "text": "{\"requestedRelation\":\"plan:new-call\",\"clickedRoute\":{\"x\":674.6982168263639,\"y\":359.78514420986176,\"visualRoute\":\"rf__edge-plan:new-call\"}}\n"
+                    },
+                    {
+                      "text": "{\"requestedRelation\":\"fact:relation:8f15a18327d3a22e2d1893f630c267c6\",\"clickedRoute\":{\"x\":967.0816083700174,\"y\":276.9426691979395,\"visualRoute\":\"rf__edge-group-edge:fact:relation:8f15a18327d3a22e2d1893f630c267c6:0\"}}\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-11T01:48:28.785Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "joint-flow-evidence",
+                      "contentType": "application/json",
+                      "body": "ewogICJlcnJvcnMiOiBbXSwKICAiZXh0ZXJuYWwiOiBbXSwKICAiY2xpcGJvYXJkIjogImFjdHVhbCBuYXZpZ2F0b3IuY2xpcGJvYXJkLnJlYWRUZXh0IGluIENocm9taXVtIgp9"
+                    },
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/tmp/atlas-pol01-callback-20261011-40dxsb3i/planning-results-r1/planning-production-UI-and-0ffc9-d-verification-flow-offline/test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/tmp/atlas-pol01-callback-20261011-40dxsb3i/planning-results-r1/planning-production-UI-and-0ffc9-d-verification-flow-offline/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/tmp/atlas-pol01-callback-20261011-40dxsb3i/planning-results-r1/planning-production-UI-and-0ffc9-d-verification-flow-offline/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/tmp/atlas-pol01-callback-20261011-40dxsb3i/workspace/tests/e2e/planning.spec.mjs",
+                    "column": 8,
+                    "line": 495
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "29288311451816bbf8b3-6832f790e4a8238f5b69",
+          "file": "planning.spec.mjs",
+          "line": 18,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-10-11T01:48:26.820Z",
+    "duration": 32922.75,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 1,
+    "flaky": 0
+  }
+}

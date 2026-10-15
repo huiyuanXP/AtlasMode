@@ -1,0 +1,152 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90m/home/agent/projects/AtlasMode[39m
+
+ [31m❯[39m packages/storage/src/structure-file.test.ts [2m([22m[2m11 tests[22m[2m | [22m[31m11 failed[39m[2m)[22m[33m 5043[2mms[22m[39m
+[31m   [31m×[31m reads actual bytes digest and missing null[39m[32m 10[2mms[22m[39m
+[31m   [31m×[31m oversize and invalid UTF8 retain stable actual digest and do not mutate[39m[32m 7[2mms[22m[39m
+[31m   [31m×[31m rejects symlink metadata directory and file[39m[32m 11[2mms[22m[39m
+[31m   [31m×[31m prepublication open failure leaves original exact bytes[39m[32m 3[2mms[22m[39m
+[31m   [31m×[31m prepublication writeFile failure leaves original exact bytes[39m[32m 1[2mms[22m[39m
+[31m   [31m×[31m prepublication sync failure leaves original exact bytes[39m[32m 1[2mms[22m[39m
+[31m   [31m×[31m prepublication close failure leaves original exact bytes[39m[32m 1[2mms[22m[39m
+[31m   [31m×[31m prepublication rename failure leaves original exact bytes[39m[32m 1[2mms[22m[39m
+[31m   [31m×[31m postpublication directory sync failure cannot report unmodified original[39m[32m 1[2mms[22m[39m
+[31m   [31m×[31m digest recheck detects external update before publication[39m[32m 1[2mms[22m[39m
+[31m   [31m×[31m concurrent readers see complete old or new JSON and original permissions persist[39m[33m 5002[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 11 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m packages/storage/src/structure-file.test.ts[2m > [22mreads actual bytes digest and missing null
+[31m[1mError[22m: POL-01 file read not implemented[39m
+[36m [2m❯[22m StructureFileStore.read packages/storage/src/structure-file.ts:[2m3:53[22m[39m
+    [90m  1|[39m [35mexport[39m [35mclass[39m [33mStructureFileStore[39m {
+    [90m  2|[39m   [34mconstructor[39m(_options[33m:[39m unknown [33m=[39m {}) {}
+    [90m  3|[39m   async read(_root: string): Promise<never> { throw new Error("POL-01 …
+    [90m   |[39m                                                     [31m^[39m
+    [90m  4|[39m   async publish(_root: string, _input: unknown): Promise<never> { thro…
+    [90m  5|[39m }
+[90m [2m❯[22m packages/storage/src/structure-file.test.ts:[2m25:22[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/11]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m packages/storage/src/structure-file.test.ts[2m > [22moversize and invalid UTF8 retain stable actual digest and do not mutate
+[31m[1mError[22m: POL-01 file read not implemented[39m
+[36m [2m❯[22m StructureFileStore.read packages/storage/src/structure-file.ts:[2m3:53[22m[39m
+    [90m  1|[39m [35mexport[39m [35mclass[39m [33mStructureFileStore[39m {
+    [90m  2|[39m   [34mconstructor[39m(_options[33m:[39m unknown [33m=[39m {}) {}
+    [90m  3|[39m   async read(_root: string): Promise<never> { throw new Error("POL-01 …
+    [90m   |[39m                                                     [31m^[39m
+    [90m  4|[39m   async publish(_root: string, _input: unknown): Promise<never> { thro…
+    [90m  5|[39m }
+[90m [2m❯[22m packages/storage/src/structure-file.test.ts:[2m32:30[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/11]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m packages/storage/src/structure-file.test.ts[2m > [22mrejects symlink metadata directory and file
+[31m[1mAssertionError[22m: expected Error: POL-01 file read not implemented to match object { code: 'INVALID_PATH' }[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- {[39m
+[32m-   "code": "INVALID_PATH",[39m
+[31m+ Error {[39m
+[31m+   "message": "POL-01 file read not implemented",[39m
+[2m  }[22m
+
+[36m [2m❯[22m packages/storage/src/structure-file.test.ts:[2m43:38[22m[39m
+    [90m 41|[39m   const linkedRoot = await fs.mkdtemp(join(tmpdir(), "atlas-pol01-link…
+    [90m 42|[39m   [35mawait[39m fs[33m.[39m[34msymlink[39m(outside[33m,[39m [34mjoin[39m(linkedRoot[33m,[39m [32m".codemap"[39m)[33m,[39m [32m"dir"[39m)[33m;[39m
+    [90m 43|[39m   await expect(store.read(linkedRoot)).rejects.toMatchObject({ code: "…
+    [90m   |[39m                                      [31m^[39m
+    [90m 44|[39m   await fs.unlink(path); await fs.symlink(join(outside, "not-a-target"…
+    [90m 45|[39m   await expect(store.read(root)).rejects.toMatchObject({ code: "INVALI…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/11]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m packages/storage/src/structure-file.test.ts[2m > [22mprepublication open failure leaves original exact bytes
+[41m[1m FAIL [22m[49m packages/storage/src/structure-file.test.ts[2m > [22mprepublication writeFile failure leaves original exact bytes
+[41m[1m FAIL [22m[49m packages/storage/src/structure-file.test.ts[2m > [22mprepublication sync failure leaves original exact bytes
+[41m[1m FAIL [22m[49m packages/storage/src/structure-file.test.ts[2m > [22mprepublication close failure leaves original exact bytes
+[41m[1m FAIL [22m[49m packages/storage/src/structure-file.test.ts[2m > [22mprepublication rename failure leaves original exact bytes
+[31m[1mError[22m: POL-01 atomic publish not implemented[39m
+[36m [2m❯[22m StructureFileStore.publish packages/storage/src/structure-file.ts:[2m4:73[22m[39m
+    [90m  2|[39m   [34mconstructor[39m(_options[33m:[39m unknown [33m=[39m {}) {}
+    [90m  3|[39m   async read(_root: string): Promise<never> { throw new Error("POL-01 …
+    [90m  4|[39m   async publish(_root: string, _input: unknown): Promise<never> { thro…
+    [90m   |[39m                                                                         [31m^[39m
+    [90m  5|[39m }
+    [90m  6|[39m
+[90m [2m❯[22m packages/storage/src/structure-file.test.ts:[2m70:30[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/11]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m packages/storage/src/structure-file.test.ts[2m > [22mpostpublication directory sync failure cannot report unmodified original
+[31m[1mError[22m: POL-01 atomic publish not implemented[39m
+[36m [2m❯[22m StructureFileStore.publish packages/storage/src/structure-file.ts:[2m4:73[22m[39m
+    [90m  2|[39m   [34mconstructor[39m(_options[33m:[39m unknown [33m=[39m {}) {}
+    [90m  3|[39m   async read(_root: string): Promise<never> { throw new Error("POL-01 …
+    [90m  4|[39m   async publish(_root: string, _input: unknown): Promise<never> { thro…
+    [90m   |[39m                                                                         [31m^[39m
+    [90m  5|[39m }
+    [90m  6|[39m
+[90m [2m❯[22m packages/storage/src/structure-file.test.ts:[2m86:30[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/11]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m packages/storage/src/structure-file.test.ts[2m > [22mdigest recheck detects external update before publication
+[31m[1mError[22m: POL-01 atomic publish not implemented[39m
+[36m [2m❯[22m StructureFileStore.publish packages/storage/src/structure-file.ts:[2m4:73[22m[39m
+    [90m  2|[39m   [34mconstructor[39m(_options[33m:[39m unknown [33m=[39m {}) {}
+    [90m  3|[39m   async read(_root: string): Promise<never> { throw new Error("POL-01 …
+    [90m  4|[39m   async publish(_root: string, _input: unknown): Promise<never> { thro…
+    [90m   |[39m                                                                         [31m^[39m
+    [90m  5|[39m }
+    [90m  6|[39m
+[90m [2m❯[22m packages/storage/src/structure-file.test.ts:[2m99:22[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/11]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m packages/storage/src/structure-file.test.ts[2m > [22mconcurrent readers see complete old or new JSON and original permissions persist
+[31m[1mError[22m: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".[39m
+[36m [2m❯[22m packages/storage/src/structure-file.test.ts:[2m102:1[22m[39m
+    [90m100|[39m   [34mexpect[39m([35mawait[39m fs[33m.[39m[34mreadFile[39m(path))[33m.[39m[34mtoEqual[39m([34mbytes[39m([32m"external"[39m))[33m;[39m
+    [90m101|[39m })[33m;[39m
+    [90m102|[39m test("concurrent readers see complete old or new JSON and original per…
+    [90m   |[39m [31m^[39m
+    [90m103|[39m   const { root, path, original } = await fixture(), entered = gate(), …
+    [90m104|[39m   [35mawait[39m fs[33m.[39m[34mchmod[39m(path[33m,[39m [34m0o640[39m)[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/11]⎯[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯[39m[1m[41m Unhandled Errors [49m[22m[31m⎯⎯⎯⎯⎯⎯[39m
+[31m[1m
+Vitest caught 1 unhandled error during the test run.
+This might cause false positive tests. Resolve unhandled errors to make sure your tests are not affected.[22m[39m
+
+[31m⎯⎯⎯⎯[39m[1m[41m Unhandled Rejection [49m[22m[31m⎯⎯⎯⎯⎯[39m
+[31m[1mError[22m: POL-01 atomic publish not implemented[39m
+[36m [2m❯[22m StructureFileStore.publish packages/storage/src/structure-file.ts:[2m4:73[22m[39m
+    [90m  2|[39m   [34mconstructor[39m(_options[33m:[39m unknown [33m=[39m {}) {}
+    [90m  3|[39m   async read(_root: string): Promise<never> { throw new Error("POL-01 …
+    [90m  4|[39m   async publish(_root: string, _input: unknown): Promise<never> { thro…
+    [90m   |[39m                                                                         [31m^[39m
+    [90m  5|[39m }
+    [90m  6|[39m
+[90m [2m❯[22m packages/storage/src/structure-file.test.ts:[2m110:28[22m[39m
+[90m [2m❯[22m node_modules/@vitest/runner/dist/chunk-artifact.js:[2m1903:20[22m[39m
+
+[31mThis error originated in "[1mpackages/storage/src/structure-file.test.ts[22m" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.[39m
+[31mThe latest test that might've caused the error is "[1mconcurrent readers see complete old or new JSON and original permissions persist[22m". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.[39m
+[31m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m11 failed[39m[22m[90m (11)[39m
+[2m     Errors [22m [1m[31m1 error[39m[22m
+[2m   Start at [22m 15:59:19
+[2m   Duration [22m 5.44s[2m (transform 111ms, setup 0ms, import 159ms, tests 5.04s, environment 0ms)[22m
+

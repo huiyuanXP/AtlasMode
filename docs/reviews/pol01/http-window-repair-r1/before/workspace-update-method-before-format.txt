@@ -1,0 +1,12 @@
+  updatePlan(
+    id: string,
+    input: {
+      expectedRevision: number;
+      expectedSnapshotId?: string;
+      operations: Operation[];
+      title?: string;
+      description?: string;
+    },
+  ): PlanDetail {
+    return this.planning.update(id, input);
+  }

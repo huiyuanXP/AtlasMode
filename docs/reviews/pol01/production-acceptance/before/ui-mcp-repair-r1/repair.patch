@@ -1,0 +1,450 @@
+--- a/apps/web/src/features/structure/policy-controller.ts
++++ b/apps/web/src/features/structure/policy-controller.ts
+@@ -45,7 +45,7 @@
+   error?: { code: string; message: string };
+   needsReload: boolean;
+   retryAvailable: boolean;
+-  notice?: "saved";
++  notice?: "saved" | "imported";
+ };
+ type Request = {
+   projectId: string;
+@@ -106,6 +106,7 @@
+   };
+   async function submit(r: Request) {
+     if (!current(r.epoch)) return;
++    const token = ++generation;
+     request = r;
+     store.setState({
+       busy: true,
+@@ -127,7 +128,7 @@
+             expectedFileDigest: r.input.expectedFileDigest,
+           })
+         : api.writeStructure(r.projectId, r.input));
+-      if (!current(r.epoch)) return;
++      if (!current(r.epoch, token)) return;
+       if (result.projectId !== r.projectId)
+         throw new StructureClientError(
+           "PROJECT_MISMATCH",
+@@ -152,12 +153,12 @@
+       }
+       request = undefined;
+       store.setState({
+-        busy: false,
++        busy: true,
+         draft: acknowledged,
+-        dirty: false,
++        dirty: op.kind === "importLegacy" ? store.getState().dirty : false,
+         needsReload: true,
+         retryAvailable: false,
+-        notice: "saved",
++        notice: op.kind === "importLegacy" ? "imported" : "saved",
+       });
+       try {
+         await onAccepted({
+@@ -167,7 +168,7 @@
+           result,
+         });
+       } catch (e) {
+-        if (current(r.epoch))
++        if (current(r.epoch, token))
+           store.setState({
+             error: {
+               code: "WORKSPACE_SYNC_REQUIRED",
+@@ -175,9 +176,11 @@
+                 e instanceof Error ? e.message : "Workspace refresh required.",
+             },
+           });
++      } finally {
++        if (current(r.epoch, token)) store.setState({ busy: false });
+       }
+     } catch (e) {
+-      if (!current(r.epoch)) return;
++      if (!current(r.epoch, token)) return;
+       const terminal =
+         e instanceof StructureClientError &&
+         e.status !== undefined &&
+@@ -226,14 +229,13 @@
+       if (!s.projectId || s.busy) return;
+       const epoch = s.epoch,
+         read = ++generation;
+-      request = undefined;
++      const retained = request;
+       store.setState({
+         busy: true,
+         error: undefined,
+         preview: undefined,
+         retryAvailable: false,
+         needsReload: true,
+-        notice: undefined,
+       });
+       try {
+         const snapshot = await api.readState(
+@@ -264,6 +266,7 @@
+             snapshot,
+             capture: undefined,
+             needsReload: true,
++            retryAvailable: !!retained && request === retained,
+           });
+           return;
+         }
+@@ -315,7 +318,16 @@
+             e instanceof Error ? e.message : "Workspace refresh required.",
+           );
+         }
+-        if (current(epoch, read)) store.setState({ busy: false });
++        if (current(epoch, read)) {
++          // A read attempt is not resolution: keep unknown input until the
++          // matched state/policies and accepted-read callback all succeeded.
++          if (request === retained) request = undefined;
++          store.setState({
++            busy: false,
++            retryAvailable: false,
++            notice: undefined,
++          });
++        }
+       } catch (e) {
+         if (current(epoch, read))
+           store.setState({
+@@ -323,6 +335,7 @@
+             error: error(e),
+             capture: undefined,
+             needsReload: true,
++            retryAvailable: !!retained && request === retained,
+           });
+       }
+     },
+--- a/apps/web/src/features/structure/policy-controller.test.ts
++++ b/apps/web/src/features/structure/policy-controller.test.ts
+@@ -353,3 +353,250 @@
+   expect(c.store.getState().projectId).toBe("b");
+   expect(c.store.getState().capture).toBeUndefined();
+ });
++
++test.each(["legacy:db-only", "folder:src"])(
++  "I1 migration ACK preserves unsent dirty %s draft B",
++  async (selection) => {
++    const { c, api, accepted } = fixture();
++    await c.reload();
++    c.choose(selection);
++    c.edit({
++      path: "local/B",
++      purpose: "local unsent B",
++      forbidden: "one\ntwo",
++    });
++    const before = structuredClone(c.store.getState().draft);
++    await c.previewLegacy();
++    await c.importLegacy();
++    expect(api.writeStructure.mock.calls[0]?.[1].operation).toEqual({
++      kind: "importLegacy",
++    });
++    expect(c.store.getState().draft).toEqual(before);
++    expect(c.store.getState().dirty).toBe(true);
++    expect(c.store.getState().notice).toBe("imported");
++    expect(accepted.mock.calls[0]?.[0].operation).toEqual({
++      kind: "importLegacy",
++    });
++  },
++);
++test.each(["state", "policies", "accepted"])(
++  "I2 unknown write retains immutable replay after failed %s reread",
++  async (failure) => {
++    const { api } = fixture();
++    let failAccepted = false;
++    const uuidFactory = vi
++      .fn()
++      .mockReturnValueOnce(uuid)
++      .mockReturnValue("00000000-0000-4000-8000-000000000002");
++    const c = createPolicyController(
++      api,
++      () => {},
++      uuidFactory,
++      () => {
++        if (failAccepted) throw Error("sync unavailable");
++      },
++    );
++    c.selectProject("a");
++    await c.reload();
++    c.edit({ path: "local/B", purpose: "unsent B", forbidden: "one\ntwo" });
++    api.savePolicy
++      .mockRejectedValueOnce(new Error("ACK lost"))
++      .mockResolvedValueOnce({
++        id: "actual-id",
++        projectId: "a",
++        pathPrefix: "local/B",
++        purpose: "unsent B",
++        forbiddenDependencies: ["one", "two"],
++      });
++    await c.save();
++    const original = structuredClone(api.savePolicy.mock.calls[0]);
++    const draft = structuredClone(c.store.getState().draft);
++    if (failure === "state")
++      api.readState.mockRejectedValueOnce(Error("read unavailable"));
++    if (failure === "policies")
++      api.readPolicies.mockRejectedValueOnce(Error("list unavailable"));
++    if (failure === "accepted") failAccepted = true;
++    await c.reload();
++    expect(c.store.getState().retryAvailable).toBe(true);
++    c.edit({ purpose: "must not replace uncertain input" });
++    c.choose("new-policy");
++    expect(c.store.getState().draft).toEqual(draft);
++    await c.save();
++    expect(api.savePolicy).toHaveBeenCalledTimes(1);
++    await c.retry();
++    expect(api.savePolicy.mock.calls[1]).toEqual(original);
++    expect(uuidFactory).toHaveBeenCalledTimes(1);
++    expect(c.store.getState().draft.id).toBe("actual-id");
++    expect(c.store.getState().retryAvailable).toBe(false);
++  },
++);
++test("M1 write callback keeps busy through known ACK and blocks concurrent public reload/edit", async () => {
++  const { api } = fixture();
++  const entered = hold<void>(),
++    release = hold<void>();
++  const c = createPolicyController(api, () => {
++    entered.resolve();
++    return release.promise;
++  });
++  c.selectProject("a");
++  await c.reload();
++  c.edit({ purpose: "submitted" });
++  const save = c.save();
++  await entered.promise;
++  expect(c.store.getState().busy).toBe(true);
++  expect(c.store.getState().notice).toBe("saved");
++  expect(c.store.getState().retryAvailable).toBe(false);
++  await c.reload();
++  expect(api.readState).toHaveBeenCalledTimes(1);
++  const acknowledged = structuredClone(c.store.getState().draft);
++  c.edit({ purpose: "blocked" });
++  expect(c.store.getState().draft).toEqual(acknowledged);
++  release.resolve();
++  await save;
++  expect(c.store.getState().busy).toBe(false);
++});
++test("M1 known ACK then sync rejection stays saved, exposes reread and never retries publication", async () => {
++  const { api } = fixture();
++  const c = createPolicyController(api, () =>
++    Promise.reject(Error("shared sync failed")),
++  );
++  c.selectProject("a");
++  await c.reload();
++  await c.save();
++  expect(c.store.getState()).toMatchObject({
++    busy: false,
++    notice: "saved",
++    needsReload: true,
++    retryAvailable: false,
++    error: { code: "WORKSPACE_SYNC_REQUIRED" },
++  });
++  await c.retry();
++  expect(api.savePolicy).toHaveBeenCalledTimes(1);
++  await c.reload();
++  expect(c.store.getState().error).toBeUndefined();
++  expect(c.store.getState().needsReload).toBe(false);
++});
++test("M1 superseded same-epoch callback rejection cannot overwrite a newer accepted read", async () => {
++  const { api } = fixture();
++  const entered = hold<void>();
++  let reject!: (reason: Error) => void;
++  const callback = new Promise<void>((_, r) => {
++    reject = r;
++  });
++  const c = createPolicyController(api, () => {
++    entered.resolve();
++    return callback;
++  });
++  c.selectProject("a");
++  await c.reload();
++  const save = c.save();
++  await entered.promise;
++  // The store is publicly exposed; force an external supersession to exercise the token guard even though normal public reload is busy-blocked.
++  c.store.setState({ busy: false });
++  await c.reload();
++  expect(c.store.getState().needsReload).toBe(false);
++  reject(Error("old callback failure"));
++  await save;
++  expect(c.store.getState().error).toBeUndefined();
++  expect(c.store.getState().needsReload).toBe(false);
++});
++
++test("I2 quarantined reread is not full resolution of unknown write", async () => {
++  const { c, api, set } = fixture();
++  await c.reload();
++  c.edit({ purpose: "local B" });
++  api.savePolicy.mockRejectedValueOnce(Error("ACK lost"));
++  await c.save();
++  const before = structuredClone(c.store.getState().draft);
++  set({ ...state(), status: "recovery_pending" });
++  await c.reload();
++  expect(c.store.getState().retryAvailable).toBe(true);
++  c.edit({ purpose: "blocked" });
++  expect(c.store.getState().draft).toEqual(before);
++  await c.retry();
++  expect(api.savePolicy.mock.calls[1]).toEqual(api.savePolicy.mock.calls[0]);
++});
++test("I2 complete accepted reread resolves replay and permits explicit edit of the observed existing policy", async () => {
++  const { api } = fixture();
++  const uuids = vi
++    .fn()
++    .mockReturnValueOnce(uuid)
++    .mockReturnValue("00000000-0000-4000-8000-000000000002");
++  const c = createPolicyController(api, () => {}, uuids);
++  c.selectProject("a");
++  await c.reload();
++  c.edit({ purpose: "local B" });
++  api.savePolicy.mockRejectedValueOnce(Error("ACK lost"));
++  await c.save();
++  api.readPolicies.mockResolvedValueOnce({
++    policies: [
++      {
++        id: "observed-created",
++        projectId: "a",
++        pathPrefix: "",
++        purpose: "local B",
++        forbiddenDependencies: [],
++      },
++    ],
++    structureRevision: 2,
++    fileDigest: "a".repeat(64),
++    verifiedAt: "t",
++    status: "ready",
++  });
++  await c.reload();
++  expect(c.store.getState().retryAvailable).toBe(false);
++  expect(c.store.getState().draft.purpose).toBe("local B");
++  expect(c.store.getState().dirty).toBe(true);
++  await c.retry();
++  expect(api.savePolicy).toHaveBeenCalledTimes(1);
++  c.choose("legacy:observed-created");
++  c.edit({ purpose: "manual next edit" });
++  await c.save();
++  expect(api.savePolicy.mock.calls[1]?.[1].id).toBe("observed-created");
++  expect(uuids).toHaveBeenCalledTimes(2);
++});
++test("M1 delayed sync rejection cannot publish into A→B→A current epoch", async () => {
++  const { api } = fixture();
++  const entered = hold<void>();
++  let reject!: (reason: Error) => void;
++  const pending = new Promise<void>((_, r) => {
++    reject = r;
++  });
++  const c = createPolicyController(api, () => {
++    entered.resolve();
++    return pending;
++  });
++  c.selectProject("a");
++  await c.reload();
++  const saving = c.save();
++  await entered.promise;
++  c.selectProject("b");
++  c.selectProject("a");
++  await c.reload();
++  c.edit({ purpose: "new local B" });
++  const expected = structuredClone(c.store.getState());
++  reject(Error("old sync failed"));
++  await saving;
++  expect(c.store.getState()).toEqual(expected);
++});
++test("M1 disposed write callback cannot mutate the disposed epoch", async () => {
++  const { api } = fixture();
++  const entered = hold<void>();
++  let reject!: (reason: Error) => void;
++  const pending = new Promise<void>((_, r) => {
++    reject = r;
++  });
++  const c = createPolicyController(api, () => {
++    entered.resolve();
++    return pending;
++  });
++  c.selectProject("a");
++  await c.reload();
++  const saving = c.save();
++  await entered.promise;
++  c.dispose();
++  const expected = structuredClone(c.store.getState());
++  reject(Error("old disposed callback"));
++  await saving;
++  expect(c.store.getState()).toEqual(expected);
++});
+--- a/apps/web/src/features/structure/StructurePolicyPanel.tsx
++++ b/apps/web/src/features/structure/StructurePolicyPanel.tsx
+@@ -21,6 +21,13 @@
+   folders: "structure.json folders",
+   waiting: "Read current structure before saving.",
+   saved: "Saved. Read again before another edit.",
++  imported: "Import completed. Read again before another edit.",
++  importedUnsaved:
++    "Import completed; form edits remain unsaved. Read again before saving them.",
++  savedSyncFailed:
++    "Saved; workspace synchronization failed. Read again to synchronize.",
++  importedSyncFailed:
++    "Import completed; workspace synchronization failed. Form edits remain unchanged. Read again to synchronize.",
+   retry: "Retry the exact request",
+   migrationHelp:
+     "Preview first. Import is explicit and invalidates current approval; historical approvals remain recorded.",
+@@ -61,6 +68,11 @@
+   folders: "structure.json 目录",
+   waiting: "保存前请读取当前结构。",
+   saved: "已保存。再次编辑前请重新读取。",
++  imported: "导入已完成。再次编辑前请重新读取。",
++  importedUnsaved: "导入已完成，表单修改尚未保存。保存前请重新读取。",
++  savedSyncFailed: "已保存，共享工作区同步失败。请重新读取以同步。",
++  importedSyncFailed:
++    "导入已完成，共享工作区同步失败。表单修改仍保留，请重新读取以同步。",
+   retry: "重试原请求",
+   migrationHelp: "先预览，再显式导入。导入会使当前批准失效，历史批准仍保留。",
+   noMigration: "没有待迁移的数据库策略。",
+@@ -161,9 +173,21 @@
+         </p>
+       ))}
+       {s.needsReload && (
+-        <p role="status">{s.notice === "saved" ? t.saved : t.waiting}</p>
+-      )}
+-      {s.notice === "saved" && !integrated && <p role="status">{t.sync}</p>}
++        <p role="status">
++          {s.notice === "imported"
++            ? s.error?.code === "WORKSPACE_SYNC_REQUIRED"
++              ? t.importedSyncFailed
++              : s.dirty
++                ? t.importedUnsaved
++                : t.imported
++            : s.notice === "saved"
++              ? s.error?.code === "WORKSPACE_SYNC_REQUIRED"
++                ? t.savedSyncFailed
++                : t.saved
++              : t.waiting}
++        </p>
++      )}
++      {s.notice && !integrated && <p role="status">{t.sync}</p>}
+       {s.retryAvailable && (
+         <>
+           <p>{t.unknown}</p>
+--- a/apps/web/src/features/structure/StructurePolicyPanel.test.tsx
++++ b/apps/web/src/features/structure/StructurePolicyPanel.test.tsx
+@@ -205,3 +205,25 @@
+   expect(html).toContain('data-action="save" disabled=""');
+   expect(html).toContain('data-action="reload"');
+ });
++
++test("I1 import acknowledgment describes unsaved form B rather than claiming it saved", () => {
++  const { props } = fixture();
++  props.state.draft.purpose = "local unsaved B";
++  props.state.dirty = true;
++  props.state.notice = "imported";
++  props.state.needsReload = true;
++  const html = renderToStaticMarkup(<StructurePolicyPanel {...props} />);
++  expect(html).toContain("Import completed; form edits remain unsaved");
++  expect(html).not.toContain("Saved. Read again");
++  expect(html).toContain("local unsaved B");
++});
++test("M1 known save with workspace sync failure shows saved-sync-failed and reread, without uncertain replay", () => {
++  const { props } = fixture();
++  props.state.notice = "saved";
++  props.state.needsReload = true;
++  props.state.error = { code: "WORKSPACE_SYNC_REQUIRED", message: "offline" };
++  const html = renderToStaticMarkup(<StructurePolicyPanel {...props} />);
++  expect(html).toContain("Saved; workspace synchronization failed");
++  expect(html).toContain('data-action="reload"');
++  expect(html).not.toContain('data-action="retry"');
++});

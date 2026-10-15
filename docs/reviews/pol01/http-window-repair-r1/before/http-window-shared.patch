@@ -1,0 +1,1225 @@
+diff --git a/apps/server/src/agent/bridge.test.ts b/apps/server/src/agent/bridge.test.ts
+index ec0c5b3..e3b890f 100644
+--- a/apps/server/src/agent/bridge.test.ts
++++ b/apps/server/src/agent/bridge.test.ts
+@@ -3,7 +3,7 @@ import { mkdtemp, mkdir, writeFile, rm } from "node:fs/promises";
+ import { tmpdir } from "node:os";
+ import { join } from "node:path";
+ import { SourceIndexer } from "@codemap/indexer";
+-import { SqliteStorage } from "@codemap/storage";
++import { SqliteStorage, StructureFileStore } from "@codemap/storage";
+ import { WorkspaceService } from "@codemap/service";
+ import { createServer } from "../server.js";
+ import { createScopedGateway } from "./gateway.js";
+@@ -19,6 +19,7 @@ async function setup() {
+   const storage = new SqliteStorage(join(root, "data.sqlite"));
+   cleanups.push(async () => storage.close());
+   const service = new WorkspaceService({
++    structureFiles: new StructureFileStore(),
+     storage,
+     indexer: new SourceIndexer(),
+   });
+diff --git a/apps/server/src/agent/direct-loop.test.ts b/apps/server/src/agent/direct-loop.test.ts
+index 871cf12..2127eeb 100644
+--- a/apps/server/src/agent/direct-loop.test.ts
++++ b/apps/server/src/agent/direct-loop.test.ts
+@@ -11,7 +11,7 @@ import {
+ import { join } from "node:path";
+ import { tmpdir } from "node:os";
+ import { SourceIndexer } from "@codemap/indexer";
+-import { SqliteStorage } from "@codemap/storage";
++import { SqliteStorage, StructureFileStore } from "@codemap/storage";
+ import { WorkspaceService } from "@codemap/service";
+ import { createServer } from "../server.js";
+ import { createResponsesRunner, type ResponsesOptions } from "./direct.js";
+@@ -104,6 +104,7 @@ async function setup(url: string, options?: ResponsesOptions) {
+   const storage = new SqliteStorage(join(root, "data.sqlite"));
+   cleanups.push(async () => storage.close());
+   const service = new WorkspaceService({
++    structureFiles: new StructureFileStore(),
+     storage,
+     indexer: new SourceIndexer(),
+   });
+diff --git a/apps/server/src/agent/routes.test.ts b/apps/server/src/agent/routes.test.ts
+index b5a5eed..4dcdd56 100644
+--- a/apps/server/src/agent/routes.test.ts
++++ b/apps/server/src/agent/routes.test.ts
+@@ -4,7 +4,7 @@ import { tmpdir } from "node:os";
+ import { join } from "node:path";
+ import { fileURLToPath } from "node:url";
+ import { SourceIndexer } from "@codemap/indexer";
+-import { SqliteStorage } from "@codemap/storage";
++import { SqliteStorage, StructureFileStore } from "@codemap/storage";
+ import { WorkspaceService } from "@codemap/service";
+ import { createServer } from "../server.js";
+ import { startProcess } from "./process.js";
+@@ -25,6 +25,7 @@ async function setup(mode?: string) {
+   const storage = new SqliteStorage(join(root, "store.sqlite"));
+   cleanup.push(async () => storage.close());
+   const service = new WorkspaceService({
++    structureFiles: new StructureFileStore(),
+     storage,
+     indexer: new SourceIndexer(),
+   });
+diff --git a/apps/server/src/group-view.test.ts b/apps/server/src/group-view.test.ts
+index eae3a12..7a4fecb 100644
+--- a/apps/server/src/group-view.test.ts
++++ b/apps/server/src/group-view.test.ts
+@@ -3,7 +3,7 @@ import { mkdtemp, mkdir, writeFile, rm } from "node:fs/promises";
+ import { tmpdir } from "node:os";
+ import { join } from "node:path";
+ import { SourceIndexer } from "@codemap/indexer";
+-import { SqliteStorage } from "@codemap/storage";
++import { SqliteStorage, StructureFileStore } from "@codemap/storage";
+ import { WorkspaceService } from "@codemap/service";
+ import { createServer } from "./server.js";
+ const cleanups: (() => Promise<void>)[] = [];
+@@ -16,6 +16,7 @@ it("accepts old views and bounded collapse IDs over HTTP, rejects malformed arra
+   const storage = new SqliteStorage(join(root, "state.sqlite"));
+   cleanups.push(async () => storage.close());
+   const service = new WorkspaceService({
++    structureFiles: new StructureFileStore(),
+     storage,
+     indexer: new SourceIndexer(),
+   });
+diff --git a/apps/server/src/index.ts b/apps/server/src/index.ts
+index 7bffac2..8ff2a06 100644
+--- a/apps/server/src/index.ts
++++ b/apps/server/src/index.ts
+@@ -4,7 +4,7 @@ import { stat } from "node:fs/promises";
+ import { fileURLToPath, pathToFileURL } from "node:url";
+ import type { FastifyInstance } from "fastify";
+ import { SourceIndexer } from "@codemap/indexer";
+-import { SqliteStorage } from "@codemap/storage";
++import { SqliteStorage, StructureFileStore } from "@codemap/storage";
+ import { WorkspaceService } from "@codemap/service";
+ import { createServer } from "./server.js";
+ export { createServer } from "./server.js";
+@@ -62,7 +62,9 @@ async function main(): Promise<void> {
+     const service = new WorkspaceService({
+       storage,
+       indexer: new SourceIndexer(),
++      structureFiles: new StructureFileStore(),
+     });
++    await service.recoverStructureWrites();
+     if (process.env.CODEMAP_WORKSPACE_ROOT)
+       await service.openProject(process.env.CODEMAP_WORKSPACE_ROOT);
+     const candidate = fileURLToPath(
+diff --git a/apps/server/src/routes.ts b/apps/server/src/routes.ts
+index 7fa1c5e..1d69bbb 100644
+--- a/apps/server/src/routes.ts
++++ b/apps/server/src/routes.ts
+@@ -1,6 +1,11 @@
+ import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
+ import { z } from "zod";
+-import { operationSchema, routeSchema } from "@codemap/core";
++import {
++  DomainError,
++  operationSchema,
++  routeSchema,
++  type StructureWriteInput,
++} from "@codemap/core";
+ import type { WorkspaceService } from "@codemap/service";
+ import { projectQueries } from "./queries.js";
+ 
+@@ -57,6 +62,7 @@ const createPlan = z.strictObject({
+ });
+ const updatePlan = z.strictObject({
+   expectedRevision: z.number().int().positive(),
++  expectedSnapshotId: nonblank.optional(),
+   operations: z.array(operationSchema),
+   title: nonblank.optional(),
+   description: z.string().optional(),
+@@ -68,12 +74,70 @@ const group = z.strictObject({
+   source: z.enum(["agent", "user"]),
+   memberIds: z.array(id),
+ });
++const preconditions = {
++  mutationId: z.string().uuid().optional(),
++  expectedStructureRevision: z.number().int().nonnegative().optional(),
++  expectedFileDigest: z
++    .string()
++    .regex(/^[0-9a-f]{64}$/)
++    .nullable()
++    .optional(),
++};
+ const policy = z.strictObject({
++  ...preconditions,
+   id: id.optional(),
+   pathPrefix: z.string(),
+   purpose: z.string(),
+   forbiddenDependencies: z.array(z.string()),
+ });
++const structureBody = z.strictObject({
++  ...preconditions,
++  operation: z.discriminatedUnion("kind", [
++    z.strictObject({
++      kind: z.literal("upsertFolder"),
++      previousPath: z.string().optional(),
++      path: z.string(),
++      purpose: z.string(),
++    }),
++    z.strictObject({
++      kind: z.literal("upsertLegacyPolicy"),
++      id: id.optional(),
++      pathPrefix: z.string(),
++      purpose: z.string(),
++      forbiddenDependencies: z.array(z.string()),
++    }),
++    z.strictObject({ kind: z.literal("importLegacy") }),
++  ]),
++});
++const structureQuery = z.strictObject({
++  acceptExternalConflict: z.literal("1").optional(),
++});
++const policyQuery = z.strictObject({
++  includeStructure: z.literal("1").optional(),
++});
++const auditQuery = z.strictObject({
++  offset: queryInteger(0, Number.MAX_SAFE_INTEGER).optional(),
++  limit: queryInteger(1, 100).optional(),
++});
++function structureInput(
++  value: z.infer<typeof structureBody>,
++): StructureWriteInput {
++  if (
++    value.mutationId === undefined ||
++    value.expectedStructureRevision === undefined ||
++    value.expectedFileDigest === undefined
++  )
++    throw new DomainError(
++      "STRUCTURE_PRECONDITION_REQUIRED",
++      "Supply mutation id, structure revision and file digest from an explicit read.",
++    );
++  return {
++    ...value,
++    mutationId: value.mutationId,
++    expectedStructureRevision: value.expectedStructureRevision,
++    expectedFileDigest: value.expectedFileDigest,
++  };
++}
+ const view = z.strictObject({
+   collapsedGroupIds: z.array(z.string().min(1).max(200)).max(200).optional(),
+   positions: z.record(id, z.strictObject({ x: z.number(), y: z.number() })),
+@@ -192,24 +256,27 @@ export function registerRoutes(
+     sourceQuery,
+   );
+   get("/api/projects/:id/plans", (request) =>
+-    service.listPlans(projectId(request)),
++    service.readPlans(projectId(request)),
+   );
+   write(
+     "POST",
+     "/api/plans",
+     createPlan,
+-    (request) => service.createPlan(createPlan.parse(request.body)),
++    (request) => service.createPlanFresh(createPlan.parse(request.body)),
+     empty,
+   );
+-  get("/api/plans/:id", (request) => service.getPlan(projectId(request)));
++  get("/api/plans/:id", (request) => service.readPlan(projectId(request)));
+   write("PUT", "/api/plans/:id", updatePlan, (request) =>
+-    service.updatePlan(projectId(request), updatePlan.parse(request.body)),
++    service.updatePlanFresh(projectId(request), updatePlan.parse(request.body)),
+   );
+   write(
+     "POST",
+     "/api/plans/:id/validate",
+     empty.optional(),
+-    (request) => service.getPlan(projectId(request)).issues,
++    async (request) => (await service.readPlan(projectId(request))).issues,
++  );
++  get("/api/plans/:id/approved", (request) =>
++    service.getCurrentApproval(projectId(request)),
+   );
+   const approval = z.strictObject({
+     expectedRevision: z.number().int().positive(),
+@@ -262,8 +329,44 @@ export function registerRoutes(
+       projectId: projectId(request),
+     }),
+   );
+-  get("/api/projects/:id/policies", (request) =>
+-    service.listPolicies(projectId(request)),
++  get(
++    "/api/projects/:id/structure",
++    (request) =>
++      service.getStructure(projectId(request), {
++        acceptExternalConflict:
++          structureQuery.parse(request.query).acceptExternalConflict === "1",
++      }),
++    structureQuery,
++  );
++  write("PUT", "/api/projects/:id/structure", structureBody, (request) =>
++    service.updateStructure(
++      projectId(request),
++      structureInput(structureBody.parse(request.body)),
++    ),
++  );
++  get("/api/projects/:id/structure/legacy-preview", (request) =>
++    service.legacyPreview(projectId(request)),
++  );
++  get(
++    "/api/projects/:id/structure/audit",
++    (request) => {
++      const query = auditQuery.parse(request.query);
++      return service.listStructureAudit(projectId(request), {
++        offset: query.offset ?? 0,
++        limit: query.limit ?? 50,
++      });
++    },
++    auditQuery,
++  );
++  get(
++    "/api/projects/:id/policies",
++    async (request) => {
++      const result = await service.readPolicies(projectId(request));
++      return policyQuery.parse(request.query).includeStructure
++        ? result
++        : result.policies;
++    },
++    policyQuery,
+   );
+   write("POST", "/api/projects/:id/policies", policy, (request) =>
+     service.savePolicy({
+diff --git a/apps/server/src/server.test.ts b/apps/server/src/server.test.ts
+index 3764349..01c3159 100644
+--- a/apps/server/src/server.test.ts
++++ b/apps/server/src/server.test.ts
+@@ -1,9 +1,10 @@
+ import { afterEach, expect, test } from "vitest";
+ import { mkdtemp, mkdir, writeFile, rm, symlink } from "node:fs/promises";
++import { randomUUID } from "node:crypto";
+ import { tmpdir } from "node:os";
+ import { join } from "node:path";
+ import { SourceIndexer } from "@codemap/indexer";
+-import { SqliteStorage } from "@codemap/storage";
++import { SqliteStorage, StructureFileStore } from "@codemap/storage";
+ import { WorkspaceService } from "@codemap/service";
+ import {
+   DomainError,
+@@ -36,6 +37,7 @@ async function setup(options: { web?: boolean; indexer?: IndexerPort } = {}) {
+   const storage = new SqliteStorage(join(root, "data.sqlite"));
+   cleanups.push(async () => storage.close());
+   const service = new WorkspaceService({
++    structureFiles: new StructureFileStore(),
+     storage,
+     indexer: options.indexer ?? new SourceIndexer(),
+   });
+@@ -562,8 +564,17 @@ test("routes carry evidence, groups policies and view persist with strict projec
+       })
+     ).statusCode,
+   ).toBe(400);
++  const policyPreconditions = async (scope: string) => {
++    const state = (await request("GET", `${scope}/structure`)).json();
++    return {
++      mutationId: randomUUID(),
++      expectedStructureRevision: state.structureRevision,
++      expectedFileDigest: state.fileDigest,
++    };
++  };
+   const policy = (
+     await request("POST", `${base}/policies`, {
++      ...(await policyPreconditions(base)),
+       pathPrefix: "src",
+       purpose: "rules",
+       forbiddenDependencies: ["private"],
+@@ -575,6 +586,7 @@ test("routes carry evidence, groups policies and view persist with strict projec
+   expect(
+     (
+       await request("POST", `${base}/policies`, {
++        ...(await policyPreconditions(base)),
+         pathPrefix: "../bad",
+         purpose: "rules",
+         forbiddenDependencies: [],
+@@ -584,6 +596,7 @@ test("routes carry evidence, groups policies and view persist with strict projec
+   expect(
+     (
+       await request("POST", `/api/projects/${b.id}/policies`, {
++        ...(await policyPreconditions(`/api/projects/${b.id}`)),
+         id: policy.id,
+         pathPrefix: policy.pathPrefix,
+         purpose: policy.purpose,
+diff --git a/apps/server/src/server.ts b/apps/server/src/server.ts
+index a0b284c..5175fdf 100644
+--- a/apps/server/src/server.ts
++++ b/apps/server/src/server.ts
+@@ -3,7 +3,7 @@ import fastifyStatic from "@fastify/static";
+ import { resolve, extname } from "node:path";
+ import type { IncomingMessage } from "node:http";
+ import type { Socket } from "node:net";
+-import { DomainError } from "@codemap/core";
++import { DomainError, StructureError } from "@codemap/core";
+ import type { WorkspaceService } from "@codemap/service";
+ import { ZodError } from "zod";
+ import { registerRoutes } from "./routes.js";
+@@ -21,7 +21,13 @@ const domainStatuses: Record<string, number> = {
+   BASELINE_CONFLICT: 409,
+   SNAPSHOT_CHANGED: 409,
+   NOT_APPROVED: 409,
++  APPROVAL_CONTEXT_INVALID: 409,
+   SOURCE_UNAVAILABLE: 503,
++  INVALID_STRUCTURE: 422,
++  STRUCTURE_CONFLICT: 409,
++  STRUCTURE_RECOVERY_PENDING: 503,
++  STRUCTURE_PRECONDITION_REQUIRED: 428,
++  STRUCTURE_WRITE_FAILED: 503,
+ };
+ export async function createServer({
+   service,
+@@ -110,6 +116,9 @@ export async function createServer({
+       return reply.code(status).send({
+         code: status === 500 ? "INTERNAL_ERROR" : error.code,
+         message: status === 500 ? "Internal server error." : error.message,
++        ...(error instanceof StructureError
++          ? { diagnostics: error.diagnostics }
++          : {}),
+       });
+     }
+     const statusCode = (error as { statusCode?: number }).statusCode;
+diff --git a/packages/service/src/knowledge.ts b/packages/service/src/knowledge.ts
+index 1e02914..a4493a5 100644
+--- a/packages/service/src/knowledge.ts
++++ b/packages/service/src/knowledge.ts
+@@ -1,7 +1,6 @@
+ import { randomUUID } from "node:crypto";
+ import {
+   DomainError,
+-  normalizeRepoPath,
+   validateRoute,
+   type BrowseRoute,
+   type CodeSnapshot,
+@@ -16,17 +15,6 @@ import { inputKeys } from "./planning.js";
+ function text(value: unknown): value is string {
+   return typeof value === "string";
+ }
+-function prefix(value: string, root = false): string {
+-  if (!text(value)) throw new DomainError("INVALID_INPUT", "Expected a path.");
+-  const trimmed = value.replaceAll("\\", "/").replace(/\/+$/, "");
+-  if (
+-    root &&
+-    (trimmed === "" || trimmed === ".") &&
+-    !value.replaceAll("\\", "/").startsWith("/")
+-  )
+-    return "";
+-  return normalizeRepoPath(trimmed);
+-}
+ export class Knowledge {
+   constructor(
+     private readonly storage: StoragePort,
+@@ -168,39 +156,6 @@ export class Knowledge {
+       .list<DirectoryPolicy>("policies")
+       .filter((p) => p.projectId === projectId);
+   }
+-  savePolicy(
+-    input: Omit<DirectoryPolicy, "id"> & { id?: string },
+-  ): DirectoryPolicy {
+-    inputKeys(input, [
+-      "id",
+-      "projectId",
+-      "pathPrefix",
+-      "purpose",
+-      "forbiddenDependencies",
+-    ]);
+-    this.snapshot(input.projectId);
+-    if (!text(input.purpose) || !Array.isArray(input.forbiddenDependencies))
+-      throw new DomainError("INVALID_INPUT", "Invalid directory policy.");
+-    const id = input.id ?? randomUUID();
+-    this.checkOwner("policies", id, input.projectId);
+-    const policy = {
+-      ...input,
+-      id,
+-      pathPrefix: prefix(input.pathPrefix, true),
+-      forbiddenDependencies: input.forbiddenDependencies.map((p) => prefix(p)),
+-    };
+-    this.saveDesign("policies", policy, (value) => {
+-      const p = value as DirectoryPolicy;
+-      return JSON.stringify([
+-        prefix(p.pathPrefix, true),
+-        p.purpose,
+-        [
+-          ...new Set(p.forbiddenDependencies.map((path) => prefix(path))),
+-        ].sort(),
+-      ]);
+-    });
+-    return policy;
+-  }
+   // Knowledge is part of the review context. Advance current plan revisions in
+   // the same transaction; immutable approval snapshots remain verifiable.
+   private saveDesign<T extends FunctionGroup | DirectoryPolicy>(
+diff --git a/packages/service/src/workspace.test.ts b/packages/service/src/workspace.test.ts
+index 0116ab1..f5686a7 100644
+--- a/packages/service/src/workspace.test.ts
++++ b/packages/service/src/workspace.test.ts
+@@ -1,3 +1,7 @@
++import {
++  MemoryStructureFiles,
++  policyWrite,
++} from "../../../tests/support/structure-file-port.js";
+ import { expect, test } from "vitest";
+ import type {
+   CodeSnapshot,
+@@ -72,7 +76,11 @@ test("an edit during approval refresh conflicts with expectedRevision and create
+       return snapshot(id);
+     },
+   };
+-  const service = new WorkspaceService({ storage, indexer });
++  const service = new WorkspaceService({
++    structureFiles: new MemoryStructureFiles(),
++    storage,
++    indexer,
++  });
+   const project = await service.openProject("/project");
+   const plan = service.createPlan({
+     projectId: project.id,
+@@ -112,7 +120,11 @@ test("refreshes serialize per project while another project progresses independe
+       return snapshot(id, "newer");
+     },
+   };
+-  const service = new WorkspaceService({ storage, indexer });
++  const service = new WorkspaceService({
++    structureFiles: new MemoryStructureFiles(),
++    storage,
++    indexer,
++  });
+   const first = await service.openProject("/first"),
+     second = await service.openProject("/second");
+   slowId = first.id;
+@@ -136,6 +148,7 @@ test("a failed refresh preserves prior snapshot and does not poison subsequent r
+   let fail = false;
+   const storage = new MemoryStorage(),
+     service = new WorkspaceService({
++      structureFiles: new MemoryStructureFiles(),
+       storage,
+       indexer: {
+         async index(_root, id) {
+@@ -155,6 +168,7 @@ test("a failed refresh preserves prior snapshot and does not poison subsequent r
+ });
+ test("unavailable source port gives an actionable domain error", async () => {
+   const service = new WorkspaceService({
++    structureFiles: new MemoryStructureFiles(),
+     storage: new MemoryStorage(),
+     indexer: {
+       async index(_root, id) {
+@@ -171,6 +185,7 @@ test("unavailable source port gives an actionable domain error", async () => {
+ test("policy responsibility and constraints require renewed approval, preserve historical verification and reject old revisions", async () => {
+   const storage = new MemoryStorage();
+   const service = new WorkspaceService({
++    structureFiles: new MemoryStructureFiles(),
+     storage,
+     indexer: {
+       async index(_root, id) {
+@@ -180,7 +195,7 @@ test("policy responsibility and constraints require renewed approval, preserve h
+   });
+   const a = await service.openProject("/a");
+   const b = await service.openProject("/b");
+-  const policy = service.savePolicy({
++  const policy = await policyWrite(service, {
+     projectId: a.id,
+     pathPrefix: "src/",
+     purpose: "Old responsibility",
+@@ -189,7 +204,7 @@ test("policy responsibility and constraints require renewed approval, preserve h
+   const plan = service.createPlan({ projectId: a.id, title: "A" }).plan;
+   const other = service.createPlan({ projectId: b.id, title: "B" }).plan;
+   const approval = (await service.approvePlan(plan.id, 1)).approval!;
+-  service.savePolicy({ ...policy, purpose: "New responsibility" });
++  await policyWrite(service, { ...policy, purpose: "New responsibility" });
+   expect(service.getPlan(plan.id)).toMatchObject({
+     valid: false,
+     plan: { revision: 2, status: "draft" },
+@@ -207,14 +222,14 @@ test("policy responsibility and constraints require renewed approval, preserve h
+     JSON.parse(service.exportPlan(plan.id, "json")).approvedPlan.revision,
+   ).toBe(1);
+   const approved = await service.approvePlan(plan.id, 2);
+-  service.savePolicy({
++  await policyWrite(service, {
+     ...policy,
+     purpose: "New responsibility",
+     pathPrefix: "src",
+     forbiddenDependencies: ["lib", "vendor", "lib"],
+   });
+   expect(service.getPlan(plan.id)).toEqual(approved);
+-  service.savePolicy({
++  await policyWrite(service, {
+     ...policy,
+     purpose: "New responsibility",
+     forbiddenDependencies: ["other"],
+@@ -228,6 +243,7 @@ test("policy responsibility and constraints require renewed approval, preserve h
+ test("shared group members do not move facts; group design changes invalidate only its project's plans", async () => {
+   const storage = new MemoryStorage();
+   const service = new WorkspaceService({
++    structureFiles: new MemoryStructureFiles(),
+     storage,
+     indexer: {
+       async index(_root, id) {
+@@ -296,6 +312,7 @@ test("knowledge write and every affected plan roll back together on storage fail
+   }
+   const storage = new FailingStorage();
+   const service = new WorkspaceService({
++    structureFiles: new MemoryStructureFiles(),
+     storage,
+     indexer: {
+       async index(_root, id) {
+@@ -307,15 +324,31 @@ test("knowledge write and every affected plan roll back together on storage fail
+   const a = service.createPlan({ projectId: project.id, title: "A" }).plan;
+   const b = service.createPlan({ projectId: project.id, title: "B" }).plan;
+   storage.failId = b.id;
+-  expect(() =>
+-    service.savePolicy({
++  await expect(
++    policyWrite(service, {
+       projectId: project.id,
+       pathPrefix: "src",
+       purpose: "Responsibility",
+       forbiddenDependencies: [],
+     }),
+-  ).toThrow("disk failed");
+-  expect(service.listPolicies(project.id)).toEqual([]);
+-  expect(service.getPlan(a.id).plan.revision).toBe(1);
+-  expect(service.getPlan(b.id).plan.revision).toBe(1);
++  ).rejects.toMatchObject({ code: "STRUCTURE_RECOVERY_PENDING" });
++  expect(storage.list("policies")).toEqual([]);
++  expect(storage.get<{ revision: number }>("plans", a.id)?.revision).toBe(1);
++  expect(storage.get<{ revision: number }>("plans", b.id)?.revision).toBe(1);
++  expect(() => service.listPolicies(project.id)).toThrow(
++    expect.objectContaining({ code: "STRUCTURE_RECOVERY_PENDING" }),
++  );
++  await expect(service.approvePlan(a.id, 1)).rejects.toMatchObject({
++    code: "STRUCTURE_RECOVERY_PENDING",
++  });
++  storage.failId = "";
++  expect(await service.recoverStructureWrites()).toMatchObject({
++    recoveredProjectIds: [project.id],
++    blockedProjectIds: [],
++  });
++  expect(service.listPolicies(project.id)[0]?.purpose).toBe("Responsibility");
++  expect(service.getPlan(a.id).plan.revision).toBe(2);
++  expect(service.getPlan(b.id).plan.revision).toBe(2);
++  await service.recoverStructureWrites();
++  expect(service.getPlan(a.id).plan.revision).toBe(2);
+ });
+diff --git a/packages/service/src/workspace.ts b/packages/service/src/workspace.ts
+index 30aab17..416e742 100644
+--- a/packages/service/src/workspace.ts
++++ b/packages/service/src/workspace.ts
+@@ -4,6 +4,14 @@ import {
+   makeId,
+   normalizeRepoPath,
+   snapshotSchema,
++  StructureError,
++  canonicalLegacyPolicy,
++  normalizeStructurePath,
++  projectStructurePolicies,
++  structureLegacyPolicies,
++  type StructureFilePort,
++  type StructureState,
++  type StructureWriteInput,
+   type BrowseRoute,
+   type CodeSnapshot,
+   type DirectoryPolicy,
+@@ -16,7 +24,8 @@ import {
+   type VerificationReport,
+   type ViewState,
+ } from "@codemap/core";
+-import { Planning } from "./planning.js";
++import { StructureSync } from "./structure-sync.js";
++import { inputKeys, Planning } from "./planning.js";
+ import { Knowledge } from "./knowledge.js";
+ import { verify } from "./verification.js";
+ 
+@@ -25,17 +34,29 @@ export class WorkspaceService {
+   private readonly indexer: IndexerPort;
+   private readonly planning: Planning;
+   private readonly knowledge: Knowledge;
+-  private readonly refreshes = new Map<string, Promise<unknown>>();
++  private readonly structures: StructureSync;
++  private readonly opening = new Map<string, Project>();
+   constructor({
+     storage,
+     indexer,
++    structureFiles,
+   }: {
+     storage: StoragePort;
+     indexer: IndexerPort;
++    structureFiles: StructureFilePort;
+   }) {
+     this.storage = storage;
+     this.indexer = indexer;
+     this.knowledge = new Knowledge(storage, (id) => this.getSnapshot(id));
++    this.structures = new StructureSync({
++      storage,
++      files: structureFiles,
++      project: (id) =>
++        this.storage.get<Project>("projects", id) ??
++        this.opening.get(id) ??
++        this.getProject(id),
++      legacyPolicies: (id) => this.knowledge.policies(id),
++    });
+     this.planning = new Planning(
+       storage,
+       (id) => this.getSnapshot(id),
+@@ -63,10 +84,21 @@ export class WorkspaceService {
+       path: absolutePath,
+       name: basename(absolutePath) || absolutePath,
+     };
+-    await this.enqueue(id, async () => {
+-      const snapshot = await this.indexer.index(project.path, id);
+-      this.storeSnapshot(project, snapshot);
+-    });
++    this.opening.set(id, project);
++    try {
++      await this.structures.withProject(id, async (session) => {
++        const current = this.storage.get<Project>("projects", id) ?? project;
++        const snapshot = await this.indexer.index(current.path, id);
++        this.storeSnapshot(current, snapshot);
++        try {
++          await session.readStructure();
++        } catch (error) {
++          if (!(error instanceof StructureError)) throw error;
++        }
++      });
++    } finally {
++      this.opening.delete(id);
++    }
+     return this.getProject(id);
+   }
+   getSnapshot(projectId: string): CodeSnapshot {
+@@ -79,12 +111,139 @@ export class WorkspaceService {
+     return snapshot;
+   }
+   refreshIndex(projectId: string): Promise<CodeSnapshot> {
+-    return this.enqueue(projectId, async () => {
+-      const project = this.getProject(projectId);
+-      const snapshot = await this.indexer.index(project.path, projectId);
+-      return this.storeSnapshot(project, snapshot);
++    return this.withStructure(
++      projectId,
++      () => this.getSnapshot(projectId),
++      true,
++    );
++  }
++  private async refreshIndexLocked(projectId: string): Promise<CodeSnapshot> {
++    const project = this.getProject(projectId);
++    return this.storeSnapshot(
++      project,
++      await this.indexer.index(project.path, projectId),
++    );
++  }
++  private withStructure<T>(
++    projectId: string,
++    work: () => T,
++    refresh = false,
++  ): Promise<T> {
++    return this.structures.withProject(projectId, async (session) => {
++      if (refresh) await this.refreshIndexLocked(projectId);
++      const state = await session.readStructure();
++      this.checkDocumentOwners(state);
++      return work();
+     });
+   }
++  getStructure(
++    projectId: string,
++    options: { acceptExternalConflict?: boolean } = {},
++  ): Promise<StructureState> {
++    return this.structures.getStructure(projectId, options);
++  }
++  updateStructure(
++    projectId: string,
++    input: StructureWriteInput,
++  ): Promise<StructureState> {
++    if (input?.operation?.kind === "upsertLegacyPolicy" && input.operation.id)
++      this.checkPolicyOwner(projectId, input.operation.id);
++    return this.structures.updateStructure(projectId, input);
++  }
++  recoverStructureWrites() {
++    return this.structures.recoverStructureWrites();
++  }
++  listStructureAudit(
++    projectId: string,
++    page: { offset: number; limit: number },
++  ) {
++    return this.structures.listStructureAudit(projectId, page);
++  }
++  legacyPreview(projectId: string) {
++    return this.structures.withProject(projectId, async (session) => {
++      const state = await session.readStructure();
++      this.checkDocumentOwners(state);
++      return {
++        policies: this.knowledge.policies(projectId),
++        structureRevision: state.structureRevision,
++        fileDigest: state.fileDigest,
++        verifiedAt: state.verifiedAt,
++      };
++    });
++  }
++  readPolicies(projectId: string) {
++    return this.structures.withProject(projectId, async (session) => {
++      const state = await session.readStructure();
++      this.checkDocumentOwners(state);
++      return {
++        policies: this.listPolicies(projectId),
++        structureRevision: state.structureRevision,
++        fileDigest: state.fileDigest,
++        verifiedAt: state.verifiedAt,
++        status: state.status,
++      };
++    });
++  }
++  readPlan(id: string) {
++    return this.withStructure(this.planning.raw(id).projectId, () =>
++      this.getPlan(id),
++    );
++  }
++  readPlans(projectId: string) {
++    return this.withStructure(projectId, () => this.listPlans(projectId));
++  }
++  createPlanFresh(input: Parameters<WorkspaceService["createPlan"]>[0]) {
++    return this.withStructure(input.projectId, () => this.createPlan(input));
++  }
++  updatePlanFresh(
++    id: string,
++    input: Parameters<WorkspaceService["updatePlan"]>[1],
++  ) {
++    return this.withStructure(this.planning.raw(id).projectId, () =>
++      this.updatePlan(id, input),
++    );
++  }
++  getCurrentApproval(id: string): Promise<PlanDetail> {
++    return this.withStructure(
++      this.planning.raw(id).projectId,
++      () => this.planning.getCurrentApproval(id),
++      true,
++    );
++  }
++  private checkDocumentOwners(state: StructureState): void {
++    if (state.document)
++      for (const policy of structureLegacyPolicies(state.document))
++        this.checkPolicyOwner(state.projectId, policy.id);
++  }
++  private checkPolicyOwner(projectId: string, id: string): void {
++    const db = this.storage.get<DirectoryPolicy>("policies", id);
++    if (db && db.projectId !== projectId)
++      throw new DomainError(
++        "PROJECT_MISMATCH",
++        "Policy belongs to another project.",
++      );
++    for (const state of this.storage.list<Partial<StructureState>>(
++      "settings",
++    )) {
++      if (
++        !state.projectId ||
++        state.projectId === projectId ||
++        !Number.isSafeInteger(state.structureRevision)
++      )
++        continue;
++      const document = state.document ?? state.lastGood?.document;
++      if (
++        document &&
++        projectStructurePolicies(document, state.projectId).some(
++          (policy) => policy.id === id,
++        )
++      )
++        throw new DomainError(
++          "PROJECT_MISMATCH",
++          "Policy belongs to another project.",
++        );
++    }
++  }
+   createPlan(input: {
+     projectId: string;
+     title: string;
+@@ -103,6 +262,7 @@ export class WorkspaceService {
+     id: string,
+     input: {
+       expectedRevision: number;
++      expectedSnapshotId?: string;
+       operations: Operation[];
+       title?: string;
+       description?: string;
+@@ -110,19 +270,23 @@ export class WorkspaceService {
+   ): PlanDetail {
+     return this.planning.update(id, input);
+   }
+-  async approvePlan(id: string, expectedRevision: number): Promise<PlanDetail> {
+-    await this.refreshIndex(this.planning.raw(id).projectId);
+-    return this.planning.approve(id, expectedRevision);
++  approvePlan(id: string, expectedRevision: number): Promise<PlanDetail> {
++    return this.withStructure(
++      this.planning.raw(id).projectId,
++      () => this.planning.approve(id, expectedRevision),
++      true,
++    );
+   }
+-  async verifyPlan(id: string): Promise<VerificationReport> {
++  verifyPlan(id: string): Promise<VerificationReport> {
+     const projectId = this.planning.raw(id).projectId;
+-    await this.refreshIndex(projectId);
+-    const approved = this.planning.latest(id);
+-    if (!approved)
+-      throw new DomainError(
+-        "NOT_APPROVED",
+-        "Plan has no approved revision to verify.",
+-      );
++    return this.withStructure(
++      projectId,
++      () => this.verifyLocked(id, projectId),
++      true,
++    );
++  }
++  private verifyLocked(id: string, projectId: string): VerificationReport {
++    const approved = this.planning.approvedForVerification(id);
+     const baseline = this.storage.get<CodeSnapshot>(
+       "snapshots",
+       approved.plan.baselineSnapshotId,
+@@ -158,12 +322,94 @@ export class WorkspaceService {
+     return this.knowledge.saveGroup(input);
+   }
+   listPolicies(projectId: string): DirectoryPolicy[] {
+-    return this.knowledge.policies(projectId);
++    this.getSnapshot(projectId);
++    return this.structures.policies(projectId);
+   }
+-  savePolicy(
+-    input: Omit<DirectoryPolicy, "id"> & { id?: string },
+-  ): DirectoryPolicy {
+-    return this.knowledge.savePolicy(input);
++  async savePolicy(
++    input: Omit<DirectoryPolicy, "id"> & {
++      id?: string;
++      mutationId?: string;
++      expectedStructureRevision?: number;
++      expectedFileDigest?: string | null;
++    },
++  ): Promise<DirectoryPolicy> {
++    inputKeys(input, [
++      "id",
++      "projectId",
++      "pathPrefix",
++      "purpose",
++      "forbiddenDependencies",
++      "mutationId",
++      "expectedStructureRevision",
++      "expectedFileDigest",
++    ]);
++    if (
++      !input.mutationId ||
++      input.expectedStructureRevision === undefined ||
++      input.expectedFileDigest === undefined
++    )
++      throw new DomainError(
++        "STRUCTURE_PRECONDITION_REQUIRED",
++        "Supply the structure revision and file digest from an explicit read before saving.",
++      );
++    this.getSnapshot(input.projectId);
++    if (
++      typeof input.pathPrefix !== "string" ||
++      typeof input.purpose !== "string" ||
++      !Array.isArray(input.forbiddenDependencies) ||
++      input.forbiddenDependencies.some((value) => typeof value !== "string")
++    )
++      throw new DomainError("INVALID_INPUT", "Invalid directory policy.");
++    try {
++      normalizeStructurePath(input.pathPrefix);
++      for (const value of input.forbiddenDependencies)
++        if (!normalizeStructurePath(value))
++          throw new DomainError(
++            "INVALID_INPUT",
++            "Forbidden target prefix cannot be empty.",
++          );
++    } catch (error) {
++      if (error instanceof StructureError)
++        throw new DomainError("INVALID_INPUT", error.message);
++      throw error;
++    }
++    const id =
++      input.id ?? makeId("legacy-policy", input.projectId, input.mutationId);
++    this.checkPolicyOwner(input.projectId, id);
++    const previous = this.storage.get<DirectoryPolicy>("policies", id);
++    const operation = {
++      kind: "upsertLegacyPolicy" as const,
++      id,
++      pathPrefix: input.pathPrefix,
++      purpose: input.purpose,
++      forbiddenDependencies: input.forbiddenDependencies,
++    };
++    return this.updateStructure(input.projectId, {
++      mutationId: input.mutationId,
++      expectedStructureRevision: input.expectedStructureRevision,
++      expectedFileDigest: input.expectedFileDigest,
++      operation,
++    }).then((state) => {
++      const projected =
++        state.document &&
++        projectStructurePolicies(state.document, input.projectId).find(
++          (policy) => policy.id === id,
++        );
++      if (projected) return projected;
++      const policy = {
++        id,
++        projectId: input.projectId,
++        pathPrefix: normalizeStructurePath(input.pathPrefix),
++        purpose: input.purpose,
++        forbiddenDependencies: input.forbiddenDependencies.map((path) =>
++          normalizeStructurePath(path),
++        ),
++      };
++      return previous &&
++        canonicalLegacyPolicy(previous) === canonicalLegacyPolicy(policy)
++        ? previous
++        : policy;
++    });
+   }
+   async readSource(
+     projectId: string,
+@@ -203,16 +449,4 @@ export class WorkspaceService {
+       return existing ?? parsed.data;
+     });
+   }
+-  private enqueue<T>(projectId: string, work: () => Promise<T>): Promise<T> {
+-    const previous = this.refreshes.get(projectId) ?? Promise.resolve();
+-    const next = previous.catch(() => {}).then(work);
+-    this.refreshes.set(projectId, next);
+-    void next
+-      .finally(() => {
+-        if (this.refreshes.get(projectId) === next)
+-          this.refreshes.delete(projectId);
+-      })
+-      .catch(() => {});
+-    return next;
+-  }
+ }
+diff --git a/tests/e2e/agent-chat.spec.ts b/tests/e2e/agent-chat.spec.ts
+index d70bcea..443c063 100644
+--- a/tests/e2e/agent-chat.spec.ts
++++ b/tests/e2e/agent-chat.spec.ts
+@@ -3,7 +3,7 @@ import { mkdtemp, mkdir, writeFile, rm } from "node:fs/promises";
+ import { tmpdir } from "node:os";
+ import { join, resolve } from "node:path";
+ import { SourceIndexer } from "@codemap/indexer";
+-import { SqliteStorage } from "@codemap/storage";
++import { SqliteStorage, StructureFileStore } from "@codemap/storage";
+ import { WorkspaceService } from "@codemap/service";
+ import {
+   createServer,
+@@ -196,6 +196,7 @@ test("labeled trusted test adapter streams through real bridge, journals drafts,
+   try {
+     storage = new SqliteStorage(join(root, "data.sqlite"));
+     const service = new WorkspaceService({
++      structureFiles: new StructureFileStore(),
+       storage,
+       indexer: new SourceIndexer(),
+     });
+diff --git a/tests/integration/group-view.test.ts b/tests/integration/group-view.test.ts
+index 5ba689f..fd17b5a 100644
+--- a/tests/integration/group-view.test.ts
++++ b/tests/integration/group-view.test.ts
+@@ -3,7 +3,7 @@ import { mkdtempSync, rmSync } from "node:fs";
+ import { tmpdir } from "node:os";
+ import { join } from "node:path";
+ import type { CodeSnapshot, IndexerPort, ViewState } from "@codemap/core";
+-import { SqliteStorage } from "@codemap/storage";
++import { SqliteStorage, StructureFileStore } from "@codemap/storage";
+ import { WorkspaceService } from "@codemap/service";
+ const cleanups: (() => void)[] = [];
+ afterEach(() => {
+@@ -40,14 +40,24 @@ it("restores collapse and visual layout from a fresh SQLite instance", () => {
+   });
+   storage.put("snapshots", "s-p", snapshot("p"));
+   storage.put("groups", "g1", { id: "g1", projectId: "p", memberIds: [] });
+-  new WorkspaceService({ storage, indexer }).saveView("p", {
++  new WorkspaceService({
++    structureFiles: new StructureFileStore(),
++    storage,
++    indexer,
++  }).saveView("p", {
+     ...oldView,
+     collapsedGroupIds: ["g1"],
+   });
+   storage.close();
+   storage = new SqliteStorage(path);
+   cleanups.push(() => storage.close());
+-  expect(new WorkspaceService({ storage, indexer }).getView("p")).toEqual({
++  expect(
++    new WorkspaceService({
++      structureFiles: new StructureFileStore(),
++      storage,
++      indexer,
++    }).getView("p"),
++  ).toEqual({
+     ...oldView,
+     collapsedGroupIds: ["g1"],
+   });
+diff --git a/tests/integration/server-shutdown.test.ts b/tests/integration/server-shutdown.test.ts
+index c747e6e..d45b2e1 100644
+--- a/tests/integration/server-shutdown.test.ts
++++ b/tests/integration/server-shutdown.test.ts
+@@ -9,7 +9,7 @@ import type { CodeSnapshot, Project } from "@codemap/core";
+ import { createServer } from "@codemap/server";
+ import { WorkspaceService } from "@codemap/service";
+ import { SourceIndexer } from "@codemap/indexer";
+-import { SqliteStorage } from "@codemap/storage";
++import { SqliteStorage, StructureFileStore } from "@codemap/storage";
+ import { startProduction, http } from "../support/production.mjs";
+ 
+ // These connections have not submitted a complete request or started any
+@@ -79,6 +79,7 @@ test("shutdown preserves slow complete requests before discarding incomplete pip
+   const storage = new SqliteStorage(database);
+   const indexer = new SourceIndexer();
+   const service = new WorkspaceService({
++    structureFiles: new StructureFileStore(),
+     storage,
+     indexer: {
+       async index(path, projectId) {
+diff --git a/tests/integration/workspace-lifecycle.test.ts b/tests/integration/workspace-lifecycle.test.ts
+index 88dd545..86722fe 100644
+--- a/tests/integration/workspace-lifecycle.test.ts
++++ b/tests/integration/workspace-lifecycle.test.ts
+@@ -1,3 +1,4 @@
++import { policyWrite } from "../support/structure-file-port.js";
+ import { afterEach, beforeEach, expect, test } from "vitest";
+ import {
+   mkdtemp,
+@@ -17,7 +18,10 @@ import {
+   type Project,
+ } from "@codemap/core";
+ import { SourceIndexer } from "../../packages/indexer/src/index.js";
+-import { SqliteStorage } from "../../packages/storage/src/index.js";
++import {
++  SqliteStorage,
++  StructureFileStore,
++} from "../../packages/storage/src/index.js";
+ import { WorkspaceService } from "../../packages/service/src/index.js";
+ let root: string,
+   projectPath: string,
+@@ -32,7 +36,11 @@ beforeEach(async () => {
+   await mkdir(projectPath);
+   await writeFile(join(projectPath, "main.ts"), source);
+   db = new SqliteStorage(join(root, "state.db"));
+-  service = new WorkspaceService({ storage: db, indexer: new SourceIndexer() });
++  service = new WorkspaceService({
++    structureFiles: new StructureFileStore(),
++    storage: db,
++    indexer: new SourceIndexer(),
++  });
+   project = await service.openProject(projectPath);
+ });
+ afterEach(async () => {
+@@ -76,7 +84,7 @@ test("opens projects idempotently and isolates plans, routes, groups, policies a
+     source: "user",
+     memberIds: [node("A").id],
+   });
+-  service.savePolicy({
++  await policyWrite(service, {
+     projectId: project.id,
+     pathPrefix: "src",
+     purpose: "logic",
+@@ -381,19 +389,19 @@ test("group and policy edits cannot overwrite records from another project; path
+   expect(() =>
+     service.saveGroup({ ...group, memberIds: [foreign.id] }),
+   ).toThrow();
+-  const policy = service.savePolicy({
++  const policy = await policyWrite(service, {
+     projectId: project.id,
+     pathPrefix: "src/",
+     purpose: "logic",
+     forbiddenDependencies: ["private/"],
+   });
+   expect(policy.pathPrefix).toBe("src");
+-  expect(() =>
+-    service.savePolicy({ ...policy, projectId: other.id }),
+-  ).toThrow();
+-  expect(() =>
+-    service.savePolicy({ ...policy, pathPrefix: "../escape" }),
+-  ).toThrow();
++  await expect(
++    policyWrite(service, { ...policy, projectId: other.id }),
++  ).rejects.toThrow();
++  await expect(
++    policyWrite(service, { ...policy, pathPrefix: "../escape" }),
++  ).rejects.toThrow();
+   expect(() =>
+     service.saveView(project.id, {
+       positions: { bad: { x: Infinity, y: 0 } },
+@@ -405,7 +413,7 @@ test("group and policy edits cannot overwrite records from another project; path
+ test("directory dependency constraints block approval and invalidate previously approved plans", async () => {
+   const plan = changeCall();
+   await service.approvePlan(plan.plan.id, 2);
+-  service.savePolicy({
++  await policyWrite(service, {
+     projectId: project.id,
+     pathPrefix: "",
+     purpose: "no main dependency",
+@@ -439,7 +447,7 @@ test("reopen retains approval history, routes, groups, policy, layout and export
+     source: "user",
+     memberIds: [node("B").id],
+   });
+-  service.savePolicy({
++  await policyWrite(service, {
+     projectId: project.id,
+     pathPrefix: "src",
+     purpose: "logic",
+@@ -452,7 +460,11 @@ test("reopen retains approval history, routes, groups, policy, layout and export
+   });
+   db.close();
+   db = new SqliteStorage(join(root, "state.db"));
+-  service = new WorkspaceService({ storage: db, indexer: new SourceIndexer() });
++  service = new WorkspaceService({
++    structureFiles: new StructureFileStore(),
++    storage: db,
++    indexer: new SourceIndexer(),
++  });
+   expect(service.getPlan(plan.plan.id)).toMatchObject({
+     valid: false,
+     plan: { revision: 4, status: "draft" },
+@@ -515,6 +527,8 @@ test("same-source capability refresh preserves original immutable snapshot and m
+ 
+ test("approval write failure rolls back history and approval together in actual SQLite", async () => {
+   const plan = changeCall();
++  await service.getStructure(project.id);
++  const settingsBeforeApproval = db.list("settings");
+   const originalPut = db.put.bind(db);
+   db.put = (kind, id, value) => {
+     if (kind === "approvals") throw new Error("injected disk failure");
+@@ -524,7 +538,7 @@ test("approval write failure rolls back history and approval together in actual
+     "injected disk failure",
+   );
+   expect(service.getPlan(plan.plan.id).valid).toBe(false);
+-  expect(db.list("settings")).toEqual([]);
++  expect(db.list("settings")).toEqual(settingsBeforeApproval);
+   expect(db.list("approvals")).toEqual([]);
+   db.put = originalPut;
+   expect((await service.approvePlan(plan.plan.id, 2)).valid).toBe(true);
+@@ -569,7 +583,7 @@ test("relocated symbols with multiple candidates stay unknown for removals and c
+     "unknown",
+   );
+ });
+-test("runtime null semantic edits and Windows rooted directory policies are rejected", () => {
++test("runtime null semantic edits and Windows rooted directory policies are rejected", async () => {
+   const plan = draft();
+   expect(() =>
+     service.updatePlan(plan.plan.id, {
+@@ -585,14 +599,14 @@ test("runtime null semantic edits and Windows rooted directory policies are reje
+       description: null,
+     } as never),
+   ).toThrow();
+-  expect(() =>
+-    service.savePolicy({
++  await expect(
++    policyWrite(service, {
+       projectId: project.id,
+       pathPrefix: "\\",
+       purpose: "rooted",
+       forbiddenDependencies: [],
+     }),
+-  ).toThrow();
++  ).rejects.toThrow();
+ });
+ 
+ test("unrelated diagnostics do not suppress positive structural evidence or complete call absence", async () => {
+@@ -828,6 +842,7 @@ test("fixed excluded dependency symlinks do not hide genuine deletion evidence",
+ test("legacy snapshots stay readable and cannot prove removal from omitted files", async () => {
+   const indexer = new SourceIndexer();
+   service = new WorkspaceService({
++    structureFiles: new StructureFileStore(),
+     storage: db,
+     indexer: {
+       async index(path, projectId) {

@@ -1,0 +1,37 @@
+{
+  "model": "gpt-6.1-sol high",
+  "changedOnly": [
+    "apps/server/native/agent-job/tests/job-harness.cpp"
+  ],
+  "originalHarnSha": "98445d606d5e2fa57a0a32ff4565065e683482e98b82de3d8944ef1fac3a1f17",
+  "R1HarnSha": "1221e0ba6e2324d71f0c87d32216550431a54aeb04d77cbacae053ba96c774ad",
+  "nativeWindows": "UNRUN",
+  "M1": "OPEN_NATIVE_EVIDENCE_GATE",
+  "guardA": "UNCHANGED",
+  "files": {
+    "R1-before/independent-review.md": {
+      "bytes": 12134,
+      "sha256": "3ff1b1eeb03eeb6938f14cd8a725e06413beb46ef64964d84d95ff0c109dd92e"
+    },
+    "R1-before/sourcefreeze.json": {
+      "bytes": 2118,
+      "sha256": "309270eb5d5c3571b0003d48bf220cb9707349b6beb733ee05cde980f6e55b26"
+    },
+    "R1-after/sourcefreeze.json": {
+      "bytes": 2228,
+      "sha256": "04e3dfc293a3cb58ea05ba61f5d1c5e3fad009992dadc4336ebd6f86e1ba72be"
+    },
+    "R1.patch": {
+      "bytes": 12209,
+      "sha256": "442ab01cdf5a1c275ff077cf39f23ac656d72d09e725f871c3aca749a045836d"
+    },
+    "R1-after/checks.json": {
+      "bytes": 2181,
+      "sha256": "7b6eb73ef11714f45866dec8b6674a92da86db9a56dd37f50b20fd331762d7e2"
+    },
+    "R1-report.md": {
+      "bytes": 5592,
+      "sha256": "143f9b2c395039113b9e5e42ffe973cbf74e07d8097914df20f5263cbac8c695"
+    }
+  }
+}

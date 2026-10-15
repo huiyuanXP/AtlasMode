@@ -7,6 +7,8 @@ import {
   type PlanDetail,
   type ProjectSummary,
   type Project,
+  type DirectoryPolicy,
+  type StructureStatus,
 } from "@codemap/core";
 import { ApiClient, ApiError, errorValue } from "./client.js";
 
@@ -302,12 +304,11 @@ export function createMcpServer(
   );
   tool(
     "get_approved_plan",
-    "Refresh actual source files, then read current plan/revision/approval/validity. Implement only when valid is true and approval revision/hash match the current plan. A historical approval on a newer draft is not authorization.",
+    "Read the current approved plan through the service freshness guard for actual source and structure. Implement only when valid is true and approval revision/hash match. Stale, pending or historical-only approval is rejected.",
     plan,
     async ({ projectId, planId }) => {
       await ownedPlan(projectId, planId);
-      await api.request(`${projectPath(projectId)}/refresh`, "POST", {});
-      return ownedPlan(projectId, planId);
+      return api.request<PlanDetail>(`${planPath(planId)}/approved`);
     },
   );
   tool(
@@ -353,15 +354,25 @@ export function createMcpServer(
   );
   tool(
     "get_folder_policies",
-    "Read shared directory placement/dependency policies with pagination and current indexed snapshot identity.",
+    "Read fresh directory policy metadata with pagination, structure revision/digest/time and indexed snapshot identity. Prose/allowed/forbidden metadata does not prove machine rules satisfied.",
     { ...project, ...pagination },
-    async ({ projectId, ...input }) => ({
-      ...page(
-        await api.request<unknown[]>(`${projectPath(projectId)}/policies`),
-        input,
-      ),
-      snapshotId: (await summary(projectId)).snapshotId,
-    }),
+    async ({ projectId, ...input }) => {
+      const current = await api.request<{
+        policies: DirectoryPolicy[];
+        structureRevision: number;
+        fileDigest: string | null;
+        verifiedAt: string;
+        status: StructureStatus;
+      }>(`${projectPath(projectId)}/policies?includeStructure=1`);
+      return {
+        ...page(current.policies, input),
+        structureRevision: current.structureRevision,
+        fileDigest: current.fileDigest,
+        verifiedAt: current.verifiedAt,
+        status: current.status,
+        snapshotId: (await summary(projectId)).snapshotId,
+      };
+    },
   );
   return server;
 }

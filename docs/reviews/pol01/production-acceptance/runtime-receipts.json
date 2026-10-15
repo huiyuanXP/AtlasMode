@@ -1,0 +1,190 @@
+[
+  {
+    "receipt": "POL01_SQLITE_STDIO_OWNED",
+    "root": "/tmp/atlas-pol01-acceptance-2AYacj",
+    "runtime": "/tmp/atlas-pol01-acceptance-2AYacj/runtime-receipt.json",
+    "records": [
+      {
+        "kind": "server",
+        "mode": "source",
+        "pid": 125552,
+        "port": 34225,
+        "exit": [
+          0,
+          null
+        ],
+        "portClosed": true,
+        "output": "AtlasMode API listening on 127.0.0.1:34225 (built web assets available)\n"
+      },
+      {
+        "kind": "server",
+        "mode": "source",
+        "pid": 125663,
+        "port": 34847,
+        "exit": [
+          0,
+          null
+        ],
+        "portClosed": true,
+        "output": "AtlasMode API listening on 127.0.0.1:34847 (built web assets available)\n"
+      }
+    ],
+    "rootCleanup": "retained-evidence",
+    "originalLog": "source-run-2.txt"
+  },
+  {
+    "receipt": "POL01_SQLITE_STDIO_OWNED",
+    "root": "/tmp/atlas-pol01-acceptance-Uka0GW",
+    "runtime": "/tmp/atlas-pol01-acceptance-Uka0GW/runtime-receipt.json",
+    "records": [
+      {
+        "kind": "server",
+        "mode": "source",
+        "pid": 125807,
+        "port": 40575,
+        "exit": [
+          0,
+          null
+        ],
+        "portClosed": true,
+        "output": "AtlasMode API listening on 127.0.0.1:40575 (built web assets available)\n"
+      }
+    ],
+    "rootCleanup": "retained-evidence",
+    "originalLog": "source-run-2.txt"
+  },
+  {
+    "receipt": "POL01_SQLITE_STDIO_OWNED",
+    "root": "/tmp/atlas-pol01-acceptance-hPi9xK",
+    "runtime": "/tmp/atlas-pol01-acceptance-hPi9xK/runtime-receipt.json",
+    "records": [
+      {
+        "kind": "mcp-stdio",
+        "mode": "source",
+        "pid": 125873,
+        "pidAbsent": true,
+        "stderr": ""
+      },
+      {
+        "kind": "server",
+        "mode": "source",
+        "pid": 125824,
+        "port": 42561,
+        "exit": [
+          0,
+          null
+        ],
+        "portClosed": true,
+        "output": "AtlasMode API listening on 127.0.0.1:42561 (built web assets available)\n"
+      },
+      {
+        "kind": "server",
+        "mode": "source",
+        "pid": 125895,
+        "port": 42131,
+        "exit": [
+          0,
+          null
+        ],
+        "portClosed": true,
+        "output": "AtlasMode API listening on 127.0.0.1:42131 (built web assets available)\n"
+      }
+    ],
+    "rootCleanup": "retained-evidence",
+    "originalLog": "source-run-2.txt"
+  },
+  {
+    "receipt": "POL01_SQLITE_STDIO_OWNED",
+    "root": "/tmp/atlas-pol01-acceptance-jfFcz1",
+    "runtime": "/tmp/atlas-pol01-acceptance-jfFcz1/runtime-receipt.json",
+    "records": [
+      {
+        "kind": "server",
+        "mode": "source",
+        "pid": 127254,
+        "port": 36219,
+        "exit": [
+          0,
+          null
+        ],
+        "portClosed": true,
+        "output": "AtlasMode API listening on 127.0.0.1:36219 (built web assets available)\n"
+      },
+      {
+        "kind": "server",
+        "mode": "source",
+        "pid": 127294,
+        "port": 36069,
+        "exit": [
+          0,
+          null
+        ],
+        "portClosed": true,
+        "output": "AtlasMode API listening on 127.0.0.1:36069 (built web assets available)\n"
+      }
+    ],
+    "rootCleanup": "retained-evidence",
+    "originalLog": "source-run-3.txt"
+  },
+  {
+    "receipt": "POL01_SQLITE_STDIO_OWNED",
+    "root": "/tmp/atlas-pol01-acceptance-G222TX",
+    "runtime": "/tmp/atlas-pol01-acceptance-G222TX/runtime-receipt.json",
+    "records": [
+      {
+        "kind": "server",
+        "mode": "source",
+        "pid": 127349,
+        "port": 34941,
+        "exit": [
+          0,
+          null
+        ],
+        "portClosed": true,
+        "output": "AtlasMode API listening on 127.0.0.1:34941 (built web assets available)\n"
+      }
+    ],
+    "rootCleanup": "retained-evidence",
+    "originalLog": "source-run-3.txt"
+  },
+  {
+    "receipt": "POL01_SQLITE_STDIO_OWNED",
+    "root": "/tmp/atlas-pol01-acceptance-UpTcgj",
+    "runtime": "/tmp/atlas-pol01-acceptance-UpTcgj/runtime-receipt.json",
+    "records": [
+      {
+        "kind": "mcp-stdio",
+        "mode": "source",
+        "pid": 127428,
+        "pidAbsent": true,
+        "stderr": ""
+      },
+      {
+        "kind": "server",
+        "mode": "source",
+        "pid": 127364,
+        "port": 35169,
+        "exit": [
+          0,
+          null
+        ],
+        "portClosed": true,
+        "output": "AtlasMode API listening on 127.0.0.1:35169 (built web assets available)\n"
+      },
+      {
+        "kind": "server",
+        "mode": "source",
+        "pid": 127443,
+        "port": 44865,
+        "exit": [
+          0,
+          null
+        ],
+        "portClosed": true,
+        "output": "AtlasMode API listening on 127.0.0.1:44865 (built web assets available)\n"
+      }
+    ],
+    "rootCleanup": "retained-evidence",
+    "originalLog": "source-run-3.txt"
+  }
+]

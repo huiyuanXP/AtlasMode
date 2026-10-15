@@ -1,0 +1,10 @@
+apps/web/src/features/graph/overview-layout.ts(163,159): error TS2322: Type '4096 | 160000 | 200000 | 4000000 | 1000000' is not assignable to type 'never'.
+  Type '4096' is not assignable to type 'never'.
+apps/web/src/features/structure/ownership-session.ts(253,21): error TS2345: Argument of type 'OwnershipCapture | undefined' is not assignable to parameter of type 'OwnershipContext | undefined'.
+  Type 'OwnershipCapture' is not assignable to type 'OwnershipContext | undefined'.
+    Type 'OwnershipCapture' is not assignable to type 'OwnershipContext'.
+      Type 'OwnershipCapture' is missing the following properties from type '{ selectedId?: string | undefined; operations: Operation[]; title: string; description: string; busy: boolean; dirty: boolean; groupSelection: boolean; stale?: boolean | undefined; }': operations, title, description, busy, and 2 more.
+apps/web/src/features/structure/ownership-session.ts(395,23): error TS2345: Argument of type 'OwnershipCapture | undefined' is not assignable to parameter of type 'OwnershipContext | undefined'.
+  Type 'OwnershipCapture' is not assignable to type 'OwnershipContext | undefined'.
+    Type 'OwnershipCapture' is not assignable to type 'OwnershipContext'.
+      Type 'OwnershipCapture' is missing the following properties from type '{ selectedId?: string | undefined; operations: Operation[]; title: string; description: string; busy: boolean; dirty: boolean; groupSelection: boolean; stale?: boolean | undefined; }': operations, title, description, busy, and 2 more.

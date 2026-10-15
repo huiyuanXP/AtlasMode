@@ -1,0 +1,84 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90m/home/agent/projects/AtlasMode[39m
+
+ [31m❯[39m apps/server/src/pol01-workspace-http.test.ts [2m([22m[2m7 tests[22m[2m | [22m[31m7 failed[39m[2m)[22m[33m 7528[2mms[22m[39m
+[31m   [31m×[31m HTTP real file write, array/meta policies, stale CAS and invalid diagnostics use one service boundary[39m[33m 466[2mms[22m[39m
+[31m   [31m×[31m old policy POST requires explicit CAS, preserves DB source until preview plus migration, then edits file[39m[32m 155[2mms[22m[39m
+[31m   [31m×[31m actual Workspace approval/current-read queue blocks prepared structure write[39m[32m 165[2mms[22m[39m
+[31m   [31m×[31m actual Workspace approval/current-read queue blocks published structure write[39m[32m 149[2mms[22m[39m
+[31m   [31m×[31m owned process crash before recovers before HTTP availability without touching user files[39m[33m 3264[2mms[22m[39m
+[31m   [31m×[31m owned process crash after recovers before HTTP availability without touching user files[39m[33m 2066[2mms[22m[39m
+[31m   [31m×[31m owned process crash third recovers before HTTP availability without touching user files[39m[33m 1260[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 7 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m apps/server/src/pol01-workspace-http.test.ts[2m > [22mHTTP real file write, array/meta policies, stale CAS and invalid diagnostics use one service boundary
+[31m[1mTypeError[22m: f.service.getStructure is not a function[39m
+[36m [2m❯[22m request apps/server/src/pol01-workspace-http.test.ts:[2m28:33[22m[39m
+
+[90m [2m❯[22m apps/server/src/pol01-workspace-http.test.ts:[2m34:86[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/7]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/server/src/pol01-workspace-http.test.ts[2m > [22mold policy POST requires explicit CAS, preserves DB source until preview plus migration, then edits file
+[31m[1mAssertionError[22m: expected 200 to be 428 // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- 428[39m
+[31m+ 200[39m
+
+[36m [2m❯[22m apps/server/src/pol01-workspace-http.test.ts:[2m53:107[22m[39m
+
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/7]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/server/src/pol01-workspace-http.test.ts[2m > [22mactual Workspace approval/current-read queue blocks prepared structure write
+[41m[1m FAIL [22m[49m apps/server/src/pol01-workspace-http.test.ts[2m > [22mactual Workspace approval/current-read queue blocks published structure write
+[31m[1mTypeError[22m: f.service.getStructure is not a function[39m
+[36m [2m❯[22m request apps/server/src/pol01-workspace-http.test.ts:[2m28:33[22m[39m
+
+[90m [2m❯[22m apps/server/src/pol01-workspace-http.test.ts:[2m75:63[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/7]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m apps/server/src/pol01-workspace-http.test.ts[2m > [22mowned process crash before recovers before HTTP availability without touching user files
+[41m[1m FAIL [22m[49m apps/server/src/pol01-workspace-http.test.ts[2m > [22mowned process crash after recovers before HTTP availability without touching user files
+[41m[1m FAIL [22m[49m apps/server/src/pol01-workspace-http.test.ts[2m > [22mowned process crash third recovers before HTTP availability without touching user files
+[31m[1mAssertionError[22m: expected { code: 1, signal: null, …(1) } to deeply equal { code: null, signal: 'SIGKILL', …(1) }[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[32m-   "code": null,[39m
+[32m-   "errors": "",[39m
+[32m-   "signal": "SIGKILL",[39m
+[31m+   "code": 1,[39m
+[31m+   "errors": "/home/agent/projects/AtlasMode/tests/support/pol01-crash.ts:18[39m
+[31m+ const state = await service.getStructure(projectId);[39m
+[31m+                             ^[39m
+[31m+[39m
+[31m+ TypeError: service.getStructure is not a function[39m
+[31m+     at <anonymous> (/home/agent/projects/AtlasMode/tests/support/pol01-crash.ts:18:29)[39m
+[31m+     at ModuleJob.run (node:internal/modules/esm/module_job:439:25)[39m
+[31m+     at async node:internal/modules/esm/loader:643:26[39m
+[31m+     at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)[39m
+[31m+[39m
+[31m+ Node.js v24.19.0[39m
+[31m+ ",[39m
+[31m+   "signal": null,[39m
+[2m  }[22m
+
+[36m [2m❯[22m apps/server/src/pol01-workspace-http.test.ts:[2m90:86[22m[39m
+
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/7]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m7 failed[39m[22m[90m (7)[39m
+[2m   Start at [22m 16:58:26
+[2m   Duration [22m 10.54s[2m (transform 1.03s, setup 0ms, import 2.73s, tests 7.53s, environment 0ms)[22m
+

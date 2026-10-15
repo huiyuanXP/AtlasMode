@@ -1,117 +1,96 @@
-import { useState } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useStore } from "zustand";
-import type { DirectoryPolicy } from "@codemap/core";
 import type { Workspace } from "../../app/workspace.js";
-import { useStrings } from "../../i18n/index.js";
-export function PoliciesPanel({ app }: { app: Workspace }) {
+import {
+  StructureClient,
+  type StructureTransport,
+} from "../../api/structure-client.js";
+import {
+  createPolicyController,
+  type AcceptedPolicyResponse,
+  type AcceptedPolicyReadResponse,
+} from "./policy-controller.js";
+import { StructurePolicyPanel } from "./StructurePolicyPanel.js";
+const defaultTransport = new StructureClient();
+export type PoliciesPanelProps = {
+  app: Workspace;
+  transport?: StructureTransport;
+  onAccepted?: (response: AcceptedPolicyResponse) => void | Promise<void>;
+  onReadAccepted?: (
+    response: AcceptedPolicyReadResponse,
+  ) => void | Promise<void>;
+};
+/** Dedicated editor: old policy POST now carries the editor's explicit CAS capture. */
+export function PoliciesPanel({
+  app,
+  transport = defaultTransport,
+  onAccepted,
+  onReadAccepted,
+}: PoliciesPanelProps) {
   const state = useStore(app.store),
-    text = useStrings();
-  const [selected, setSelected] = useState("");
-  const policy = state.policies.find((p) => p.id === selected);
+    id = state.project?.id;
+  if (!id) return null;
   return (
-    <section className="knowledge-panel">
-      <h2>{text.policies}</h2>
-      <p className="muted">{text.policyHelp}</p>
-      <p className="muted">{text.knowledgeImpact}</p>
-      <select
-        aria-label={text.policies}
-        value={selected}
-        onChange={(e) => setSelected(e.target.value)}
-      >
-        <option value="">{text.newPolicy}</option>
-        {state.policies.map((p) => (
-          <option key={p.id} value={p.id}>
-            {p.pathPrefix || "."} · {p.purpose}
-          </option>
-        ))}
-      </select>
-      <PolicyForm
-        key={JSON.stringify(policy) ?? "new"}
-        policy={policy}
-        busy={
-          !!state.busy.knowledge || !!state.busy.project || !!state.busy.plan
-        }
-        onSave={(input) => void app.savePolicy(input)}
-      />
-      {!state.policies.length && <p>{text.noPolicies}</p>}
-      {state.policies.map((p) => (
-        <article key={p.id}>
-          <strong>{p.pathPrefix || "."}</strong>
-          <p>{p.purpose}</p>
-          <small>{text.forbiddenDependencies}</small>
-          <ul>
-            {p.forbiddenDependencies.map((path, i) => (
-              <li key={i}>
-                <code>{path}</code>
-              </li>
-            ))}
-          </ul>
-        </article>
-      ))}
-    </section>
+    <ProjectPolicyEditor
+      key={id}
+      projectId={id}
+      locale={state.view.locale ?? "zh"}
+      transport={transport}
+      onAccepted={onAccepted}
+      onReadAccepted={onReadAccepted}
+      workspaceBusy={
+        !!state.busy.knowledge || !!state.busy.project || !!state.busy.plan
+      }
+    />
   );
 }
-function PolicyForm({
-  policy,
-  busy,
-  onSave,
+function ProjectPolicyEditor({
+  projectId,
+  locale,
+  transport,
+  onAccepted,
+  onReadAccepted,
+  workspaceBusy,
 }: {
-  policy?: DirectoryPolicy;
-  busy: boolean;
-  onSave: (
-    input: Omit<DirectoryPolicy, "id" | "projectId"> & { id?: string },
-  ) => void;
+  projectId: string;
+  workspaceBusy: boolean;
+  locale: "en" | "zh";
+  transport: StructureTransport;
+  onAccepted?: PoliciesPanelProps["onAccepted"];
+  onReadAccepted?: PoliciesPanelProps["onReadAccepted"];
 }) {
-  const text = useStrings(),
-    [pathPrefix, setPath] = useState(policy?.pathPrefix ?? ""),
-    [purpose, setPurpose] = useState(policy?.purpose ?? ""),
-    [forbidden, setForbidden] = useState(
-      policy?.forbiddenDependencies.join("\n") ?? "",
+  const accepted = useRef(onAccepted);
+  accepted.current = onAccepted;
+  const readAccepted = useRef(onReadAccepted);
+  readAccepted.current = onReadAccepted;
+  const controller = useMemo(() => {
+    const c = createPolicyController(
+      transport,
+      (response) => accepted.current?.(response),
+      undefined,
+      (response) => readAccepted.current?.(response),
     );
+    c.selectProject(projectId);
+    return c;
+  }, [projectId, transport]);
+  const state = useStore(controller.store);
+  useEffect(() => {
+    void controller.reload();
+    return () => controller.dispose();
+  }, [controller]);
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        onSave({
-          ...(policy ? { id: policy.id } : {}),
-          pathPrefix,
-          purpose,
-          forbiddenDependencies: forbidden
-            .split("\n")
-            .map((s) => s.trim())
-            .filter(Boolean),
-        });
-      }}
-    >
-      <fieldset disabled={busy}>
-        <label>
-          {text.pathPrefix}
-          <input
-            placeholder="src/"
-            value={pathPrefix}
-            onChange={(e) => setPath(e.target.value)}
-          />
-        </label>
-        <label>
-          {text.purpose}
-          <textarea
-            aria-label={text.purpose}
-            required
-            value={purpose}
-            onChange={(e) => setPurpose(e.target.value)}
-          />
-        </label>
-        <label>
-          {text.forbiddenDependencies}
-          <textarea
-            aria-label={text.forbiddenDependencies}
-            placeholder="src/internal"
-            value={forbidden}
-            onChange={(e) => setForbidden(e.target.value)}
-          />
-        </label>
-        <button>{text.savePolicy}</button>
-      </fieldset>
-    </form>
+    <StructurePolicyPanel
+      state={{ ...state, busy: state.busy || workspaceBusy }}
+      locale={locale}
+      integrated={!!onAccepted && !!onReadAccepted}
+      onReload={() => void controller.reload()}
+      onConflictRead={() => void controller.reload(true)}
+      onChoose={controller.choose}
+      onEdit={controller.edit}
+      onSave={() => void controller.save()}
+      onRetry={() => void controller.retry()}
+      onPreview={() => void controller.previewLegacy()}
+      onImport={() => void controller.importLegacy()}
+    />
   );
 }

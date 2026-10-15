@@ -1,0 +1,6 @@
+apps/web/src/features/graph/overview-layout.ts(447,12): error TS2540: Cannot assign to 'bucketEntryVisits' because it is a read-only property.
+apps/web/src/features/graph/overview-layout.ts(447,12): error TS2540: Cannot assign to 'candidateProbes' because it is a read-only property.
+apps/web/src/features/graph/overview-layout.ts(447,12): error TS2540: Cannot assign to 'cellEntriesInserted' because it is a read-only property.
+apps/web/src/features/graph/overview-layout.ts(447,12): error TS2540: Cannot assign to 'liveCellEntries' because it is a read-only property.
+apps/web/src/features/graph/overview-layout.ts(447,12): error TS2540: Cannot assign to 'manualPairObservations' because it is a read-only property.
+apps/web/src/features/graph/overview-layout.ts(447,12): error TS2540: Cannot assign to 'rectangleComparisons' because it is a read-only property.

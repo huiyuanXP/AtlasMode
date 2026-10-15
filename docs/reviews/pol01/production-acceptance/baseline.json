@@ -1,0 +1,6 @@
+{
+  "oldProof": "37 + 14 = 51; controller/SSR/transport/SDK owned mock HTTP, not SQLite/stdio/mounted",
+  "browser": "UNRUN; no compiled/mounted freeze authorization",
+  "beforeFiles": 136,
+  "reviewSHA": "36a9bdb043441662c47bd4abc69360172d35d2938efea5b341308a34fde15a69"
+}

@@ -1,0 +1,234 @@
+[
+  {
+    "path": "apps/mcp/src/index.ts",
+    "same": true
+  },
+  {
+    "path": "apps/mcp/src/server.ts",
+    "same": true
+  },
+  {
+    "path": "apps/server/src/agent/bridge.ts",
+    "same": true
+  },
+  {
+    "path": "apps/server/src/agent/configured.ts",
+    "same": true
+  },
+  {
+    "path": "apps/server/src/agent/direct.ts",
+    "same": true
+  },
+  {
+    "path": "apps/server/src/agent/gateway.ts",
+    "same": true
+  },
+  {
+    "path": "apps/server/src/agent/native.ts",
+    "same": true
+  },
+  {
+    "path": "apps/server/src/agent/process.ts",
+    "same": true
+  },
+  {
+    "path": "apps/server/src/agent/profile.ts",
+    "same": true
+  },
+  {
+    "path": "apps/server/src/agent/responses-stream.ts",
+    "same": true
+  },
+  {
+    "path": "apps/server/src/agent/routes.ts",
+    "same": true
+  },
+  {
+    "path": "apps/server/src/agent/types.ts",
+    "same": true
+  },
+  {
+    "path": "apps/server/src/index.ts",
+    "same": true
+  },
+  {
+    "path": "apps/server/src/navigation-query.ts",
+    "same": true
+  },
+  {
+    "path": "apps/server/src/queries.ts",
+    "same": false
+  },
+  {
+    "path": "apps/server/src/routes.ts",
+    "same": false
+  },
+  {
+    "path": "apps/server/src/server.ts",
+    "same": true
+  },
+  {
+    "path": "apps/web/src/api/structure-client.ts",
+    "same": true
+  },
+  {
+    "path": "apps/web/src/features/structure/policy-controller.ts",
+    "same": true
+  },
+  {
+    "path": "packages/core/src/annotations.ts",
+    "same": true
+  },
+  {
+    "path": "packages/core/src/approval-schema.ts",
+    "same": true
+  },
+  {
+    "path": "packages/core/src/index.ts",
+    "same": false
+  },
+  {
+    "path": "packages/core/src/layout-target.ts",
+    "same": true
+  },
+  {
+    "path": "packages/core/src/model.ts",
+    "same": true
+  },
+  {
+    "path": "packages/core/src/queries.ts",
+    "same": true
+  },
+  {
+    "path": "packages/core/src/structure-types.ts",
+    "same": true
+  },
+  {
+    "path": "packages/core/src/structure.ts",
+    "same": true
+  },
+  {
+    "path": "packages/core/src/validation.ts",
+    "same": true
+  },
+  {
+    "path": "packages/indexer/src/commonjs.ts",
+    "same": true
+  },
+  {
+    "path": "packages/indexer/src/configCapture.ts",
+    "same": true
+  },
+  {
+    "path": "packages/indexer/src/configResolution.ts",
+    "same": true
+  },
+  {
+    "path": "packages/indexer/src/graph.ts",
+    "same": true
+  },
+  {
+    "path": "packages/indexer/src/index.ts",
+    "same": true
+  },
+  {
+    "path": "packages/indexer/src/metadataRead.ts",
+    "same": true
+  },
+  {
+    "path": "packages/indexer/src/packageCapture.ts",
+    "same": true
+  },
+  {
+    "path": "packages/indexer/src/packageMode.ts",
+    "same": true
+  },
+  {
+    "path": "packages/indexer/src/projectReferenceGraph.ts",
+    "same": true
+  },
+  {
+    "path": "packages/indexer/src/projectReferenceTypes.ts",
+    "same": true
+  },
+  {
+    "path": "packages/indexer/src/projectReferences.ts",
+    "same": true
+  },
+  {
+    "path": "packages/indexer/src/python.ts",
+    "same": true
+  },
+  {
+    "path": "packages/indexer/src/scan.ts",
+    "same": true
+  },
+  {
+    "path": "packages/indexer/src/source.ts",
+    "same": true
+  },
+  {
+    "path": "packages/indexer/src/typescript.ts",
+    "same": true
+  },
+  {
+    "path": "packages/indexer/src/workspaceResolution.ts",
+    "same": true
+  },
+  {
+    "path": "packages/service/src/annotation-review-service.ts",
+    "same": true
+  },
+  {
+    "path": "packages/service/src/annotation-review.ts",
+    "same": true
+  },
+  {
+    "path": "packages/service/src/annotations.ts",
+    "same": true
+  },
+  {
+    "path": "packages/service/src/index.ts",
+    "same": true
+  },
+  {
+    "path": "packages/service/src/knowledge-revisions.ts",
+    "same": true
+  },
+  {
+    "path": "packages/service/src/knowledge.ts",
+    "same": true
+  },
+  {
+    "path": "packages/service/src/planning.ts",
+    "same": true
+  },
+  {
+    "path": "packages/service/src/structure-state.ts",
+    "same": true
+  },
+  {
+    "path": "packages/service/src/structure-sync.ts",
+    "same": true
+  },
+  {
+    "path": "packages/service/src/verification.ts",
+    "same": true
+  },
+  {
+    "path": "packages/service/src/workspace.ts",
+    "same": true
+  },
+  {
+    "path": "packages/storage/src/index.ts",
+    "same": true
+  },
+  {
+    "path": "packages/storage/src/sqlite.ts",
+    "same": true
+  },
+  {
+    "path": "packages/storage/src/structure-file.ts",
+    "same": true
+  }
+]

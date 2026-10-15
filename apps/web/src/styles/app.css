@@ -548,15 +548,16 @@ form > button {
   flex-direction: column;
   overflow: hidden;
 }
-.tabs {
+.inspector > .tabs {
   display: flex;
+  flex-wrap: wrap;
   border-bottom: 1px solid var(--border);
   padding: 8px;
   gap: 4px;
   background: var(--panel);
 }
-.tabs button {
-  flex: 1;
+.inspector > .tabs button {
+  flex: 1 1 auto;
   border-color: transparent;
   background: transparent;
   padding: 9px 4px;

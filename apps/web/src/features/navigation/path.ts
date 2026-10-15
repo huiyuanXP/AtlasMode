@@ -19,7 +19,9 @@ export function breadcrumbs(
   const result: Breadcrumb[] = [
     { label: project.name, kind: "folder", path: "." },
   ];
-  const path = node?.filePath ?? location?.path ?? ".";
+  const path = location?.planned
+    ? location.path
+    : (node?.filePath ?? location?.path ?? ".");
   const kind = node?.kind ?? location?.kind;
   if (path !== "." && kind !== "external") {
     const parts = path.split("/");
@@ -45,19 +47,18 @@ export function plannedScopeIds(
   path: string,
   kind: "folder" | "file",
 ): string[] {
-  return [
-    ...new Set(
-      operations.flatMap((op) => {
-        if (op.kind !== "add_function" && op.kind !== "move_function")
-          return [];
-        const matches =
-          kind === "file"
-            ? op.filePath === path
-            : path === "." || op.filePath.startsWith(`${path}/`);
-        return matches
-          ? [op.kind === "add_function" ? op.tempId : op.nodeId]
-          : [];
-      }),
-    ),
-  ];
+  const destinations = new Map<string, string>();
+  for (const op of operations) {
+    if (op.kind === "add_function") destinations.set(op.tempId, op.filePath);
+    if (op.kind === "move_function") destinations.set(op.nodeId, op.filePath);
+  }
+  for (const op of operations)
+    if (op.kind === "remove_function") destinations.delete(op.nodeId);
+  return [...destinations]
+    .filter(([, target]) =>
+      kind === "file"
+        ? target === path
+        : path === "." || target.startsWith(`${path}/`),
+    )
+    .map(([id]) => id);
 }

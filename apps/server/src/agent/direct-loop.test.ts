@@ -11,7 +11,7 @@ import {
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { SourceIndexer } from "@codemap/indexer";
-import { SqliteStorage } from "@codemap/storage";
+import { SqliteStorage, StructureFileStore } from "@codemap/storage";
 import { WorkspaceService } from "@codemap/service";
 import { createServer } from "../server.js";
 import { createResponsesRunner, type ResponsesOptions } from "./direct.js";
@@ -104,6 +104,7 @@ async function setup(url: string, options?: ResponsesOptions) {
   const storage = new SqliteStorage(join(root, "data.sqlite"));
   cleanups.push(async () => storage.close());
   const service = new WorkspaceService({
+    structureFiles: new StructureFileStore(),
     storage,
     indexer: new SourceIndexer(),
   });

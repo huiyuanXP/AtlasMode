@@ -1,0 +1,33 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90m/home/agent/projects/AtlasMode[39m
+
+ [31m❯[39m apps/web/src/app/workspace-ownership.test.ts [2m([22m[2m9 tests[22m[2m | [22m[31m1 failed[39m[2m | [22m[33m8 skipped[39m[2m)[22m[32m 50[2mms[22m[39m
+   [2m[90m↓[39m[22m source read resolves current domain context and never requests a planned destination
+   [2m[90m↓[39m[22m a mismatched context snapshot prevents source dispatch
+   [2m[90m↓[39m[22m unexpected returned source path is refused instead of showing destination bytes
+   [2m[90m↓[39m[22m selection generation change before context resolves prevents source dispatch
+   [2m[90m↓[39m[22m snapshot change after source dispatch refuses the late reply
+   [2m[90m↓[39m[22m source reads never use a temporary planned function path
+   [2m[90m↓[39m[22m captured advanced/ownership save includes snapshot and rejects a changed tuple before HTTP
+   [2m[90m↓[39m[22m dirty advanced input blocks direct confirmation, including the overview path
+[31m   [31m×[31m actual verify then createPlan path retires idle S0 targets before S1 fresh begin[39m[32m 48[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/app/workspace-ownership.test.ts[2m > [22mactual verify then createPlan path retires idle S0 targets before S1 fresh begin
+[31m[1mAssertionError[22m: expected 'ready' to be 'idle' // Object.is equality[39m
+
+Expected: [32m"idle"[39m
+Received: [31m"ready"[39m
+
+[36m [2m❯[22m apps/web/src/app/workspace-ownership.test.ts:[2m257:53[22m[39m
+
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m1 failed[39m[22m[2m | [22m[33m8 skipped[39m[90m (9)[39m
+[2m   Start at [22m 18:19:17
+[2m   Duration [22m 930ms[2m (transform 378ms, setup 0ms, import 611ms, tests 50ms, environment 0ms)[22m
+

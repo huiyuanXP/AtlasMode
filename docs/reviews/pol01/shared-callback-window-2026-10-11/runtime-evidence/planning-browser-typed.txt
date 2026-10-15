@@ -1,0 +1,8 @@
+
+Running 1 test using 1 worker
+
+{"requestedRelation":"plan:new-call","clickedRoute":{"x":674.6982168263639,"y":359.78514420986176,"visualRoute":"rf__edge-plan:new-call"}}
+{"requestedRelation":"fact:relation:8df4f9809394fe67437b3505b356e057","clickedRoute":{"x":967.0816083700174,"y":276.9426691979395,"visualRoute":"rf__edge-group-edge:fact:relation:8df4f9809394fe67437b3505b356e057:0"}}
+  ✓  1 tests/e2e/planning.spec.mjs:18:1 › production UI and SDK share the complete planning, approval, persistence and verification flow offline (21.1s)
+
+  1 passed (23.4s)

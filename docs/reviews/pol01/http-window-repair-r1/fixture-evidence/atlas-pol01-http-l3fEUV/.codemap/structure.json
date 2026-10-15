@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "folders": [
+    {
+      "path": "src",
+      "purpose": "old",
+      "unknown": [
+        1,
+        null
+      ]
+    }
+  ],
+  "dependencyRules": [],
+  "x-atlasmode": {
+    "schemaVersion": 1,
+    "legacyPathPolicies": [
+      {
+        "id": "legacy",
+        "pathPrefix": "src",
+        "purpose": "file edit",
+        "forbiddenDependencies": [
+          "private"
+        ]
+      }
+    ]
+  }
+}

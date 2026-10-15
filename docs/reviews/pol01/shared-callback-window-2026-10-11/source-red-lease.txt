@@ -1,0 +1,50 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90m/home/agent/projects/AtlasMode[39m
+
+ [31m❯[39m apps/web/src/app/pol01-policy-sync.test.ts [2m([22m[2m14 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[33m 369[2mms[22m[39m
+   [32m✓[39m ACK synchronizes full policy/summary/actual plan revision read-only and preserves historical approval/source/group[32m 66[2mms[22m[39m
+   [32m✓[39m dirty plan retains exact body/revision/CAS while refreshed list and validity change[32m 3[2mms[22m[39m
+   [32m✓[39m read failure /policies rejects and keeps old collection/current receipt unusable[32m 3[2mms[22m[39m
+   [32m✓[39m read failure /plans rejects and keeps old collection/current receipt unusable[32m 2[2mms[22m[39m
+   [32m✓[39m read failure /summary rejects and keeps old collection/current receipt unusable[32m 1[2mms[22m[39m
+   [32m✓[39m only authoritative 409 NOT_APPROVED may recover; context-invalid and 503 never fall back[32m 4[2mms[22m[39m
+   [32m✓[39m matched strong v1 approval is accepted, mismatched plan revision/owner is rejected[32m 8[2mms[22m[39m
+   [32m✓[39m full captured policy read >50 is accepted, stale or foreign policies are rejected[32m 24[2mms[22m[39m
+   [32m✓[39m late strong approval during public project A→B→A cannot commit even with same project id[32m 61[2mms[22m[39m
+   [32m✓[39m same-epoch old callback failure neither clears newer busy nor overwrites newer result[32m 55[2mms[22m[39m
+[31m   [31m×[31m rejected quarantined read does not steal active same-epoch synchronization lease[39m[32m 69[2mms[22m[39m
+   [32m✓[39m public planning context change during strong read cannot overwrite newly selected plan[32m 58[2mms[22m[39m
+   [32m✓[39m other knowledge owner remains busy; foreign ACK/quarantine cannot become an accepted read[32m 3[2mms[22m[39m
+   [32m✓[39m real controller known ACK + parent sync failure keeps saved notice and never replays PUT[32m 7[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m apps/web/src/app/pol01-policy-sync.test.ts[2m > [22mrejected quarantined read does not steal active same-epoch synchronization lease
+[31m[1mAssertionError[22m: expected Error: Policy synchronization context cha… { …(2) } to be undefined[39m
+
+[32m- Expected:[39m
+undefined
+
+[31m+ Received:[39m
+ApiError {
+  "message": "Policy synchronization context changed; read again.",
+  "code": "SNAPSHOT_CHANGED",
+  "status": 409,
+}
+
+[36m [2m❯[22m apps/web/src/app/pol01-policy-sync.test.ts:[2m339:24[22m[39m
+    [90m337|[39m   [34mexpect[39m(f[33m.[39mapp[33m.[39mstore[33m.[39m[34mgetState[39m()[33m.[39mbusy[33m.[39mknowledge)[33m.[39m[34mtoBe[39m([35mtrue[39m)[33m;[39m
+    [90m338|[39m   hold[33m.[39m[34mresolve[39m([34mnotApproved[39m())[33m;[39m
+    [90m339|[39m   [34mexpect[39m([35mawait[39m result)[33m.[39m[34mtoBeUndefined[39m()[33m;[39m
+    [90m   |[39m                        [31m^[39m
+    [90m340|[39m   [34mexpect[39m(f[33m.[39mapp[33m.[39mstore[33m.[39m[34mgetState[39m()[33m.[39mplan[33m?.[39mplan[33m.[39mrevision)[33m.[39m[34mtoBe[39m([34m3[39m)[33m;[39m
+    [90m341|[39m   [34mexpect[39m(f[33m.[39mapp[33m.[39mstore[33m.[39m[34mgetState[39m()[33m.[39mbusy[33m.[39mknowledge)[33m.[39m[34mtoBe[39m([35mfalse[39m)[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m13 passed[39m[22m[90m (14)[39m
+[2m   Start at [22m 01:41:04
+[2m   Duration [22m 1.48s[2m (transform 524ms, setup 0ms, import 760ms, tests 369ms, environment 0ms)[22m
+

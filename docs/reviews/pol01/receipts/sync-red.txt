@@ -1,0 +1,193 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90m/home/agent/projects/AtlasMode[39m
+
+ [31m❯[39m packages/service/src/structure-sync.test.ts [2m([22m[2m12 tests[22m[2m | [22m[31m12 failed[39m[2m)[22m[33m 825[2mms[22m[39m
+[31m   [31m×[31m UI write commits matching real file state plans history and audit[39m[32m 87[2mms[22m[39m
+[31m   [31m×[31m same-version concurrent writes have one success and one conflict[39m[32m 56[2mms[22m[39m
+[31m   [31m×[31m mutation retry finalizes once and different payload cannot reuse id[39m[32m 49[2mms[22m[39m
+[31m   [31m×[31m external formatting changes structure version but does not invalidate plan[39m[32m 50[2mms[22m[39m
+[31m   [31m×[31m invalid repeated read and deletion never reuse a valid current context[39m[32m 89[2mms[22m[39m
+[31m   [31m×[31m DB-only same-id editing keeps bytes and explicit migration switches source once[39m[32m 85[2mms[22m[39m
+[31m   [31m×[31m equal extension migration changes only source and approval, not file[39m[32m 86[2mms[22m[39m
+[31m   [31m×[31m rename then database failure recovers on a new SQLite instance only once[39m[32m 82[2mms[22m[39m
+[31m   [31m×[31m prepublication failure preserves original file and migration DB records[39m[32m 81[2mms[22m[39m
+[31m   [31m×[31m failed audit distinguishes attempted B from external observed C[39m[32m 49[2mms[22m[39m
+[31m   [31m×[31m third-digest recovery retains external bytes until explicit refresh[39m[32m 57[2mms[22m[39m
+[31m   [31m×[31m queue scope prevents an approved read from escaping an unfinished publication[39m[32m 49[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 12 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m packages/service/src/structure-sync.test.ts[2m > [22mUI write commits matching real file state plans history and audit
+[31m[1mError[22m: POL-01 sync not implemented[39m
+[36m [2m❯[22m StructureSync.getStructure packages/service/src/structure-sync.ts:[2m3:88[22m[39m
+    [90m  1|[39m [35mexport[39m [35mclass[39m [33mStructureSync[39m {
+    [90m  2|[39m   [34mconstructor[39m(_options[33m:[39m unknown) {}
+    [90m  3|[39m   async getStructure(_project: string, _options: unknown = {}): Promis…
+    [90m   |[39m                                                                                        [31m^[39m
+    [90m  4|[39m   async updateStructure(_project: string, _input: unknown): Promise<ne…
+    [90m  5|[39m   listStructureAudit(_project: string, _page: unknown): never { throw …
+[90m [2m❯[22m fixture packages/service/src/structure-sync.test.ts:[2m29:35[22m[39m
+[90m [2m❯[22m packages/service/src/structure-sync.test.ts:[2m42:13[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/12]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m packages/service/src/structure-sync.test.ts[2m > [22msame-version concurrent writes have one success and one conflict
+[31m[1mError[22m: POL-01 sync not implemented[39m
+[36m [2m❯[22m StructureSync.getStructure packages/service/src/structure-sync.ts:[2m3:88[22m[39m
+    [90m  1|[39m [35mexport[39m [35mclass[39m [33mStructureSync[39m {
+    [90m  2|[39m   [34mconstructor[39m(_options[33m:[39m unknown) {}
+    [90m  3|[39m   async getStructure(_project: string, _options: unknown = {}): Promis…
+    [90m   |[39m                                                                                        [31m^[39m
+    [90m  4|[39m   async updateStructure(_project: string, _input: unknown): Promise<ne…
+    [90m  5|[39m   listStructureAudit(_project: string, _page: unknown): never { throw …
+[90m [2m❯[22m fixture packages/service/src/structure-sync.test.ts:[2m29:35[22m[39m
+[90m [2m❯[22m packages/service/src/structure-sync.test.ts:[2m52:13[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/12]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m packages/service/src/structure-sync.test.ts[2m > [22mmutation retry finalizes once and different payload cannot reuse id
+[31m[1mError[22m: POL-01 sync not implemented[39m
+[36m [2m❯[22m StructureSync.getStructure packages/service/src/structure-sync.ts:[2m3:88[22m[39m
+    [90m  1|[39m [35mexport[39m [35mclass[39m [33mStructureSync[39m {
+    [90m  2|[39m   [34mconstructor[39m(_options[33m:[39m unknown) {}
+    [90m  3|[39m   async getStructure(_project: string, _options: unknown = {}): Promis…
+    [90m   |[39m                                                                                        [31m^[39m
+    [90m  4|[39m   async updateStructure(_project: string, _input: unknown): Promise<ne…
+    [90m  5|[39m   listStructureAudit(_project: string, _page: unknown): never { throw …
+[90m [2m❯[22m fixture packages/service/src/structure-sync.test.ts:[2m29:35[22m[39m
+[90m [2m❯[22m packages/service/src/structure-sync.test.ts:[2m59:13[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/12]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m packages/service/src/structure-sync.test.ts[2m > [22mexternal formatting changes structure version but does not invalidate plan
+[31m[1mError[22m: POL-01 sync not implemented[39m
+[36m [2m❯[22m StructureSync.getStructure packages/service/src/structure-sync.ts:[2m3:88[22m[39m
+    [90m  1|[39m [35mexport[39m [35mclass[39m [33mStructureSync[39m {
+    [90m  2|[39m   [34mconstructor[39m(_options[33m:[39m unknown) {}
+    [90m  3|[39m   async getStructure(_project: string, _options: unknown = {}): Promis…
+    [90m   |[39m                                                                                        [31m^[39m
+    [90m  4|[39m   async updateStructure(_project: string, _input: unknown): Promise<ne…
+    [90m  5|[39m   listStructureAudit(_project: string, _page: unknown): never { throw …
+[90m [2m❯[22m fixture packages/service/src/structure-sync.test.ts:[2m29:35[22m[39m
+[90m [2m❯[22m packages/service/src/structure-sync.test.ts:[2m65:13[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/12]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m packages/service/src/structure-sync.test.ts[2m > [22minvalid repeated read and deletion never reuse a valid current context
+[31m[1mError[22m: POL-01 sync not implemented[39m
+[36m [2m❯[22m StructureSync.getStructure packages/service/src/structure-sync.ts:[2m3:88[22m[39m
+    [90m  1|[39m [35mexport[39m [35mclass[39m [33mStructureSync[39m {
+    [90m  2|[39m   [34mconstructor[39m(_options[33m:[39m unknown) {}
+    [90m  3|[39m   async getStructure(_project: string, _options: unknown = {}): Promis…
+    [90m   |[39m                                                                                        [31m^[39m
+    [90m  4|[39m   async updateStructure(_project: string, _input: unknown): Promise<ne…
+    [90m  5|[39m   listStructureAudit(_project: string, _page: unknown): never { throw …
+[90m [2m❯[22m fixture packages/service/src/structure-sync.test.ts:[2m29:35[22m[39m
+[90m [2m❯[22m packages/service/src/structure-sync.test.ts:[2m72:13[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/12]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m packages/service/src/structure-sync.test.ts[2m > [22mDB-only same-id editing keeps bytes and explicit migration switches source once
+[31m[1mError[22m: POL-01 sync not implemented[39m
+[36m [2m❯[22m StructureSync.getStructure packages/service/src/structure-sync.ts:[2m3:88[22m[39m
+    [90m  1|[39m [35mexport[39m [35mclass[39m [33mStructureSync[39m {
+    [90m  2|[39m   [34mconstructor[39m(_options[33m:[39m unknown) {}
+    [90m  3|[39m   async getStructure(_project: string, _options: unknown = {}): Promis…
+    [90m   |[39m                                                                                        [31m^[39m
+    [90m  4|[39m   async updateStructure(_project: string, _input: unknown): Promise<ne…
+    [90m  5|[39m   listStructureAudit(_project: string, _page: unknown): never { throw …
+[90m [2m❯[22m fixture packages/service/src/structure-sync.test.ts:[2m29:35[22m[39m
+[90m [2m❯[22m packages/service/src/structure-sync.test.ts:[2m83:13[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/12]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m packages/service/src/structure-sync.test.ts[2m > [22mequal extension migration changes only source and approval, not file
+[31m[1mError[22m: POL-01 sync not implemented[39m
+[36m [2m❯[22m StructureSync.getStructure packages/service/src/structure-sync.ts:[2m3:88[22m[39m
+    [90m  1|[39m [35mexport[39m [35mclass[39m [33mStructureSync[39m {
+    [90m  2|[39m   [34mconstructor[39m(_options[33m:[39m unknown) {}
+    [90m  3|[39m   async getStructure(_project: string, _options: unknown = {}): Promis…
+    [90m   |[39m                                                                                        [31m^[39m
+    [90m  4|[39m   async updateStructure(_project: string, _input: unknown): Promise<ne…
+    [90m  5|[39m   listStructureAudit(_project: string, _page: unknown): never { throw …
+[90m [2m❯[22m fixture packages/service/src/structure-sync.test.ts:[2m29:35[22m[39m
+[90m [2m❯[22m packages/service/src/structure-sync.test.ts:[2m103:13[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/12]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m packages/service/src/structure-sync.test.ts[2m > [22mrename then database failure recovers on a new SQLite instance only once
+[31m[1mError[22m: POL-01 sync not implemented[39m
+[36m [2m❯[22m StructureSync.getStructure packages/service/src/structure-sync.ts:[2m3:88[22m[39m
+    [90m  1|[39m [35mexport[39m [35mclass[39m [33mStructureSync[39m {
+    [90m  2|[39m   [34mconstructor[39m(_options[33m:[39m unknown) {}
+    [90m  3|[39m   async getStructure(_project: string, _options: unknown = {}): Promis…
+    [90m   |[39m                                                                                        [31m^[39m
+    [90m  4|[39m   async updateStructure(_project: string, _input: unknown): Promise<ne…
+    [90m  5|[39m   listStructureAudit(_project: string, _page: unknown): never { throw …
+[90m [2m❯[22m fixture packages/service/src/structure-sync.test.ts:[2m29:35[22m[39m
+[90m [2m❯[22m packages/service/src/structure-sync.test.ts:[2m115:13[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/12]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m packages/service/src/structure-sync.test.ts[2m > [22mprepublication failure preserves original file and migration DB records
+[31m[1mError[22m: POL-01 sync not implemented[39m
+[36m [2m❯[22m StructureSync.getStructure packages/service/src/structure-sync.ts:[2m3:88[22m[39m
+    [90m  1|[39m [35mexport[39m [35mclass[39m [33mStructureSync[39m {
+    [90m  2|[39m   [34mconstructor[39m(_options[33m:[39m unknown) {}
+    [90m  3|[39m   async getStructure(_project: string, _options: unknown = {}): Promis…
+    [90m   |[39m                                                                                        [31m^[39m
+    [90m  4|[39m   async updateStructure(_project: string, _input: unknown): Promise<ne…
+    [90m  5|[39m   listStructureAudit(_project: string, _page: unknown): never { throw …
+[90m [2m❯[22m fixture packages/service/src/structure-sync.test.ts:[2m29:35[22m[39m
+[90m [2m❯[22m packages/service/src/structure-sync.test.ts:[2m134:13[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/12]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m packages/service/src/structure-sync.test.ts[2m > [22mfailed audit distinguishes attempted B from external observed C
+[31m[1mError[22m: POL-01 sync not implemented[39m
+[36m [2m❯[22m StructureSync.getStructure packages/service/src/structure-sync.ts:[2m3:88[22m[39m
+    [90m  1|[39m [35mexport[39m [35mclass[39m [33mStructureSync[39m {
+    [90m  2|[39m   [34mconstructor[39m(_options[33m:[39m unknown) {}
+    [90m  3|[39m   async getStructure(_project: string, _options: unknown = {}): Promis…
+    [90m   |[39m                                                                                        [31m^[39m
+    [90m  4|[39m   async updateStructure(_project: string, _input: unknown): Promise<ne…
+    [90m  5|[39m   listStructureAudit(_project: string, _page: unknown): never { throw …
+[90m [2m❯[22m fixture packages/service/src/structure-sync.test.ts:[2m29:35[22m[39m
+[90m [2m❯[22m packages/service/src/structure-sync.test.ts:[2m144:13[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/12]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m packages/service/src/structure-sync.test.ts[2m > [22mthird-digest recovery retains external bytes until explicit refresh
+[31m[1mError[22m: POL-01 sync not implemented[39m
+[36m [2m❯[22m StructureSync.getStructure packages/service/src/structure-sync.ts:[2m3:88[22m[39m
+    [90m  1|[39m [35mexport[39m [35mclass[39m [33mStructureSync[39m {
+    [90m  2|[39m   [34mconstructor[39m(_options[33m:[39m unknown) {}
+    [90m  3|[39m   async getStructure(_project: string, _options: unknown = {}): Promis…
+    [90m   |[39m                                                                                        [31m^[39m
+    [90m  4|[39m   async updateStructure(_project: string, _input: unknown): Promise<ne…
+    [90m  5|[39m   listStructureAudit(_project: string, _page: unknown): never { throw …
+[90m [2m❯[22m fixture packages/service/src/structure-sync.test.ts:[2m29:35[22m[39m
+[90m [2m❯[22m packages/service/src/structure-sync.test.ts:[2m159:13[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/12]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m packages/service/src/structure-sync.test.ts[2m > [22mqueue scope prevents an approved read from escaping an unfinished publication
+[31m[1mError[22m: POL-01 sync not implemented[39m
+[36m [2m❯[22m StructureSync.getStructure packages/service/src/structure-sync.ts:[2m3:88[22m[39m
+    [90m  1|[39m [35mexport[39m [35mclass[39m [33mStructureSync[39m {
+    [90m  2|[39m   [34mconstructor[39m(_options[33m:[39m unknown) {}
+    [90m  3|[39m   async getStructure(_project: string, _options: unknown = {}): Promis…
+    [90m   |[39m                                                                                        [31m^[39m
+    [90m  4|[39m   async updateStructure(_project: string, _input: unknown): Promise<ne…
+    [90m  5|[39m   listStructureAudit(_project: string, _page: unknown): never { throw …
+[90m [2m❯[22m fixture packages/service/src/structure-sync.test.ts:[2m29:35[22m[39m
+[90m [2m❯[22m packages/service/src/structure-sync.test.ts:[2m172:13[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/12]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m12 failed[39m[22m[90m (12)[39m
+[2m   Start at [22m 16:08:01
+[2m   Duration [22m 1.56s[2m (transform 226ms, setup 0ms, import 443ms, tests 825ms, environment 0ms)[22m
+

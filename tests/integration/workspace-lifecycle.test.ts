@@ -1,3 +1,4 @@
+import { policyWrite } from "../support/structure-file-port.js";
 import { afterEach, beforeEach, expect, test } from "vitest";
 import {
   mkdtemp,
@@ -17,7 +18,10 @@ import {
   type Project,
 } from "@codemap/core";
 import { SourceIndexer } from "../../packages/indexer/src/index.js";
-import { SqliteStorage } from "../../packages/storage/src/index.js";
+import {
+  SqliteStorage,
+  StructureFileStore,
+} from "../../packages/storage/src/index.js";
 import { WorkspaceService } from "../../packages/service/src/index.js";
 let root: string,
   projectPath: string,
@@ -32,7 +36,11 @@ beforeEach(async () => {
   await mkdir(projectPath);
   await writeFile(join(projectPath, "main.ts"), source);
   db = new SqliteStorage(join(root, "state.db"));
-  service = new WorkspaceService({ storage: db, indexer: new SourceIndexer() });
+  service = new WorkspaceService({
+    structureFiles: new StructureFileStore(),
+    storage: db,
+    indexer: new SourceIndexer(),
+  });
   project = await service.openProject(projectPath);
 });
 afterEach(async () => {
@@ -76,7 +84,7 @@ test("opens projects idempotently and isolates plans, routes, groups, policies a
     source: "user",
     memberIds: [node("A").id],
   });
-  service.savePolicy({
+  await policyWrite(service, {
     projectId: project.id,
     pathPrefix: "src",
     purpose: "logic",
@@ -381,19 +389,19 @@ test("group and policy edits cannot overwrite records from another project; path
   expect(() =>
     service.saveGroup({ ...group, memberIds: [foreign.id] }),
   ).toThrow();
-  const policy = service.savePolicy({
+  const policy = await policyWrite(service, {
     projectId: project.id,
     pathPrefix: "src/",
     purpose: "logic",
     forbiddenDependencies: ["private/"],
   });
   expect(policy.pathPrefix).toBe("src");
-  expect(() =>
-    service.savePolicy({ ...policy, projectId: other.id }),
-  ).toThrow();
-  expect(() =>
-    service.savePolicy({ ...policy, pathPrefix: "../escape" }),
-  ).toThrow();
+  await expect(
+    policyWrite(service, { ...policy, projectId: other.id }),
+  ).rejects.toThrow();
+  await expect(
+    policyWrite(service, { ...policy, pathPrefix: "../escape" }),
+  ).rejects.toThrow();
   expect(() =>
     service.saveView(project.id, {
       positions: { bad: { x: Infinity, y: 0 } },
@@ -405,7 +413,7 @@ test("group and policy edits cannot overwrite records from another project; path
 test("directory dependency constraints block approval and invalidate previously approved plans", async () => {
   const plan = changeCall();
   await service.approvePlan(plan.plan.id, 2);
-  service.savePolicy({
+  await policyWrite(service, {
     projectId: project.id,
     pathPrefix: "",
     purpose: "no main dependency",
@@ -439,7 +447,7 @@ test("reopen retains approval history, routes, groups, policy, layout and export
     source: "user",
     memberIds: [node("B").id],
   });
-  service.savePolicy({
+  await policyWrite(service, {
     projectId: project.id,
     pathPrefix: "src",
     purpose: "logic",
@@ -452,7 +460,11 @@ test("reopen retains approval history, routes, groups, policy, layout and export
   });
   db.close();
   db = new SqliteStorage(join(root, "state.db"));
-  service = new WorkspaceService({ storage: db, indexer: new SourceIndexer() });
+  service = new WorkspaceService({
+    structureFiles: new StructureFileStore(),
+    storage: db,
+    indexer: new SourceIndexer(),
+  });
   expect(service.getPlan(plan.plan.id)).toMatchObject({
     valid: false,
     plan: { revision: 4, status: "draft" },
@@ -515,6 +527,8 @@ test("same-source capability refresh preserves original immutable snapshot and m
 
 test("approval write failure rolls back history and approval together in actual SQLite", async () => {
   const plan = changeCall();
+  await service.getStructure(project.id);
+  const settingsBeforeApproval = db.list("settings");
   const originalPut = db.put.bind(db);
   db.put = (kind, id, value) => {
     if (kind === "approvals") throw new Error("injected disk failure");
@@ -524,7 +538,7 @@ test("approval write failure rolls back history and approval together in actual 
     "injected disk failure",
   );
   expect(service.getPlan(plan.plan.id).valid).toBe(false);
-  expect(db.list("settings")).toEqual([]);
+  expect(db.list("settings")).toEqual(settingsBeforeApproval);
   expect(db.list("approvals")).toEqual([]);
   db.put = originalPut;
   expect((await service.approvePlan(plan.plan.id, 2)).valid).toBe(true);
@@ -569,7 +583,7 @@ test("relocated symbols with multiple candidates stay unknown for removals and c
     "unknown",
   );
 });
-test("runtime null semantic edits and Windows rooted directory policies are rejected", () => {
+test("runtime null semantic edits and Windows rooted directory policies are rejected", async () => {
   const plan = draft();
   expect(() =>
     service.updatePlan(plan.plan.id, {
@@ -585,14 +599,14 @@ test("runtime null semantic edits and Windows rooted directory policies are reje
       description: null,
     } as never),
   ).toThrow();
-  expect(() =>
-    service.savePolicy({
+  await expect(
+    policyWrite(service, {
       projectId: project.id,
       pathPrefix: "\\",
       purpose: "rooted",
       forbiddenDependencies: [],
     }),
-  ).toThrow();
+  ).rejects.toThrow();
 });
 
 test("unrelated diagnostics do not suppress positive structural evidence or complete call absence", async () => {
@@ -828,6 +842,7 @@ test("fixed excluded dependency symlinks do not hide genuine deletion evidence",
 test("legacy snapshots stay readable and cannot prove removal from omitted files", async () => {
   const indexer = new SourceIndexer();
   service = new WorkspaceService({
+    structureFiles: new StructureFileStore(),
     storage: db,
     indexer: {
       async index(path, projectId) {

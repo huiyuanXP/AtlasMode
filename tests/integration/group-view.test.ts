@@ -3,7 +3,7 @@ import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import type { CodeSnapshot, IndexerPort, ViewState } from "@codemap/core";
-import { SqliteStorage } from "@codemap/storage";
+import { SqliteStorage, StructureFileStore } from "@codemap/storage";
 import { WorkspaceService } from "@codemap/service";
 const cleanups: (() => void)[] = [];
 afterEach(() => {
@@ -40,14 +40,24 @@ it("restores collapse and visual layout from a fresh SQLite instance", () => {
   });
   storage.put("snapshots", "s-p", snapshot("p"));
   storage.put("groups", "g1", { id: "g1", projectId: "p", memberIds: [] });
-  new WorkspaceService({ storage, indexer }).saveView("p", {
+  new WorkspaceService({
+    structureFiles: new StructureFileStore(),
+    storage,
+    indexer,
+  }).saveView("p", {
     ...oldView,
     collapsedGroupIds: ["g1"],
   });
   storage.close();
   storage = new SqliteStorage(path);
   cleanups.push(() => storage.close());
-  expect(new WorkspaceService({ storage, indexer }).getView("p")).toEqual({
+  expect(
+    new WorkspaceService({
+      structureFiles: new StructureFileStore(),
+      storage,
+      indexer,
+    }).getView("p"),
+  ).toEqual({
     ...oldView,
     collapsedGroupIds: ["g1"],
   });

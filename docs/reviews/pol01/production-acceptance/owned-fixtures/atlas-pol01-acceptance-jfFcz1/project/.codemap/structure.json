@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "ownerMetadata": {
+    "team": "owned acceptance",
+    "keep": [
+      1,
+      null,
+      "中文"
+    ]
+  },
+  "folders": [
+    {
+      "path": "src",
+      "purpose": "人工编辑职责",
+      "allowed": [
+        "src/**"
+      ],
+      "forbidden": [
+        "vendor/**"
+      ],
+      "custom": {
+        "retained": true
+      }
+    }
+  ],
+  "dependencyRules": [
+    {
+      "from": "src/**",
+      "mustNotImport": [
+        "vendor/**"
+      ],
+      "reason": "metadata only",
+      "customRule": 7
+    }
+  ],
+  "x-atlasmode": {
+    "schemaVersion": 1,
+    "legacyPathPolicies": [
+      {
+        "id": "pol01-owned-db-policy",
+        "pathPrefix": "src",
+        "purpose": "DB edit A",
+        "forbiddenDependencies": [
+          "vendor"
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,136 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90m/home/agent/projects/AtlasMode[39m
+
+ [31m❯[39m packages/core/src/structure.test.ts [2m([22m[2m16 tests[22m[2m | [22m[31m16 failed[39m[2m)[22m[32m 47[2mms[22m[39m
+[31m   [31m×[31m roundtrips actual v1 and optional omission[39m[32m 13[2mms[22m[39m
+[31m   [31m×[31m rename keeps nested unknowns and does not mutate source[39m[32m 2[2mms[22m[39m
+[31m   [31m×[31m rejects schema/key/path/type input with a pointer: {"schemaVersion":1,"schemaVersion":1,"folders":[],"dependencyRules":[]}[39m[32m 9[2mms[22m[39m
+[31m   [31m×[31m rejects schema/key/path/type input with a pointer: {"schemaVersion":2,"folders":[],"dependencyRules":[]}[39m[32m 2[2mms[22m[39m
+[31m   [31m×[31m rejects schema/key/path/type input with a pointer: {"schemaVersion":1,"folders":[{"path":"../src","purpose":"x"}],"dependencyRules":[]}[39m[32m 2[2mms[22m[39m
+[31m   [31m×[31m rejects schema/key/path/type input with a pointer: {"schemaVersion":1,"folders":[{"path":"C:/src","purpose":"x"}],"dependencyRules":[]}[39m[32m 1[2mms[22m[39m
+[31m   [31m×[31m rejects schema/key/path/type input with a pointer: {"schemaVersion":1,"folders":[{"path":"/src","purpose":"x"}],"dependencyRules":[]}[39m[32m 8[2mms[22m[39m
+[31m   [31m×[31m rejects schema/key/path/type input with a pointer: {"schemaVersion":1,"folders":[{"path":"src","purpose":"x","forbidden":"HTTP"}],"dependencyRules":[]}[39m[32m 2[2mms[22m[39m
+[31m   [31m×[31m rejects schema/key/path/type input with a pointer: {"schemaVersion":1,"folders":[{"path":"src/","purpose":"x"},{"path":"src","purpose":"y"}],"dependencyRules":[]}[39m[32m 1[2mms[22m[39m
+[31m   [31m×[31m rejects schema/key/path/type input with a pointer: {"schemaVersion":1,"folders":[],"dependencyRules":[{"from":"../**","mustNotImport":[],"reason":"x"}]}[39m[32m 1[2mms[22m[39m
+[31m   [31m×[31m rejects schema/key/path/type input with a pointer: {"schemaVersion":1,"folders":[],"dependencyRules":[],"number":1e999}[39m[32m 1[2mms[22m[39m
+[31m   [31m×[31m root and portable slashes normalize without reinterpreting import specifiers[39m[32m 1[2mms[22m[39m
+[31m   [31m×[31m canonical equivalence does not rewrite serialized data[39m[32m 0[2mms[22m[39m
+[31m   [31m×[31m reserved extension legacy policies are portable and preserve unknowns[39m[32m 0[2mms[22m[39m
+[31m   [31m×[31m patch rejects missing previous folder and occupied rename target[39m[32m 0[2mms[22m[39m
+[31m   [31m×[31m prototype-shaped JSON keys remain own data without pollution[39m[32m 1[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 16 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m packages/core/src/structure.test.ts[2m > [22mroundtrips actual v1 and optional omission
+[31m[1mError[22m: POL-01 parser not implemented[39m
+[36m [2m❯[22m parseStructure packages/core/src/structure.ts:[2m1:62[22m[39m
+    [90m  1|[39m export function parseStructure(_text: string): never { throw new Error…
+    [90m   |[39m                                                              [31m^[39m
+    [90m  2|[39m export function canonicalStructure(_document: unknown): never { throw …
+    [90m  3|[39m export function applyStructureOperation(_document: unknown, _operation…
+[90m [2m❯[22m packages/core/src/structure.test.ts:[2m18:40[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/16]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m packages/core/src/structure.test.ts[2m > [22mrename keeps nested unknowns and does not mutate source
+[31m[1mError[22m: POL-01 parser not implemented[39m
+[36m [2m❯[22m parseStructure packages/core/src/structure.ts:[2m1:62[22m[39m
+    [90m  1|[39m export function parseStructure(_text: string): never { throw new Error…
+    [90m   |[39m                                                              [31m^[39m
+    [90m  2|[39m export function canonicalStructure(_document: unknown): never { throw …
+    [90m  3|[39m export function applyStructureOperation(_document: unknown, _operation…
+[90m [2m❯[22m packages/core/src/structure.test.ts:[2m21:17[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/16]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m packages/core/src/structure.test.ts[2m > [22mrejects schema/key/path/type input with a pointer: {"schemaVersion":1,"schemaVersion":1,"folders":[],"dependencyRules":[]}
+[41m[1m FAIL [22m[49m packages/core/src/structure.test.ts[2m > [22mrejects schema/key/path/type input with a pointer: {"schemaVersion":2,"folders":[],"dependencyRules":[]}
+[41m[1m FAIL [22m[49m packages/core/src/structure.test.ts[2m > [22mrejects schema/key/path/type input with a pointer: {"schemaVersion":1,"folders":[{"path":"../src","purpose":"x"}],"dependencyRules":[]}
+[41m[1m FAIL [22m[49m packages/core/src/structure.test.ts[2m > [22mrejects schema/key/path/type input with a pointer: {"schemaVersion":1,"folders":[{"path":"C:/src","purpose":"x"}],"dependencyRules":[]}
+[41m[1m FAIL [22m[49m packages/core/src/structure.test.ts[2m > [22mrejects schema/key/path/type input with a pointer: {"schemaVersion":1,"folders":[{"path":"/src","purpose":"x"}],"dependencyRules":[]}
+[41m[1m FAIL [22m[49m packages/core/src/structure.test.ts[2m > [22mrejects schema/key/path/type input with a pointer: {"schemaVersion":1,"folders":[{"path":"src","purpose":"x","forbidden":"HTTP"}],"dependencyRules":[]}
+[41m[1m FAIL [22m[49m packages/core/src/structure.test.ts[2m > [22mrejects schema/key/path/type input with a pointer: {"schemaVersion":1,"folders":[{"path":"src/","purpose":"x"},{"path":"src","purpose":"y"}],"dependencyRules":[]}
+[41m[1m FAIL [22m[49m packages/core/src/structure.test.ts[2m > [22mrejects schema/key/path/type input with a pointer: {"schemaVersion":1,"folders":[],"dependencyRules":[{"from":"../**","mustNotImport":[],"reason":"x"}]}
+[41m[1m FAIL [22m[49m packages/core/src/structure.test.ts[2m > [22mrejects schema/key/path/type input with a pointer: {"schemaVersion":1,"folders":[],"dependencyRules":[],"number":1e999}
+[31m[1mAssertionError[22m: expected error to match asymmetric matcher[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- ObjectContaining {[39m
+[32m-   "code": "INVALID_STRUCTURE",[39m
+[32m-   "diagnostics": ArrayContaining [[39m
+[32m-     ObjectContaining {[39m
+[32m-       "pointer": Any<String>,[39m
+[32m-     },[39m
+[32m-   ],[39m
+[31m+ Error {[39m
+[31m+   "message": "POL-01 parser not implemented",[39m
+[2m  }[22m
+
+[36m [2m❯[22m packages/core/src/structure.test.ts:[2m47:38[22m[39m
+
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/16]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m packages/core/src/structure.test.ts[2m > [22mroot and portable slashes normalize without reinterpreting import specifiers
+[31m[1mError[22m: POL-01 parser not implemented[39m
+[36m [2m❯[22m parseStructure packages/core/src/structure.ts:[2m1:62[22m[39m
+    [90m  1|[39m export function parseStructure(_text: string): never { throw new Error…
+    [90m   |[39m                                                              [31m^[39m
+    [90m  2|[39m export function canonicalStructure(_document: unknown): never { throw …
+    [90m  3|[39m export function applyStructureOperation(_document: unknown, _operation…
+[90m [2m❯[22m packages/core/src/structure.test.ts:[2m50:15[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/16]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m packages/core/src/structure.test.ts[2m > [22mcanonical equivalence does not rewrite serialized data
+[31m[1mError[22m: POL-01 parser not implemented[39m
+[36m [2m❯[22m parseStructure packages/core/src/structure.ts:[2m1:62[22m[39m
+    [90m  1|[39m export function parseStructure(_text: string): never { throw new Error…
+    [90m   |[39m                                                              [31m^[39m
+    [90m  2|[39m export function canonicalStructure(_document: unknown): never { throw …
+    [90m  3|[39m export function applyStructureOperation(_document: unknown, _operation…
+[90m [2m❯[22m packages/core/src/structure.test.ts:[2m57:13[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/16]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m packages/core/src/structure.test.ts[2m > [22mreserved extension legacy policies are portable and preserve unknowns
+[31m[1mError[22m: POL-01 parser not implemented[39m
+[36m [2m❯[22m parseStructure packages/core/src/structure.ts:[2m1:62[22m[39m
+    [90m  1|[39m export function parseStructure(_text: string): never { throw new Error…
+    [90m   |[39m                                                              [31m^[39m
+    [90m  2|[39m export function canonicalStructure(_document: unknown): never { throw …
+    [90m  3|[39m export function applyStructureOperation(_document: unknown, _operation…
+[90m [2m❯[22m packages/core/src/structure.test.ts:[2m65:15[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/16]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m packages/core/src/structure.test.ts[2m > [22mpatch rejects missing previous folder and occupied rename target
+[31m[1mError[22m: POL-01 parser not implemented[39m
+[36m [2m❯[22m parseStructure packages/core/src/structure.ts:[2m1:62[22m[39m
+    [90m  1|[39m export function parseStructure(_text: string): never { throw new Error…
+    [90m   |[39m                                                              [31m^[39m
+    [90m  2|[39m export function canonicalStructure(_document: unknown): never { throw …
+    [90m  3|[39m export function applyStructureOperation(_document: unknown, _operation…
+[90m [2m❯[22m packages/core/src/structure.test.ts:[2m72:15[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/16]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m packages/core/src/structure.test.ts[2m > [22mprototype-shaped JSON keys remain own data without pollution
+[31m[1mError[22m: POL-01 parser not implemented[39m
+[36m [2m❯[22m parseStructure packages/core/src/structure.ts:[2m1:62[22m[39m
+    [90m  1|[39m export function parseStructure(_text: string): never { throw new Error…
+    [90m   |[39m                                                              [31m^[39m
+    [90m  2|[39m export function canonicalStructure(_document: unknown): never { throw …
+    [90m  3|[39m export function applyStructureOperation(_document: unknown, _operation…
+[90m [2m❯[22m packages/core/src/structure.test.ts:[2m77:15[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/16]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m16 failed[39m[22m[90m (16)[39m
+[2m   Start at [22m 15:54:01
+[2m   Duration [22m 495ms[2m (transform 88ms, setup 0ms, import 116ms, tests 47ms, environment 0ms)[22m
+

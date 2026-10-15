@@ -1,0 +1,279 @@
+{
+  "errors": [],
+  "external": [],
+  "rawConsoleErrors": [
+    {
+      "errorIndex": 0,
+      "url": "http://127.0.0.1:32961/api/plans/2664604b-f2f2-49c2-bf1f-7b023ace2909/approved",
+      "text": "Failed to load resource: the server responded with a status of 409 (Conflict)"
+    },
+    {
+      "errorIndex": 1,
+      "url": "http://127.0.0.1:32961/api/plans/2664604b-f2f2-49c2-bf1f-7b023ace2909/approved",
+      "text": "Failed to load resource: the server responded with a status of 409 (Conflict)"
+    },
+    {
+      "errorIndex": 2,
+      "url": "http://127.0.0.1:32961/api/plans/2664604b-f2f2-49c2-bf1f-7b023ace2909/approved",
+      "text": "Failed to load resource: the server responded with a status of 409 (Conflict)"
+    }
+  ],
+  "clipboard": "actual navigator.clipboard.readText in Chromium",
+  "approval": {
+    "id": "19c084c3-072a-4a08-b6a7-e2b20821e8bc",
+    "planId": "2664604b-f2f2-49c2-bf1f-7b023ace2909",
+    "revision": 16,
+    "semanticHash": "4ae2e558435d2dec693ee30203a02f081f03a3748de1f360ceacdd48228780e5",
+    "baselineSnapshotId": "snapshot:7b6f138e79d45f92f991aaaf1154e798",
+    "baselineContentHash": "3baa31614b14c434fe8ebe4fb790cb42cb03b33421eda1d253df77e99b4a4e16",
+    "approvedAt": "2026-10-11T02:02:56.764Z",
+    "actor": "user",
+    "reviewContext": {
+      "version": 1,
+      "knowledgeHash": "664bf7561e4314136b10aa6e8c5b3d7cdbeb378f6ce478f739835dc57e938860"
+    }
+  },
+  "exportJSON": {
+    "bytes": 4187,
+    "name": "plan-2664604b-f2f2-49c2-bf1f-7b023ace2909-r16.json"
+  },
+  "exportMarkdown": {
+    "bytes": 4483,
+    "name": "plan-2664604b-f2f2-49c2-bf1f-7b023ace2909-r16.md"
+  },
+  "satisfied": {
+    "planId": "2664604b-f2f2-49c2-bf1f-7b023ace2909",
+    "revision": 16,
+    "snapshotId": "snapshot:a2afefb93e4de5f67a5624f9282bbdd4",
+    "items": [
+      {
+        "operationIndex": 0,
+        "status": "satisfied",
+        "message": "Planned function exists at the target path.",
+        "evidence": [
+          "services/notes.ts:2"
+        ]
+      },
+      {
+        "operationIndex": 1,
+        "status": "satisfied",
+        "message": "The required relation exists.",
+        "evidence": [
+          "services/notes.ts:2 requestWithRetry()"
+        ]
+      },
+      {
+        "operationIndex": 2,
+        "status": "unknown",
+        "message": "Annotation semantics require human review.",
+        "evidence": []
+      },
+      {
+        "operationIndex": 3,
+        "status": "satisfied",
+        "message": "The original relation is absent.",
+        "evidence": [
+          "main.ts:2",
+          "requests.ts:1"
+        ]
+      },
+      {
+        "operationIndex": 4,
+        "status": "satisfied",
+        "message": "The required relation exists.",
+        "evidence": [
+          "main.ts:2 requestWithRetry()"
+        ]
+      }
+    ]
+  },
+  "bypass": {
+    "planId": "2664604b-f2f2-49c2-bf1f-7b023ace2909",
+    "revision": 16,
+    "snapshotId": "snapshot:5e8495339c414425e6092d6a11eefeb7",
+    "items": [
+      {
+        "operationIndex": 0,
+        "status": "satisfied",
+        "message": "Planned function exists at the target path.",
+        "evidence": [
+          "services/notes.ts:2"
+        ]
+      },
+      {
+        "operationIndex": 1,
+        "status": "unmet",
+        "message": "No direct call to the required target was found.",
+        "evidence": [
+          "services/notes.ts:2",
+          "requests.ts:2"
+        ]
+      },
+      {
+        "operationIndex": 2,
+        "status": "unknown",
+        "message": "Annotation semantics require human review.",
+        "evidence": []
+      },
+      {
+        "operationIndex": 3,
+        "status": "satisfied",
+        "message": "The original relation is absent.",
+        "evidence": [
+          "main.ts:2",
+          "requests.ts:1"
+        ]
+      },
+      {
+        "operationIndex": 4,
+        "status": "satisfied",
+        "message": "The required relation exists.",
+        "evidence": [
+          "main.ts:2 requestWithRetry()"
+        ]
+      }
+    ]
+  },
+  "unknown": {
+    "planId": "2664604b-f2f2-49c2-bf1f-7b023ace2909",
+    "revision": 16,
+    "snapshotId": "snapshot:3cba5bb1a29a9b23914d10914cbd95a5",
+    "items": [
+      {
+        "operationIndex": 0,
+        "status": "satisfied",
+        "message": "Planned function exists at the target path.",
+        "evidence": [
+          "services/notes.ts:1"
+        ]
+      },
+      {
+        "operationIndex": 1,
+        "status": "unknown",
+        "message": "Dynamic or unresolved relations prevent a definitive absence check.",
+        "evidence": [
+          "services/notes.ts:1 fn()"
+        ]
+      },
+      {
+        "operationIndex": 2,
+        "status": "unknown",
+        "message": "Annotation semantics require human review.",
+        "evidence": []
+      },
+      {
+        "operationIndex": 3,
+        "status": "satisfied",
+        "message": "The original relation is absent.",
+        "evidence": [
+          "main.ts:2",
+          "requests.ts:1"
+        ]
+      },
+      {
+        "operationIndex": 4,
+        "status": "satisfied",
+        "message": "The required relation exists.",
+        "evidence": [
+          "main.ts:2 requestWithRetry()"
+        ]
+      }
+    ]
+  },
+  "typedCurrentApprovalResponses": [
+    {
+      "url": "http://127.0.0.1:32961/api/plans/2664604b-f2f2-49c2-bf1f-7b023ace2909/approved",
+      "method": "GET",
+      "status": 409,
+      "body": {
+        "code": "NOT_APPROVED",
+        "message": "Plan no longer has a valid current approval."
+      }
+    },
+    {
+      "url": "http://127.0.0.1:32961/api/plans/2664604b-f2f2-49c2-bf1f-7b023ace2909/approved",
+      "method": "GET",
+      "status": 409,
+      "body": {
+        "code": "NOT_APPROVED",
+        "message": "Plan no longer has a valid current approval."
+      }
+    },
+    {
+      "url": "http://127.0.0.1:32961/api/plans/2664604b-f2f2-49c2-bf1f-7b023ace2909/approved",
+      "method": "GET",
+      "status": 409,
+      "body": {
+        "code": "NOT_APPROVED",
+        "message": "Plan no longer has a valid current approval."
+      }
+    }
+  ],
+  "matchedCurrentApprovalConsole": [
+    {
+      "errorIndex": 0,
+      "url": "http://127.0.0.1:32961/api/plans/2664604b-f2f2-49c2-bf1f-7b023ace2909/approved",
+      "text": "Failed to load resource: the server responded with a status of 409 (Conflict)"
+    },
+    {
+      "errorIndex": 1,
+      "url": "http://127.0.0.1:32961/api/plans/2664604b-f2f2-49c2-bf1f-7b023ace2909/approved",
+      "text": "Failed to load resource: the server responded with a status of 409 (Conflict)"
+    },
+    {
+      "errorIndex": 2,
+      "url": "http://127.0.0.1:32961/api/plans/2664604b-f2f2-49c2-bf1f-7b023ace2909/approved",
+      "text": "Failed to load resource: the server responded with a status of 409 (Conflict)"
+    }
+  ],
+  "expectedStrongReadNegatives": [
+    {
+      "response": {
+        "url": "http://127.0.0.1:32961/api/plans/2664604b-f2f2-49c2-bf1f-7b023ace2909/approved",
+        "method": "GET",
+        "status": 409,
+        "body": {
+          "code": "NOT_APPROVED",
+          "message": "Plan no longer has a valid current approval."
+        }
+      },
+      "console": {
+        "errorIndex": 0,
+        "url": "http://127.0.0.1:32961/api/plans/2664604b-f2f2-49c2-bf1f-7b023ace2909/approved",
+        "text": "Failed to load resource: the server responded with a status of 409 (Conflict)"
+      }
+    },
+    {
+      "response": {
+        "url": "http://127.0.0.1:32961/api/plans/2664604b-f2f2-49c2-bf1f-7b023ace2909/approved",
+        "method": "GET",
+        "status": 409,
+        "body": {
+          "code": "NOT_APPROVED",
+          "message": "Plan no longer has a valid current approval."
+        }
+      },
+      "console": {
+        "errorIndex": 1,
+        "url": "http://127.0.0.1:32961/api/plans/2664604b-f2f2-49c2-bf1f-7b023ace2909/approved",
+        "text": "Failed to load resource: the server responded with a status of 409 (Conflict)"
+      }
+    },
+    {
+      "response": {
+        "url": "http://127.0.0.1:32961/api/plans/2664604b-f2f2-49c2-bf1f-7b023ace2909/approved",
+        "method": "GET",
+        "status": 409,
+        "body": {
+          "code": "NOT_APPROVED",
+          "message": "Plan no longer has a valid current approval."
+        }
+      },
+      "console": {
+        "errorIndex": 2,
+        "url": "http://127.0.0.1:32961/api/plans/2664604b-f2f2-49c2-bf1f-7b023ace2909/approved",
+        "text": "Failed to load resource: the server responded with a status of 409 (Conflict)"
+      }
+    }
+  ]
+}

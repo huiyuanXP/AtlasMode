@@ -124,6 +124,7 @@ export type Plan = {
   createdAt: string;
   updatedAt: string;
 };
+export type ApprovalReviewContext = { version: 1; knowledgeHash: string };
 export type Approval = {
   id: string;
   planId: string;
@@ -133,6 +134,7 @@ export type Approval = {
   baselineContentHash: string;
   approvedAt: string;
   actor: "user";
+  reviewContext?: ApprovalReviewContext;
 };
 export type ValidationIssue = {
   severity: "error" | "warning";
@@ -199,6 +201,7 @@ export type RecordKind =
   | "routes"
   | "views"
   | "groups"
+  | "annotations"
   | "policies"
   | "settings";
 export interface IndexerPort {
