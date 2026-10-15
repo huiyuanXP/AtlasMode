@@ -25,12 +25,12 @@ UNIMPLEMENTED表示仍为后续需求。测试通过不等于原README所有目�
 | 图查询分页/预算和诊断（§10）                                   | PASS          | MCP/HTTP实际budget1截断，UI80/240和上限300/900；入口/搜索分页与大图截断可见                                                                                        |
 | 中文/英文、主题、局部画布和入口浏览（问卷/P1）                 | PASS          | E2E界面语言/主题实际重启保留；入口/展开/搜索/源码；M3 cached help与快照提示RED→GREEN                                                                               |
 | 独立事实/规划层、新函数、已有箭头改接、移除helper（§3/P2/§12） | PASS          | 真实browser/MCP闭环：caller→A变为caller→requestWithRetry，事实remove+plan add；新函数复用同B，helper删除                                                           |
-| 规划目标文件修改及布局不移动文件（§3）                         | PARTIAL       | 表单修改为services/notes.ts、只保存规划；真实拖动布局保持revision/hash；专用文件/目录框拖入与路径预览未实现                                                        |
+| 规划目标文件修改及布局不移动文件（§3） | PASS | FS01真实原生文件/目录拖入、完整文件名、路径预览、取消/撤销/重做、过期保护与重启；普通布局保持规划语义。见[最新验收](../reviews/final-acceptance-2026-10-11/final-acceptance-report-20261011.md)。 |
 | 功能集和多对多成员（§4/P4） | PARTIAL | GRP-01实际圈选、完整成员编辑/共享成员、SQLite重启与源码不动已通过独立复审；GRP-02折叠/展开、共享函数镜像与真实外部端点通过独立审查及隔离795/72、smoke、浏览器18项初次PASS+规划定向1PASS，见[证据](reviews/grp02-2026-10-10/README.md)。全局布局/规模评估仍归PERF02。[证据](reviews/grp01-2026-10-10/README.md) |
 | sequence/wrapper高级操作（§4/P4）                              | UNIMPLEMENTED | 当前优先capability；不把成员列表伪装成调用顺序，不自动生成wrapper                                                                                                  |
-| 说明、约束、失联知识保留（§5/9）                               | PARTIAL       | 规划annotation、组说明、目录purpose持久化；失联组成员显示missing；独立通用annotation编辑/重新绑定工作流未实现                                                      |
+| 说明、约束、失联知识保留（§5/9） | PASS | KN01独立注释/作者/约束、CRUD/只读历史/显式重绑、失联知识保留、SQLite重启；unknown ACK与项目切换竞态实际验收。 |
 | 目录职责/禁止依赖、知识修改需重新批准（§6/P4）                 | PARTIAL       | 真实policy save→revision+1，禁止requests.ts报错，purpose改变也撤销批准；自然语言职责人工判定，allowed/例外理由编辑未实现                                           |
-| .codemap/structure.json校验、原子写回与审计（§8/9）            | UNIMPLEMENTED | 仓库存在静态约定；当前产品policy在SQLite中，没有structure.json双向同步                                                                                             |
+| .codemap/structure.json校验、原子写回与审计（§8/9） | PASS | POL01真实文件/SQLite/HTTP/stdio/UI保存与显式导入、冲突无半写、隔离/重启、原子写入及审计；自然语言目的不证明机器依赖规则满足。 |
 | revision并发、确认hash/基线、过期与历史批准（§6/9）            | PASS          | service/HTTP/MCP回归及真实r16 UI/MCP一致；布局不失效，语义/知识/源码变化失效；拒绝过期批准                                                                         |
 | Agent查询/提案/读取批准、没有MCP批准工具（§10/P3）             | PASS          | 官方SDK实际stdio16工具；propose_plan/group/route与同一HTTP服务共享SQLite；真实UI确认后MCP读取同revision/hash                                                       |
 | Codex App/CLI、Claude Code实际接入                             | PARTIAL       | docs/mcp.md提供三系统直接Node入口配置，CLI语法帮助核对；SDK验证通过；客户端实际注册/会话未执行                                                                     |

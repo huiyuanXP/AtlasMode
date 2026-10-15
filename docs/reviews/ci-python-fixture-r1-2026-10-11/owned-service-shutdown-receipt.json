@@ -1,0 +1,142 @@
+{
+  "receipts": [
+    {
+      "receipt": "POL01_SQLITE_STDIO_OWNED",
+      "root": "/tmp/atlas-pol01-acceptance-AuGAFE",
+      "runtime": "/tmp/atlas-pol01-acceptance-AuGAFE/runtime-receipt.json",
+      "records": [
+        {
+          "kind": "server",
+          "mode": "compiled",
+          "pid": 175651,
+          "port": 44669,
+          "exit": [
+            0,
+            null
+          ],
+          "portClosed": true,
+          "output": "AtlasMode API listening on 127.0.0.1:44669 (built web assets available)\n"
+        },
+        {
+          "kind": "server",
+          "mode": "compiled",
+          "pid": 175666,
+          "port": 36441,
+          "exit": [
+            0,
+            null
+          ],
+          "portClosed": true,
+          "output": "AtlasMode API listening on 127.0.0.1:36441 (built web assets available)\n"
+        }
+      ],
+      "rootCleanup": "retained-evidence",
+      "integrationRootCleanup": "copied runtime receipt then removed this run synthetic root",
+      "rootAbsentNow": true
+    },
+    {
+      "receipt": "POL01_SQLITE_STDIO_OWNED",
+      "root": "/tmp/atlas-pol01-acceptance-nYqTwc",
+      "runtime": "/tmp/atlas-pol01-acceptance-nYqTwc/runtime-receipt.json",
+      "records": [
+        {
+          "kind": "server",
+          "mode": "compiled",
+          "pid": 175680,
+          "port": 40471,
+          "exit": [
+            0,
+            null
+          ],
+          "portClosed": true,
+          "output": "AtlasMode API listening on 127.0.0.1:40471 (built web assets available)\n"
+        }
+      ],
+      "rootCleanup": "retained-evidence",
+      "integrationRootCleanup": "copied runtime receipt then removed this run synthetic root",
+      "rootAbsentNow": true
+    },
+    {
+      "receipt": "POL01_SQLITE_STDIO_OWNED",
+      "root": "/tmp/atlas-pol01-acceptance-ivkZ8k",
+      "runtime": "/tmp/atlas-pol01-acceptance-ivkZ8k/runtime-receipt.json",
+      "records": [
+        {
+          "kind": "mcp-stdio",
+          "mode": "compiled",
+          "pid": 175708,
+          "pidAbsent": true,
+          "stderr": ""
+        },
+        {
+          "kind": "server",
+          "mode": "compiled",
+          "pid": 175694,
+          "port": 33337,
+          "exit": [
+            0,
+            null
+          ],
+          "portClosed": true,
+          "output": "AtlasMode API listening on 127.0.0.1:33337 (built web assets available)\n"
+        },
+        {
+          "kind": "server",
+          "mode": "compiled",
+          "pid": 175718,
+          "port": 39793,
+          "exit": [
+            0,
+            null
+          ],
+          "portClosed": true,
+          "output": "AtlasMode API listening on 127.0.0.1:39793 (built web assets available)\n"
+        }
+      ],
+      "rootCleanup": "retained-evidence",
+      "integrationRootCleanup": "copied runtime receipt then removed this run synthetic root",
+      "rootAbsentNow": true
+    }
+  ],
+  "ownedChildren": [
+    {
+      "kind": "server",
+      "pid": 175651,
+      "pidAbsentNow": true,
+      "portConnectResult": 111
+    },
+    {
+      "kind": "server",
+      "pid": 175666,
+      "pidAbsentNow": true,
+      "portConnectResult": 111
+    },
+    {
+      "kind": "server",
+      "pid": 175680,
+      "pidAbsentNow": true,
+      "portConnectResult": 111
+    },
+    {
+      "kind": "mcp-stdio",
+      "pid": 175708,
+      "pidAbsentNow": true
+    },
+    {
+      "kind": "server",
+      "pid": 175694,
+      "pidAbsentNow": true,
+      "portConnectResult": 111
+    },
+    {
+      "kind": "server",
+      "pid": 175718,
+      "pidAbsentNow": true,
+      "portConnectResult": 111
+    }
+  ],
+  "allOwnedPIDsAbsent": true,
+  "allOwnedAPIPortsClosed": true,
+  "ownedSyntheticRootsRemoved": true,
+  "noLongRunningServiceStarted": true
+}

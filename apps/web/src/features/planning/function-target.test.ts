@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 import type { CodeNode, Operation } from "@codemap/core";
-import { effectiveFunctionPath, retargetFunction } from "./function-target.js";
+import {
+  effectiveFunctionPath,
+  normalizeFunctionTarget,
+  retargetFunction,
+} from "./function-target.js";
 import { editFunction } from "./operations.js";
 
 const fact: CodeNode = {
@@ -130,5 +134,130 @@ describe("shared function target", () => {
     ).toThrow();
     expect(() => retargetFunction([], fact, "../escape.ts")).toThrow();
     expect(() => retargetFunction([], fact, "dest")).toThrow();
+  });
+});
+
+describe("supported Python planning targets", () => {
+  const python: CodeNode = {
+    id: "f",
+    kind: "function",
+    name: "entry",
+    language: "python",
+    filePath: "src/main.py",
+    parentId: "physical:main.py",
+    signature: "()",
+  };
+  it("saves indexed Python metadata at its physical path without emitting a move", () => {
+    const before = structuredClone(python);
+    expect(
+      editFunction([annotation], python, {
+        name: "renamed",
+        filePath: "src/main.py",
+        signature: "(value)",
+        description: "updated Python intent",
+      }),
+    ).toEqual([
+      annotation,
+      {
+        kind: "annotate",
+        targetId: "f",
+        text: "name: renamed\nsignature: (value)\nupdated Python intent",
+      },
+    ]);
+    expect(python).toEqual(before);
+  });
+  it("coalesces Python moves, keeps unrelated operations and returns to physical baseline", () => {
+    const other: Operation = {
+      kind: "move_function",
+      nodeId: "other",
+      filePath: "other/index.py",
+    };
+    const ops = [
+      annotation,
+      move("dest/first.py"),
+      other,
+      move("dest/index.py"),
+    ];
+    expect(retargetFunction(ops, python, "dest/index.py")).toBe(ops);
+    expect(retargetFunction(ops, python, "nested/index.py")).toEqual([
+      annotation,
+      move("nested/index.py"),
+      other,
+    ]);
+    expect(retargetFunction(ops, python, "src/main.py")).toEqual([
+      annotation,
+      other,
+    ]);
+    expect(python.filePath).toBe("src/main.py");
+    expect(python.parentId).toBe("physical:main.py");
+  });
+  it("preserves Python temporary metadata, language and relations across editing and ownership", () => {
+    const add: Operation = {
+      kind: "add_function",
+      tempId: "f",
+      name: "planned",
+      filePath: "new/main.py",
+      signature: "()",
+      description: "initial",
+      language: "python",
+    };
+    const relation: Operation = {
+      kind: "add_relation",
+      id: "r",
+      sourceId: "f",
+      targetId: "other",
+      type: "calls",
+    };
+    const edited = editFunction([add, relation, annotation], python, {
+      name: "updated",
+      filePath: "new/main.py",
+      signature: "(value)",
+      description: "revised",
+    });
+    expect(edited).toEqual([
+      { ...add, name: "updated", signature: "(value)", description: "revised" },
+      relation,
+      annotation,
+    ]);
+    expect(
+      retargetFunction(
+        [...edited, move("legacy/main.py")],
+        python,
+        "dest/index.py",
+      ),
+    ).toEqual([
+      {
+        ...add,
+        name: "updated",
+        signature: "(value)",
+        description: "revised",
+        filePath: "dest/index.py",
+      },
+      relation,
+      annotation,
+    ]);
+  });
+  it.each(["ts", "tsx", "js", "jsx", "mjs", "cjs", "mts", "cts", "py"])(
+    "accepts complete %s source filenames",
+    (suffix) => {
+      expect(normalizeFunctionTarget(`src/main.${suffix}`)).toBe(
+        `src/main.${suffix}`,
+      );
+    },
+  );
+  it.each([
+    ".",
+    "",
+    "dest",
+    "dest/",
+    "dest/main.py/",
+    "../main.py",
+    "/main.py",
+    "C:main.py",
+    "main\0.py",
+    "main\n.py",
+    "main.rb",
+  ])("rejects invalid source target %j", (path) => {
+    expect(() => normalizeFunctionTarget(path)).toThrow();
   });
 });

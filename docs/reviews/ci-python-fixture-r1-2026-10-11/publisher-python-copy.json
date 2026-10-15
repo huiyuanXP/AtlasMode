@@ -1,0 +1,12 @@
+{
+  "paths": 312,
+  "changed": {
+    "apps/web/src/features/planning/function-target.ts": "f693b3b456892fe32327281178968d2caaa1ee71890614d9ba6f357c7e645b39",
+    "apps/web/src/features/planning/function-target.test.ts": "0755fed62b7992350b680d9e1314a3a649480c83649e2e2a39a8528d7f7aae17",
+    "apps/web/src/features/structure/ownership.ts": "c3158f750f70637715ed2d139e91eee0f0269a4b12cb82ee3726741c0ec1ab73",
+    "apps/web/src/features/structure/ownership.test.ts": "fe89875398a4b890c131d8939d16bf71d7d8f47fb19e1feadc72aeb631745630",
+    "tests/e2e/ownership.spec.ts": "b61df58a768d15038c2750bd5ceaa8aa74971b3397502652f8cdbb8f8e5b5a5e"
+  },
+  "allVerified": true,
+  "mainUntouched": true
+}

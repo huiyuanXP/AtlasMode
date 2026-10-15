@@ -107,6 +107,7 @@ async function setup(
   page: Page,
   context: Parameters<typeof denyExternalRequests>[0],
   info: TestInfo,
+  python = false,
 ) {
   const root = await mkdtemp(join(tmpdir(), "atlas-fs01-production-")),
     projectPath = join(root, "project");
@@ -114,8 +115,10 @@ async function setup(
   await mkdir(join(projectPath, "dest"));
   await mkdir(join(projectPath, "other"));
   await writeFile(
-    join(projectPath, "src/original.ts"),
-    'import {destinationMarker} from "../dest/index.js";export function selected(){return "ORIGINAL bytes"+destinationMarker();}\n',
+    join(projectPath, python ? "src/original.py" : "src/original.ts"),
+    python
+      ? 'def selected():\n    return "ORIGINAL Python bytes"\n'
+      : 'import {destinationMarker} from "../dest/index.js";export function selected(){return "ORIGINAL bytes"+destinationMarker();}\n',
   );
   await writeFile(
     join(projectPath, "dest/index.ts"),
@@ -125,6 +128,16 @@ async function setup(
     join(projectPath, "other/index.ts"),
     'export function otherMarker(){return "OTHER bytes";}\n',
   );
+  if (python) {
+    await writeFile(
+      join(projectPath, "dest/index.py"),
+      'def destinationPython():\n    return "DESTINATION Python bytes"\n',
+    );
+    await writeFile(
+      join(projectPath, "other/index.py"),
+      'def otherPython():\n    return "OTHER Python bytes"\n',
+    );
+  }
   const marker = join(root, "SOURCE_EXECUTED");
   await writeFile(
     join(projectPath, "never-execute.ts"),
@@ -1517,6 +1530,378 @@ test("visible ownership Browse and parent controls accept current scopes after r
           savedFullFilename: "dest/index.ts",
           beforeFiles: f.before,
           afterFiles: await sourceReceipt(f.projectPath),
+        },
+        null,
+        2,
+      ),
+    );
+  } finally {
+    await f.dispose();
+  }
+});
+
+test("Python indexed metadata save and native file/folder ownership preserve physical source and semantic history", async ({
+  page,
+  context,
+}, info) => {
+  const f = await setup(page, context, info, true);
+  const planPath = `/api/plans/${f.detail.plan.id}`;
+  const writes: unknown[] = [];
+  page.on("request", (request) => {
+    if (request.method() === "PUT" && apiPath(request.url()) === planPath)
+      writes.push(request.postDataJSON());
+  });
+  const advanced = async () => {
+    await page
+      .locator(".inspector")
+      .getByRole("button", { name: "Advanced editing", exact: true })
+      .click();
+    return page.locator("form").filter({
+      has: page.getByRole("button", {
+        name: "Save function intent",
+        exact: true,
+      }),
+    });
+  };
+  const back = async () => {
+    await page
+      .locator(".inspector")
+      .getByRole("button", { name: "Back to chat", exact: true })
+      .click();
+  };
+  try {
+    expect(f.selected.language).toBe("python");
+    expect(f.selected.filePath).toBe("src/original.py");
+    const physical = await f.api(
+      `/api/projects/${f.project.id}/functions/${encodeURIComponent(f.selected.id)}`,
+    );
+    const view = await f.api(`/api/projects/${f.project.id}/view`);
+    let form = await advanced();
+    await expect(form.locator("input").nth(1)).toHaveValue("src/original.py");
+    await form
+      .getByRole("textbox", { name: "Function responsibility", exact: true })
+      .fill("Python metadata intent");
+    await page.screenshot({
+      path: info.outputPath("python-metadata-before-save.png"),
+      fullPage: true,
+    });
+    await expect(
+      form.getByRole("button", { name: "Save function intent", exact: true }),
+    ).toBeEnabled();
+    await form
+      .getByRole("button", { name: "Save function intent", exact: true })
+      .click();
+    await expect
+      .poll(async () => (await f.api(planPath)).plan.revision)
+      .toBe(2);
+    const metadata = await f.api(planPath);
+    expect(metadata.plan.operations).toEqual([
+      {
+        kind: "annotate",
+        targetId: f.selected.id,
+        text: "Python metadata intent",
+      },
+    ]);
+    expect(writes).toEqual([
+      expect.objectContaining({
+        expectedRevision: 1,
+        expectedSnapshotId: f.summary.snapshotId,
+      }),
+    ]);
+    await f.assertSource();
+    await back();
+    await ownership(page);
+    await targets(page)
+      .getByRole("button", { name: "Browse dest", exact: true })
+      .click();
+    const file = targets(page).getByRole("button", {
+      name: "Choose dest/index.py · Fact",
+      exact: true,
+    });
+    await pointerDrop(page, f.card, file);
+    await expect(preview(page).getByTestId("ownership-full-path")).toHaveText(
+      "dest/index.py",
+    );
+    await expect(preview(page)).toContainText("src/original.py");
+    await page.screenshot({
+      path: info.outputPath("python-file-preview.png"),
+      fullPage: true,
+    });
+    await save(page, f.detail.plan.id, 2, f.summary.snapshotId);
+    await expect
+      .poll(async () => (await f.api(planPath)).plan.revision)
+      .toBe(3);
+    const moved = await f.api(planPath);
+    expect(moved.plan.operations).toEqual([
+      ...metadata.plan.operations,
+      {
+        kind: "move_function",
+        nodeId: f.selected.id,
+        filePath: "dest/index.py",
+      },
+    ]);
+    form = await advanced();
+    await expect(form.locator("input").nth(1)).toHaveValue("dest/index.py");
+    // Same effective target remains saveable and emits no extra move or revision.
+    const sameWrites = writes.length;
+    await expect(
+      form.getByRole("button", { name: "Save function intent", exact: true }),
+    ).toBeEnabled();
+    await form
+      .getByRole("button", { name: "Save function intent", exact: true })
+      .click();
+    await back();
+    expect((await f.api(planPath)).plan.revision).toBe(3);
+    expect(writes).toHaveLength(sameWrites);
+    // Undo/redo use real controls and fresh server revisions.
+    await page
+      .getByRole("button", { name: "Undo", exact: true })
+      .first()
+      .click();
+    await expect
+      .poll(async () => (await f.api(planPath)).plan.revision)
+      .toBe(4);
+    expect((await f.api(planPath)).plan.operations).toEqual(
+      metadata.plan.operations,
+    );
+    await page
+      .getByRole("button", { name: "Redo", exact: true })
+      .first()
+      .click();
+    await expect
+      .poll(async () => (await f.api(planPath)).plan.revision)
+      .toBe(5);
+    expect((await f.api(planPath)).plan.operations).toEqual(
+      moved.plan.operations,
+    );
+    await focusActualFunction(page, "selected");
+    // End the prior mode then begin a fresh root-folder preview.
+    await page.getByRole("button", { name: "Layout", exact: true }).click();
+    await chooseFolder(page, f.card);
+    const filename = preview(page).getByRole("textbox", {
+      name: "Complete source filename",
+      exact: true,
+    });
+    await filename.fill("../escape.py");
+    await expect(
+      preview(page).getByRole("button", {
+        name: "Add target change to plan",
+        exact: true,
+      }),
+    ).toBeDisabled();
+    await filename.fill("completed.py");
+    await expect(preview(page).getByTestId("ownership-full-path")).toHaveText(
+      "dest/completed.py",
+    );
+    await page.screenshot({
+      path: info.outputPath("python-folder-preview.png"),
+      fullPage: true,
+    });
+    await save(page, f.detail.plan.id, 5, f.summary.snapshotId);
+    await expect
+      .poll(async () => (await f.api(planPath)).plan.revision)
+      .toBe(6);
+    const completed = await f.api(planPath);
+    expect(completed.plan.operations).toEqual([
+      ...metadata.plan.operations,
+      {
+        kind: "move_function",
+        nodeId: f.selected.id,
+        filePath: "dest/completed.py",
+      },
+    ]);
+    form = await advanced();
+    await expect(form.locator("input").nth(1)).toHaveValue("dest/completed.py");
+    await form
+      .getByRole("textbox", { name: "Function responsibility", exact: true })
+      .fill("Python after ownership");
+    await form
+      .getByRole("button", { name: "Save function intent", exact: true })
+      .click();
+    await expect
+      .poll(async () => (await f.api(planPath)).plan.revision)
+      .toBe(7);
+    const final = await f.api(planPath);
+    expect(final.plan.operations).toEqual([
+      ...completed.plan.operations,
+      {
+        kind: "annotate",
+        targetId: f.selected.id,
+        text: "Python after ownership",
+      },
+    ]);
+    expect(
+      await f.api(
+        `/api/projects/${f.project.id}/functions/${encodeURIComponent(f.selected.id)}`,
+      ),
+    ).toEqual(physical);
+    expect(
+      (await f.api(`/api/projects/${f.project.id}/view`)).positions,
+    ).toEqual(view.positions);
+    await f.assertSource();
+    await page.screenshot({
+      path: info.outputPath("python-final-advanced.png"),
+      fullPage: true,
+    });
+    await writeFile(
+      info.outputPath("python-indexed-receipt.json"),
+      JSON.stringify(
+        {
+          metadata,
+          moved,
+          completed,
+          final,
+          writes,
+          physical,
+          before: f.before,
+          after: await sourceReceipt(f.projectPath),
+        },
+        null,
+        2,
+      ),
+    );
+  } finally {
+    await f.dispose();
+  }
+});
+
+test("Python temporary addition saves metadata and folder ownership through compiled controls", async ({
+  page,
+  context,
+}, info) => {
+  const f = await setup(page, context, info, true);
+  const planPath = `/api/plans/${f.detail.plan.id}`;
+  try {
+    await page
+      .locator(".inspector")
+      .getByRole("button", { name: "Advanced editing", exact: true })
+      .click();
+    const add = page
+      .locator(".plan-editor details")
+      .filter({
+        has: page
+          .locator("summary")
+          .filter({ hasText: /^New planned function$/ }),
+      })
+      .locator("form");
+    await add.locator("input").nth(0).fill("plannedPython");
+    await add.locator("input").nth(1).fill("new/planned.py");
+    await add.locator("input").nth(2).fill("(value)");
+    await add
+      .getByRole("textbox", { name: "Function responsibility", exact: true })
+      .fill("initial Python addition");
+    await page.screenshot({
+      path: info.outputPath("python-temp-before-add.png"),
+      fullPage: true,
+    });
+    await expect(add.locator('button[type="submit"]')).toBeEnabled();
+    await add.locator('button[type="submit"]').click();
+    await expect
+      .poll(async () => (await f.api(planPath)).plan.revision)
+      .toBe(2);
+    const added = await f.api(planPath);
+    expect(added.plan.operations).toEqual([
+      expect.objectContaining({
+        kind: "add_function",
+        name: "plannedPython",
+        filePath: "new/planned.py",
+        signature: "(value)",
+        description: "initial Python addition",
+      }),
+    ]);
+    const tempId = added.plan.operations[0].tempId;
+    // Public-API fixture establishes the existing Python language/relation data before editing.
+    const seeded = await f.api(planPath, "PUT", {
+      expectedRevision: 2,
+      expectedSnapshotId: f.summary.snapshotId,
+      operations: [
+        { ...added.plan.operations[0], language: "python" },
+        {
+          kind: "add_relation",
+          id: "python-temp-call",
+          sourceId: tempId,
+          targetId: f.selected.id,
+          type: "calls",
+        },
+      ],
+    });
+    expect(seeded.plan.revision).toBe(3);
+    await page
+      .getByRole("button", { name: "Validate plan", exact: true })
+      .first()
+      .click();
+    await expect(page.locator(".plan-editor")).toContainText("r3");
+
+    await page
+      .locator(".inspector")
+      .getByRole("button", { name: "Back to chat", exact: true })
+      .click();
+    const card = page
+      .locator(`[data-domain-id="${tempId}"]`)
+      .filter({ hasText: "plannedPython" })
+      .first();
+    await expect(card).toBeVisible();
+    await card.click();
+    await page
+      .locator(".inspector")
+      .getByRole("button", { name: "Advanced editing", exact: true })
+      .click();
+    const form = page.locator("form").filter({
+      has: page.getByRole("button", {
+        name: "Save function intent",
+        exact: true,
+      }),
+    });
+    await expect(form.locator("input").nth(1)).toHaveValue("new/planned.py");
+    await form
+      .getByRole("textbox", { name: "Function responsibility", exact: true })
+      .fill("edited Python addition");
+    await form
+      .getByRole("button", { name: "Save function intent", exact: true })
+      .click();
+    await expect
+      .poll(async () => (await f.api(planPath)).plan.revision)
+      .toBe(4);
+    const edited = await f.api(planPath);
+    expect(edited.plan.operations).toEqual([
+      { ...seeded.plan.operations[0], description: "edited Python addition" },
+      seeded.plan.operations[1],
+    ]);
+    await page
+      .locator(".inspector")
+      .getByRole("button", { name: "Back to chat", exact: true })
+      .click();
+    await chooseFolder(page, card);
+    await preview(page)
+      .getByRole("textbox", { name: "Complete source filename", exact: true })
+      .fill("planned.py");
+    await expect(preview(page).getByTestId("ownership-full-path")).toHaveText(
+      "dest/planned.py",
+    );
+    await save(page, f.detail.plan.id, 4, f.summary.snapshotId);
+    await expect
+      .poll(async () => (await f.api(planPath)).plan.revision)
+      .toBe(5);
+    const final = await f.api(planPath);
+    expect(final.plan.operations).toEqual([
+      { ...edited.plan.operations[0], filePath: "dest/planned.py" },
+      edited.plan.operations[1],
+    ]);
+    await f.assertSource();
+    await page.screenshot({
+      path: info.outputPath("python-temp-final.png"),
+      fullPage: true,
+    });
+    await writeFile(
+      info.outputPath("python-temp-receipt.json"),
+      JSON.stringify(
+        {
+          added,
+          seeded,
+          edited,
+          final,
+          before: f.before,
+          after: await sourceReceipt(f.projectPath),
         },
         null,
         2,

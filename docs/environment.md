@@ -1,6 +1,12 @@
 # 环境、运行与验收
 
-## 当前 Static forwarding Task2 PARTIAL检查点（2026-10-03 UTC）
+## 当前验收（2026-10-11 UTC）
+
+现役依赖仍为Node24.19.0/npm11.9.0、Python3.10+，安装后核心离线。FS01/KN01/POL01隔离候选build/typecheck/lint/smoke通过，full unit1342/1342与Chromium51/51通过。原失败、冻结源码SHA与平台边界见[最新验收](reviews/final-acceptance-2026-10-11/final-acceptance-report-20261011.md)。
+
+下文保留各历史阶段的范围和失败，旧基线CI绿色不代表新候选Windows通过。此次推送的新CI、真实Codex/Claude客户端、Windows交互退出与外部Provider仍须各自收据；当前发布状态见[state](superpowers/state.md)。
+
+## 历史 Static forwarding Task2 PARTIAL检查点（2026-10-03 UTC）
 
 基线86e6b12已推送，原生Linux/Windows/macOS检查及Linux官方Chromium job全部成功：
 [GitHub run37148507859](https://github.com/huiyuanXP/AtlasMode/actions/runs/37148507859)。

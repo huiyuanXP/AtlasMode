@@ -1,0 +1,96 @@
+{
+  "checkedAt": "2026-10-11T03:10:01.624789+00:00",
+  "sourcePaths": 314,
+  "sourceSha256": "2d309c2d5f6683df270060e201913bdeef62dc5f0e04275138a73393abc6f47c",
+  "candidateAndPublisherMatch": true,
+  "compiledFiles": 179,
+  "compiledManifestSha256": "f42ef37e4befee71be1e729f60e91ce950e2a22293f23b36714d2a54e43f925e",
+  "gates": [
+    {
+      "gate": "build",
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "environmentOverrides": {},
+      "exitCode": 0,
+      "durationSeconds": 20.584
+    },
+    {
+      "gate": "typecheck",
+      "command": [
+        "npm",
+        "run",
+        "typecheck"
+      ],
+      "environmentOverrides": {},
+      "exitCode": 0,
+      "durationSeconds": 27.629
+    },
+    {
+      "gate": "lint",
+      "command": [
+        "npm",
+        "run",
+        "lint"
+      ],
+      "environmentOverrides": {},
+      "exitCode": 0,
+      "durationSeconds": 4.726
+    },
+    {
+      "gate": "unit",
+      "command": [
+        "npm",
+        "test"
+      ],
+      "environmentOverrides": {
+        "POL01_ACCEPTANCE_MODE": "compiled"
+      },
+      "exitCode": 0,
+      "durationSeconds": 91.006
+    },
+    {
+      "gate": "smoke",
+      "command": [
+        "npm",
+        "run",
+        "smoke"
+      ],
+      "environmentOverrides": {},
+      "exitCode": 0,
+      "durationSeconds": 5.704
+    },
+    {
+      "gate": "browser",
+      "command": [
+        "npm",
+        "run",
+        "test:e2e"
+      ],
+      "environmentOverrides": {
+        "POL01_PRODUCTION_GATE": "1",
+        "POL01_ACCEPTANCE_MODE": "compiled"
+      },
+      "exitCode": 0,
+      "durationSeconds": 210.092
+    }
+  ],
+  "unit": {
+    "filesPassed": 112,
+    "testsPassed": 1374
+  },
+  "browser": {
+    "startTime": "2026-10-11T03:02:15.066Z",
+    "duration": 208186.279,
+    "expected": 53,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "registeredRuntimeCount": 24,
+  "allRegisteredGone": true,
+  "remoteCI": "pending",
+  "Windows": "UNRUN"
+}

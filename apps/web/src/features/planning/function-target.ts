@@ -4,12 +4,15 @@ import {
   type Operation,
 } from "@codemap/core";
 
+// Existing product languages share this filename rule across all planning entry points.
+export const supportedSourceSuffix = /\.(?:ts|tsx|js|jsx|mjs|cjs|mts|cts|py)$/i;
+
 export function normalizeFunctionTarget(target: string): string {
   const path = normalizeRepoPath(target);
   if (
     path === "." ||
     /[\\/]$/.test(target) ||
-    !/\.(?:ts|tsx|js|jsx|mjs|cjs|mts|cts)$/i.test(path)
+    !supportedSourceSuffix.test(path)
   )
     throw new Error("Expected a complete supported source file path.");
   return path;

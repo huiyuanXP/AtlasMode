@@ -3,7 +3,10 @@ import {
   type CodeNode,
   type Operation,
 } from "@codemap/core";
-import { effectiveFunctionPath } from "../planning/function-target.js";
+import {
+  effectiveFunctionPath,
+  supportedSourceSuffix,
+} from "../planning/function-target.js";
 export type OwnershipTuple = Readonly<{
   projectId: string;
   snapshotId: string;
@@ -23,7 +26,6 @@ export type OwnershipTarget = Readonly<{
   id?: string;
   planned?: boolean;
 }>;
-const sourceSuffix = /\.(?:ts|tsx|js|jsx|mjs|cjs|mts|cts)$/i;
 function canonical(path: string, root: boolean): string {
   if (root && path === ".") return path;
   const result = normalizeRepoPath(path);
@@ -37,7 +39,7 @@ export function completeTargetPath(
 ): string {
   const path = canonical(target.path, target.kind === "folder");
   if (target.kind === "file") {
-    if (!sourceSuffix.test(path))
+    if (!supportedSourceSuffix.test(path))
       throw new Error("Choose a complete supported source filename.");
     return path;
   }
@@ -47,7 +49,7 @@ export function completeTargetPath(
     filename === "." ||
     filename === ".." ||
     /[\\/:\u0000-\u001f\u007f]/.test(filename) ||
-    !sourceSuffix.test(filename)
+    !supportedSourceSuffix.test(filename)
   )
     throw new Error(
       "Enter one supported source filename, without directories.",

@@ -1,10 +1,24 @@
-import { afterEach, describe, expect, it } from "vitest";
+import {
+  beginPythonFixtureOwner,
+  closePythonFixtureOwner,
+  currentPythonFixtureOwner,
+  registerPythonFixtureRoot,
+  PYTHON_TEARDOWN_HOOK_MS,
+  type PythonFixtureOwner,
+  defaultPythonFixture,
+  drainPythonFixtures,
+  modelPythonProbeBarrier,
+  pythonFixture,
+  pythonReadiness,
+  verifiedPythonFixture,
+  verifyDiscoveredPython,
+} from "../test/python-fixture.js";
+import { afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import {
   cp,
   mkdtemp,
   mkdir,
   readFile,
-  rm,
   symlink,
   writeFile,
 } from "node:fs/promises";
@@ -15,13 +29,14 @@ import { execFileSync } from "node:child_process";
 import { snapshotSchema, type CodeSnapshot } from "@codemap/core";
 import { SourceIndexer } from "./index.js";
 
-const temps: string[] = [];
+const fixtureOwners = new Map<string, PythonFixtureOwner>();
 const fixtureRoot = fileURLToPath(
   new URL("../../../fixtures/", import.meta.url),
 );
 async function temp() {
+  const owner = currentPythonFixtureOwner();
   const p = await mkdtemp(join(tmpdir(), "codemap-indexer-"));
-  temps.push(p);
+  registerPythonFixtureRoot(owner, p);
   return p;
 }
 async function fixture(language: string) {
@@ -56,13 +71,96 @@ function call(
     ),
   ).toBe(true);
 }
-afterEach(async () => {
-  await Promise.all(
-    temps.splice(0).map((p) => rm(p, { recursive: true, force: true })),
-  );
+beforeEach(({ task }) => {
+  // A failed/expired old teardown cannot authorize a new test body.
+  fixtureOwners.set(task.id, beginPythonFixtureOwner(task.name));
 });
+afterEach(async ({ task }) => {
+  const owner = fixtureOwners.get(task.id);
+  if (owner) await closePythonFixtureOwner(owner);
+}, PYTHON_TEARDOWN_HOOK_MS);
+
+beforeAll(async () => {
+  // Cold interpreter discovery belongs to fixture readiness. Keep the semantic
+  // tests' original 5s budget and the same production discovery/parser path.
+  const owner = beginPythonFixtureOwner("default-discovery readiness");
+  const root = await mkdtemp(join(tmpdir(), "codemap-python-ready-"));
+  registerPythonFixtureRoot(owner, root);
+  const started = performance.now();
+  try {
+    await writeFile(
+      join(root, "ready.py"),
+      'from pathlib import Path\nPath(__file__).with_name("SENTINEL").write_text("executed")\ndef fixture_ready():\n    return 1\n',
+    );
+    await defaultPythonFixture(async () => {
+      const snapshot = await new SourceIndexer().index(
+        root,
+        "python-readiness",
+      );
+      snapshotSchema.parse(snapshot);
+      expect(snapshot.coverage.files).toEqual(["ready.py"]);
+      expect(fn(snapshot, "ready.py", "fixture_ready").name).toBe(
+        "fixture_ready",
+      );
+      expect(snapshot.diagnostics).toEqual([]);
+    });
+    await expect(
+      readFile(join(root, "SENTINEL"), "utf8"),
+    ).rejects.toMatchObject({ code: "ENOENT" });
+    await verifyDiscoveredPython();
+    await drainPythonFixtures();
+    pythonReadiness(performance.now() - started);
+  } finally {
+    await closePythonFixtureOwner(owner);
+  }
+}, 90000); // 3 * 5s probes + 60s parser + 5s identity query and capture overhead.
 
 describe("SourceIndexer", () => {
+  it("models a default-discovery probe deadline and drains before removing an owned source root", async () => {
+    // This 6s Node child is a deterministic boundary model, not evidence of
+    // which Windows candidate caused the original CI failure.
+    const root = await temp();
+    const marker = join(root, "probe-started");
+    await writeFile(
+      join(root, "barrier.py"),
+      'from pathlib import Path\nPath(__file__).with_name("SENTINEL").write_text("executed")\ndef barrier_function():\n    return 1\n',
+    );
+    const began = performance.now();
+    let settled = false;
+    const pending = modelPythonProbeBarrier(marker, () =>
+      pythonFixture(async () => {
+        const snapshot = await new SourceIndexer().index(
+          root,
+          "python-probe-model",
+        );
+        snapshotSchema.parse(snapshot);
+        expect(fn(snapshot, "barrier.py", "barrier_function").name).toBe(
+          "barrier_function",
+        );
+        expect(snapshot.diagnostics).toEqual([]);
+        await expect(
+          readFile(join(root, "SENTINEL"), "utf8"),
+        ).rejects.toMatchObject({ code: "ENOENT" });
+        settled = true;
+        return snapshot;
+      }),
+    );
+    const drain = drainPythonFixtures();
+    await new Promise((resolve) => setTimeout(resolve, 50));
+    expect(settled).toBe(false);
+    expect(await readFile(join(root, "barrier.py"), "utf8")).toContain(
+      "barrier_function",
+    );
+    await drain;
+    const result = await pending;
+    expect(result.attempts).toBe(2);
+    expect(settled).toBe(true);
+    const ownedPid = Number(await readFile(marker, "utf8"));
+    expect(Number.isSafeInteger(ownedPid) && ownedPid > 0).toBe(true);
+    expect(() => process.kill(ownedPid, 0)).toThrow();
+    expect(performance.now() - began).toBeGreaterThanOrEqual(4500);
+  }, 80000);
+
   it("changes input and snapshot identity for configuration-only and whitespace edits while retaining symbol IDs and history", async () => {
     const root = await temp();
     await writeFile(join(root, "a.ts"), "export function a() {}");
@@ -235,63 +333,66 @@ describe("SourceIndexer", () => {
       true,
     );
   });
-  it("indexes Python relative package aliases, nested functions and self calls without executing targets", async () => {
-    const p = await fixture("python");
-    await writeFile(
-      join(p, "side_effect.py"),
-      "from pathlib import Path\nPath(__file__).with_name('SENTINEL').write_text('executed')\ndef safe():\n    return 1\n",
-    );
-    const s = await new SourceIndexer().index(p, "py");
-    snapshotSchema.parse(s);
-    call(
-      s,
-      "pkg/main.py",
-      "fetch_notes",
-      "pkg/helpers.py",
-      "request_with_retry",
-    );
-    expect(
-      s.relations.filter(
-        (r) =>
-          r.type === "calls" &&
-          r.sourceId === fn(s, "pkg/main.py", "fetch_notes").id &&
-          r.targetId === fn(s, "pkg/helpers.py", "request_with_retry").id,
-      ),
-    ).toHaveLength(2);
-    call(s, "pkg/helpers.py", "Client.run", "pkg/helpers.py", "Client.send");
-    call(s, "pkg/main.py", "outer", "pkg/main.py", "outer.inner");
-    for (const name of ["dynamic", "shadow"])
+  it("indexes Python relative package aliases, nested functions and self calls without executing targets", () =>
+    verifiedPythonFixture(async () => {
+      const p = await fixture("python");
+      await writeFile(
+        join(p, "side_effect.py"),
+        "from pathlib import Path\nPath(__file__).with_name('SENTINEL').write_text('executed')\ndef safe():\n    return 1\n",
+      );
+      const s = await new SourceIndexer().index(p, "py");
+      snapshotSchema.parse(s);
+      call(
+        s,
+        "pkg/main.py",
+        "fetch_notes",
+        "pkg/helpers.py",
+        "request_with_retry",
+      );
       expect(
-        s.relations.find(
+        s.relations.filter(
           (r) =>
-            r.type === "calls" && r.sourceId === fn(s, "pkg/main.py", name).id,
-        )?.resolution,
-      ).toBe("unresolved");
-    expect(
-      s.relations.some(
-        (r) => r.type === "calls" && r.resolution === "external",
-      ),
-    ).toBe(true);
-    await expect(readFile(join(p, "SENTINEL"))).rejects.toMatchObject({
-      code: "ENOENT",
-    });
-  });
-  it("uses Python encoding declarations and hashes raw bytes", async () => {
-    const p = await temp();
-    await writeFile(
-      join(p, "latin.py"),
-      Buffer.from(
-        "# coding: latin-1\n# caf\xe9\ndef encoded():\n    return 1\n",
-        "latin1",
-      ),
-    );
-    const s = await new SourceIndexer().index(p, "encoding");
-    expect(fn(s, "latin.py", "encoded").name).toBe("encoded");
-    expect(s.diagnostics).toEqual([]);
-    expect(
-      (await new SourceIndexer().readSource(p, "latin.py")).content,
-    ).toContain("café");
-  });
+            r.type === "calls" &&
+            r.sourceId === fn(s, "pkg/main.py", "fetch_notes").id &&
+            r.targetId === fn(s, "pkg/helpers.py", "request_with_retry").id,
+        ),
+      ).toHaveLength(2);
+      call(s, "pkg/helpers.py", "Client.run", "pkg/helpers.py", "Client.send");
+      call(s, "pkg/main.py", "outer", "pkg/main.py", "outer.inner");
+      for (const name of ["dynamic", "shadow"])
+        expect(
+          s.relations.find(
+            (r) =>
+              r.type === "calls" &&
+              r.sourceId === fn(s, "pkg/main.py", name).id,
+          )?.resolution,
+        ).toBe("unresolved");
+      expect(
+        s.relations.some(
+          (r) => r.type === "calls" && r.resolution === "external",
+        ),
+      ).toBe(true);
+      await expect(readFile(join(p, "SENTINEL"))).rejects.toMatchObject({
+        code: "ENOENT",
+      });
+    }));
+  it("uses Python encoding declarations and hashes raw bytes", () =>
+    verifiedPythonFixture(async () => {
+      const p = await temp();
+      await writeFile(
+        join(p, "latin.py"),
+        Buffer.from(
+          "# coding: latin-1\n# caf\xe9\ndef encoded():\n    return 1\n",
+          "latin1",
+        ),
+      );
+      const s = await new SourceIndexer().index(p, "encoding");
+      expect(fn(s, "latin.py", "encoded").name).toBe("encoded");
+      expect(s.diagnostics).toEqual([]);
+      expect(
+        (await new SourceIndexer().readSource(p, "latin.py")).content,
+      ).toContain("café");
+    }));
   it("reports parse failures and missing Python with an actionable diagnostic, retaining TS", async () => {
     const p = await temp();
     await writeFile(join(p, "bad.py"), "def broken(:");

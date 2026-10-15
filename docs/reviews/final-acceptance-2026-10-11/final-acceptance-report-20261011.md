@@ -1,3 +1,5 @@
+> 本文是提交前冻结候选的历史验收记录。用户随后明确授权commit/push；当前发布SHA、CI与票据状态以本目录发布收据及docs/superpowers/state.md为准。
+
 # AtlasMode 本轮验收结果
 
 目标已核实：VM2，hostname `atlasmode`、用户 `agent`，仓库 `/home/agent/projects/AtlasMode`，origin `huiyuanXP/AtlasMode`。安全分支 `fix/first-use-20261010`，最终 HEAD `0991dbc962981c4aa1b1a13473fce66abd6b8502`，暂存区为空。本轮没有 commit、push、合并、生产部署或权限更改，保留用户 AGENTS.md 与其他在途修改。
@@ -39,3 +41,5 @@ POL01：实际 Navigation 接入保存/重读后的只读工作区同步，保�
 原36票仍按既有口径19 DONE / 17未完成登记；其中 FS01、KN01、POL01 的本轮候选验收已通过、尚未提交。本报告不凭测试数新增票据或把支持性设计计为完成。其余14：KN02、DATA01、POL02、IDX04、DIFF01、GRP03、PERF01、PERF02、QA02、OPS01、FUT01、AG02、AG03、AG05。
 
 尚未通过/运行：真实 Windows 原生与 Unicode/进程树门禁；当前外部 Provider 真实调用；真实 Codex/Claude 双客户端；新云目标/生产发布。现有协议、source-only 审查、合成适配器和旧CI绿色不替代它们。HEAD 的 Windows CI 两个Python超时仍是失败记录，fixture修复未获得新Windows实跑证据。本轮没有这些项目的新增实现范围，也没有提交/推送/部署授权阻塞当前可复验候选。
+
+GitHub提交中的日志采用 .log.gz 无损归档，解压字节SHA见 raw-log-archive.json；本机与VM原始 .log 仍保留。未清场或覆盖原失败证据。

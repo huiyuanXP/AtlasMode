@@ -1,0 +1,40 @@
+[
+  {
+    "args": [
+      "npx",
+      "vitest",
+      "run",
+      "apps/web/src/features/planning",
+      "apps/web/src/features/structure"
+    ],
+    "started": "2026-10-11T02:54:37.169943+00:00",
+    "elapsed_seconds": 3.26253640599316,
+    "exit": 0
+  },
+  {
+    "args": [
+      "npm",
+      "run",
+      "typecheck",
+      "--workspace",
+      "@codemap/web"
+    ],
+    "started": "2026-10-11T02:54:40.433001+00:00",
+    "elapsed_seconds": 6.901568553999823,
+    "exit": 0
+  },
+  {
+    "args": [
+      "npx",
+      "eslint",
+      "apps/web/src/features/planning/function-target.ts",
+      "apps/web/src/features/planning/function-target.test.ts",
+      "apps/web/src/features/structure/ownership.ts",
+      "apps/web/src/features/structure/ownership.test.ts",
+      "tests/e2e/ownership.spec.ts"
+    ],
+    "started": "2026-10-11T02:54:47.335059+00:00",
+    "elapsed_seconds": 1.2659222319998662,
+    "exit": 0
+  }
+]

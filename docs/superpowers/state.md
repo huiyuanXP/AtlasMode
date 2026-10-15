@@ -1,12 +1,20 @@
 # AtlasMode 持续构建状态
 
-## 当前工作（2026-10-10 UTC）
+## 当前工作（2026-10-11 UTC）
 
-首用离线路径、AI渐进披露、可读初始图与手动规划入口已实现并独立审查通过；精确证据见 [验收](reviews/first-use-2026-10-10/README.md)。
-GitHub真实7个Issue均open；本地36票19DONE/17未完成；SEC-01已DONE，AG-05为PARTIAL，GRP-02已完成；IDX-03完成：f01c1cb真实CI38069639172四jobSUCCESS、远端19/19浏览器，原本地失败保留；POL-01模块修复复审APPROVE，服务/HTTP接线中；KN-01设计复审通过、新模块实施中；FS-01设计复审通过、真实归属/路径与冲突保护接线中，AG-02设计通过但源码writer未实施，其余待办按依赖推进。不能用本地状态代替远端结案。IDX-02静态workspace/exports映射已通过393/9、真实HTTP/MCP/浏览器与freshness/history/restart/crossproject，独立复审APPROVE，见 [验收](reviews/idx02-2026-10-10/README.md)。IDX-01完整Express入口已通过，见 [证据](reviews/idx01-2026-10-10/README.md)，保留历史FAIL。
-提交7528f78远端CI38064184377四job（Ubuntu/Windows/macOS native、Chromium）全部SUCCESS；同冻结clean快照全根build/typecheck/lint、781/65测试、smoke、18/18浏览器及安装审计0通过。SEC-01已DONE；GRP02不在该旧快照；其新独立集成795/72、smoke与浏览器18初次PASS+planning定向1PASS、独立复审已通过。AG-05本地HTTP/SDK/SQLite/浏览器协议闭环已通过独立复审，真实外部Provider配置/最小调用授权仍待答复，保持PARTIAL。历史CI失败与首次复用产物TS2349日志及未确定根因保留。详见 [CI报告](reviews/ci-repair-2026-10-10/README.md)。
-当前分支fix/first-use-20261010，保留已有AGENTS修改。用户最新授权按阶段同步文档后commit/push；不授权merge、生产部署或权限修改。下面旧阶段“不push”仅记录当时状态。
-neat-freak v3.0.0已配置并应用；生成记忆未写，临时预览已关闭，工作区与证据保留。
+当前分支目标 `fix/first-use-20261010`。用户明确授权按票/重大范围同步neat-freak文档后commit/push GitHub，持续推进可做任务；不授权merge、部署或权限修改。
+
+FS01/KN01/POL01隔离冻结候选已完成实施与独立审查：build/typecheck/lint/smoke通过，全根1342/1342（112文件）、真实Chromium单轮51/51无skip/flaky。原1336PASS/6FAIL保存；4fixture七个旧negative SDK契约精确修复后15定向及全量通过。源码312路径SHA逐一相同，已审4fixture增量单独记录。见[最新验收](../reviews/final-acceptance-2026-10-11/final-acceptance-report-20261011.md)。
+
+整体独审唯一Python路径I1已定向修复并独立复审关闭（C0/I0/M0）；两产品文件/三测试文件，定向142单测及25浏览器通过，原失败证据保留。见 [修复证据](../reviews/python-compatibility-2026-10-11/README.md)。新组合全量门禁与远端CI另行记录。
+
+最终组合（Python产品修复+CI夹具/workflow）已新跑build/typecheck/lint/smoke、compiled全根112文件/1374测试、Chromium53场景，零skip/flaky。314路径与publisher一致，179编译文件SHA记录；本轮登记24服务PID/端口已释放。见 [组合门禁](../reviews/ci-python-fixture-r1-2026-10-11/README.md)。用户要求本步备份后暂停以重启服务器，后续票据不启动；原worktree及证据保留。
+
+三票当前REVIEW，等待这轮推送的真实CI；原36票仍19 DONE/17未完成，CI闭合后再更新DONE。下一步为已审Python夹具接入和真实Windows门禁，再按依赖推进其余14票。PERF02 A/B模块已有源码APPROVE，Task3局部几何/预检尚未实现，先独占完成Task3，再进入Workspace/Canvas/Worker接线与真实规模验证；其余设计不当作实现。
+
+当前Provider真调用、真实Codex/Claude双客户端、Windows交互式Ctrl+C和新云部署仍未验收。AG03 native R1仅SOURCE APPROVE，Unicode/进程树Windows门禁未运行；不得解除原生Chat限制。0991dbc的Windows CI两Python5秒失败仍保留，不使用旧绿色覆盖。
+
+neat-freak：代码/本地候选运行态verified-current，文档changed-and-verified；用户AGENTS改动保留、vendored skills不变；生成记忆只读；GitHub CI与平台边界pending。隔离worktree、截图和原始证据保留，不清场；本轮浏览器登记22自有PID已退出、端口关闭，不泛指全部项目资源。
 
 ## 前一轮交付：图检查交互 UI-05～UI-10（2026-10-09 UTC）
 

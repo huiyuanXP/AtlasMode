@@ -1,0 +1,38 @@
+[
+  {
+    "gate": "build",
+    "rawSha256": "bf970acfcb2d33196b1eb5d187dcf694dca7a6bbe40459349406d6f2f0ce215b",
+    "archiveSha256": "4671f59e4d2de98205c8894c613095bdef2dd8ea2acbb598c0d75fbc40548477",
+    "decompressionExact": true
+  },
+  {
+    "gate": "typecheck",
+    "rawSha256": "cf4dff2ff67e1c4b1171edfb81242338ac8496ae3dc93e2ec3f7d2a67b151278",
+    "archiveSha256": "ef8a72b0d53cdead6ff6875d02db53b5da04d1f878d5e56e06890638c2134d1d",
+    "decompressionExact": true
+  },
+  {
+    "gate": "lint",
+    "rawSha256": "7800494729c08273ed821839df88b07aa887e163a5d86a3fd5f0a034acfa0ca4",
+    "archiveSha256": "48cb4f9c2b98daf52f2359df1a79995096c6889d2db20abb1f9a6e32f933890b",
+    "decompressionExact": true
+  },
+  {
+    "gate": "unit",
+    "rawSha256": "d47c42b7b819a6f3c149f5000e4fff6c1c9fad1a219d5ee39429dbb40866eac5",
+    "archiveSha256": "0f488bb163ce32ff1c6ac650e58dfa9f8da3a0fca7cf42990eecb4166ff87a7b",
+    "decompressionExact": true
+  },
+  {
+    "gate": "smoke",
+    "rawSha256": "744c39f61f4e04c1f2e295889ad5db62645ddadacf754a4e7008563dbe2e57b2",
+    "archiveSha256": "50a548ec27fb1fa902049f07cbfd8135536d287be4c1318a092828b36329b46f",
+    "decompressionExact": true
+  },
+  {
+    "gate": "browser",
+    "rawSha256": "2cd3b38678df0fe11bd449480a2ae9133a3630f6da3c4b0235e49338b3ecb712",
+    "archiveSha256": "f4a7304e70aa8a0c45c249d7fd88ca27ddf76731c8f5f78c8a9e732bce2ee202",
+    "decompressionExact": true
+  }
+]

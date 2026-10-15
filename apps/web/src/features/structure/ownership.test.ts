@@ -81,3 +81,30 @@ describe("complete ownership target", () => {
     ).toThrow();
   });
 });
+
+describe("Python ownership targets", () => {
+  it("keeps full Python file identity and completes root/nested folders", () => {
+    expect(completeTargetPath({ kind: "file", path: "other/index.py" })).toBe(
+      "other/index.py",
+    );
+    expect(
+      completeTargetPath({ kind: "folder", path: "dest/nested" }, "index.py"),
+    ).toBe("dest/nested/index.py");
+    expect(completeTargetPath({ kind: "folder", path: "." }, "main.py")).toBe(
+      "main.py",
+    );
+  });
+  it.each([
+    "../main.py",
+    "a/main.py",
+    "a\\main.py",
+    "C:main.py",
+    "main.py/",
+    "main\0.py",
+    "main\n.py",
+  ])("rejects unsafe Python filename %j before joining", (filename) => {
+    expect(() =>
+      completeTargetPath({ kind: "folder", path: "dest" }, filename),
+    ).toThrow();
+  });
+});

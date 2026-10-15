@@ -1,0 +1,1509 @@
+{
+  "diagnostics": {
+    "component": "python-fixture",
+    "node": "v24.19.0",
+    "platform": "linux",
+    "events": [
+      {
+        "event": "owner-admitted",
+        "owner": "default-discovery readiness"
+      },
+      {
+        "event": "start",
+        "model": false,
+        "phase": "probe",
+        "executable": "python3",
+        "pid": 175427
+      },
+      {
+        "event": "close",
+        "aliveAfterClose": false,
+        "phase": "probe",
+        "pid": 175427,
+        "code": 0,
+        "signal": null,
+        "milliseconds": 10.740337000000068
+      },
+      {
+        "event": "start",
+        "model": false,
+        "phase": "parse",
+        "executable": "python3",
+        "pid": 175428
+      },
+      {
+        "event": "close",
+        "aliveAfterClose": false,
+        "phase": "parse",
+        "pid": 175428,
+        "code": 0,
+        "signal": null,
+        "milliseconds": 25.179174999999987
+      },
+      {
+        "event": "start",
+        "model": false,
+        "phase": "probe",
+        "executable": "python3",
+        "pid": 175430
+      },
+      {
+        "event": "close",
+        "aliveAfterClose": false,
+        "phase": "probe",
+        "pid": 175430,
+        "code": 0,
+        "signal": null,
+        "milliseconds": 15.73501699999997
+      },
+      {
+        "event": "verified",
+        "executable": "python3",
+        "version": [
+          3,
+          12,
+          3
+        ]
+      },
+      {
+        "event": "readiness",
+        "milliseconds": 83.85184800000002,
+        "pendingFixtures": 0,
+        "activeOwnedPids": []
+      },
+      {
+        "event": "owner-closed",
+        "owner": "default-discovery readiness",
+        "pendingFixtures": 0,
+        "pendingChildren": 0
+      },
+      {
+        "event": "owner-admitted",
+        "owner": "models a default-discovery probe deadline and drains before removing an owned source root"
+      },
+      {
+        "event": "start",
+        "model": true,
+        "phase": "probe",
+        "executable": "node",
+        "pid": 175431
+      },
+      {
+        "event": "close",
+        "aliveAfterClose": false,
+        "phase": "probe",
+        "pid": 175431,
+        "code": null,
+        "signal": "SIGTERM",
+        "milliseconds": 5011.069695
+      },
+      {
+        "event": "start",
+        "model": true,
+        "phase": "probe",
+        "executable": "python3",
+        "pid": 175441
+      },
+      {
+        "event": "close",
+        "aliveAfterClose": false,
+        "phase": "probe",
+        "pid": 175441,
+        "code": 0,
+        "signal": null,
+        "milliseconds": 30.94408899999962
+      },
+      {
+        "event": "start",
+        "model": true,
+        "phase": "parse",
+        "executable": "python3",
+        "pid": 175442
+      },
+      {
+        "event": "close",
+        "aliveAfterClose": false,
+        "phase": "parse",
+        "pid": 175442,
+        "code": 0,
+        "signal": null,
+        "milliseconds": 77.96951499999977
+      },
+      {
+        "event": "owner-closed",
+        "owner": "models a default-discovery probe deadline and drains before removing an owned source root",
+        "pendingFixtures": 0,
+        "pendingChildren": 0
+      },
+      {
+        "event": "owner-admitted",
+        "owner": "changes input and snapshot identity for configuration-only and whitespace edits while retaining symbol IDs and history"
+      },
+      {
+        "event": "owner-closed",
+        "owner": "changes input and snapshot identity for configuration-only and whitespace edits while retaining symbol IDs and history",
+        "pendingFixtures": 0,
+        "pendingChildren": 0
+      },
+      {
+        "event": "owner-admitted",
+        "owner": "hashes invalid configuration bytes and captured inherited inputs without indexing JSON nodes"
+      },
+      {
+        "event": "owner-closed",
+        "owner": "hashes invalid configuration bytes and captured inherited inputs without indexing JSON nodes",
+        "pendingFixtures": 0,
+        "pendingChildren": 0
+      },
+      {
+        "event": "owner-admitted",
+        "owner": "keeps source-only indexing deterministic without configuration inputs"
+      },
+      {
+        "event": "owner-closed",
+        "owner": "keeps source-only indexing deterministic without configuration inputs",
+        "pendingFixtures": 0,
+        "pendingChildren": 0
+      },
+      {
+        "event": "owner-admitted",
+        "owner": "resolves TS aliases, reexports, named arrows and class methods by declaration identity"
+      },
+      {
+        "event": "owner-closed",
+        "owner": "resolves TS aliases, reexports, named arrows and class methods by declaration identity",
+        "pendingFixtures": 0,
+        "pendingChildren": 0
+      },
+      {
+        "event": "owner-admitted",
+        "owner": "indexes JS, JSX and TSX calls and records source evidence/containment"
+      },
+      {
+        "event": "owner-closed",
+        "owner": "indexes JS, JSX and TSX calls and records source evidence/containment",
+        "pendingFixtures": 0,
+        "pendingChildren": 0
+      },
+      {
+        "event": "owner-admitted",
+        "owner": "uses stable qualified IDs after blank lines while raw source changes alter the fingerprint"
+      },
+      {
+        "event": "owner-closed",
+        "owner": "uses stable qualified IDs after blank lines while raw source changes alter the fingerprint",
+        "pendingFixtures": 0,
+        "pendingChildren": 0
+      },
+      {
+        "event": "owner-admitted",
+        "owner": "honors nested gitignore and explicit exclusions and rejects outside symlinks"
+      },
+      {
+        "event": "owner-closed",
+        "owner": "honors nested gitignore and explicit exclusions and rejects outside symlinks",
+        "pendingFixtures": 0,
+        "pendingChildren": 0
+      },
+      {
+        "event": "owner-admitted",
+        "owner": "indexes Python relative package aliases, nested functions and self calls without executing targets"
+      },
+      {
+        "event": "start",
+        "model": false,
+        "phase": "probe",
+        "executable": "python3",
+        "pid": 175458
+      },
+      {
+        "event": "close",
+        "aliveAfterClose": false,
+        "phase": "probe",
+        "pid": 175458,
+        "code": 0,
+        "signal": null,
+        "milliseconds": 17.95248300000003
+      },
+      {
+        "event": "start",
+        "model": false,
+        "phase": "parse",
+        "executable": "python3",
+        "pid": 175459
+      },
+      {
+        "event": "close",
+        "aliveAfterClose": false,
+        "phase": "parse",
+        "pid": 175459,
+        "code": 0,
+        "signal": null,
+        "milliseconds": 67.55607000000055
+      },
+      {
+        "event": "owner-closed",
+        "owner": "indexes Python relative package aliases, nested functions and self calls without executing targets",
+        "pendingFixtures": 0,
+        "pendingChildren": 0
+      },
+      {
+        "event": "owner-admitted",
+        "owner": "uses Python encoding declarations and hashes raw bytes"
+      },
+      {
+        "event": "start",
+        "model": false,
+        "phase": "probe",
+        "executable": "python3",
+        "pid": 175461
+      },
+      {
+        "event": "close",
+        "aliveAfterClose": false,
+        "phase": "probe",
+        "pid": 175461,
+        "code": 0,
+        "signal": null,
+        "milliseconds": 29.683987000000343
+      },
+      {
+        "event": "start",
+        "model": false,
+        "phase": "parse",
+        "executable": "python3",
+        "pid": 175462
+      },
+      {
+        "event": "close",
+        "aliveAfterClose": false,
+        "phase": "parse",
+        "pid": 175462,
+        "code": 0,
+        "signal": null,
+        "milliseconds": 55.711224000000584
+      },
+      {
+        "event": "owner-closed",
+        "owner": "uses Python encoding declarations and hashes raw bytes",
+        "pendingFixtures": 0,
+        "pendingChildren": 0
+      },
+      {
+        "event": "owner-admitted",
+        "owner": "reports parse failures and missing Python with an actionable diagnostic, retaining TS"
+      },
+      {
+        "event": "start",
+        "model": false,
+        "phase": "probe",
+        "executable": "python3",
+        "pid": 175464
+      },
+      {
+        "event": "close",
+        "aliveAfterClose": false,
+        "phase": "probe",
+        "pid": 175464,
+        "code": 0,
+        "signal": null,
+        "milliseconds": 19.258350000000064
+      },
+      {
+        "event": "start",
+        "model": false,
+        "phase": "parse",
+        "executable": "python3",
+        "pid": 175465
+      },
+      {
+        "event": "close",
+        "aliveAfterClose": false,
+        "phase": "parse",
+        "pid": 175465,
+        "code": 0,
+        "signal": null,
+        "milliseconds": 73.9928630000004
+      },
+      {
+        "event": "start",
+        "model": false,
+        "phase": "probe",
+        "executable": "missing-python"
+      },
+      {
+        "event": "error",
+        "phase": "probe",
+        "code": "ENOENT"
+      },
+      {
+        "event": "close",
+        "aliveAfterClose": false,
+        "phase": "probe",
+        "code": -2,
+        "signal": null,
+        "milliseconds": 8.156514999999672
+      },
+      {
+        "event": "owner-closed",
+        "owner": "reports parse failures and missing Python with an actionable diagnostic, retaining TS",
+        "pendingFixtures": 0,
+        "pendingChildren": 0
+      },
+      {
+        "event": "owner-admitted",
+        "owner": "isolates concurrent projects and languages"
+      },
+      {
+        "event": "start",
+        "model": false,
+        "phase": "probe",
+        "executable": "python3",
+        "pid": 175470
+      },
+      {
+        "event": "close",
+        "aliveAfterClose": false,
+        "phase": "probe",
+        "pid": 175470,
+        "code": 0,
+        "signal": null,
+        "milliseconds": 22.99264900000071
+      },
+      {
+        "event": "start",
+        "model": false,
+        "phase": "parse",
+        "executable": "python3",
+        "pid": 175471
+      },
+      {
+        "event": "close",
+        "aliveAfterClose": false,
+        "phase": "parse",
+        "pid": 175471,
+        "code": 0,
+        "signal": null,
+        "milliseconds": 52.92427099999986
+      },
+      {
+        "event": "owner-closed",
+        "owner": "isolates concurrent projects and languages",
+        "pendingFixtures": 0,
+        "pendingChildren": 0
+      },
+      {
+        "event": "owner-admitted",
+        "owner": "detects Git revision read-only and rejects invalid roots"
+      },
+      {
+        "event": "owner-closed",
+        "owner": "detects Git revision read-only and rejects invalid roots",
+        "pendingFixtures": 0,
+        "pendingChildren": 0
+      },
+      {
+        "event": "owner-admitted",
+        "owner": "reads only contained source paths and rejects traversal and outside symlinks"
+      },
+      {
+        "event": "owner-closed",
+        "owner": "reads only contained source paths and rejects traversal and outside symlinks",
+        "pendingFixtures": 0,
+        "pendingChildren": 0
+      },
+      {
+        "event": "owner-admitted",
+        "owner": "does not treat a callback type signature as its runtime implementation"
+      },
+      {
+        "event": "owner-closed",
+        "owner": "does not treat a callback type signature as its runtime implementation",
+        "pendingFixtures": 0,
+        "pendingChildren": 0
+      },
+      {
+        "event": "owner-admitted",
+        "owner": "records missing relative Python call targets as unknown rather than external"
+      },
+      {
+        "event": "start",
+        "model": false,
+        "phase": "probe",
+        "executable": "python3",
+        "pid": 175480
+      },
+      {
+        "event": "close",
+        "aliveAfterClose": false,
+        "phase": "probe",
+        "pid": 175480,
+        "code": 0,
+        "signal": null,
+        "milliseconds": 29.698965999999928
+      },
+      {
+        "event": "start",
+        "model": false,
+        "phase": "parse",
+        "executable": "python3",
+        "pid": 175481
+      },
+      {
+        "event": "close",
+        "aliveAfterClose": false,
+        "phase": "parse",
+        "pid": 175481,
+        "code": 0,
+        "signal": null,
+        "milliseconds": 79.55731100000048
+      },
+      {
+        "event": "owner-closed",
+        "owner": "records missing relative Python call targets as unknown rather than external",
+        "pendingFixtures": 0,
+        "pendingChildren": 0
+      },
+      {
+        "event": "owner-admitted",
+        "owner": "retains anonymous callback identities and scopes duplicated names independently"
+      },
+      {
+        "event": "owner-closed",
+        "owner": "retains anonymous callback identities and scopes duplicated names independently",
+        "pendingFixtures": 0,
+        "pendingChildren": 0
+      },
+      {
+        "event": "owner-admitted",
+        "owner": "applies nested ignore negation without reopening an ignored directory"
+      },
+      {
+        "event": "owner-closed",
+        "owner": "applies nested ignore negation without reopening an ignored directory",
+        "pendingFixtures": 0,
+        "pendingChildren": 0
+      },
+      {
+        "event": "owner-admitted",
+        "owner": "keeps getter and setter declarations distinct and stable after whitespace"
+      },
+      {
+        "event": "owner-closed",
+        "owner": "keeps getter and setter declarations distinct and stable after whitespace",
+        "pendingFixtures": 0,
+        "pendingChildren": 0
+      },
+      {
+        "event": "owner-admitted",
+        "owner": "does not bind a staticmethod parameter named self to a class method"
+      },
+      {
+        "event": "start",
+        "model": false,
+        "phase": "probe",
+        "executable": "python3",
+        "pid": 175487
+      },
+      {
+        "event": "close",
+        "aliveAfterClose": false,
+        "phase": "probe",
+        "pid": 175487,
+        "code": 0,
+        "signal": null,
+        "milliseconds": 18.93455400000039
+      },
+      {
+        "event": "start",
+        "model": false,
+        "phase": "parse",
+        "executable": "python3",
+        "pid": 175488
+      },
+      {
+        "event": "close",
+        "aliveAfterClose": false,
+        "phase": "parse",
+        "pid": 175488,
+        "code": 0,
+        "signal": null,
+        "milliseconds": 73.82427700000062
+      },
+      {
+        "event": "owner-closed",
+        "owner": "does not bind a staticmethod parameter named self to a class method",
+        "pendingFixtures": 0,
+        "pendingChildren": 0
+      },
+      {
+        "event": "owner-admitted",
+        "owner": "reports TS syntax errors while retaining coverage and unknown call evidence"
+      },
+      {
+        "event": "owner-closed",
+        "owner": "reports TS syntax errors while retaining coverage and unknown call evidence",
+        "pendingFixtures": 0,
+        "pendingChildren": 0
+      },
+      {
+        "event": "owner-admitted",
+        "owner": "resolves default and namespace imports without cross-scope name guessing"
+      },
+      {
+        "event": "owner-closed",
+        "owner": "resolves default and namespace imports without cross-scope name guessing",
+        "pendingFixtures": 0,
+        "pendingChildren": 0
+      },
+      {
+        "event": "owner-admitted",
+        "owner": "returns deterministic facts for repeated and relocated equal-content projects"
+      },
+      {
+        "event": "start",
+        "model": false,
+        "phase": "probe",
+        "executable": "python3",
+        "pid": 175492
+      },
+      {
+        "event": "start",
+        "model": false,
+        "phase": "probe",
+        "executable": "python3",
+        "pid": 175493
+      },
+      {
+        "event": "close",
+        "aliveAfterClose": false,
+        "phase": "probe",
+        "pid": 175492,
+        "code": 0,
+        "signal": null,
+        "milliseconds": 21.288644999999633
+      },
+      {
+        "event": "start",
+        "model": false,
+        "phase": "parse",
+        "executable": "python3",
+        "pid": 175494
+      },
+      {
+        "event": "close",
+        "aliveAfterClose": false,
+        "phase": "probe",
+        "pid": 175493,
+        "code": 0,
+        "signal": null,
+        "milliseconds": 20.398956999999427
+      },
+      {
+        "event": "start",
+        "model": false,
+        "phase": "parse",
+        "executable": "python3",
+        "pid": 175495
+      },
+      {
+        "event": "close",
+        "aliveAfterClose": false,
+        "phase": "parse",
+        "pid": 175495,
+        "code": 0,
+        "signal": null,
+        "milliseconds": 49.21253400000023
+      },
+      {
+        "event": "close",
+        "aliveAfterClose": false,
+        "phase": "parse",
+        "pid": 175494,
+        "code": 0,
+        "signal": null,
+        "milliseconds": 66.79524500000025
+      },
+      {
+        "event": "owner-closed",
+        "owner": "returns deterministic facts for repeated and relocated equal-content projects",
+        "pendingFixtures": 0,
+        "pendingChildren": 0
+      },
+      {
+        "event": "owner-admitted",
+        "owner": "returns domain errors for missing sources and invalid roots"
+      },
+      {
+        "event": "owner-closed",
+        "owner": "returns domain errors for missing sources and invalid roots",
+        "pendingFixtures": 0,
+        "pendingChildren": 0
+      },
+      {
+        "event": "owner-admitted",
+        "owner": "does not attribute a returned callable to its getter or a computed dynamic property"
+      },
+      {
+        "event": "owner-closed",
+        "owner": "does not attribute a returned callable to its getter or a computed dynamic property",
+        "pendingFixtures": 0,
+        "pendingChildren": 0
+      },
+      {
+        "event": "owner-admitted",
+        "owner": "keeps Python exception binding calls unknown"
+      },
+      {
+        "event": "start",
+        "model": false,
+        "phase": "probe",
+        "executable": "python3",
+        "pid": 175499
+      },
+      {
+        "event": "close",
+        "aliveAfterClose": false,
+        "phase": "probe",
+        "pid": 175499,
+        "code": 0,
+        "signal": null,
+        "milliseconds": 20.402524000000085
+      },
+      {
+        "event": "start",
+        "model": false,
+        "phase": "parse",
+        "executable": "python3",
+        "pid": 175500
+      },
+      {
+        "event": "close",
+        "aliveAfterClose": false,
+        "phase": "parse",
+        "pid": 175500,
+        "code": 0,
+        "signal": null,
+        "milliseconds": 71.19112200000018
+      },
+      {
+        "event": "owner-closed",
+        "owner": "keeps Python exception binding calls unknown",
+        "pendingFixtures": 0,
+        "pendingChildren": 0
+      },
+      {
+        "event": "owner-admitted",
+        "owner": "keeps Python match capture calls unknown"
+      },
+      {
+        "event": "start",
+        "model": false,
+        "phase": "probe",
+        "executable": "python3",
+        "pid": 175502
+      },
+      {
+        "event": "close",
+        "aliveAfterClose": false,
+        "phase": "probe",
+        "pid": 175502,
+        "code": 0,
+        "signal": null,
+        "milliseconds": 28.923291999999492
+      },
+      {
+        "event": "start",
+        "model": false,
+        "phase": "parse",
+        "executable": "python3",
+        "pid": 175503
+      },
+      {
+        "event": "close",
+        "aliveAfterClose": false,
+        "phase": "parse",
+        "pid": 175503,
+        "code": 0,
+        "signal": null,
+        "milliseconds": 75.99263100000007
+      },
+      {
+        "event": "owner-closed",
+        "owner": "keeps Python match capture calls unknown",
+        "pendingFixtures": 0,
+        "pendingChildren": 0
+      },
+      {
+        "event": "owner-admitted",
+        "owner": "keeps Python match starred capture calls unknown"
+      },
+      {
+        "event": "start",
+        "model": false,
+        "phase": "probe",
+        "executable": "python3",
+        "pid": 175506
+      },
+      {
+        "event": "close",
+        "aliveAfterClose": false,
+        "phase": "probe",
+        "pid": 175506,
+        "code": 0,
+        "signal": null,
+        "milliseconds": 30.050694999999905
+      },
+      {
+        "event": "start",
+        "model": false,
+        "phase": "parse",
+        "executable": "python3",
+        "pid": 175507
+      },
+      {
+        "event": "close",
+        "aliveAfterClose": false,
+        "phase": "parse",
+        "pid": 175507,
+        "code": 0,
+        "signal": null,
+        "milliseconds": 50.04620700000123
+      },
+      {
+        "event": "owner-closed",
+        "owner": "keeps Python match starred capture calls unknown",
+        "pendingFixtures": 0,
+        "pendingChildren": 0
+      },
+      {
+        "event": "owner-admitted",
+        "owner": "keeps Python match mapping rest calls unknown"
+      },
+      {
+        "event": "start",
+        "model": false,
+        "phase": "probe",
+        "executable": "python3",
+        "pid": 175509
+      },
+      {
+        "event": "close",
+        "aliveAfterClose": false,
+        "phase": "probe",
+        "pid": 175509,
+        "code": 0,
+        "signal": null,
+        "milliseconds": 18.15738700000111
+      },
+      {
+        "event": "start",
+        "model": false,
+        "phase": "parse",
+        "executable": "python3",
+        "pid": 175510
+      },
+      {
+        "event": "close",
+        "aliveAfterClose": false,
+        "phase": "parse",
+        "pid": 175510,
+        "code": 0,
+        "signal": null,
+        "milliseconds": 44.43964000000051
+      },
+      {
+        "event": "owner-closed",
+        "owner": "keeps Python match mapping rest calls unknown",
+        "pendingFixtures": 0,
+        "pendingChildren": 0
+      },
+      {
+        "event": "owner-admitted",
+        "owner": "keeps Python lambda vararg calls unknown"
+      },
+      {
+        "event": "start",
+        "model": false,
+        "phase": "probe",
+        "executable": "python3",
+        "pid": 175512
+      },
+      {
+        "event": "close",
+        "aliveAfterClose": false,
+        "phase": "probe",
+        "pid": 175512,
+        "code": 0,
+        "signal": null,
+        "milliseconds": 18.327585999999428
+      },
+      {
+        "event": "start",
+        "model": false,
+        "phase": "parse",
+        "executable": "python3",
+        "pid": 175513
+      },
+      {
+        "event": "close",
+        "aliveAfterClose": false,
+        "phase": "parse",
+        "pid": 175513,
+        "code": 0,
+        "signal": null,
+        "milliseconds": 46.313631999999416
+      },
+      {
+        "event": "owner-closed",
+        "owner": "keeps Python lambda vararg calls unknown",
+        "pendingFixtures": 0,
+        "pendingChildren": 0
+      },
+      {
+        "event": "owner-admitted",
+        "owner": "keeps Python lambda kwarg calls unknown"
+      },
+      {
+        "event": "start",
+        "model": false,
+        "phase": "probe",
+        "executable": "python3",
+        "pid": 175515
+      },
+      {
+        "event": "close",
+        "aliveAfterClose": false,
+        "phase": "probe",
+        "pid": 175515,
+        "code": 0,
+        "signal": null,
+        "milliseconds": 20.02610900000036
+      },
+      {
+        "event": "start",
+        "model": false,
+        "phase": "parse",
+        "executable": "python3",
+        "pid": 175516
+      },
+      {
+        "event": "close",
+        "aliveAfterClose": false,
+        "phase": "parse",
+        "pid": 175516,
+        "code": 0,
+        "signal": null,
+        "milliseconds": 51.94483500000024
+      },
+      {
+        "event": "owner-closed",
+        "owner": "keeps Python lambda kwarg calls unknown",
+        "pendingFixtures": 0,
+        "pendingChildren": 0
+      },
+      {
+        "event": "owner-admitted",
+        "owner": "keeps Python late local declaration calls unknown"
+      },
+      {
+        "event": "start",
+        "model": false,
+        "phase": "probe",
+        "executable": "python3",
+        "pid": 175518
+      },
+      {
+        "event": "close",
+        "aliveAfterClose": false,
+        "phase": "probe",
+        "pid": 175518,
+        "code": 0,
+        "signal": null,
+        "milliseconds": 20.12815000000046
+      },
+      {
+        "event": "start",
+        "model": false,
+        "phase": "parse",
+        "executable": "python3",
+        "pid": 175519
+      },
+      {
+        "event": "close",
+        "aliveAfterClose": false,
+        "phase": "parse",
+        "pid": 175519,
+        "code": 0,
+        "signal": null,
+        "milliseconds": 68.39627500000097
+      },
+      {
+        "event": "owner-closed",
+        "owner": "keeps Python late local declaration calls unknown",
+        "pendingFixtures": 0,
+        "pendingChildren": 0
+      },
+      {
+        "event": "owner-admitted",
+        "owner": "keeps Python local rebinding calls unknown"
+      },
+      {
+        "event": "start",
+        "model": false,
+        "phase": "probe",
+        "executable": "python3",
+        "pid": 175521
+      },
+      {
+        "event": "close",
+        "aliveAfterClose": false,
+        "phase": "probe",
+        "pid": 175521,
+        "code": 0,
+        "signal": null,
+        "milliseconds": 29.274529999998776
+      },
+      {
+        "event": "start",
+        "model": false,
+        "phase": "parse",
+        "executable": "python3",
+        "pid": 175522
+      },
+      {
+        "event": "close",
+        "aliveAfterClose": false,
+        "phase": "parse",
+        "pid": 175522,
+        "code": 0,
+        "signal": null,
+        "milliseconds": 55.087563999999475
+      },
+      {
+        "event": "owner-closed",
+        "owner": "keeps Python local rebinding calls unknown",
+        "pendingFixtures": 0,
+        "pendingChildren": 0
+      },
+      {
+        "event": "owner-admitted",
+        "owner": "preserves definite Python direct calls and deferred global declarations"
+      },
+      {
+        "event": "start",
+        "model": false,
+        "phase": "probe",
+        "executable": "python3",
+        "pid": 175524
+      },
+      {
+        "event": "close",
+        "aliveAfterClose": false,
+        "phase": "probe",
+        "pid": 175524,
+        "code": 0,
+        "signal": null,
+        "milliseconds": 25.493454999999813
+      },
+      {
+        "event": "start",
+        "model": false,
+        "phase": "parse",
+        "executable": "python3",
+        "pid": 175525
+      },
+      {
+        "event": "close",
+        "aliveAfterClose": false,
+        "phase": "parse",
+        "pid": 175525,
+        "code": 0,
+        "signal": null,
+        "milliseconds": 76.13234299999931
+      },
+      {
+        "event": "owner-closed",
+        "owner": "preserves definite Python direct calls and deferred global declarations",
+        "pendingFixtures": 0,
+        "pendingChildren": 0
+      },
+      {
+        "event": "owner-admitted",
+        "owner": "preserves anonymous callback IDs across callee trivia while retaining literal contents"
+      },
+      {
+        "event": "owner-closed",
+        "owner": "preserves anonymous callback IDs across callee trivia while retaining literal contents",
+        "pendingFixtures": 0,
+        "pendingChildren": 0
+      },
+      {
+        "event": "owner-admitted",
+        "owner": "changes snapshot identity when Python capability changes for identical source bytes"
+      },
+      {
+        "event": "start",
+        "model": false,
+        "phase": "probe",
+        "executable": "missing-python"
+      },
+      {
+        "event": "error",
+        "phase": "probe",
+        "code": "ENOENT"
+      },
+      {
+        "event": "close",
+        "aliveAfterClose": false,
+        "phase": "probe",
+        "code": -2,
+        "signal": null,
+        "milliseconds": 7.820235000001048
+      },
+      {
+        "event": "start",
+        "model": false,
+        "phase": "probe",
+        "executable": "python3",
+        "pid": 175532
+      },
+      {
+        "event": "close",
+        "aliveAfterClose": false,
+        "phase": "probe",
+        "pid": 175532,
+        "code": 0,
+        "signal": null,
+        "milliseconds": 28.27265400000033
+      },
+      {
+        "event": "start",
+        "model": false,
+        "phase": "parse",
+        "executable": "python3",
+        "pid": 175533
+      },
+      {
+        "event": "close",
+        "aliveAfterClose": false,
+        "phase": "parse",
+        "pid": 175533,
+        "code": 0,
+        "signal": null,
+        "milliseconds": 66.60598000000027
+      },
+      {
+        "event": "start",
+        "model": false,
+        "phase": "probe",
+        "executable": "python3",
+        "pid": 175536
+      },
+      {
+        "event": "close",
+        "aliveAfterClose": false,
+        "phase": "probe",
+        "pid": 175536,
+        "code": 0,
+        "signal": null,
+        "milliseconds": 30.362709999999424
+      },
+      {
+        "event": "start",
+        "model": false,
+        "phase": "parse",
+        "executable": "python3",
+        "pid": 175537
+      },
+      {
+        "event": "close",
+        "aliveAfterClose": false,
+        "phase": "parse",
+        "pid": 175537,
+        "code": 0,
+        "signal": null,
+        "milliseconds": 74.13305600000058
+      },
+      {
+        "event": "owner-closed",
+        "owner": "changes snapshot identity when Python capability changes for identical source bytes",
+        "pendingFixtures": 0,
+        "pendingChildren": 0
+      },
+      {
+        "event": "owner-admitted",
+        "owner": "keeps reassigned ts initializers unresolved while retaining immutable and direct calls"
+      },
+      {
+        "event": "owner-closed",
+        "owner": "keeps reassigned ts initializers unresolved while retaining immutable and direct calls",
+        "pendingFixtures": 0,
+        "pendingChildren": 0
+      },
+      {
+        "event": "owner-admitted",
+        "owner": "keeps reassigned js initializers unresolved while retaining immutable and direct calls"
+      },
+      {
+        "event": "owner-closed",
+        "owner": "keeps reassigned js initializers unresolved while retaining immutable and direct calls",
+        "pendingFixtures": 0,
+        "pendingChildren": 0
+      },
+      {
+        "event": "owner-admitted",
+        "owner": "uses scanner captures to resolve an alias and preserve declaration evidence"
+      },
+      {
+        "event": "owner-closed",
+        "owner": "uses scanner captures to resolve an alias and preserve declaration evidence",
+        "pendingFixtures": 0,
+        "pendingChildren": 0
+      },
+      {
+        "event": "owner-admitted",
+        "owner": "keeps included sources under an opaque ignored nearest config out of ancestor ownership"
+      },
+      {
+        "event": "owner-closed",
+        "owner": "keeps included sources under an opaque ignored nearest config out of ancestor ownership",
+        "pendingFixtures": 0,
+        "pendingChildren": 0
+      },
+      {
+        "event": "owner-admitted",
+        "owner": "keeps included sources under an opaque symlink nearest config out of ancestor ownership"
+      },
+      {
+        "event": "owner-closed",
+        "owner": "keeps included sources under an opaque symlink nearest config out of ancestor ownership",
+        "pendingFixtures": 0,
+        "pendingChildren": 0
+      },
+      {
+        "event": "owner-admitted",
+        "owner": "keeps included sources under an opaque oversized nearest config out of ancestor ownership"
+      },
+      {
+        "event": "owner-closed",
+        "owner": "keeps included sources under an opaque oversized nearest config out of ancestor ownership",
+        "pendingFixtures": 0,
+        "pendingChildren": 0
+      },
+      {
+        "event": "owner-admitted",
+        "owner": "reports an alias with a ignored target as unresolved without exposing target bytes"
+      },
+      {
+        "event": "owner-closed",
+        "owner": "reports an alias with a ignored target as unresolved without exposing target bytes",
+        "pendingFixtures": 0,
+        "pendingChildren": 0
+      },
+      {
+        "event": "owner-admitted",
+        "owner": "reports an alias with a symlink target as unresolved without exposing target bytes"
+      },
+      {
+        "event": "owner-closed",
+        "owner": "reports an alias with a symlink target as unresolved without exposing target bytes",
+        "pendingFixtures": 0,
+        "pendingChildren": 0
+      },
+      {
+        "event": "owner-admitted",
+        "owner": "exposes a two-hop forwarding entry at the actual leaf and preserves physical imports"
+      },
+      {
+        "event": "owner-closed",
+        "owner": "exposes a two-hop forwarding entry at the actual leaf and preserves physical imports",
+        "pendingFixtures": 0,
+        "pendingChildren": 0
+      },
+      {
+        "event": "owner-admitted",
+        "owner": "respects valid captured package/leaf boundaries for forwarding"
+      },
+      {
+        "event": "owner-closed",
+        "owner": "respects valid captured package/leaf boundaries for forwarding",
+        "pendingFixtures": 0,
+        "pendingChildren": 0
+      },
+      {
+        "event": "owner-admitted",
+        "owner": "respects opaque captured package/leaf boundaries for forwarding"
+      },
+      {
+        "event": "owner-closed",
+        "owner": "respects opaque captured package/leaf boundaries for forwarding",
+        "pendingFixtures": 0,
+        "pendingChildren": 0
+      },
+      {
+        "event": "owner-admitted",
+        "owner": "respects excluded captured package/leaf boundaries for forwarding"
+      },
+      {
+        "event": "owner-closed",
+        "owner": "respects excluded captured package/leaf boundaries for forwarding",
+        "pendingFixtures": 0,
+        "pendingChildren": 0
+      },
+      {
+        "event": "owner-admitted",
+        "owner": "respects esm captured package/leaf boundaries for forwarding"
+      },
+      {
+        "event": "owner-closed",
+        "owner": "respects esm captured package/leaf boundaries for forwarding",
+        "pendingFixtures": 0,
+        "pendingChildren": 0
+      },
+      {
+        "event": "owner-admitted",
+        "owner": "respects invalid captured package/leaf boundaries for forwarding"
+      },
+      {
+        "event": "owner-closed",
+        "owner": "respects invalid captured package/leaf boundaries for forwarding",
+        "pendingFixtures": 0,
+        "pendingChildren": 0
+      },
+      {
+        "event": "owner-admitted",
+        "owner": "rejects checker-only identity for overwritten exports"
+      },
+      {
+        "event": "owner-closed",
+        "owner": "rejects checker-only identity for overwritten exports",
+        "pendingFixtures": 0,
+        "pendingChildren": 0
+      },
+      {
+        "event": "owner-admitted",
+        "owner": "rejects checker-only identity for shadowed require"
+      },
+      {
+        "event": "owner-closed",
+        "owner": "rejects checker-only identity for shadowed require",
+        "pendingFixtures": 0,
+        "pendingChildren": 0
+      },
+      {
+        "event": "owner-admitted",
+        "owner": "exposes stable explicit CommonJS entries with actual declaration and import evidence"
+      },
+      {
+        "event": "owner-closed",
+        "owner": "exposes stable explicit CommonJS entries with actual declaration and import evidence",
+        "pendingFixtures": 0,
+        "pendingChildren": 0
+      },
+      {
+        "event": "owner-admitted",
+        "owner": "changes facts and hash on package-only edits while preserving declaration IDs and prior snapshots"
+      },
+      {
+        "event": "owner-closed",
+        "owner": "changes facts and hash on package-only edits while preserving declaration IDs and prior snapshots",
+        "pendingFixtures": 0,
+        "pendingChildren": 0
+      },
+      {
+        "event": "owner-admitted",
+        "owner": "blocks a valid ancestor with an ignored nearest manifest and changes snapshot facts without reading rejected bytes"
+      },
+      {
+        "event": "owner-closed",
+        "owner": "blocks a valid ancestor with an ignored nearest manifest and changes snapshot facts without reading rejected bytes",
+        "pendingFixtures": 0,
+        "pendingChildren": 0
+      }
+    ],
+    "omittedEvents": 0,
+    "pendingFixtures": 0,
+    "activeOwnedPids": []
+  },
+  "starts": 46,
+  "closes": 46,
+  "closedPIDChecks": [
+    {
+      "pid": 175427,
+      "absentNow": true
+    },
+    {
+      "pid": 175428,
+      "absentNow": true
+    },
+    {
+      "pid": 175430,
+      "absentNow": true
+    },
+    {
+      "pid": 175431,
+      "absentNow": true
+    },
+    {
+      "pid": 175441,
+      "absentNow": true
+    },
+    {
+      "pid": 175442,
+      "absentNow": true
+    },
+    {
+      "pid": 175458,
+      "absentNow": true
+    },
+    {
+      "pid": 175459,
+      "absentNow": true
+    },
+    {
+      "pid": 175461,
+      "absentNow": true
+    },
+    {
+      "pid": 175462,
+      "absentNow": true
+    },
+    {
+      "pid": 175464,
+      "absentNow": true
+    },
+    {
+      "pid": 175465,
+      "absentNow": true
+    },
+    {
+      "pid": 175470,
+      "absentNow": true
+    },
+    {
+      "pid": 175471,
+      "absentNow": true
+    },
+    {
+      "pid": 175480,
+      "absentNow": true
+    },
+    {
+      "pid": 175481,
+      "absentNow": true
+    },
+    {
+      "pid": 175487,
+      "absentNow": true
+    },
+    {
+      "pid": 175488,
+      "absentNow": true
+    },
+    {
+      "pid": 175492,
+      "absentNow": true
+    },
+    {
+      "pid": 175493,
+      "absentNow": true
+    },
+    {
+      "pid": 175495,
+      "absentNow": true
+    },
+    {
+      "pid": 175494,
+      "absentNow": true
+    },
+    {
+      "pid": 175499,
+      "absentNow": true
+    },
+    {
+      "pid": 175500,
+      "absentNow": true
+    },
+    {
+      "pid": 175502,
+      "absentNow": true
+    },
+    {
+      "pid": 175503,
+      "absentNow": true
+    },
+    {
+      "pid": 175506,
+      "absentNow": true
+    },
+    {
+      "pid": 175507,
+      "absentNow": true
+    },
+    {
+      "pid": 175509,
+      "absentNow": true
+    },
+    {
+      "pid": 175510,
+      "absentNow": true
+    },
+    {
+      "pid": 175512,
+      "absentNow": true
+    },
+    {
+      "pid": 175513,
+      "absentNow": true
+    },
+    {
+      "pid": 175515,
+      "absentNow": true
+    },
+    {
+      "pid": 175516,
+      "absentNow": true
+    },
+    {
+      "pid": 175518,
+      "absentNow": true
+    },
+    {
+      "pid": 175519,
+      "absentNow": true
+    },
+    {
+      "pid": 175521,
+      "absentNow": true
+    },
+    {
+      "pid": 175522,
+      "absentNow": true
+    },
+    {
+      "pid": 175524,
+      "absentNow": true
+    },
+    {
+      "pid": 175525,
+      "absentNow": true
+    },
+    {
+      "pid": 175532,
+      "absentNow": true
+    },
+    {
+      "pid": 175533,
+      "absentNow": true
+    },
+    {
+      "pid": 175536,
+      "absentNow": true
+    },
+    {
+      "pid": 175537,
+      "absentNow": true
+    }
+  ]
+}

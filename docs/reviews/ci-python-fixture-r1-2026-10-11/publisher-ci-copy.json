@@ -1,0 +1,19 @@
+{
+  "source": "/tmp/atlas-ci-windows-r1-integration-20261011/freeze",
+  "destination": "/tmp/atlas-publish-fs-kn-pol-20261011",
+  "paths": {
+    "packages/indexer/src/index.test.ts": {
+      "before": "f7f67c73b70d68fbc1f2a8b590d2bb8e0830c3f5c540139526a04deb9189c4c3",
+      "after": "e429a1c8a82789e4ab015cdb90226370eebc1d77ca907a32bd801378d49727eb"
+    },
+    "packages/indexer/test/python-fixture.ts": {
+      "before": null,
+      "after": "5514f23f2f6b04c446eb22b483e39874d191b651ac7b44c1533a3c17462486d9"
+    },
+    ".github/workflows/ci.yml": {
+      "before": "a982c07858397e4a55881503748fea499ee34a00d7fa8102a33c6b5844722095",
+      "after": "b34caf035c70ed25130db6ed2a3f2e53db9379c949198c1fb3d038f160a5ecbe"
+    }
+  },
+  "allThreeVerified": true
+}

@@ -1,0 +1,173 @@
+{
+  "at": "2026-10-11T02:55:41.264637+00:00",
+  "before_paths": 312,
+  "publisher_mismatches": 0,
+  "changed": [
+    "apps/web/src/features/planning/function-target.test.ts",
+    "apps/web/src/features/planning/function-target.ts",
+    "apps/web/src/features/structure/ownership.test.ts",
+    "apps/web/src/features/structure/ownership.ts",
+    "tests/e2e/ownership.spec.ts"
+  ],
+  "repair_patch_sha256": "36ebf4585e918d3fd1e52d5371efd5082254cf888a04d34e0161ecd0e5110af6",
+  "before_manifest_sha256": "1a7e353da7104e95fef793ba1838785b824647a57fb9bafb3df3e10ad93ae28e",
+  "after_manifest_sha256": "f29252b6d0a948fffffb54c6e2ba26e2dcf12f298e55d9255f4b2889f0852830",
+  "changed_manifest_sha256": "0759faa73a95815493f713aa15bade9447ea8799ddad96c7a3a9f8c6cb076881",
+  "browser_stats": {
+    "startTime": "2026-10-11T02:53:25.990Z",
+    "duration": 51945.628000000004,
+    "expected": 25,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "runtime_servers": [
+    {
+      "receipt": "browser-final/ownership-Python-indexed-m-81ce0-source-and-semantic-history/server-2e34db73-dd9b-4129-bc10-e15d78bc679b.json",
+      "pid": 180065,
+      "port": 41189,
+      "pid_alive": false,
+      "port_open": false,
+      "exit": 0
+    },
+    {
+      "receipt": "browser-final/ownership-Python-temporary-d99e7-p-through-compiled-controls/server-46d3f27e-96b2-4d27-bae0-2a9ed173c37c.json",
+      "pid": 180116,
+      "port": 39683,
+      "pid_alive": false,
+      "port_open": false,
+      "exit": 0
+    },
+    {
+      "receipt": "browser-final/ownership-a-folded-group-e-b195e-ns-membership-across-reload/server-0f33dabf-727d-4c33-a600-39f479ce704a.json",
+      "pid": 179797,
+      "port": 45975,
+      "pid_alive": false,
+      "port_open": false,
+      "exit": 0
+    },
+    {
+      "receipt": "browser-final/ownership-a-real-late-cont-9c8ff--another-function-selection/server-a7d48556-4531-4531-91ae-737870ab91f4.json",
+      "pid": 179701,
+      "port": 37905,
+      "pid_alive": false,
+      "port_open": false,
+      "exit": 0
+    },
+    {
+      "receipt": "browser-final/ownership-dirty-advanced-t-14047-an-actual-external-revision/server-8b6a3962-420a-4c83-ad0a-e36190083e33.json",
+      "pid": 179846,
+      "port": 38935,
+      "pid_alive": false,
+      "port_open": false,
+      "exit": 0
+    },
+    {
+      "receipt": "browser-final/ownership-idle-S0-ownershi-00f63-draft-without-a-fresh-scope/server-b20741cf-cc31-4910-b486-121515f73853.json",
+      "pid": 179965,
+      "port": 34507,
+      "pid_alive": false,
+      "port_open": false,
+      "exit": 0
+    },
+    {
+      "receipt": "browser-final/ownership-layout-pointer-d-f92c2-and-reloads-the-same-intent/server-6f5c55b8-c959-4201-8f51-a51911485166.json",
+      "pid": 179748,
+      "port": 41815,
+      "pid_alive": false,
+      "port_open": false,
+      "exit": 0
+    },
+    {
+      "receipt": "browser-final/ownership-native-folder-dr-e9322--retain-truthful-boundaries/server-34ee53d5-3414-4f44-a24c-9ae0cde22312.json",
+      "pid": 179650,
+      "port": 45431,
+      "pid_alive": false,
+      "port_open": false,
+      "exit": 0
+    },
+    {
+      "receipt": "browser-final/ownership-native-function--79a34-mation-and-survives-restart/server-3afa0878-aaaa-4fbb-96c0-3dece218b904.json",
+      "pid": 179606,
+      "port": 36733,
+      "pid_alive": false,
+      "port_open": false,
+      "exit": 0
+    },
+    {
+      "receipt": "browser-final/ownership-native-function--79a34-mation-and-survives-restart/server-cad4d9d0-4923-4527-a6d4-081d134762aa.json",
+      "pid": 179573,
+      "port": 40991,
+      "pid_alive": false,
+      "port_open": false,
+      "exit": 0
+    },
+    {
+      "receipt": "browser-final/ownership-non-saving-owner-ea936-til-an-explicit-fresh-begin/server-dd93a007-2745-4520-99af-c94d6734ddf1.json",
+      "pid": 179893,
+      "port": 39531,
+      "pid_alive": false,
+      "port_open": false,
+      "exit": 0
+    },
+    {
+      "receipt": "browser-final/ownership-visible-ownershi-11e6f-fter-real-project-selection/server-f6c54976-2cfe-4ec3-978d-52afe20a7360.json",
+      "pid": 180016,
+      "port": 45429,
+      "pid_alive": false,
+      "port_open": false,
+      "exit": 0
+    },
+    {
+      "receipt": "browser-green/ownership-Python-indexed-m-81ce0-source-and-semantic-history/server-b2f203e3-5ade-4e89-8ca4-5471581e4e2f.json",
+      "pid": 178694,
+      "port": 38859,
+      "pid_alive": false,
+      "port_open": false,
+      "exit": 0
+    },
+    {
+      "receipt": "browser-green/ownership-Python-temporary-d99e7-p-through-compiled-controls/server-c60cfede-8f70-4da9-9f74-2997eb6a5041.json",
+      "pid": 178765,
+      "port": 44795,
+      "pid_alive": false,
+      "port_open": false,
+      "exit": 0
+    },
+    {
+      "receipt": "browser-red/ownership-Python-indexed-m-81ce0-source-and-semantic-history/server-6e951333-b009-4bc9-bb43-9a039d6ee965.json",
+      "pid": 177903,
+      "port": 46113,
+      "pid_alive": false,
+      "port_open": false,
+      "exit": 0
+    },
+    {
+      "receipt": "browser-red/ownership-Python-temporary-d99e7-p-through-compiled-controls/server-44847323-4137-4be9-a50b-e1e6bd40816b.json",
+      "pid": 178070,
+      "port": 37817,
+      "pid_alive": false,
+      "port_open": false,
+      "exit": 0
+    }
+  ],
+  "fixture_roots_removed": [
+    "/tmp/atlas-fs01-production-2e3zFw",
+    "/tmp/atlas-fs01-production-6Y43iF",
+    "/tmp/atlas-fs01-production-7edH66",
+    "/tmp/atlas-fs01-production-HGZGJE",
+    "/tmp/atlas-fs01-production-IJXYTJ",
+    "/tmp/atlas-fs01-production-Ke8oTm",
+    "/tmp/atlas-fs01-production-PetKk8",
+    "/tmp/atlas-fs01-production-Q2Y4Hs",
+    "/tmp/atlas-fs01-production-a7YyUI",
+    "/tmp/atlas-fs01-production-bd84ml",
+    "/tmp/atlas-fs01-production-fLzda8",
+    "/tmp/atlas-fs01-production-gRy2mb",
+    "/tmp/atlas-fs01-production-tVyDwf",
+    "/tmp/atlas-fs01-production-weNfzA",
+    "/tmp/atlas-fs01-production-xUsL6S"
+  ],
+  "runtime_released": true,
+  "workspace_retained_for_independent_review": true
+}
