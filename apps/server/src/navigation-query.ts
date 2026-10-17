@@ -68,13 +68,26 @@ export function navigationScope(
               (n.kind === "file" || n.kind === "folder"),
           )
           .sort((a, b) => (a.filePath ?? "").localeCompare(b.filePath ?? ""))
-      : [];
+      : input.kind === "file" && root
+        ? // Opening a file shows the functions/classes it defines.
+          snapshot.nodes
+            .filter(
+              (n) => n.kind === "function" && n.filePath === root.filePath,
+            )
+            .sort((a, b) =>
+              (a.qualifiedName ?? a.name).localeCompare(
+                b.qualifiedName ?? b.name,
+              ),
+            )
+        : [];
   const nodes = root ? [root, ...children].slice(0, budget) : [];
   const ids = new Set(nodes.map((n) => n.id));
   const relations = snapshot.relations.filter(
     (r) =>
       r.type === "contains" &&
-      r.sourceId === root?.id &&
+      (input.kind === "file"
+        ? !!r.sourceId && ids.has(r.sourceId)
+        : r.sourceId === root?.id) &&
       r.targetId &&
       ids.has(r.targetId),
   );

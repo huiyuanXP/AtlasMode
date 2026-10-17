@@ -379,6 +379,13 @@ export function WorkspacePanels({
             void app.enterFunnel(node);
             setEdge(undefined);
           }}
+          onOpenScope={(n) => {
+            void app.navigateScope(
+              n.filePath ?? ".",
+              n.kind as "folder" | "file",
+            );
+            setEdge(undefined);
+          }}
           onExitFunnel={app.exitFunnel}
           canEdit={!!plan && !planBusy && ownership.mode !== "ownership"}
           relationType={relationType}

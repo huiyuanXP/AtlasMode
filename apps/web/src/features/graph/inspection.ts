@@ -116,6 +116,20 @@ export class FunnelOffsets {
         : n;
     });
   }
+  /** Forget displacement for specific cards (resets a group to its layout). */
+  clearNodes(project: string, root: string, ids: string[]) {
+    const entries = this.offsets.get(this.key(project, root));
+    for (const id of ids) entries?.delete(id);
+  }
+  shift(project: string, root: string, ids: string[], dx: number, dy: number) {
+    const key = this.key(project, root),
+      entries = this.offsets.get(key) ?? new Map();
+    for (const id of ids) {
+      const o = entries.get(id) ?? { x: 0, y: 0 };
+      entries.set(id, { x: o.x + dx, y: o.y + dy });
+    }
+    this.offsets.set(key, entries);
+  }
   clear(project: string, root: string) {
     this.offsets.delete(this.key(project, root));
   }

@@ -870,7 +870,7 @@ summary {
   overflow-wrap: anywhere;
 }
 .member-choices {
-  max-height: 220px;
+  max-height: 140px;
   overflow: auto;
 }
 .group-members {
@@ -1178,7 +1178,7 @@ summary {
     display: block;
   }
   .chat-messages {
-    max-height: 220px;
+    max-height: 140px;
   }
   .topbar > select {
     min-width: 130px;
@@ -1200,4 +1200,37 @@ summary {
 .compact-search form button {
   align-self: stretch;
   white-space: nowrap;
+}
+
+.funnel-unknown {
+  flex-basis: 100%;
+  max-height: 140px;
+  overflow: auto;
+  font-size: 12px;
+}
+.funnel-unknown ul {
+  margin: 6px 0 0;
+  padding-left: 16px;
+}
+.funnel-unknown li {
+  margin-bottom: 6px;
+}
+.funnel-unknown code {
+  word-break: break-all;
+}
+
+.code-card.file-group {
+  cursor: pointer;
+  border-style: solid;
+  background: var(--panel);
+  border-left: 4px solid var(--accent);
+}
+
+.group-frame {
+  width: 100%;
+  height: 100%;
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--accent) 6%, transparent);
+  border: 1.5px dashed color-mix(in srgb, var(--accent) 35%, transparent);
+  pointer-events: none;
 }

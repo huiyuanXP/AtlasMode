@@ -171,3 +171,112 @@ it("pages each directional lane without relabeling omitted dependencies as unrel
       .sort(),
   );
 });
+
+it("groups every caller by file, orders groups by path distance and folds collapsed groups into one edge", () => {
+  const fn = (id: string, filePath: string) => ({
+    ...node(id),
+    filePath,
+  });
+  const callers = [
+    fn("near1", "src/a/self.ts"),
+    fn("near2", "src/a/self.ts"),
+    fn("mid", "src/a/other.ts"),
+    fn("far1", "tests/x/y/far.ts"),
+    fn("far2", "tests/x/y/far.ts"),
+  ];
+  const g: SubgraphResult = {
+    nodes: [fn("selected", "src/a/self.ts"), ...callers],
+    relations: callers.map((c) => edge(c.id, "selected")),
+    snapshotId: "s",
+    dataSource: "code",
+    truncated: false,
+  };
+  const projection = projectGraph(g, [], "both", {});
+  const open = funnel.layoutFunnelGrouped(projection, "selected");
+  expect(open.counts.dependents).toBe(5);
+  const headers = open.nodes.filter((n) => n.data.fileGroup);
+  // Nearest group sits in the middle column; farther ones fan out sideways.
+  const byDistance = [...headers].sort(
+    (a, b) =>
+      (a.data.fileGroup as { distance: number }).distance -
+      (b.data.fileGroup as { distance: number }).distance,
+  );
+  expect(byDistance.map((h) => h.data.node.name)).toEqual([
+    "src/a/self.ts",
+    "src/a/other.ts",
+    "tests/x/y/far.ts",
+  ]);
+  const xOf = (name: string) =>
+    headers.find((h) => h.data.node.name === name)!.position.x;
+  expect(
+    Math.abs(xOf("src/a/self.ts")) <= Math.abs(xOf("tests/x/y/far.ts")),
+  ).toBe(true);
+  const y = (id: string) =>
+    open.nodes.find((n) => n.data.node.id === id)!.position.y;
+  // Fixed columns: members share their header's column and sit below it, so
+  // expanding or collapsing one group can never shift another group.
+  const x = (id: string) =>
+    open.nodes.find((n) => n.data.node.id === id)!.position.x;
+  expect(x("near1")).not.toBe(x("far1"));
+  expect(y("near1")).toBeLessThan(0);
+  expect(
+    open.nodes.filter((n) => n.data.funnelLane === "dependent"),
+  ).toHaveLength(8);
+  const key = "dependent:tests/x/y/far.ts";
+  const headerX = (
+    r: ReturnType<typeof funnel.layoutFunnelGrouped>,
+    n: string,
+  ) => r.nodes.find((h) => h.data.node.name === n)!.position.x;
+  const folded = funnel.layoutFunnelGrouped(projection, "selected", {
+    collapsed: { [key]: true },
+  });
+  expect(folded.nodes.some((n) => n.data.node.id === "far1")).toBe(false);
+  for (const name of ["src/a/self.ts", "src/a/other.ts", "tests/x/y/far.ts"])
+    expect(headerX(folded, name)).toBe(headerX(open, name));
+  const merged = folded.edges.filter(
+    (e) => e.target === "fact:selected" && e.label === "×2",
+  );
+  expect(merged).toHaveLength(1);
+});
+
+it("wraps each expanded group in a frame that hugs its cards' current positions, even after a drag", () => {
+  const fn = (id: string, filePath: string) => ({ ...node(id), filePath });
+  const g: SubgraphResult = {
+    nodes: [fn("selected", "a/s.ts"), fn("c1", "b/x.ts"), fn("c2", "b/x.ts")],
+    relations: [edge("c1", "selected"), edge("c2", "selected")],
+    snapshotId: "s",
+    dataSource: "code",
+    truncated: false,
+  };
+  const laid = funnel.layoutFunnelGrouped(
+    projectGraph(g, [], "both", {}),
+    "selected",
+  );
+  const frames = funnel
+    .withGroupFrames(laid.nodes)
+    .filter((n) => n.type === "groupframe");
+  expect(frames).toHaveLength(1);
+  const moved = laid.nodes.map((n) =>
+    n.data.fileGroup || n.data.node.id.startsWith("c")
+      ? { ...n, position: { x: n.position.x + 500, y: n.position.y + 300 } }
+      : n,
+  );
+  const [shifted] = funnel
+    .withGroupFrames(moved)
+    .filter((n) => n.type === "groupframe");
+  expect(shifted!.position.x - frames[0]!.position.x).toBe(500);
+  expect(shifted!.width).toBe(frames[0]!.width);
+  expect(shifted!.height).toBe(frames[0]!.height);
+  const collapsed = funnel.layoutFunnelGrouped(
+    projectGraph(g, [], "both", {}),
+    "selected",
+    {
+      collapsed: { "dependent:b/x.ts": true },
+    },
+  );
+  expect(
+    funnel
+      .withGroupFrames(collapsed.nodes)
+      .some((n) => n.type === "groupframe"),
+  ).toBe(false);
+});

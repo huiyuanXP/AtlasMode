@@ -91,6 +91,8 @@ export const en: Record<keyof typeof zh, string> = {
   funnelCurrent: "Current",
   funnelDependencies: "Dependencies",
   funnelSide: "Side context",
+  funnelGroupOpen: "Double-click to expand",
+  funnelGroupClose: "Double-click to collapse",
   funnelUnknown: "Unknown/external",
   funnelReciprocal: "Reciprocal",
   funnelShowing: "Showing",

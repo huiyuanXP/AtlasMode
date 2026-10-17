@@ -32,7 +32,12 @@ import {
   type LayerFilter,
 } from "./projection.js";
 import type { EdgeReference, PlannedRelation } from "../planning/operations.js";
-import { layoutFunnel, type FunnelState, type FunnelLane } from "./funnel.js";
+import {
+  layoutFunnelGrouped,
+  withGroupFrames,
+  type FunnelState,
+  type FunnelLane,
+} from "./funnel.js";
 import type { FocusRequest } from "./focus.js";
 export type { FocusRequest } from "./focus.js";
 import "@xyflow/react/dist/style.css";
@@ -243,7 +248,43 @@ function OverviewViewport({
   }, [active, saved, getViewport, setViewport]);
   return null;
 }
-const nodeTypes = { code: CodeCard, group: GroupCard };
+const NO_COLLAPSE: Record<string, boolean> = {};
+function FileGroupCard({ data }: NodeProps<GraphNode>) {
+  const zh = useStrings();
+  const g = data.fileGroup as { count: number; collapsed: boolean };
+  const lane = data.funnelLane as FunnelLane;
+  return (
+    <div
+      className={`code-card file-group funnel-${lane}`}
+      role="button"
+      aria-expanded={!g.collapsed}
+      data-file-group={String(data.node.filePath ?? ".")}
+    >
+      <Handle type="target" position={Position.Top} />
+      <div className="card-meta">
+        <span>
+          {g.collapsed ? "▸" : "▾"}{" "}
+          {lane === "dependent" ? zh.funnelDependents : zh.funnelDependencies}
+        </span>
+        <span>{g.count}</span>
+      </div>
+      <strong title={data.node.name}>{data.node.name}</strong>
+      <small>{g.collapsed ? zh.funnelGroupOpen : zh.funnelGroupClose}</small>
+      <Handle type="source" position={Position.Bottom} />
+    </div>
+  );
+}
+function GroupFrame({ data }: NodeProps<GraphNode>) {
+  return (
+    <div className="group-frame" data-group-frame={String(data.node.name)} />
+  );
+}
+const nodeTypes = {
+  groupframe: GroupFrame,
+  code: CodeCard,
+  group: GroupCard,
+  filegroup: FileGroupCard,
+};
 // React Flow queues explicit fit options. Stable overview options avoid a
 // parent render overwriting that queued request with a fit of every node.
 const overviewFitOptions = { padding: 0.25, minZoom: 0.8, maxZoom: 1 };
@@ -276,6 +317,8 @@ export function Canvas(props: {
   funnel?: FunnelState;
   funnelPending?: boolean;
   onFunnel: (node: CodeNode) => void;
+  /** Double-click on a folder/file card opens it (next layer down). */
+  onOpenScope?: (node: CodeNode) => void;
   onExitFunnel: () => void;
   canEdit: boolean;
   relationType: PlannedRelation["type"];
@@ -339,6 +382,14 @@ export function Canvas(props: {
   useEffect(() => {
     setCameraBlocked(false);
   }, [props.focusRequest?.sequence, props.funnel?.sequence]);
+  const [fileGroups, setFileGroups] = useState<{
+    sequence: number;
+    collapsed: Record<string, boolean>;
+  }>({ sequence: -1, collapsed: {} });
+  const activeFileGroups =
+    fileGroups.sequence === props.funnel?.sequence
+      ? fileGroups.collapsed
+      : NO_COLLAPSE;
   const [pages, setPages] = useState({
     sequence: -1,
     dependents: 0,
@@ -354,7 +405,7 @@ export function Canvas(props: {
     const update = () => {
       const { width, height } = canvas.current!.getBoundingClientRect();
       setSize({ width, height });
-      setPageSize(width < 500 ? 1 : width < 800 ? 2 : 3);
+      setPageSize(Number.MAX_SAFE_INTEGER);
     };
     update();
     const observer = new ResizeObserver(update);
@@ -422,7 +473,7 @@ export function Canvas(props: {
   const funnelBase = useMemo(
     () =>
       props.funnel
-        ? layoutFunnel(
+        ? layoutFunnelGrouped(
             {
               ...projection,
               nodes: projection.nodes.map((n) => ({
@@ -431,35 +482,31 @@ export function Canvas(props: {
               })),
             },
             props.funnel.root.id,
-            {
-              dependentsPage: activePages.dependents,
-              dependenciesPage: activePages.dependencies,
-              pageSize,
-            },
+            { collapsed: activeFileGroups },
           )
         : undefined,
-    [
-      projection,
-      props.funnel,
-      measurements,
-      activePages.dependents,
-      activePages.dependencies,
-      pageSize,
-    ],
+    [projection, props.funnel, measurements, activeFileGroups],
   );
   const funnelProjection = useMemo(
     () =>
       funnelBase && props.funnel
         ? {
             ...funnelBase,
-            nodes: offsets.current.apply(
-              props.projectId ?? "",
-              props.funnel.root.id,
-              funnelBase.nodes,
+            nodes: withGroupFrames(
+              offsets.current
+                .apply(
+                  props.projectId ?? "",
+                  props.funnel.root.id,
+                  funnelBase.nodes,
+                )
+                .map((n) => ({
+                  ...n,
+                  measured: measurements[n.id] ?? n.measured,
+                })),
             ),
           }
         : funnelBase,
-    [funnelBase, props.projectId, props.funnel, offsetVersion],
+    [funnelBase, props.projectId, props.funnel, offsetVersion, measurements],
   );
   useEffect(() => {
     if (dragging.current) return;
@@ -483,7 +530,7 @@ export function Canvas(props: {
     );
     const start = performance.now();
     const animate = (now: number) => {
-      const progress = Math.min(1, (now - start) / 300);
+      const progress = Math.min(1, (now - start) / 160);
       const eased = progress * progress * (3 - 2 * progress);
       if (progress === 1) {
         // Adopt exact destinations. Interpolation arithmetic can retain a tiny
@@ -497,7 +544,8 @@ export function Canvas(props: {
           // New cards start at their normal overview position, not at the destination.
           const from =
             previous.get(n.id) ??
-            projection.nodes.find((p) => p.id === n.id)!.position;
+            projection.nodes.find((p) => p.id === n.id)?.position ??
+            n.position;
           return {
             ...n,
             position: {
@@ -652,6 +700,18 @@ export function Canvas(props: {
     mapDetailPlacement.left > 12
       ? ("left" as const)
       : ("right" as const);
+  const resetGroup = (header: GraphNode) => {
+    const g = header.data.fileGroup as { memberIds: string[] } | undefined;
+    if (!g || !props.funnel) return;
+    offsets.current.clearNodes(props.projectId ?? "", props.funnel.root.id, [
+      header.id,
+      ...g.memberIds,
+    ]);
+    setOffsetVersion((v) => v + 1);
+  };
+  const dragOrigin = useRef<{ id: string; x: number; y: number } | undefined>(
+    undefined,
+  );
   const stopMotion = () => {
     cancelAnimationFrame(layoutFrame.current);
     clearTimeout(clickTimer.current);
@@ -798,7 +858,8 @@ export function Canvas(props: {
           props.onPreviewRelation?.();
         }}
         onNodeMouseEnter={(_, node) => {
-          if (!node.data.group) previewNode(node.data.node.id);
+          if (!node.data.group && !node.data.fileGroup)
+            previewNode(node.data.node.id);
         }}
         onNodeMouseLeave={stopHover}
         onEdgeMouseEnter={(_, edge) =>
@@ -813,6 +874,10 @@ export function Canvas(props: {
           }
         }}
         onNodeClick={(event, node) => {
+          const fileGroup = node.data.fileGroup as
+            { key: string; collapsed: boolean } | undefined;
+          if (fileGroup) return; // groups open/close on double-click
+
           if (props.groupSelectionMode || node.data.group) return;
           if (props.ownershipMode) {
             clearTimeout(clickTimer.current);
@@ -832,6 +897,21 @@ export function Canvas(props: {
           );
         }}
         onNodeDoubleClick={(_, node) => {
+          const group = node.data.fileGroup as
+            { key: string; collapsed: boolean } | undefined;
+          if (group) {
+            if (!props.funnel) return;
+            // Double-click toggles the group and re-fits it to its column.
+            resetGroup(node);
+            setFileGroups({
+              sequence: props.funnel.sequence,
+              collapsed: {
+                ...activeFileGroups,
+                [group.key]: !group.collapsed,
+              },
+            });
+            return;
+          }
           if (
             props.groupSelectionMode ||
             props.ownershipMode ||
@@ -839,6 +919,16 @@ export function Canvas(props: {
           )
             return;
           clearTimeout(clickTimer.current);
+          // Folders have no dependency view; double-click opens the folder
+          // (the pending single-click selection above was just cancelled).
+          if (
+            (node.data.node.kind === "folder" ||
+              node.data.node.kind === "file") &&
+            props.onOpenScope
+          ) {
+            props.onOpenScope(node.data.node);
+            return;
+          }
           if (
             node.data.node.kind === "file" ||
             node.data.node.kind === "function"
@@ -849,8 +939,9 @@ export function Canvas(props: {
             props.onFunnel(node.data.node);
           }
         }}
-        onNodeDragStart={() => {
+        onNodeDragStart={(_, node) => {
           if (props.ownershipMode) return;
+          dragOrigin.current = { id: node.id, ...node.position };
           dragging.current = true;
           stopMotion();
         }}
@@ -868,6 +959,19 @@ export function Canvas(props: {
                 node.id,
                 node.position,
                 base,
+              );
+            // Dragging a group header carries its member cards with it.
+            const members = (
+              node.data.fileGroup as { memberIds: string[] } | undefined
+            )?.memberIds;
+            const origin = dragOrigin.current;
+            if (members?.length && origin?.id === node.id)
+              offsets.current.shift(
+                props.projectId ?? "",
+                props.funnel.root.id,
+                members,
+                node.position.x - origin.x,
+                node.position.y - origin.y,
               );
             setOffsetVersion((v) => v + 1);
           } else
@@ -925,7 +1029,9 @@ export function Canvas(props: {
                 ? {
                     sequence: props.funnel.sequence,
                     nodeIds: funnelProjection?.nodes
-                      .filter((n) => n.data.funnelLane !== "side")
+                      .filter(
+                        (n) => n.data.funnelLane !== "side" && !n.data.frame,
+                      )
                       .map((n) => n.data.node.id),
                   }
                 : undefined
@@ -939,7 +1045,7 @@ export function Canvas(props: {
                 )
               : props.funnel
                 ? (funnelProjection?.nodes.filter(
-                    (n) => n.data.funnelLane !== "side",
+                    (n) => n.data.funnelLane !== "side" && !n.data.frame,
                   ) ?? [])
                 : focusTargets(projection.nodes, props.focusRequest)
           }
@@ -1089,6 +1195,40 @@ export function Canvas(props: {
             {zh.funnelSide} {funnelProjection.counts.side} · {zh.funnelUnknown}{" "}
             {props.funnel.unknownCount}
           </span>
+          {(() => {
+            const rootId = props.funnel.root.id;
+            const unknown = (props.graph?.relations ?? []).filter(
+              (r) =>
+                r.type === "calls" &&
+                r.sourceId === rootId &&
+                r.resolution !== "resolved",
+            );
+            if (!unknown.length) return null;
+            return (
+              <details className="funnel-unknown">
+                <summary>
+                  {zh.funnelUnknown} ({unknown.length}) · 点击查看用法
+                </summary>
+                <ul>
+                  {unknown.map((r) => (
+                    <li key={r.id}>
+                      <strong>
+                        {r.resolution === "external"
+                          ? zh.external
+                          : zh.unresolved}
+                      </strong>{" "}
+                      <code>{r.evidence.text ?? "(无源码文本)"}</code>
+                      <br />
+                      <small>
+                        {r.evidence.filePath}:{r.evidence.line}
+                        {r.reason ? ` · ${r.reason}` : ""}
+                      </small>
+                    </li>
+                  ))}
+                </ul>
+              </details>
+            );
+          })()}
           <button
             onClick={() => {
               offsets.current.clear(

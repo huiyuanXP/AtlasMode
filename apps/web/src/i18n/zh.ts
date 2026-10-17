@@ -84,6 +84,8 @@ export const zh = {
   funnelCurrent: "当前对象",
   funnelDependencies: "被调用方／依赖项",
   funnelSide: "旁侧上下文",
+  funnelGroupOpen: "双击展开",
+  funnelGroupClose: "双击折叠",
   funnelUnknown: "未知／外部关系",
   funnelReciprocal: "双向依赖",
   funnelShowing: "显示",

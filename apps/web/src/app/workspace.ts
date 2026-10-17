@@ -519,7 +519,7 @@ export function createWorkspace(
     focusGeneration++;
     restoreFunnel();
   };
-  const enterFunnel = async (node: CodeNode, budget = 80) => {
+  const enterFunnel = async (node: CodeNode, budget = 300) => {
     const state = get(),
       project = state.project;
     if (!project || (node.kind !== "function" && node.kind !== "file")) return;
