@@ -14,6 +14,10 @@ export function createChatSessions(api: ChatTransport = new ChatApi()) {
       }
       return session;
     },
+    /** Re-read agent status in every conversation after settings change. */
+    refreshStatus() {
+      for (const controller of sessions.values()) void controller.init();
+    },
     dispose() {
       for (const controller of sessions.values()) controller.dispose();
     },

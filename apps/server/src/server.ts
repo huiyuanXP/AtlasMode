@@ -8,7 +8,6 @@ import type { WorkspaceService } from "@codemap/service";
 import { ZodError } from "zod";
 import { registerRoutes } from "./routes.js";
 import { registerAgentRoutes } from "./agent/routes.js";
-import { createConfiguredRunner } from "./agent/configured.js";
 import type { AgentRunnerFactory } from "./agent/types.js";
 
 const domainStatuses: Record<string, number> = {
@@ -34,11 +33,13 @@ export async function createServer({
   webRoot,
   developmentProxy = false,
   agentRunnerFactory,
+  agentSettingsFile,
 }: {
   service: WorkspaceService;
   webRoot?: string;
   developmentProxy?: boolean;
   agentRunnerFactory?: AgentRunnerFactory;
+  agentSettingsFile?: string;
 }): Promise<FastifyInstance> {
   const app = Fastify({ logger: false });
   // Native idle-connection closing does not discard raw/partial requests.
@@ -135,7 +136,8 @@ export async function createServer({
   registerAgentRoutes(
     app,
     service,
-    agentRunnerFactory ?? (() => createConfiguredRunner()),
+    agentRunnerFactory,
+    agentSettingsFile,
   );
   if (webRoot) await app.register(fastifyStatic, { root: resolve(webRoot) });
   app.setNotFoundHandler((request, reply) => {

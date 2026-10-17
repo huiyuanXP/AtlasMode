@@ -81,6 +81,7 @@ async function main(): Promise<void> {
       service,
       webRoot,
       developmentProxy: process.env.CODEMAP_DEV_PROXY === "1",
+      agentSettingsFile: join(dataDirectory(), "agent-settings.json"),
     });
     await app.listen({ host: "127.0.0.1", port: Number(rawPort) });
     signal = () => {

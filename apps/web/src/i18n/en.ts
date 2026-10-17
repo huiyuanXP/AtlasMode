@@ -230,6 +230,12 @@ export const en: Record<keyof typeof zh, string> = {
   sourceEvidence: "Source evidence",
   noReport:
     "Check the latest approved revision against structural evidence. Results do not replace behavior tests.",
+  verifyGuideTitle: "How verification works",
+  verifyStep1: "Approve a plan in Plan overview — verification only checks the approved version.",
+  verifyStep2: "Have the Agent (or yourself) change the code to match the plan.",
+  verifyStep3: "Press Refresh in the top bar to re-index the code — verification compares the current index and does not refresh it.",
+  verifyStep4: "Press “Verify approved implementation” below. Results: ✓ satisfied / ✕ unmet / ? undetermined; expand for evidence.",
+  verifyGuideNote: "With no approved plan there is nothing to verify. Structural success does not prove behavior; still run tests.",
   reportRevision: "Verified revision",
   satisfied: "✓ Satisfied",
   unmet: "✕ Unmet",

@@ -59,7 +59,7 @@ export async function resolveAgentCommand(
     } catch {}
   }
 }
-async function probe(
+export async function probe(
   command: string,
   args: string[],
   env: NodeJS.ProcessEnv,
