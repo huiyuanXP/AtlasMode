@@ -14,6 +14,16 @@ export function VerificationPanel({
     <section>
       <h2>{zh.verifyTab}</h2>
       <p className="muted">{zh.noReport}</p>
+      <details className="verify-guide" open={!report}>
+        <summary>{zh.verifyGuideTitle}</summary>
+        <ol>
+          <li>{zh.verifyStep1}</li>
+          <li>{zh.verifyStep2}</li>
+          <li>{zh.verifyStep3}</li>
+          <li>{zh.verifyStep4}</li>
+        </ol>
+        <p className="muted">{zh.verifyGuideNote}</p>
+      </details>
       <p className="muted">{zh.verifyHistorical}</p>
       <button disabled={disabled} onClick={onVerify}>
         {zh.verify}

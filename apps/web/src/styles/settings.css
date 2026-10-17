@@ -1,0 +1,11 @@
+.settings-dialog { width: min(560px, calc(100vw - 32px)); max-height: 90vh; overflow: auto; }
+.settings-card { border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; margin-bottom: 12px; display: flex; flex-direction: column; gap: 8px; }
+.settings-card h3 { margin: 0; font-size: 14px; }
+.settings-card h3 em { font-style: normal; color: var(--muted, inherit); font-weight: 400; }
+.settings-card label { display: flex; flex-direction: column; gap: 4px; font-size: 12px; }
+.settings-card form { display: flex; flex-direction: column; gap: 8px; }
+.settings-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.settings-result { margin-top: 12px; }
+.chat-tool { font-size: 12px; opacity: 0.85; padding: 2px 0; }
+.chat-tool-failed { color: var(--danger, #c0392b); }
+.chat-thread { display: flex; flex-direction: column; min-height: 0; }

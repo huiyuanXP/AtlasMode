@@ -3,7 +3,9 @@ import { useStore } from "zustand";
 import { dictionaries, LocaleProvider } from "../i18n/index.js";
 import { createWorkspace, type Workspace } from "./workspace.js";
 import { createChatSessions } from "../features/chat/sessions.js";
+import { SettingsApi, SettingsDialog } from "../features/settings/SettingsDialog.js";
 import "../styles/first-use.css";
+import "../styles/settings.css";
 import { WorkspacePanels } from "./WorkspacePanels.js";
 export function App({ workspace }: { workspace?: Workspace }) {
   const [app] = useState(
@@ -12,6 +14,8 @@ export function App({ workspace }: { workspace?: Workspace }) {
     state = useStore(app.store),
     [path, setPath] = useState(""),
     [chatSessions] = useState(() => createChatSessions()),
+    [settingsApi] = useState(() => new SettingsApi()),
+    [settingsOpen, setSettingsOpen] = useState(false),
     projectDialog = useRef<HTMLDialogElement>(null);
   const zh = dictionaries[state.view.locale];
   useEffect(() => {
@@ -76,6 +80,16 @@ export function App({ workspace }: { workspace?: Workspace }) {
               </button>
             </form>
           </dialog>
+          <button type="button" onClick={() => setSettingsOpen(true)}>
+            ⚙ {state.view.locale === "zh" ? "设置" : "Settings"}
+          </button>
+          <SettingsDialog
+            api={settingsApi}
+            locale={state.view.locale}
+            open={settingsOpen}
+            onClose={() => setSettingsOpen(false)}
+            onApplied={() => chatSessions.refreshStatus()}
+          />
           <select
             aria-label={zh.project}
             value={state.project?.id ?? ""}
