@@ -53,6 +53,18 @@ modify global Codex configuration merely because upstream examples suggest it.
 Do not expose loopback preview links or start the optional browser companion
 unless the environment provides a supported private preview mechanism.
 
+## 预览环境约束（用户 2026-10-19 指定）
+
+开发在虚拟机中进行，用户无法直接访问其中的端口和网页 UI。需要用户验收界面时：
+
+1. 在隔离端口（例如后端 44320）用独立数据目录 `CODEMAP_DATA_DIR` 启动被验收分支的服务，不重启、不占用正在运行的演示服务（44310/44311）。
+2. 用 `scripts/preview-gateway.mjs` 加随机令牌（至少 24 字符，保存在 `/tmp`，不入库）作为入口：首次访问 `/?t=<令牌>` 写入 HttpOnly Cookie；网关只允许打开指定项目，设置只允许选 off/codex/claude，禁止 API 地址、Key 与模型。
+3. 用 `cloudflared tunnel --url http://127.0.0.1:<网关端口>` 暴露**网关**，不得直接暴露后端端口。
+4. 把临时公网链接（含令牌）和对应分支/提交号告诉用户；验收结束或用户要求时关闭隧道、网关和测试后端，并清理测试数据目录。
+5. 每次暴露前确认当前分支、提交和构建产物一致；不暴露含凭据的数据目录，不把令牌、链接写入仓库或提交。
+
+此条是对上文「Do not expose loopback preview links」的受支持私有预览机制：只有令牌网关加 Cloudflare 隧道这一种方式，未经用户要求不要长期保留。
+
 ## Product constraints
 
 The README is the product specification and package-boundary guide. Workspace
