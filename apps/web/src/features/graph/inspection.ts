@@ -32,6 +32,12 @@ export function inspectionHighlight(
   const endpoints = new Set(active.flatMap((e) => [e.source, e.target]));
   for (const rootId of rootIds) endpoints.add(rootId);
   const enabled = !!root || !!relationId;
+  // DeepSeek-style de-emphasis: keep cards readable, wash them toward the
+  // canvas instead of cutting opacity to a hard fraction.
+  const mutedStyle = (opacity: number) => ({
+    filter: "saturate(0.35)",
+    opacity,
+  });
   return {
     nodes: nodes.map((n) => ({
       ...n,
@@ -47,7 +53,10 @@ export function inspectionHighlight(
               ? "neighbor"
               : "muted",
       },
-      style: { ...n.style, opacity: enabled && !endpoints.has(n.id) ? 0.2 : 1 },
+      style: {
+        ...n.style,
+        ...(enabled && !endpoints.has(n.id) ? mutedStyle(0.55) : {}),
+      },
     })),
     edges: edges.map((e) => {
       const highlight = !enabled
@@ -61,11 +70,11 @@ export function inspectionHighlight(
               : "outgoing";
       const stroke =
         highlight === "incoming"
-          ? "#16818a"
+          ? "var(--edge-incoming)"
           : highlight === "outgoing"
-            ? "#bf681e"
+            ? "var(--edge-outgoing)"
             : highlight === "relation"
-              ? "#6651d8"
+              ? "var(--edge-plan)"
               : e.style?.stroke;
       return {
         ...e,
@@ -74,8 +83,8 @@ export function inspectionHighlight(
         style: {
           ...e.style,
           stroke,
-          strokeWidth: active.includes(e) ? 3 : 1.5,
-          opacity: highlight === "muted" ? 0.15 : 1,
+          strokeWidth: active.includes(e) ? 2.5 : 1.5,
+          ...(highlight === "muted" ? mutedStyle(0.4) : {}),
         },
         labelStyle: { fill: stroke },
         zIndex: active.includes(e) ? 5 : 0,

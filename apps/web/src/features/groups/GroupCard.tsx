@@ -3,6 +3,29 @@ import type { CodeNode } from "@codemap/core";
 import { dictionaries, type Locale } from "../../i18n/index.js";
 import type { GraphNode, GroupCardData } from "../graph/projection.js";
 import "./group-graph.css";
+
+function Chevron({ open }: { open: boolean }) {
+  return (
+    <svg
+      className="group-chevron"
+      viewBox="0 0 16 16"
+      width="14"
+      height="14"
+      aria-hidden="true"
+      data-open={open || undefined}
+    >
+      <path
+        d={open ? "M12 10L8.7 6.7a1 1 0 0 0-1.4 0L4 10" : "M4 6l3.3 3.3a1 1 0 0 0 1.4 0L12 6"}
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 export function GroupCardContent({
   group,
   locale,
@@ -25,18 +48,21 @@ export function GroupCardContent({
   const text = dictionaries[locale];
   return (
     <div className="group-card-content">
-      <strong title={group.title}>{group.title}</strong>
-      <button
-        className="nodrag nopan"
-        type="button"
-        aria-label={`${group.collapsed ? text.expandGroup : text.collapseGroup} ${group.title}`}
-        onClick={(event) => {
-          event.stopPropagation();
-          onToggle(group.id);
-        }}
-      >
-        {group.collapsed ? text.expandGroup : text.collapseGroup}
-      </button>
+      <div className="group-card-header">
+        <button
+          className="group-toggle nodrag nopan"
+          type="button"
+          aria-label={`${group.collapsed ? text.expandGroup : text.collapseGroup} ${group.title}`}
+          aria-expanded={!group.collapsed}
+          onClick={(event) => {
+            event.stopPropagation();
+            onToggle(group.id);
+          }}
+        >
+          <Chevron open={!group.collapsed} />
+        </button>
+        <strong title={group.title}>{group.title}</strong>
+      </div>
       <p>
         {group.loadedMembers.length} / {group.total} {text.groupLoaded} ·{" "}
         {group.unknownMembers} {text.groupNotLoaded}
@@ -103,7 +129,7 @@ export function GroupCardContent({
                       onSelect(node);
                     }}
                   >
-                    {node.name}
+                    <span className="group-endpoint-name">{node.name}</span>
                     <code>{node.filePath}</code>
                   </button>
                 </div>

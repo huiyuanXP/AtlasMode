@@ -1,9 +1,11 @@
 .code-card.inspection-selected {
-  border-color: #6550db;
-  box-shadow: 0 0 0 2px #6550db44;
+  border-color: var(--accent);
+  box-shadow:
+    0 0 0 2px color-mix(in srgb, var(--accent) 30%, transparent),
+    var(--card-elevation-hover);
 }
 .code-card.inspection-neighbor {
-  border-color: #16818a;
+  border-color: var(--accent);
 }
 .inspection-edge {
   transition: opacity 90ms ease;
@@ -23,10 +25,10 @@
   pointer-events: none;
 }
 .inspection-legend span:first-child {
-  color: #16818a;
+  color: var(--edge-incoming);
 }
 .inspection-legend span:last-child {
-  color: #bf681e;
+  color: var(--edge-outgoing);
 }
 .inspection-overlay {
   position: absolute;
@@ -38,10 +40,10 @@
   width: 100%;
   min-width: 0;
   background: var(--surface);
-  color: var(--text);
+  color: var(--text-primary);
   border: 1px solid var(--border);
-  border-radius: 10px;
-  box-shadow: 0 10px 32px #0003;
+  border-radius: var(--radius-lg, 12px);
+  box-shadow: var(--card-elevation-hover);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -82,11 +84,13 @@
 }
 .inspection-group {
   padding-top: 10px;
-  border-top: 1px solid var(--border);
+  border-top: 1px solid var(--border-soft, var(--border));
   margin-top: 12px;
 }
 .inspection-group h3 {
-  font-size: 12px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-tertiary);
   margin: 0 0 8px;
   display: flex;
   gap: 8px;
@@ -94,28 +98,36 @@
 }
 .inspection-group h3 span {
   font-size: 10px;
-  color: var(--muted);
+  color: var(--text-tertiary);
+  background: var(--panel);
+  border-radius: 999px;
+  padding: 1px 7px;
 }
 .inspection-group.incoming h3::before {
   content: "↑";
-  color: #16818a;
+  color: var(--edge-incoming);
 }
 .inspection-group.outgoing h3::before {
   content: "↓";
-  color: #bf681e;
+  color: var(--edge-outgoing);
 }
 .inspection-relation {
-  padding: 8px;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  margin: 6px 0;
+  padding: 6px 10px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  margin: 2px 0;
   display: flex;
   flex-direction: column;
   gap: 4px;
+  transition: background 100ms ease;
+}
+.inspection-relation:hover {
+  background: var(--hover);
 }
 .inspection-relation.active {
-  border-color: #6550db;
+  border-color: transparent;
   background: var(--hover);
+  box-shadow: inset 3px 0 0 var(--accent);
 }
 .inspection-jump,
 .inspection-member {
@@ -137,6 +149,7 @@
 .inspection-relation small,
 .inspection-member code {
   font-size: 10px;
+  color: var(--text-tertiary);
   overflow-wrap: anywhere;
 }
 .inspection-relation pre {
@@ -144,12 +157,38 @@
   overflow-wrap: anywhere;
   font-size: 10px;
   margin: 3px 0;
+  background: var(--panel);
+  border-radius: 6px;
+  padding: 6px 8px;
 }
 .inspection-note {
   white-space: pre-wrap;
   padding: 8px;
   background: var(--hover);
-  border-radius: 5px;
+  border-radius: 8px;
+  color: var(--text-secondary);
+}
+/* Read-only capsule badges (DeepSeek Tag tones). */
+.badge {
+  display: inline-block;
+  align-self: flex-start;
+  border: none;
+  padding: 1px 8px;
+  border-radius: 999px;
+  font-size: 10px;
+  line-height: 17px;
+  font-weight: 500;
+  white-space: nowrap;
+  background: var(--tint-info);
+  color: var(--accent);
+}
+.badge.badge-external {
+  background: var(--tint-warning);
+  color: var(--warning);
+}
+.badge.badge-unresolved {
+  background: var(--tint-danger);
+  color: var(--danger);
 }
 .graph-map-panel {
   position: absolute;
@@ -157,8 +196,8 @@
   z-index: 13;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 8px;
-  box-shadow: 0 3px 15px #0002;
+  border-radius: var(--radius-md, 8px);
+  box-shadow: var(--card-elevation);
   overflow: hidden;
   max-width: calc(100% - 24px);
 }
@@ -207,9 +246,9 @@
   margin: 0;
 }
 .react-flow__minimap-mask {
-  stroke: #6550db;
+  stroke: var(--accent);
   stroke-width: 2px;
-  fill: #6550db19;
+  fill: color-mix(in srgb, var(--accent) 10%, transparent);
 }
 @media (prefers-reduced-motion: reduce) {
   .inspection-edge {

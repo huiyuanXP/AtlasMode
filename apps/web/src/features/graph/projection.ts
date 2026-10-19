@@ -175,7 +175,7 @@ export function projectGraph(
         deletable: false,
         reconnectable: r.type === "calls",
         style: {
-          stroke: removed ? "#c06045" : "#8493a5",
+          stroke: removed ? "var(--edge-removed)" : "var(--edge-fact)",
           strokeDasharray: removed ? "3 3" : undefined,
         },
       });
@@ -202,7 +202,7 @@ export function projectGraph(
         },
         deletable: false,
         reconnectable: true,
-        style: { stroke: "#8962ce", strokeDasharray: "6 3" },
+        style: { stroke: "var(--edge-plan)", strokeDasharray: "6 3" },
       });
     }
   return { nodes, edges, notices };

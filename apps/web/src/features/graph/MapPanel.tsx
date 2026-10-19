@@ -101,19 +101,19 @@ export function MapPanel({
               ? { sequence: 0, nodeId: selectedNodeId }
               : undefined,
           ).length
-            ? "#6550db"
+            ? "var(--accent)"
             : "transparent"
         }
         nodeColor={(n) =>
           n.data.layer === "plan"
-            ? "#a687d4"
+            ? "var(--edge-plan)"
             : n.data.node.kind === "file"
-              ? "#398da0"
+              ? "var(--edge-incoming)"
               : n.data.node.kind === "folder"
-                ? "#ca984b"
+                ? "var(--edge-outgoing)"
                 : n.data.node.declarationKind === "class"
-                  ? "#9b6ebf"
-                  : "#8195aa"
+                  ? "var(--edge-plan)"
+                  : "var(--edge-fact)"
         }
         onClick={(_, position) =>
           void flow.setCenter(position.x, position.y, {

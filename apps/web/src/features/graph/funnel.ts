@@ -142,7 +142,9 @@ export function layoutFunnel(
       targetHandle: null,
       style: {
         ...e.style,
-        opacity: related.has(e.source) && related.has(e.target) ? 1 : 0.2,
+        ...(related.has(e.source) && related.has(e.target)
+          ? {}
+          : { filter: "saturate(0.35)", opacity: 0.45 }),
       },
     }));
   return {
@@ -347,7 +349,7 @@ export function layoutFunnelGrouped(
           sourceHandle: null,
           targetHandle: null,
           data: { layer: "fact", domainId: `fg:${key}`, relationType: "calls" },
-          style: { stroke: "#8493a5", opacity: 1 },
+          style: { stroke: "var(--edge-fact)", opacity: 1 },
           deletable: false,
           count: 1,
         });
@@ -359,7 +361,9 @@ export function layoutFunnelGrouped(
       targetHandle: null,
       style: {
         ...e.style,
-        opacity: related.has(e.source) && related.has(e.target) ? 1 : 0.2,
+        ...(related.has(e.source) && related.has(e.target)
+          ? {}
+          : { filter: "saturate(0.35)", opacity: 0.45 }),
       },
     });
   }

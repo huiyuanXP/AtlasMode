@@ -127,6 +127,27 @@ form > button {
   --warning: #9b6117;
   --danger: #ba4040;
   --success: #287652;
+  /* DeepSeek-style semantic tiers: three text steps, hairline border steps,
+     tinted state fills, and one soft card elevation. */
+  --text-primary: #28364b;
+  --text-secondary: #5a6b85;
+  --text-tertiary: #8493a9;
+  --border-strong: #c9d3e0;
+  --border-soft: #e4eaf2;
+  --tint-info: color-mix(in srgb, var(--accent) 10%, transparent);
+  --tint-success: color-mix(in srgb, var(--success) 10%, transparent);
+  --tint-warning: color-mix(in srgb, var(--warning) 12%, transparent);
+  --tint-danger: color-mix(in srgb, var(--danger) 10%, transparent);
+  --card-elevation: 0 2px 10px rgb(21 33 59 / 6%);
+  --card-elevation-hover: 0 6px 18px rgb(21 33 59 / 10%);
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  /* Edge palette on token names (DeepSeek style: color rides the theme). */
+  --edge-fact: #97a3b8;
+  --edge-incoming: #1f7a83;
+  --edge-outgoing: #b06a1c;
+  --edge-plan: #7a5cc9;
+  --edge-removed: #c0563f;
   height: 100dvh;
   display: flex;
   flex-direction: column;
@@ -145,6 +166,24 @@ form > button {
   --warning: #edc477;
   --danger: #f09393;
   --success: #91d1b1;
+  --text-primary: #e1e7f1;
+  --text-secondary: #c3cede;
+  --text-tertiary: #9aa9c0;
+  --border-strong: #46536b;
+  --border-soft: #2b364a;
+  --tint-info: color-mix(in srgb, var(--accent) 14%, transparent);
+  --tint-success: color-mix(in srgb, var(--success) 14%, transparent);
+  --tint-warning: color-mix(in srgb, var(--warning) 16%, transparent);
+  --tint-danger: color-mix(in srgb, var(--danger) 14%, transparent);
+  --card-elevation: 0 2px 10px rgb(0 0 0 / 30%);
+  --card-elevation-hover: 0 6px 18px rgb(0 0 0 / 42%);
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --edge-fact: #7e8ba3;
+  --edge-incoming: #56b6bf;
+  --edge-outgoing: #e0a25a;
+  --edge-plan: #b79aec;
+  --edge-removed: #e88b72;
   color-scheme: dark;
 }
 .topbar {
@@ -432,17 +471,40 @@ form > button {
 }
 .code-card {
   border: 1px solid var(--border);
-  border-radius: 7px;
+  border-radius: var(--radius-md);
   background: var(--surface);
   width: 255px;
-  padding: 12px 14px;
-  box-shadow: 0 3px 10px #15213b09;
+  padding: 0;
+  box-shadow: var(--card-elevation);
   position: relative;
+  transition:
+    box-shadow 120ms ease,
+    border-color 120ms ease;
+  overflow: hidden;
+}
+.code-card:hover {
+  border-color: var(--border-strong);
+  box-shadow: var(--card-elevation-hover);
+}
+.card-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px;
+  line-height: 18px;
+  letter-spacing: 0.2px;
+  color: var(--text-tertiary);
+  padding: 8px 14px 0;
 }
 .code-card strong {
-  font-size: 14px;
-  display: block;
-  margin: 7px 0;
+  font-size: 13px;
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin: 4px 0 2px;
+  padding: 0 14px;
+  color: var(--text-primary);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -450,7 +512,9 @@ form > button {
 }
 .code-card code {
   display: block;
-  color: var(--muted);
+  padding: 0 14px;
+  color: var(--text-tertiary);
+  font-size: 11px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -463,21 +527,18 @@ form > button {
   text-overflow: ellipsis;
   font-size: 10px;
   margin-top: 5px;
-  color: var(--muted);
-}
-.card-meta {
-  display: flex;
-  justify-content: space-between;
-  font-size: 9px;
-  letter-spacing: 0.2px;
-  color: var(--muted);
+  color: var(--text-tertiary);
 }
 .code-card.plan {
-  border: 1px dashed #9972d4;
-  background: color-mix(in srgb, var(--surface) 93%, #a177d7);
+  border: 1px dashed color-mix(in srgb, var(--edge-plan) 70%, var(--border));
+  background: color-mix(
+    in srgb,
+    var(--surface) 95%,
+    var(--edge-plan) 5%
+  );
 }
 .code-card.plan .card-meta {
-  color: #9670cb;
+  color: var(--edge-plan);
 }
 .code-card.anchor {
   border-style: dashed;
@@ -493,15 +554,21 @@ form > button {
 }
 .card-change {
   font-size: 10px;
-  margin-top: 8px;
+  margin: 8px 14px 0;
   max-height: 42px;
   overflow: hidden;
   color: var(--warning);
   overflow-wrap: anywhere;
 }
+/* Tinted change rows: DeepSeek's state-pill idea, one wash per meaning. */
+.card-change:last-child {
+  padding-bottom: 10px;
+}
 .react-flow__node.selected .code-card {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
+  border-color: var(--accent);
+  box-shadow:
+    0 0 0 2px color-mix(in srgb, var(--accent) 30%, transparent),
+    var(--card-elevation-hover);
 }
 .react-flow__handle {
   width: 8px !important;
@@ -913,10 +980,11 @@ summary {
 }
 .code-card.funnel-selected {
   border-color: var(--accent);
-  box-shadow: 0 0 0 2px var(--accent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 45%, transparent);
 }
 .code-card.funnel-side {
-  opacity: 0.45;
+  filter: saturate(0.5);
+  opacity: 0.65;
   border-style: dashed;
 }
 

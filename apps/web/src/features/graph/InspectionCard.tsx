@@ -158,7 +158,9 @@ export function InspectionCard({
               </>
             )}
             {r.resolution !== "resolved" && (
-              <span className="badge">
+              <span
+                className={`badge ${r.resolution === "external" ? "badge-external" : "badge-unresolved"}`}
+              >
                 {r.resolution === "external"
                   ? text("外部调用", "External call")
                   : text("待确认", "Unresolved")}
