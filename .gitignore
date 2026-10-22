@@ -13,3 +13,6 @@ test-results/
 .env.*
 !.env.example
 *.tsbuildinfo
+
+# Playwright traces are replay-only; screenshots and error-context are kept
+trace.zip
