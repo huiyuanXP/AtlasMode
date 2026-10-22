@@ -846,9 +846,22 @@ test("mounted I2 older actual recovery cannot unlock newer committed lost ACK; f
       f.endpoints,
       "I2-newer-unknown",
     );
+    // Re-opening the panel mounts it again, and mounting starts its own
+    // recovery read. Let that read finish while the current-approval read still
+    // fails; if it were still in flight when currentSucceeds() flips below, it
+    // would complete the recovery itself and remove the button under the click.
+    const remountRead = page.waitForResponse(
+      (response) =>
+        response.request().method() === "GET" &&
+        response.url().includes(
+          `/api/projects/${encodeURIComponent(f.project.id)}/annotations?`,
+        ),
+    );
     await page
       .getByRole("button", { name: "Knowledge notes", exact: true })
       .click();
+    await remountRead;
+    await page.waitForLoadState("networkidle");
     await expect(page.locator("[data-action=recover-knowledge]")).toBeEnabled();
     await expect(
       f.panel.getByRole("heading", {
