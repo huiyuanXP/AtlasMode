@@ -1,10 +1,14 @@
+import {
+  pol01Runtime,
+  killAtDurableBoundary,
+  assertOwnedPidAbsent,
+} from "../../../tests/support/pol01-runtime.js";
 import { afterEach, expect, test, vi } from "vitest";
 import { mkdtemp, mkdir, readFile, writeFile, unlink } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { randomUUID } from "node:crypto";
 import { spawn } from "node:child_process";
-import { once } from "node:events";
 import { WorkspaceService } from "@codemap/service";
 import { SourceIndexer } from "@codemap/indexer";
 import { SqliteStorage, StructureFileStore } from "@codemap/storage";
@@ -426,12 +430,11 @@ test.each(["before", "after", "unknown"])(
       beforeB = await readFile(f.path(1));
     await f.app.close();
     f.storage.close();
+    const runtime = await pol01Runtime(f.root);
     const child = spawn(
       process.execPath,
       [
-        "--import",
-        "tsx",
-        "tests/support/pol01-crash.ts",
+        ...runtime.crashArgs,
         f.roots[0]!,
         join(f.root, "owned.sqlite"),
         f.projects[0]!.id,
@@ -441,17 +444,29 @@ test.each(["before", "after", "unknown"])(
       {
         cwd: process.cwd(),
         env: {
-          ...process.env,
-          TSX_TSCONFIG_PATH: "/tmp/atlasmode-pol01-runtime-tsconfig.json",
+          ...runtime.env,
         },
-        stdio: ["ignore", "pipe", "pipe"],
+        stdio: ["ignore", "pipe", "pipe", "ipc"],
       },
     );
     let stderr = "";
-    child.stderr.on("data", (value) => {
+    child.stderr!.on("data", (value) => {
       stderr += String(value);
     });
-    const exit = await once(child, "exit");
+    const exit = await killAtDurableBoundary(child);
+    assertOwnedPidAbsent(child.pid);
+    await expect(
+      readFile(join(f.roots[0]!, "unexpected-graceful-exit")),
+    ).rejects.toMatchObject({ code: "ENOENT" });
+    expect(
+      JSON.parse(
+        await readFile(join(f.roots[0]!, "crash-checkpoint.json"), "utf8"),
+      ),
+    ).toMatchObject({
+      pid: child.pid,
+      phase: phase === "unknown" ? "after" : phase,
+      productMode: runtime.mode,
+    });
     expect(exit).toEqual([null, "SIGKILL"]);
     expect(stderr).toBe("");
     console.info(

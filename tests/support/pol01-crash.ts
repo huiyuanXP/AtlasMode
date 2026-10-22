@@ -3,6 +3,7 @@ import { SqliteStorage, StructureFileStore } from "@codemap/storage";
 import { SourceIndexer } from "@codemap/indexer";
 import { randomUUID } from "node:crypto";
 import { writeFile } from "node:fs/promises";
+import { writeFileSync } from "node:fs";
 import { join } from "node:path";
 const [root, database, projectId, phase, policyId] = process.argv.slice(2) as [
   string,
@@ -29,7 +30,45 @@ const service = new WorkspaceService({
             dependencyRules: [],
           }),
         );
-      process.kill(process.pid, "SIGKILL");
+      const resolved = Object.fromEntries(
+        ["service", "storage", "indexer"].map((name) => [
+          name,
+          import.meta.resolve(`@codemap/${name}`),
+        ]),
+      );
+      const productMode = Object.values(resolved).every((path) =>
+        path.includes("/dist/"),
+      )
+        ? "compiled"
+        : "source";
+      writeFileSync(
+        join(root, "crash-checkpoint.json"),
+        JSON.stringify({
+          pid: process.pid,
+          phase,
+          database,
+          projectId,
+          productMode,
+          resolved,
+          boundary: "durable-intent/publish-hook",
+          hardKill: "SIGKILL",
+        }),
+      );
+      if (!process.send) throw new Error("owned crash requires IPC parent");
+      process.on("exit", () =>
+        writeFileSync(
+          join(root, "unexpected-graceful-exit"),
+          "exit handler ran",
+        ),
+      );
+      const hold = setInterval(() => {}, 1000);
+      process.send({
+        pid: process.pid,
+        boundary: "durable-intent/publish-hook",
+        hardKill: "SIGKILL",
+      });
+      await new Promise<never>(() => {});
+      clearInterval(hold);
       throw new Error("unreachable-after-crash");
     },
   },

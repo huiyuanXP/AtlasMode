@@ -1,4 +1,4 @@
-import { afterEach, expect, test, vi } from "vitest";
+import { afterEach, beforeEach, expect, test, vi } from "vitest";
 import Database from "better-sqlite3";
 import { createHash } from "node:crypto";
 import {
@@ -9,6 +9,8 @@ import {
   copyFileSync,
   writeFileSync,
   watch,
+  statSync,
+  realpathSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
@@ -21,11 +23,54 @@ const observedFault = vi.hoisted(() => ({
   firstStatSucceeded: false,
   injected: false,
   opened: [] as string[],
+  originals: [] as string[],
+  mutations: [] as string[],
 }));
 vi.mock("node:fs", async (importOriginal) => {
   const actual = await importOriginal<typeof import("node:fs")>();
+  const mutations = Object.fromEntries(
+    [
+      "writeFileSync",
+      "appendFileSync",
+      "rmSync",
+      "unlinkSync",
+      "renameSync",
+      "copyFileSync",
+      "truncateSync",
+      "chmodSync",
+      "chownSync",
+      "utimesSync",
+      "mkdirSync",
+      "rmdirSync",
+      "linkSync",
+      "symlinkSync",
+    ].map((name) => [
+      name,
+      (...args: unknown[]) => {
+        const paths =
+          name === "copyFileSync" ||
+          name === "linkSync" ||
+          name === "symlinkSync"
+            ? args.slice(1, 2)
+            : name === "renameSync"
+              ? args.slice(0, 2)
+              : args.slice(0, 1);
+        for (const path of paths)
+          if (observedFault.originals.includes(String(path)))
+            observedFault.mutations.push(`${name}:${String(path)}`);
+        return Reflect.apply(
+          actual[name as keyof typeof actual] as (
+            ...args: unknown[]
+          ) => unknown,
+          actual,
+          args,
+        );
+      },
+    ]),
+  );
   return {
     ...actual,
+    ...mutations,
     statSync: (...args: Parameters<typeof actual.statSync>) => {
       const relevant = String(args[0]) === observedFault.path;
       if (relevant) {
@@ -58,7 +103,7 @@ vi.mock("node:fs", async (importOriginal) => {
   };
 });
 vi.mock("better-sqlite3", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("better-sqlite3")>();
+  const actual = await importOriginal<{ default: typeof Database }>();
   return {
     ...actual,
     default: new Proxy(actual.default, {
@@ -72,11 +117,31 @@ vi.mock("better-sqlite3", async (importOriginal) => {
 
 const roots: string[] = [];
 const handles: SqliteStorage[] = [];
-afterEach(() => {
+beforeEach(({ task }) => {
+  console.info(
+    JSON.stringify({
+      receipt: "ANNOTATION_NATIVE_STAGE",
+      phase: "test-start",
+      test: task.name,
+      pid: process.pid,
+      platform: process.platform,
+    }),
+  );
+});
+afterEach(({ task }) => {
+  observedFault.originals = [];
   vi.restoreAllMocks();
   for (const handle of handles.splice(0)) handle.close();
   for (const root of roots.splice(0))
     rmSync(root, { recursive: true, force: true });
+  console.info(
+    JSON.stringify({
+      receipt: "ANNOTATION_NATIVE_STAGE",
+      phase: "owned-cleanup-complete",
+      test: task.name,
+      pid: process.pid,
+    }),
+  );
 });
 const originalSchema = readFileSync(
   new URL("../migrations/001-records.sql", import.meta.url),
@@ -342,7 +407,7 @@ test("failure writing the final 002 marker rolls back table replacement, registr
       ) {
         if (args[0] === "002-annotations")
           throw new Error("injected marker failure");
-        return run.apply(this, args);
+        return Reflect.apply(run, this, args);
       });
     }
     return statement;
@@ -353,7 +418,7 @@ test("failure writing the final 002 marker rolls back table replacement, registr
 });
 
 // Measure original files without opening them through SQLite: reads must not initialize a WAL index.
-function rawFingerprint(path: string) {
+function rawFingerprint(path: string, identity = true) {
   return ["", "-wal", "-shm", "-journal"].map((suffix) => {
     const file = path + suffix;
     if (!existsSync(file)) return { suffix, sha256: null, size: 0 };
@@ -362,6 +427,18 @@ function rawFingerprint(path: string) {
       suffix,
       sha256: createHash("sha256").update(bytes).digest("hex"),
       size: bytes.length,
+      ...(identity
+        ? (() => {
+            const stat = statSync(file, { bigint: true });
+            return {
+              dev: String(stat.dev),
+              ino: String(stat.ino),
+              mtimeNs: String(stat.mtimeNs),
+              ctimeNs: String(stat.ctimeNs),
+              mode: String(stat.mode),
+            };
+          })()
+        : {}),
     };
   });
 }
@@ -425,7 +502,7 @@ test.each([
     const path = walFixture(condition),
       before = rawFingerprint(path),
       events: string[] = [];
-    const watcher = watch(join(path, ".."), (event, name) =>
+    const watcher = watch(realpathSync.native(dirname(path)), (event, name) =>
       events.push(`${event}:${String(name)}`),
     );
     const close = Database.prototype.close;
@@ -437,15 +514,56 @@ test.each([
         copyRoot = dirname(this.name);
       return close.call(this);
     });
+    observedFault.originals = [
+      path,
+      path + "-wal",
+      path + "-shm",
+      path + "-journal",
+    ];
+    observedFault.mutations = [];
+    const openStart = observedFault.opened.length;
+    console.info(
+      JSON.stringify({
+        receipt: "STORAGE_ORIGINAL_OBSERVER",
+        phase: "armed",
+        condition,
+        path,
+        pid: process.pid,
+      }),
+    );
     try {
       expect(() => new SqliteStorage(path)).toThrow(/unsupported.*schema/i);
       await new Promise((resolve) => setTimeout(resolve, 25));
       expect(rawFingerprint(path)).toEqual(before);
-      expect(events).toEqual([]);
+      expect(observedFault.opened.slice(openStart)).not.toContain(path);
+      expect(observedFault.mutations).toEqual([]);
+      console.info(
+        JSON.stringify({
+          receipt: "STORAGE_ORIGINAL_OBSERVER",
+          phase: "refused",
+          condition,
+          path,
+          pid: process.pid,
+          opened: observedFault.opened.slice(openStart),
+          mutations: observedFault.mutations,
+          rawIdentityPreserved: true,
+          watchEventsDiagnostic: events,
+        }),
+      );
       expect(copyRoot).toBeDefined();
       expect(existsSync(copyRoot!)).toBe(false);
     } finally {
+      observedFault.originals = [];
       watcher.close();
+      console.info(
+        JSON.stringify({
+          receipt: "STORAGE_ORIGINAL_OBSERVER",
+          phase: "closed",
+          condition,
+          path,
+          pid: process.pid,
+        }),
+      );
     }
   },
 );
@@ -476,7 +594,7 @@ test("controlled preflight-to-write handoff detects a newly unsupported WAL main
     future = walFixture("main-future"),
     close = Database.prototype.close;
   const sidecarEvents: string[] = [],
-    watcher = watch(join(path, ".."), (event, name) => {
+    watcher = watch(realpathSync.native(dirname(path)), (event, name) => {
       if (/-(wal|shm|journal)$/.test(String(name)))
         sidecarEvents.push(`${event}:${String(name)}`);
     });
@@ -571,3 +689,44 @@ test.each(
     }
   },
 );
+
+// A raw-byte-only observer must not miss transient original sidecar mutations.
+test.each(["write-restore", "remove-recreate"])(
+  "original sidecar observer catches %s even when bytes are restored",
+  (operation) => {
+    const path = walFixture("stale-shm"),
+      sidecar = path + "-shm",
+      bytes = readFileSync(sidecar);
+    const before = rawFingerprint(path, false);
+    observedFault.originals = [path, path + "-wal", sidecar, path + "-journal"];
+    observedFault.mutations = [];
+    try {
+      if (operation === "remove-recreate") rmSync(sidecar);
+      else writeFileSync(sidecar, Buffer.alloc(bytes.length, 1));
+      writeFileSync(sidecar, bytes);
+      expect(rawFingerprint(path, false)).toEqual(before);
+      expect(observedFault.mutations.length).toBeGreaterThan(0);
+      expect(
+        observedFault.mutations.every((event) => event.includes(sidecar)),
+      ).toBe(true);
+    } finally {
+      observedFault.originals = [];
+    }
+  },
+);
+
+test("original SQLite open observer catches readonly original preflight", () => {
+  const path = legacy(),
+    before = rawFingerprint(path),
+    start = observedFault.opened.length;
+  const db = new Database(path, { readonly: true });
+  try {
+    expect(
+      db.prepare("SELECT count(*) AS count FROM records").get(),
+    ).toMatchObject({ count: 9 });
+  } finally {
+    db.close();
+  }
+  expect(rawFingerprint(path)).toEqual(before);
+  expect(observedFault.opened.slice(start)).toContain(path);
+});

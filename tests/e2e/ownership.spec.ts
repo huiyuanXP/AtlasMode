@@ -708,21 +708,46 @@ test("layout pointer drag changes positions only; native folder drop saves compl
     await expect(
       page.getByRole("button", { name: "Layout", exact: true }),
     ).toHaveAttribute("aria-pressed", "true");
-    const before = await f.api(`/api/plans/${f.detail.plan.id}`),
-      box = await f.card.boundingBox();
+    const before = await f.api(`/api/plans/${f.detail.plan.id}`);
+    const nodeId = `fact:${f.selected.id}`;
+    const node = page.locator(`.react-flow__node[data-id="${nodeId}"]`);
+    // Focus animates the viewport; visibility alone does not give stable mouse bounds.
+    await node.hover();
+    const box = await node.boundingBox();
     if (!box) throw new Error("Missing layout card");
-    await page.mouse.move(box.x + 70, box.y + 35);
+    const x = box.x + box.width * 0.4,
+      y = box.y + box.height * 0.35;
+    await page.mouse.move(x, y);
     await page.mouse.down();
-    await page.mouse.move(box.x + 125, box.y + 65, { steps: 12 });
-    await page.mouse.up();
+    let dragStart: { x: number; y: number } | null = null;
+    try {
+      await page.mouse.move(x + 4, y + 4);
+      await expect(node).toHaveClass(/dragging/);
+      dragStart = await node.boundingBox();
+      if (!dragStart) throw new Error("Dragging layout card has no bounds");
+      await page.mouse.move(x + 59, y + 34, { steps: 12 });
+      await expect(node).toHaveClass(/dragging/);
+    } finally {
+      await page.mouse.up();
+    }
+    const start = dragStart;
+    await expect
+      .poll(async () => {
+        const moved = await node.boundingBox();
+        return moved && start
+          ? Math.max(
+              Math.abs(moved.x - start.x - 55),
+              Math.abs(moved.y - start.y - 30),
+            )
+          : Infinity;
+      })
+      .toBeLessThan(2);
     await expect
       .poll(
         async () =>
-          Object.keys(
-            (await f.api(`/api/projects/${f.project.id}/view`)).positions,
-          ).length,
+          (await f.api(`/api/projects/${f.project.id}/view`)).positions[nodeId],
       )
-      .toBeGreaterThan(0);
+      .toBeDefined();
     expect((await f.api(`/api/plans/${f.detail.plan.id}`)).plan).toEqual(
       before.plan,
     );

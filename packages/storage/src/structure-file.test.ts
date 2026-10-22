@@ -176,6 +176,8 @@ test("concurrent readers see complete old or new JSON and original permissions p
     entered = gate(),
     release = gate();
   await fs.chmod(path, 0o640);
+  const originalMode = (await fs.stat(path)).mode & 0o777;
+  if (process.platform !== "win32") expect(originalMode).toBe(0o640);
   const unlinked: string[] = [];
   const store = new StructureFileStore({
     fs: {
@@ -212,6 +214,6 @@ test("concurrent readers see complete old or new JSON and original permissions p
       JSON.parse(Buffer.from(read.bytes!).toString("utf8")),
     ).not.toThrow();
   }
-  expect((await fs.stat(path)).mode & 0o777).toBe(0o640);
+  expect((await fs.stat(path)).mode & 0o777).toBe(originalMode);
   expect(unlinked).not.toContain(path);
 });

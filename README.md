@@ -516,5 +516,9 @@ npm run test:e2e
 
 本项目自己的明确选择：保留实现前用户理解与确认的步骤，用已有代码图上的可编辑规划替代长篇文字计划，并让图在后续开发中持续保持可用。
 
-当前代码检查点 `0192730` 的 [GitHub CI](https://github.com/huiyuanXP/AtlasMode/actions/runs/37150560646)
+历史代码检查点 `0192730` 的 [GitHub CI](https://github.com/huiyuanXP/AtlasMode/actions/runs/37150560646)
 已通过原生 Linux、Windows、macOS 和 Chromium 四项检查，阶段交付在 `work` 分支。
+
+当前跨平台已验代码为隔离工作分支 `fix/pol01-ci-runtime-20261011` 的 `e48f927`，
+[Linux、macOS、Windows与Chromium CI](https://github.com/huiyuanXP/AtlasMode/actions/runs/38112226930)全部通过。
+[三票验收与剩余边界](docs/superpowers/reviews/ci-runtime-r2-2026-10-11/README.md)。未合并或部署。
