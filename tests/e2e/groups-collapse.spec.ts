@@ -164,12 +164,19 @@ test("group collapse preserves shared function aliases, true external call endpo
           stableFrames = 0;
         const deadline = performance.now() + 5000;
         while (stableFrames < 4) {
-          await new Promise<void>((done) => requestAnimationFrame(() => done()));
+          await new Promise<void>((done) =>
+            requestAnimationFrame(() => done()),
+          );
           const matrix = path.getScreenCTM();
           if (!matrix || !path.isConnected)
             throw new Error("Requested relation detached during fit");
           const geometry = [
-            matrix.a, matrix.b, matrix.c, matrix.d, matrix.e, matrix.f,
+            matrix.a,
+            matrix.b,
+            matrix.c,
+            matrix.d,
+            matrix.e,
+            matrix.f,
             path.getAttribute("d"),
           ].join("|");
           stableFrames = geometry === previous ? stableFrames + 1 : 0;
@@ -308,6 +315,20 @@ test("group collapse preserves shared function aliases, true external call endpo
       targetHandle = page.locator(
         `.react-flow__node[data-id="fact:${outside.id}"] .react-flow__handle.target`,
       );
+    // The handles are ~3px wide at this zoom and "fit canvas" animates the camera
+    // for ~250ms. Wait for the viewport to hold still, then measure and press in
+    // the same step so a moving camera can never make the drag miss its handle.
+    let lastViewport = "";
+    await expect
+      .poll(async () => {
+        const now =
+          (await page.locator(".react-flow__viewport").getAttribute("style")) ??
+          "";
+        const settled = now === lastViewport;
+        lastViewport = now;
+        return settled;
+      })
+      .toBe(true);
     const sourceBox = await sourceHandle.boundingBox(),
       targetBox = await targetHandle.boundingBox();
     expect(sourceBox).not.toBeNull();
