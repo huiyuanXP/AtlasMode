@@ -16,7 +16,12 @@ try {
   const html = await (await fetch(server.url)).text();
   assert.match(html, /<div id="root"><\/div>/);
   const asset = html.match(/src="([^"]+\.js)"/)[1];
-  assert.equal((await fetch(server.url + asset)).ok, true);
+  // Consume the whole body. Checking only `.ok` leaves a ~1MB response unread;
+  // on macOS the small loopback socket buffer then keeps the response open and
+  // the server cannot finish a graceful shutdown (it was SIGKILLed after 10s).
+  const assetResponse = await fetch(server.url + asset);
+  assert.equal(assetResponse.ok, true);
+  assert.ok((await assetResponse.arrayBuffer()).byteLength > 0);
   mcp = await connectMcp(server.url);
   for (const path of [fixture.ts, fixture.python]) {
     const project = await http(server.url, "/api/projects", "POST", { path });
