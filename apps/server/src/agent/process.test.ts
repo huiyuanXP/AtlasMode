@@ -1,4 +1,4 @@
-import { afterEach, expect, test } from "vitest";
+import { afterEach, expect, test, vi } from "vitest";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
@@ -115,6 +115,45 @@ posixTest(
     const fatal = await start("itemerror");
     expect(await fatal.run.done).toEqual({ ok: false, code: "AGENT_FAILED" });
     expect(fatal.events).toEqual([]);
+  },
+);
+const errno = (code: string) => Object.assign(new Error(code), { code });
+test("a failed group signal means 'already gone' only for ESRCH, or EPERM on macOS", () => {
+  const gone = processBridge.isProcessGroupGone;
+  // Portable: the group no longer exists.
+  expect(gone(errno("ESRCH"), "linux")).toBe(true);
+  expect(gone(errno("ESRCH"), "darwin")).toBe(true);
+  // macOS answers EPERM for a group whose last member exited but is not reaped.
+  expect(gone(errno("EPERM"), "darwin")).toBe(true);
+  // On Linux EPERM is a real permission failure and must keep propagating.
+  expect(gone(errno("EPERM"), "linux")).toBe(false);
+  expect(gone(errno("EACCES"), "darwin")).toBe(false);
+  expect(gone(new Error("no code"), "darwin")).toBe(false);
+  expect(gone(undefined, "darwin")).toBe(false);
+});
+// End to end through the real process bridge, with group signals made to fail
+// the way macOS does for an unreaped group. Only meaningful where EPERM is
+// treated as "gone"; elsewhere that EPERM is intentionally surfaced.
+test.skipIf(process.platform !== "darwin")(
+  "macOS: a not-yet-reaped process group does not turn cleanup into an unhandled error",
+  async () => {
+    const real = process.kill.bind(process);
+    const spy = vi.spyOn(process, "kill").mockImplementation(((
+      pid: number,
+      signal?: string | number,
+    ) => {
+      if (pid < 0 && signal !== 0) throw errno("EPERM");
+      return real(pid, signal);
+    }) as typeof process.kill);
+    try {
+      const { run } = await start("oversize");
+      expect(await run.done).toMatchObject({
+        ok: false,
+        code: "AGENT_OUTPUT_LIMIT",
+      });
+    } finally {
+      spy.mockRestore();
+    }
   },
 );
 posixTest("missing executable and timeout return safe errors", async () => {

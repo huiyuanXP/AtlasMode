@@ -24,6 +24,16 @@ export interface ProcessInvocation {
   timeoutMs?: number;
   graceMs?: number;
 }
+/** True when a failed group signal means "nothing left to signal". ESRCH is
+ * the portable answer; macOS also answers EPERM for a group whose last member
+ * has exited but is not yet reaped. Everything else is a real error. */
+export function isProcessGroupGone(
+  error: unknown,
+  platform: NodeJS.Platform,
+): boolean {
+  const code = (error as NodeJS.ErrnoException | undefined)?.code;
+  return code === "ESRCH" || (code === "EPERM" && platform === "darwin");
+}
 /** The detached process group belongs exclusively to this invocation; never kill by executable name. */
 export function startProcess(
   input: ProcessInvocation,
@@ -59,12 +69,19 @@ export function startProcess(
     resolveExit = resolve;
   });
   const grace = input.graceMs ?? 2000;
+  // The child leads its own process group (detached), and we only ever signal
+  // that group. ESRCH means the group is gone. macOS additionally answers EPERM
+  // while the group's last member has exited but is not yet reaped (a zombie):
+  // there is nothing left to signal, and groupAlive() below ends the wait the
+  // same way. Any other error is real and still propagates.
+  const groupGone = (error: unknown) =>
+    isProcessGroupGone(error, process.platform);
   async function signalTree(force: boolean) {
     if (!child.pid) return;
     try {
       process.kill(-child.pid, force ? "SIGKILL" : "SIGTERM");
     } catch (error) {
-      if ((error as NodeJS.ErrnoException).code !== "ESRCH") throw error;
+      if (!groupGone(error)) throw error;
     }
   }
   function groupAlive() {
