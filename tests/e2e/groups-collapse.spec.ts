@@ -315,34 +315,50 @@ test("group collapse preserves shared function aliases, true external call endpo
       targetHandle = page.locator(
         `.react-flow__node[data-id="fact:${outside.id}"] .react-flow__handle.target`,
       );
-    // The handles are ~3px wide at this zoom and "fit canvas" animates the camera
-    // for ~250ms. Wait for the viewport to hold still, then measure and press in
-    // the same step so a moving camera can never make the drag miss its handle.
-    let lastViewport = "";
+    // The handles are ~3px wide at this zoom. A press that lands beside one
+    // grabs the card and drags it (saving a layout) instead of drawing the
+    // relation. CI showed exactly that: a PUT /view and no plan update after the
+    // drag. So press only once both handles hold still across two reads and the
+    // topmost element at each centre is that handle.
+    const centre = async () => {
+      const [a, b] = [
+        await sourceHandle.boundingBox(),
+        await targetHandle.boundingBox(),
+      ];
+      if (!a || !b) return undefined;
+      const point = (box: typeof a) => ({
+        x: box.x + box.width / 2,
+        y: box.y + box.height / 2,
+      });
+      const [from, to] = [point(a), point(b)];
+      const onHandle = await page.evaluate(
+        ([f, t]) =>
+          [f, t].map(
+            (p) =>
+              document
+                .elementFromPoint(p.x, p.y)
+                ?.classList.contains("react-flow__handle") ?? false,
+          ),
+        [from, to],
+      );
+      return { from, to, hit: onHandle.every(Boolean) };
+    };
+    let previous = "";
+    let ready: Awaited<ReturnType<typeof centre>>;
     await expect
       .poll(async () => {
-        const now =
-          (await page.locator(".react-flow__viewport").getAttribute("style")) ??
-          "";
-        const settled = now === lastViewport;
-        lastViewport = now;
-        return settled;
+        const now = await centre();
+        const key = JSON.stringify(now);
+        const stable = !!now?.hit && key === previous;
+        previous = key;
+        ready = stable ? now : undefined;
+        return stable;
       })
       .toBe(true);
-    const sourceBox = await sourceHandle.boundingBox(),
-      targetBox = await targetHandle.boundingBox();
-    expect(sourceBox).not.toBeNull();
-    expect(targetBox).not.toBeNull();
-    await page.mouse.move(
-      sourceBox!.x + sourceBox!.width / 2,
-      sourceBox!.y + sourceBox!.height / 2,
-    );
+    const { from, to } = ready!;
+    await page.mouse.move(from.x, from.y);
     await page.mouse.down();
-    await page.mouse.move(
-      targetBox!.x + targetBox!.width / 2,
-      targetBox!.y + targetBox!.height / 2,
-      { steps: 16 },
-    );
+    await page.mouse.move(to.x, to.y, { steps: 16 });
     await page.mouse.up();
     await expect
       .poll(async () => {
