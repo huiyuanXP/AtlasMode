@@ -576,6 +576,24 @@ form > button {
   background: var(--accent) !important;
   border: 2px solid var(--surface) !important;
 }
+/* The visible dot stays 8px, but at overview zoom (about 0.4) it is only ~3px
+ * on screen, too small to press: a press beside it grabs the card and drags it
+ * instead of starting a connection. The pseudo-element is an invisible hit area
+ * that belongs to the handle itself (so React Flow's pointerdown on the handle
+ * still fires), centred on the dot. --handle-hit is set on .canvas-shell from
+ * the live zoom (see handleHitSize) and is 0 at normal zoom, so nothing changes
+ * there. The card is overflow:hidden, so only its inner side is reachable. */
+.react-flow__handle::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: var(--handle-hit, 0px);
+  height: var(--handle-hit, 0px);
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: transparent;
+}
 .react-flow__edge-text {
   font-size: 9px !important;
 }

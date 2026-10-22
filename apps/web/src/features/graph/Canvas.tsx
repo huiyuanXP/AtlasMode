@@ -1,4 +1,11 @@
-import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type CSSProperties,
+  type ReactNode,
+} from "react";
 import {
   ReactFlow,
   Background,
@@ -325,6 +332,19 @@ const nodeTypes = {
 // React Flow queues explicit fit options. Stable overview options avoid a
 // parent render overwriting that queued request with a fit of every node.
 const overviewFitOptions = { padding: 0.25, minZoom: 0.8, maxZoom: 1 };
+/** Connection handles are 8px in flow space, i.e. ~3px on screen at overview
+ * zoom (about 0.4), too small to press: a press beside one lands on the card
+ * and drags it instead of starting a connection. Below this zoom the handle
+ * gets an invisible hit area of about 22 screen px. At normal zoom nothing is
+ * added, because React Flow's click-to-connect would otherwise swallow plain
+ * clicks on a card's edge strip. The area is clipped by the card on its outer
+ * side (cards are overflow:hidden), so in practice it grows inward. */
+export const HANDLE_HIT_BELOW_ZOOM = 0.8;
+export function handleHitSize(zoom: number) {
+  if (!Number.isFinite(zoom) || zoom <= 0 || zoom >= HANDLE_HIT_BELOW_ZOOM)
+    return 0;
+  return Math.round(Math.min(72, 22 / zoom));
+}
 /** Funnel cards are 255px wide (.code-card); never fit-zoom below 120px cards. */
 const FUNNEL_MIN_ZOOM = 120 / 255;
 /** The funnel summary bar floats over the top of the canvas (about 48px tall
@@ -710,6 +730,7 @@ export function Canvas(props: {
       ),
   );
   const viewport = instance.current?.getViewport() ?? { x: 0, y: 0, zoom: 1 };
+  const zoom = viewport.zoom;
   const selectionRect = selectedCard
     ? {
         x: selectedCard.position.x * viewport.zoom + viewport.x,
@@ -809,6 +830,7 @@ export function Canvas(props: {
       aria-label={zh.graph}
       ref={canvas}
       data-camera-version={cameraVersion}
+      style={{ "--handle-hit": `${handleHitSize(zoom)}px` } as CSSProperties}
       onFocusCapture={(event) => {
         const id = (event.target as HTMLElement)
           .closest(".react-flow__node")
