@@ -38,6 +38,7 @@ import {
   type FunnelState,
   type FunnelLane,
 } from "./funnel.js";
+import { withFolderFrames } from "./folder-frames.js";
 import type { FocusRequest } from "./focus.js";
 export type { FocusRequest } from "./focus.js";
 import "@xyflow/react/dist/style.css";
@@ -280,8 +281,11 @@ function FileGroupCard({ data }: NodeProps<GraphNode>) {
   );
 }
 function GroupFrame({ data }: NodeProps<GraphNode>) {
+  const title = data.frameTitle as string | undefined;
   return (
-    <div className="group-frame" data-group-frame={String(data.node.name)} />
+    <div className="group-frame" data-group-frame={String(data.node.name)}>
+      {title && <span className="group-frame-title">{title}</span>}
+    </div>
   );
 }
 const nodeTypes = {
@@ -793,13 +797,19 @@ export function Canvas(props: {
         selectionKeyCode={props.groupSelectionMode ? null : "Shift"}
         multiSelectionKeyCode={props.groupSelectionMode ? null : "Meta"}
         panOnDrag={!props.groupSelectionMode && !props.ownershipMode}
-        nodes={(props.groupSelectionMode
-          ? circleSelectedNodes(
-              highlighted.nodes,
-              props.groupSelectionIds ?? [],
-            )
-          : highlighted.nodes
-        ).map((n) => ({
+        nodes={(() => {
+          const shown = props.groupSelectionMode
+            ? circleSelectedNodes(
+                highlighted.nodes,
+                props.groupSelectionIds ?? [],
+              )
+            : highlighted.nodes;
+          // The funnel draws its own file-group frames; the overview wraps each
+          // expanded folder (real `contains` children) and follows drags.
+          return props.funnel || props.groupSelectionMode
+            ? shown
+            : withFolderFrames(shown, rawEdges);
+        })().map((n) => ({
           ...n,
           selectable:
             !props.groupSelectionMode ||

@@ -12,7 +12,8 @@ async function inside(page: Page, ids: string[]) {
   await expect
     .poll(async () => {
       const canvas = await page.locator(".canvas-shell").boundingBox();
-      if (!canvas) return false;
+      if (!canvas) return "no canvas";
+      const report: string[] = [];
       for (const id of ids) {
         const box = await page
           .locator(`.react-flow__node[data-id="${id}"]`)
@@ -24,11 +25,13 @@ async function inside(page: Page, ids: string[]) {
           box.x + box.width > canvas.x + canvas.width ||
           box.y + box.height > canvas.y + canvas.height
         )
-          return false;
+          report.push(
+            `${id.slice(0, 18)} box=${JSON.stringify(box && { x: Math.round(box.x), y: Math.round(box.y), w: Math.round(box.width), h: Math.round(box.height) })} canvas=${JSON.stringify({ x: Math.round(canvas.x), y: Math.round(canvas.y), w: Math.round(canvas.width), h: Math.round(canvas.height) })} viewport=${await page.locator(".react-flow__viewport").getAttribute("style")}`,
+          );
       }
-      return true;
+      return report.length ? report.join(" | ") : "ok";
     })
-    .toBe(true);
+    .toBe("ok");
 }
 test("breadcrumbs navigate function, indexed file, folders, root and truthful planned paths, superseding stale scope responses", async ({
   page,

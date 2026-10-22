@@ -1302,3 +1302,14 @@ summary {
   border: 1.5px dashed color-mix(in srgb, var(--accent) 35%, transparent);
   pointer-events: none;
 }
+.group-frame-title {
+  position: absolute;
+  top: 6px;
+  left: 12px;
+  max-width: calc(100% - 24px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font: 600 12px/1.2 var(--font-mono, ui-monospace, monospace);
+  color: color-mix(in srgb, var(--accent) 80%, var(--text, #222));
+}
