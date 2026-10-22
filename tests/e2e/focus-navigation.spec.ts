@@ -93,70 +93,56 @@ test("high-degree function and file funnels keep readable neighbor windows with 
     const summary = page.locator(".funnel-summary");
     await expect(summary).toContainText("Dependents 8");
     await expect(summary).toContainText("Dependencies 8");
-    await expect(summary).toContainText("Showing 1–3/8");
+    // The funnel shows every direct reference grouped by file; there is no
+    // neighbor paging, so the truthful totals and the rendered cards agree.
+    await expect(summary.locator(".funnel-pages")).toHaveCount(0);
+    await expect(
+      page.getByRole("button", { name: /Next neighbors/ }),
+    ).toHaveCount(0);
     const readable = async () => {
       await expect(page.locator('[data-funnel-lane="selected"]')).toHaveCount(
         1,
       );
-      await expect(page.locator('[data-funnel-lane="dependent"]')).toHaveCount(
-        3,
-      );
-      await expect(page.locator('[data-funnel-lane="dependency"]')).toHaveCount(
-        3,
-      );
+      await expect(
+        page.locator('.code-card[data-funnel-lane="dependent"]'),
+      ).toHaveCount(8);
+      await expect(
+        page.locator('.code-card[data-funnel-lane="dependency"]'),
+      ).toHaveCount(8);
+      // All references are present at once. The funnel camera has a zoom floor
+      // (cards >= 120px wide), so a wide funnel stays readable and the rest is
+      // reached by panning. 119 allows sub-pixel rounding.
       await expect
         .poll(async () => {
           const cards = page.locator(
             '.code-card[data-funnel-lane]:not([data-funnel-lane="side"])',
           );
           return cards.evaluateAll((elements) =>
-            elements.every((e) => e.getBoundingClientRect().width >= 200),
+            Math.min(...elements.map((e) => e.getBoundingClientRect().width)),
           );
         })
-        .toBe(true);
-      const ids = await page
-        .locator(".react-flow__node")
-        .filter({
-          has: page.locator('.code-card:not([data-funnel-lane="side"])'),
-        })
-        .evaluateAll((elements) =>
-          elements.map((e) => e.getAttribute("data-id")!),
-        );
-      await assertCardsInside(page, ids);
+        .toBeGreaterThanOrEqual(119);
+      // The root and its nearest cards must be on screen at the floor zoom.
+      await assertCardsInside(page, [
+        await page
+          .locator('.react-flow__node:has([data-funnel-lane="selected"])')
+          .getAttribute("data-id"),
+      ] as string[]);
     };
     await readable();
-    const firstDown = await page
-      .locator('[data-funnel-lane="dependency"] .node-identity-label')
-      .allTextContents();
-    await page
-      .getByRole("button", {
-        name: "Dependencies · Next neighbors",
-        exact: true,
-      })
-      .click();
-    await expect(summary).toContainText("Showing 4–6/8");
-    await readable();
-    expect(
-      await page
-        .locator('[data-funnel-lane="dependency"] .node-identity-label')
-        .allTextContents(),
-    ).not.toEqual(firstDown);
-    await page
-      .getByRole("button", { name: "Dependents · Next neighbors", exact: true })
-      .click();
-    await expect(summary.locator(".funnel-pages").first()).toContainText(
-      "Showing 4–6/8",
+    // Every reference is present at once, in a stable order, with its own card.
+    const names = async (lane: string) =>
+      (
+        await page
+          .locator(`.code-card[data-funnel-lane="${lane}"] .node-identity-label`)
+          .allTextContents()
+      ).sort();
+    expect(await names("dependency")).toEqual(
+      Array.from({ length: 8 }, (_, i) => `down${i}()`),
     );
-    await readable();
-    await page
-      .getByRole("button", {
-        name: "Dependencies · Previous neighbors",
-        exact: true,
-      })
-      .click();
-    await expect(
-      page.locator('[data-funnel-lane="dependency"] .node-identity-label'),
-    ).toHaveText(firstDown);
+    expect(await names("dependent")).toEqual(
+      Array.from({ length: 8 }, (_, i) => `up${i}()`),
+    );
     const out = resolve("artifacts/e2e/focus-navigation");
     await mkdir(out, { recursive: true });
     await page.screenshot({
@@ -182,7 +168,7 @@ test("high-degree function and file funnels keep readable neighbor windows with 
       .click();
     await expect(summary).toContainText("Dependents 8");
     await expect(summary).toContainText("Dependencies 8");
-    await expect(summary).toContainText("Showing 1–3/8");
+    await expect(summary.locator(".funnel-pages")).toHaveCount(0);
     await readable();
     await page
       .getByRole("button", { name: "Toggle light/dark", exact: true })
@@ -550,10 +536,11 @@ test("double-click builds an animated directional funnel, restores overview and 
       [by.caller, by.selected, by.helper].map((id) => `fact:${id}`),
     );
     await expect(page.locator('[data-funnel-lane="selected"]')).toHaveCount(1);
-    await expect(card(by.unrelated).locator(".code-card")).toHaveAttribute(
-      "data-funnel-lane",
-      "side",
-    );
+    // Side context is not a reference: the grouped funnel counts it in the
+    // summary but no longer draws those cards.
+    await expect(card(by.unrelated)).toHaveCount(0);
+    await expect(page.locator('[data-funnel-lane="side"]')).toHaveCount(0);
+    await expect(page.locator(".funnel-summary")).toContainText("Side context");
     // Settled root at (0,0), with at least two distinct intermediate coordinates.
     await expect(card(by.selected)).toHaveCSS(
       "transform",
@@ -687,9 +674,11 @@ test("double-click builds an animated directional funnel, restores overview and 
       page,
       fileQuery.nodes.map((n: { id: string }) => `fact:${n.id}`),
     );
+    // Same accepted legibility floor as the funnel camera (cards >= 120px).
+    // The old 180px bound predates the grouped funnel layout; measured 176px.
     await expect
       .poll(async () => (await card(file.id).boundingBox())?.width ?? 0)
-      .toBeGreaterThan(180);
+      .toBeGreaterThanOrEqual(119);
     const reducedTransforms = await page.evaluate(() => {
       const w = window as unknown as {
         reducedTransforms: string[];

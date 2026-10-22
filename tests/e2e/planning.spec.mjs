@@ -589,11 +589,15 @@ test("production UI and SDK share the complete planning, approval, persistence a
     );
     const box = await card.boundingBox();
     expect(box).toBeTruthy();
-    await page.mouse.move(box.x + box.width / 2, box.y + 30);
+    // Grab the card's center: at the overview zoom the card can be shorter than
+    // a fixed 30px offset, which would miss it and never start a drag.
+    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
     await page.mouse.down();
-    await page.mouse.move(box.x + box.width / 2 + 35, box.y + 55, {
-      steps: 10,
-    });
+    await page.mouse.move(
+      box.x + box.width / 2 + 35,
+      box.y + box.height / 2 + 25,
+      { steps: 10 },
+    );
     await page.mouse.up();
     await expect
       .poll(async () =>

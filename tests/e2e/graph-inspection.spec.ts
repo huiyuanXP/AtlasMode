@@ -182,12 +182,10 @@ test("inspection preserves the camera, uniquely previews repeated calls, and fun
     await expect(detail).toBeVisible();
     const view = await http(server.url, `/api/projects/${project.id}/view`);
     expect(view.positions).toEqual({});
-    await page
-      .getByRole("button", {
-        name: "Dependencies · Next neighbors",
-        exact: true,
-      })
-      .click();
+    // Every reference is shown at once now, so there is no neighbor paging.
+    await expect(
+      page.getByRole("button", { name: /Next neighbors/ }),
+    ).toHaveCount(0);
     await page.waitForTimeout(400);
     expect(await transform(card(selected.id))).toBe(moved);
     // Retain the wide coexistence regression and the original CI geometry.

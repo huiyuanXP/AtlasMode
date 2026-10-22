@@ -164,12 +164,14 @@ function FocusViewport({
   request,
   targets,
   padding = 0.5,
+  minZoom = 0,
   focusKey = "",
   blocked = false,
 }: {
   request?: FocusRequest;
   targets: GraphNode[];
   padding?: number;
+  minZoom?: number;
   focusKey?: string;
   blocked?: boolean;
 }) {
@@ -212,7 +214,9 @@ function FocusViewport({
         : 250,
       // Explicit focus must fit even a widely spread saved layout. The manual
       // zoom controls retain their normal minimum; do not reposition targets.
-      minZoom: 0,
+      // The dependency funnel passes a floor so a wide funnel stays readable
+      // (the user pans to reach the rest) instead of shrinking to fit.
+      minZoom,
       maxZoom: 1.1,
       padding,
     });
@@ -224,6 +228,7 @@ function FocusViewport({
     viewportInitialized,
     fitView,
     padding,
+    minZoom,
     focusKey,
     blocked,
   ]);
@@ -288,6 +293,8 @@ const nodeTypes = {
 // React Flow queues explicit fit options. Stable overview options avoid a
 // parent render overwriting that queued request with a fit of every node.
 const overviewFitOptions = { padding: 0.25, minZoom: 0.8, maxZoom: 1 };
+/** Funnel cards are 255px wide (.code-card); never fit-zoom below 120px cards. */
+const FUNNEL_MIN_ZOOM = 120 / 255;
 export function Canvas(props: {
   graph?: SubgraphResult;
   projectId?: string;
@@ -1017,6 +1024,7 @@ export function Canvas(props: {
         <FocusViewport
           blocked={cameraBlocked}
           padding={props.funnel && !selectedFocus ? 0.08 : 0.5}
+          minZoom={props.funnel && !selectedFocus ? FUNNEL_MIN_ZOOM : 0}
           focusKey={
             props.funnel && !selectedFocus
               ? `${pageSize}:${funnelProjection?.windows.dependents.page}:${funnelProjection?.windows.dependencies.page}:${offsetVersion}`
