@@ -13,7 +13,11 @@ it("stores the API key 0600, never exposes it, keeps it when omitted and clears 
   const file = join(dir, "agent-settings.json");
   const store = new AgentSettingsStore(file);
   await store.save({ provider: "responses", model: "m", apiKey: "sk-secret" });
-  expect((await stat(file)).mode & 0o777).toBe(0o600);
+  // Windows has no POSIX permission bits (stat reports 0666 regardless of
+  // chmod), so owner-only mode can only be asserted on POSIX platforms. Every
+  // other assertion below still runs everywhere.
+  if (process.platform !== "win32")
+    expect((await stat(file)).mode & 0o777).toBe(0o600);
   expect(JSON.stringify(store.publicView({}))).not.toContain("sk-secret");
   expect(store.publicView({}).apiKeyConfigured).toBe(true);
   await store.save({ provider: "responses", model: "m2" });

@@ -13,7 +13,8 @@ async function assertCardsInside(page: Page, ids: string[]) {
   await expect
     .poll(async () => {
       const canvas = await page.locator(".canvas-shell").boundingBox();
-      if (!canvas) return false;
+      if (!canvas) return "no canvas";
+      const outside: string[] = [];
       for (const id of ids) {
         const card = await page
           .locator(`.react-flow__node[data-id="${id}"]`)
@@ -25,11 +26,15 @@ async function assertCardsInside(page: Page, ids: string[]) {
           card.x + card.width > canvas.x + canvas.width ||
           card.y + card.height > canvas.y + canvas.height
         )
-          return false;
+          outside.push(
+            `${id.slice(-6)}@${card ? `${Math.round(card.x)},${Math.round(card.y)},${Math.round(card.width)}x${Math.round(card.height)}` : "missing"}`,
+          );
       }
-      return true;
+      return outside.length
+        ? `outside canvas ${Math.round(canvas.x)},${Math.round(canvas.y)},${Math.round(canvas.width)}x${Math.round(canvas.height)}: ${outside.join(" ")}`
+        : "ok";
     })
-    .toBe(true);
+    .toBe("ok");
 }
 
 test("high-degree function and file funnels keep readable neighbor windows with truthful totals and restore overview", async ({
