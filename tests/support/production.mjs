@@ -1,4 +1,4 @@
-import { spawn } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
 import { once } from "node:events";
 import { createServer } from "node:net";
 import { mkdir, writeFile, access } from "node:fs/promises";
@@ -67,10 +67,30 @@ export async function startProduction(data, port) {
   const stop = async () => {
     if (child.exitCode !== null || child.signalCode !== null) return;
     child.send({ testSignal: "SIGTERM" });
+    // A graceful stop normally takes well under a second. If it is still
+    // running at 8s, record why before the 10s SIGKILL erases the evidence:
+    // open handles and sockets of the child, so a hang can be diagnosed from CI.
+    const probe = setTimeout(() => {
+      const pid = child.pid;
+      output += `\n[stop-diagnostic] still running 8s after SIGTERM, pid=${pid}, platform=${process.platform}\n`;
+      for (const [command, args] of [
+        ["lsof", ["-nP", "-p", String(pid)]],
+        ["ps", ["-o", "pid,ppid,state,etime,command", "-p", String(pid)]],
+      ]) {
+        try {
+          const result = spawnSync(command, args, {
+            encoding: "utf8",
+            timeout: 4000,
+          });
+          output += `[stop-diagnostic] ${command}:\n${(result.stdout ?? "").split("\n").slice(0, 40).join("\n")}\n`;
+        } catch {}
+      }
+    }, 8000);
     const timer = setTimeout(() => child.kill("SIGKILL"), 10000);
     try {
       assert.deepEqual(await exited, [0, null], output);
     } finally {
+      clearTimeout(probe);
       clearTimeout(timer);
     }
   };

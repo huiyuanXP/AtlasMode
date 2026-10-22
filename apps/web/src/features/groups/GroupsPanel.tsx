@@ -1,10 +1,12 @@
 import { useStore } from "zustand";
 import type { Workspace } from "../../app/workspace.js";
 import "./groups.css";
-import { useStrings } from "../../i18n/index.js";
+import { useLocale, useStrings } from "../../i18n/index.js";
+import { displayNameFor } from "../graph/displayName.js";
 export function GroupsPanel({ app }: { app: Workspace }) {
   const state = useStore(app.store),
-    text = useStrings();
+    text = useStrings(),
+    locale = useLocale();
   const draft = state.groupDraft;
   const known = new Map(
     [
@@ -124,7 +126,7 @@ export function GroupsPanel({ app }: { app: Workspace }) {
                       }
                     />
                     <span>
-                      {n.name}
+                      {displayNameFor(n.name, locale)}
                       <small>{n.filePath}</small>
                     </span>
                   </label>
@@ -192,7 +194,9 @@ export function GroupsPanel({ app }: { app: Workspace }) {
                     <li key={binding.id}>
                       {binding.status === "bound" ? (
                         <>
-                          <strong>{binding.node.name}</strong>
+                          <strong>
+                            {displayNameFor(binding.node.name, locale)}
+                          </strong>
                           <code>{binding.node.filePath}</code>
                         </>
                       ) : binding.status === "missing" ? (

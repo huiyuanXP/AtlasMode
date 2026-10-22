@@ -759,7 +759,10 @@ test("actual selected entrypoint recovers published intent before it listens", a
       await exited;
     }
   }
-});
+  // The body's own deadlines add up to well over the 5s default (12s ready +
+  // 10s graceful shutdown + 2s port check), so the outer limit must cover them
+  // instead of failing first on a loaded host. No inner deadline is relaxed.
+}, 40000);
 
 test("HTTP current approval requires the current revision while verification retains immutable approval history", async () => {
   const f = await fixture(),

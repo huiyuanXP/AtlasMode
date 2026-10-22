@@ -11,6 +11,7 @@ import { useStore } from "zustand";
 import { useStrings } from "../i18n/index.js";
 import type { Workspace } from "./workspace.js";
 import { RoutePanel } from "../features/routes/RoutePanel.js";
+import { displayNameFor } from "../features/graph/displayName.js";
 export function Navigation({
   app,
   onFocus,
@@ -71,7 +72,7 @@ export function Navigation({
                     void app.focus(n);
                   }}
                 >
-                  <strong>ƒ {n.name}</strong>
+                  <strong>ƒ {displayNameFor(n.name, state.view.locale)}</strong>
                   <small>{n.filePath}</small>
                 </button>
               ))}
@@ -124,7 +125,7 @@ export function Navigation({
                   void app.focus(n);
                 }}
               >
-                <strong>ƒ {n.name}</strong>
+                <strong>ƒ {displayNameFor(n.name, state.view.locale)}</strong>
                 <small>{n.filePath}</small>
               </button>
             ))}

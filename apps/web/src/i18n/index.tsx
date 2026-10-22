@@ -16,3 +16,4 @@ export function LocaleProvider({
   );
 }
 export const useStrings = () => dictionaries[useContext(LocaleContext)];
+export const useLocale = () => useContext(LocaleContext);

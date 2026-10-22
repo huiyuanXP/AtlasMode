@@ -310,6 +310,8 @@ export const zh = {
     "修改分组或目录规则将为此项目的全部规划创建新版本，并要求重新确认。",
   noPolicies: "暂无目录规则",
   plannedRemoval: "规划删除",
+  callbackLabel: "回调",
+  anonymousLabel: "匿名函数",
   annotation: "说明",
   endpointOutside: "规划端点未在当前子图",
   refreshNotice: "已重新索引；规划和路线按新快照检查。",

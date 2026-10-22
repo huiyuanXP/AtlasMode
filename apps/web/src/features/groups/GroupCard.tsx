@@ -3,6 +3,7 @@ import type { CodeNode } from "@codemap/core";
 import { dictionaries, type Locale } from "../../i18n/index.js";
 import type { GraphNode, GroupCardData } from "../graph/projection.js";
 import "./group-graph.css";
+import { displayNameFor } from "../graph/displayName.js";
 
 function Chevron({ open }: { open: boolean }) {
   return (
@@ -123,13 +124,15 @@ export function GroupCardContent({
                       );
                     }}
                     onDragEnd={onOwnershipEnd}
-                    title={`${node.name} · ${node.filePath ?? node.id}`}
+                    title={`${displayNameFor(node.name, locale)} · ${node.filePath ?? node.id}`}
                     onClick={(event) => {
                       event.stopPropagation();
                       onSelect(node);
                     }}
                   >
-                    <span className="group-endpoint-name">{node.name}</span>
+                    <span className="group-endpoint-name">
+                      {displayNameFor(node.name, locale)}
+                    </span>
                     <code>{node.filePath}</code>
                   </button>
                 </div>

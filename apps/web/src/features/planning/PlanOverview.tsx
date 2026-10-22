@@ -2,7 +2,8 @@ import { effectiveFunctionPath } from "./function-target.js";
 import { useState } from "react";
 import { canApprovePlan } from "./pending.js";
 import type { CodeNode, PlanDetail, Operation } from "@codemap/core";
-import { useStrings } from "../../i18n/index.js";
+import { useLocale, useStrings } from "../../i18n/index.js";
+import { displayNameFor } from "../graph/displayName.js";
 export interface PlanOverviewProps {
   plans: PlanDetail[];
   detail?: PlanDetail;
@@ -21,6 +22,7 @@ export interface PlanOverviewProps {
 }
 export function PlanOverview(props: PlanOverviewProps) {
   const s = useStrings(),
+    locale = useLocale(),
     plan = props.detail?.plan;
   const [chosen, setChosen] = useState<{
     id: string;
@@ -28,7 +30,9 @@ export function PlanOverview(props: PlanOverviewProps) {
     index: number;
   }>();
   const chinese = s.planOverview === "规划概述" || s.choosePlan === "选择规划";
-  const names = new Map(props.nodes.map((n) => [n.id, n.name]));
+  const names = new Map(
+    props.nodes.map((n) => [n.id, displayNameFor(n.name, locale)]),
+  );
   for (const op of plan?.operations ?? [])
     if (op.kind === "add_function") names.set(op.tempId, op.name);
   const name = (id: string) => names.get(id) ?? s.unloaded;

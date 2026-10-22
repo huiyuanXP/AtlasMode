@@ -280,3 +280,39 @@ it("wraps each expanded group in a frame that hugs its cards' current positions,
       .some((n) => n.type === "groupframe"),
   ).toBe(false);
 });
+
+it("tells a folder that is both a caller and a callee apart by direction, titled with its path and pre-measured", () => {
+  const fn = (id: string, filePath: string) => ({ ...node(id), filePath });
+  // `lib/` calls the selected function AND is called by it: two groups, one folder.
+  const g: SubgraphResult = {
+    nodes: [
+      fn("selected", "app/s.ts"),
+      fn("up", "lib/up.ts"),
+      fn("down", "lib/down.ts"),
+    ],
+    relations: [edge("up", "selected"), edge("selected", "down")],
+    snapshotId: "s",
+    dataSource: "code",
+    truncated: false,
+  };
+  const laid = funnel.layoutFunnelGrouped(
+    projectGraph(g, [], "both", {}),
+    "selected",
+  );
+  const frames = funnel
+    .withGroupFrames(laid.nodes)
+    .filter((n) => n.type === "groupframe");
+  expect(frames).toHaveLength(2);
+  const byLane = Object.fromEntries(
+    frames.map((f) => [f.data.frameLane as string, f]),
+  );
+  expect(Object.keys(byLane).sort()).toEqual(["dependency", "dependent"]);
+  expect(byLane.dependent!.data.frameTitle).toBe("lib/up.ts");
+  expect(byLane.dependency!.data.frameTitle).toBe("lib/down.ts");
+  // The caller frame sits above the selected card, the callee frame below it.
+  const selected = laid.nodes.find((n) => n.data.funnelLane === "selected")!;
+  expect(byLane.dependent!.position.y).toBeLessThan(selected.position.y);
+  expect(byLane.dependency!.position.y).toBeGreaterThan(selected.position.y);
+  for (const f of frames)
+    expect(f.measured).toEqual({ width: f.width, height: f.height });
+});

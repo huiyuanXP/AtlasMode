@@ -418,13 +418,18 @@ export function withGroupFrames(nodes: GraphNode[]): GraphNode[] {
       x1 = Math.max(...boxes.map((b) => b.x + b.w)) + FRAME_PAD,
       y1 = Math.max(...boxes.map((b) => b.y + b.h)) + FRAME_PAD;
     const id = `frame:${group.key}`;
+    const width = x1 - x0,
+      height = y1 - y0;
     frames.push({
       id,
       type: "groupframe",
       position: { x: x0, y: y0 },
-      width: x1 - x0,
-      height: y1 - y0,
-      style: { width: x1 - x0, height: y1 - y0, pointerEvents: "none" },
+      width,
+      height,
+      // Derived nodes never receive React Flow dimension changes; without
+      // `measured`, useNodesInitialized() would block focus/fit.
+      measured: { width, height },
+      style: { width, height, pointerEvents: "none" },
       zIndex: -1,
       selectable: false,
       draggable: false,
@@ -440,6 +445,12 @@ export function withGroupFrames(nodes: GraphNode[]): GraphNode[] {
         layer: "fact",
         changes: [],
         frame: true,
+        // Direction + folder: the same folder can be both a caller group above
+        // and a callee group below, and must not read as calling itself.
+        frameLane: header.data.funnelLane,
+        frameTitle: String(
+          header.data.node.filePath || header.data.node.name,
+        ),
       },
     });
   }

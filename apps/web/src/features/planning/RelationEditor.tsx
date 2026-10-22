@@ -1,12 +1,13 @@
 import { useState } from "react";
 import type { CodeNode, Operation } from "@codemap/core";
-import { useStrings } from "../../i18n/index.js";
+import { useLocale, useStrings } from "../../i18n/index.js";
 import {
   reconnectRelation,
   temporaryId,
   type EdgeReference,
   type PlannedRelation,
 } from "./operations.js";
+import { displayNameFor } from "../graph/displayName.js";
 export function RelationEditor({
   operations,
   node,
@@ -23,6 +24,7 @@ export function RelationEditor({
   onClearEdge: () => void;
 }) {
   const zh = useStrings();
+  const locale = useLocale();
   const planned = operations.filter(
     (o): o is Extract<Operation, { kind: "add_function" }> =>
       o.kind === "add_function",
@@ -102,7 +104,7 @@ export function RelationEditor({
             <option value="">{zh.emptySelect}</option>
             {candidates.map((n) => (
               <option key={n.id} value={n.id}>
-                {n.name} · {n.filePath}
+                {displayNameFor(n.name, locale)} · {n.filePath}
               </option>
             ))}
           </select>
@@ -118,7 +120,7 @@ export function RelationEditor({
             <option value="">{zh.emptySelect}</option>
             {candidates.map((n) => (
               <option key={n.id} value={n.id}>
-                {n.name} · {n.filePath}
+                {displayNameFor(n.name, locale)} · {n.filePath}
               </option>
             ))}
           </select>

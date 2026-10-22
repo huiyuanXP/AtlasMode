@@ -85,3 +85,30 @@ it("keeps file, folder and external identities distinct with type text available
   expect(markup).toContain("目录");
   expect(markup).toContain('aria-hidden="true"');
 });
+
+it("shows anonymous callbacks as the receiving call in both languages without touching the raw identity", () => {
+  const raw = `<callback:${JSON.stringify([[80, "it"]])}:1>`;
+  const callback: CodeNode = {
+    id: "cb",
+    kind: "function",
+    name: raw,
+    declarationKind: "function",
+  };
+  expect(nodeIdentity(callback, "zh").label).toBe("it(…) 回调");
+  expect(nodeIdentity(callback, "en").label).toBe("it(…) callback");
+  expect(callback.name).toBe(raw);
+  const nested: CodeNode = {
+    id: "nested",
+    kind: "function",
+    name: "<anonymous>",
+    qualifiedName: `${raw}.<anonymous>`,
+    declarationKind: "method",
+  };
+  expect(nodeIdentity(nested, "en").label).toBe("it(…) callback › anonymous");
+  expect(
+    nodeIdentity(
+      { ...nested, name: "<anonymous>", declarationKind: "function" },
+      "zh",
+    ).label,
+  ).toBe("匿名函数");
+});

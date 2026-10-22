@@ -335,6 +335,8 @@ export const en: Record<keyof typeof zh, string> = {
     "Changing groups or directory policies creates a new revision for every plan in this project and requires renewed confirmation.",
   noPolicies: "No directory policies yet",
   plannedRemoval: "Planned removal",
+  callbackLabel: "callback",
+  anonymousLabel: "anonymous",
   annotation: "Annotation",
   endpointOutside: "Plan endpoint outside current subgraph",
   refreshNotice:

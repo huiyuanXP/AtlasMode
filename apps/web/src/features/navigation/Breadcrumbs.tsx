@@ -1,5 +1,7 @@
 import type { CodeNode, Project } from "@codemap/core";
 import { breadcrumbs, type NavigationLocation } from "./path.js";
+import { useLocale } from "../../i18n/index.js";
+import { displayNameFor } from "../graph/displayName.js";
 export function Breadcrumbs({
   project,
   node,
@@ -19,6 +21,7 @@ export function Breadcrumbs({
   onScope: (path: string, kind: "folder" | "file") => void;
   onFunction: (node: CodeNode) => void;
 }) {
+  const locale = useLocale();
   const segments = breadcrumbs(project, node, location);
   return (
     <nav className="breadcrumbs" aria-label={label}>
@@ -39,7 +42,9 @@ export function Breadcrumbs({
                   : onScope(segment.path, segment.kind as "folder" | "file")
               }
             >
-              {segment.label}
+              {segment.kind === "function"
+                ? displayNameFor(segment.label, locale)
+                : segment.label}
             </button>
           </li>
         ))}

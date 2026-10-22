@@ -1,7 +1,8 @@
 import { useState } from "react";
 import type { CodeNode, FunctionContextResult } from "@codemap/core";
-import { useStrings } from "../../i18n/index.js";
+import { useLocale, useStrings } from "../../i18n/index.js";
 import { sourceWindow } from "./projection.js";
+import { displayNameFor } from "./displayName.js";
 export function Inspector({
   node,
   source,
@@ -18,6 +19,7 @@ export function Inspector({
   onExpand: (budget: number) => void;
 }) {
   const zh = useStrings();
+  const locale = useLocale();
   const [copyStatus, setCopyStatus] = useState<"copied" | "copyFailed" | "">(
     "",
   );
@@ -27,7 +29,7 @@ export function Inspector({
   const location = `${node.filePath ?? node.name}:${node.startLine ?? 1}`;
   return (
     <section className="inspector-content">
-      <h2>{node.name}</h2>
+      <h2>{displayNameFor(node.name, locale)}</h2>
       <code className="path">{location}</code>
       <p>
         <span className="badge">{zh[node.kind]}</span> {node.language}

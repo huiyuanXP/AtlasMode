@@ -39,6 +39,7 @@ import {
   type FunnelLane,
 } from "./funnel.js";
 import { withFolderFrames } from "./folder-frames.js";
+import { displayNameFor } from "./displayName.js";
 import type { FocusRequest } from "./focus.js";
 export type { FocusRequest } from "./focus.js";
 import "@xyflow/react/dist/style.css";
@@ -140,10 +141,20 @@ function CodeCard({ data }: NodeProps<GraphNode>) {
           {zh.groupMirror} · {data.groupTitle}
         </div>
       )}
-      <strong title={n.qualifiedName ?? n.name}>
+      <strong
+        title={displayNameFor(
+          n.qualifiedName ?? n.name,
+          data.locale as "zh" | "en",
+        )}
+      >
         <NodeIdentity node={n} locale={data.locale as "zh" | "en"} />
       </strong>
-      <code title={n.filePath}>{n.filePath ?? n.qualifiedName ?? n.id}</code>
+      <code title={n.filePath}>
+        {n.filePath ??
+          (n.qualifiedName
+            ? displayNameFor(n.qualifiedName, data.locale as "zh" | "en")
+            : n.id)}
+      </code>
       {n.signature && <small title={n.signature}>{n.signature}</small>}
       {data.changes.map((change, i) => (
         <div className="card-change" key={i}>
@@ -171,7 +182,7 @@ function FocusViewport({
 }: {
   request?: FocusRequest;
   targets: GraphNode[];
-  padding?: number;
+  padding?: NonNullable<Parameters<ReactFlowInstance["fitView"]>[0]>["padding"];
   minZoom?: number;
   focusKey?: string;
   blocked?: boolean;
@@ -281,10 +292,27 @@ function FileGroupCard({ data }: NodeProps<GraphNode>) {
   );
 }
 function GroupFrame({ data }: NodeProps<GraphNode>) {
+  const zh = useStrings();
   const title = data.frameTitle as string | undefined;
+  const lane = data.frameLane as FunnelLane | undefined;
+  const direction =
+    lane === "dependent"
+      ? zh.funnelDependents
+      : lane === "dependency"
+        ? zh.funnelDependencies
+        : undefined;
   return (
     <div className="group-frame" data-group-frame={String(data.node.name)}>
-      {title && <span className="group-frame-title">{title}</span>}
+      {title && (
+        <span className="group-frame-title">
+          {direction && (
+            <span className="group-frame-direction" data-lane={lane}>
+              {lane === "dependent" ? "↑" : "↓"} {direction}
+            </span>
+          )}
+          {title}
+        </span>
+      )}
     </div>
   );
 }
@@ -299,6 +327,15 @@ const nodeTypes = {
 const overviewFitOptions = { padding: 0.25, minZoom: 0.8, maxZoom: 1 };
 /** Funnel cards are 255px wide (.code-card); never fit-zoom below 120px cards. */
 const FUNNEL_MIN_ZOOM = 120 / 255;
+/** The funnel summary bar floats over the top of the canvas (about 48px tall
+ * plus its 10px offset); reserve that strip so the first frame title is never
+ * hidden underneath it. */
+const FUNNEL_PADDING = {
+  top: "76px",
+  right: "8%",
+  bottom: "8%",
+  left: "8%",
+} as const;
 export function Canvas(props: {
   graph?: SubgraphResult;
   projectId?: string;
@@ -1033,7 +1070,7 @@ export function Canvas(props: {
         <OverviewViewport active={!!props.funnel} saved={savedViewport} />
         <FocusViewport
           blocked={cameraBlocked}
-          padding={props.funnel && !selectedFocus ? 0.08 : 0.5}
+          padding={props.funnel && !selectedFocus ? FUNNEL_PADDING : 0.5}
           minZoom={props.funnel && !selectedFocus ? FUNNEL_MIN_ZOOM : 0}
           focusKey={
             props.funnel && !selectedFocus
@@ -1047,9 +1084,7 @@ export function Canvas(props: {
                 ? {
                     sequence: props.funnel.sequence,
                     nodeIds: funnelProjection?.nodes
-                      .filter(
-                        (n) => n.data.funnelLane !== "side" && !n.data.frame,
-                      )
+                      .filter((n) => n.data.funnelLane !== "side")
                       .map((n) => n.data.node.id),
                   }
                 : undefined
@@ -1063,7 +1098,8 @@ export function Canvas(props: {
                 )
               : props.funnel
                 ? (funnelProjection?.nodes.filter(
-                    (n) => n.data.funnelLane !== "side" && !n.data.frame,
+                    // Frames are fitted too, so their titles are never cut off.
+                    (n) => n.data.funnelLane !== "side",
                   ) ?? [])
                 : focusTargets(projection.nodes, props.focusRequest)
           }
@@ -1133,7 +1169,9 @@ export function Canvas(props: {
             return (
               node && (
                 <div key={key}>
-                  <strong>{node.name}</strong>
+                  <strong>
+                    {displayNameFor(node.name, props.view.locale)}
+                  </strong>
                   <code>{node.filePath}</code>
                   <button
                     onClick={() => {
@@ -1194,7 +1232,9 @@ export function Canvas(props: {
         )}
       {props.funnel && funnelProjection && (
         <div className="funnel-summary" role="status">
-          <strong>{props.funnel.root.name}</strong>
+          <strong>
+            {displayNameFor(props.funnel.root.name, props.view.locale)}
+          </strong>
           <span>
             ↑ {zh.funnelDependents} {funnelProjection.counts.dependents}
           </span>

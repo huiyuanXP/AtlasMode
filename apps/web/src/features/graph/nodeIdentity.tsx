@@ -1,6 +1,7 @@
 import type { CodeNode } from "@codemap/core";
 import { useEffect, useState } from "react";
 import type { Locale } from "../../i18n/index.js";
+import { displayNameFor } from "./displayName.js";
 import "./nodeIdentity.css";
 
 const types = {
@@ -39,13 +40,19 @@ export function nodeIdentity(node: CodeNode, locale: Locale = "zh") {
       ? (node.declarationKind ??
         (/^\s*class\s+\S/.test(node.signature ?? "") ? "class" : "declaration"))
       : node.kind;
-  const callableName =
+  const rawName =
     type === "method" ? (node.qualifiedName ?? node.name) : node.name;
+  const callableName = displayNameFor(rawName, locale);
+  // A translated callback/anonymous name already reads as a call; only plain
+  // identifiers get the `()` suffix.
+  const translated = callableName !== rawName;
   const label =
     type === "class"
       ? `class ${node.name}`
       : type === "function" || type === "method"
-        ? `${callableName}${callableName.endsWith("()") ? "" : "()"}`
+        ? translated || callableName.endsWith("()")
+          ? callableName
+          : `${callableName}()`
         : type === "folder"
           ? `${node.name}${node.name.endsWith("/") ? "" : "/"}`
           : node.name;

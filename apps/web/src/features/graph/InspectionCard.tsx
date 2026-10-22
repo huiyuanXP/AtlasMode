@@ -9,6 +9,7 @@ import type {
 import type { Locale } from "../../i18n/index.js";
 import { NodeIdentity } from "./nodeIdentity.js";
 import { sourceWindow } from "./projection.js";
+import { displayNameFor } from "./displayName.js";
 type InspectionRelation = Omit<Relation, "type"> & { type: string };
 export function InspectionCard({
   node,
@@ -140,8 +141,11 @@ export function InspectionCard({
               )}
             </button>
             <small>
-              {sourceNode?.name ?? r.sourceId} →{" "}
-              {targetNode?.name ??
+              {sourceNode
+                ? displayNameFor(sourceNode.name, locale)
+                : r.sourceId}{" "}
+              →{" "}
+              {(targetNode && displayNameFor(targetNode.name, locale)) ??
                 r.evidence.text ??
                 text("待确认目标", "Unresolved target")}
             </small>

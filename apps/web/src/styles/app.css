@@ -1313,3 +1313,16 @@ summary {
   font: 600 12px/1.2 var(--font-mono, ui-monospace, monospace);
   color: color-mix(in srgb, var(--accent) 80%, var(--text, #222));
 }
+.group-frame-direction {
+  margin-right: 8px;
+  padding: 1px 6px;
+  border-radius: 999px;
+  font-weight: 500;
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+}
+.group-frame-direction[data-lane="dependent"] {
+  color: var(--edge-fact, var(--accent));
+}
+.group-frame-direction[data-lane="dependency"] {
+  color: var(--edge-plan, var(--accent));
+}
